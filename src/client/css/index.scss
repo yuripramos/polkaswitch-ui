@@ -6,3 +6,11 @@ body {
   text-align: center;
   margin: auto;
 }
+
+h1 {
+  color: red;
+
+  &:hover {
+    color: blue;
+  }
+}
