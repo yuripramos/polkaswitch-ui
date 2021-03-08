@@ -3,6 +3,7 @@ const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 var csrf = require('csurf');
 const os = require('os');
+var compression = require('compression')
 
 const isProduction = (process.env.NODE_ENV === 'production');
 const app = express();
@@ -16,6 +17,7 @@ app.use(cookieSession({
     keys: ['key1', 'key2']
 }))
 
+app.use(compression())
 app.use(csrf());
 
 app.use(express.static('dist'));
@@ -32,3 +34,10 @@ app.use(function(err, req, res, next) {
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Listening on port ${process.env.PORT || 5000}!`);
 });
+
+process.on('SIGTERM', () => {
+  debug('SIGTERM signal received: closing HTTP server')
+  server.close(() => {
+    debug('HTTP server closed')
+  })
+})
