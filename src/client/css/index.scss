@@ -1,16 +1,2 @@
-h1 {
-  color: green;
-}
+@import 'reset';
 
-body {
-  text-align: center;
-  margin: auto;
-}
-
-h1 {
-  color: red;
-
-  &:hover {
-    color: blue;
-  }
-}
