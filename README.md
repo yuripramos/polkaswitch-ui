@@ -1,6 +1,6 @@
 # polkaswitch-ui
 
-![alt text](https://github.com/polkaswitch/polkaswitch-ui/blob/main/images/example2.png?raw=true)
+![alt text](https://github.com/polkaswitch/polkaswitch-ui/blob/main/images/example2.jpg?raw=true)
 
 # Features
 
