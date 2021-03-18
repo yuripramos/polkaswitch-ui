@@ -63,7 +63,7 @@ module.exports = (env) => {
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin(),
       new HtmlWebpackPlugin({
-        template: './public/index.html',
+        template: './src/client/index.html',
         hash: true
       })
     ]

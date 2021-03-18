@@ -21,6 +21,7 @@ app.use(compression())
 app.use(csrf());
 
 app.use(express.static('dist'));
+app.use(express.static('public'));
 app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
 app.use(function (req, res, next) {
