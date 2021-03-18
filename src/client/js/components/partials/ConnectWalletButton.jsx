@@ -7,38 +7,22 @@ import {
   Link
 } from "react-router-dom";
 
+import Wallet from '../../utils/wallet';
+
 export default class ConnectWalletButton extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
-  }
-
-  componentDidMount() {
-    if (typeof window.ethereum !== 'undefined') {
-      console.log('MetaMask is installed!');
-    } else {
-      console.error('Metamask not installed!');
-    }
+    this.state = {};
   }
 
   handleConnection(e) {
-    window.ethereum.request({ method: 'eth_requestAccounts' })
-      .then(function(accounts) {
-        // Metamask currently only ever provide a single account,
-        const account = accounts[0];
-        console.log('Ethereum Account: ', account);
-
+    Wallet.connectWallet().then(function(account) {
         this.setState({ account: account });
-      }.bind(this))
-      .catch(function(e) {
-        console.error(e);
-      });
+    }.bind(this));
   }
 
   renderButtonContent() {
-    if (window.ethereum && window.ethereum.selectedAddress) {
+    if (Wallet.isConnected()) {
       return (
         <>
         <i className="fas fa-user-circle"></i>
@@ -57,13 +41,13 @@ export default class ConnectWalletButton extends Component {
   }
 
   renderDropdownContent() {
-    if (window.ethereum && window.ethereum.selectedAddress) {
+    if (Wallet.isConnected()) {
       return (
         <div className="dropdown-content">
           <div className="dropdown-item">
             <div>Account:</div>
             <span className="tag is-info is-light">
-              {window.ethereum.selectedAddress}
+              {Wallet.currentAddress()}
             </span>
           </div>
           <div className="dropdown-item">
@@ -71,7 +55,7 @@ export default class ConnectWalletButton extends Component {
           </div>
         </div>
       );
-    } else if (window.ethereum) {
+    } else if (Wallet.isSupported()) {
       return (
         <div className="dropdown-content">
           <div className="dropdown-item has-text-info">
