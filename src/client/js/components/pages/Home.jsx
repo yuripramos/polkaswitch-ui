@@ -15,52 +15,52 @@ import SwapOrderWidget from '../partials/SwapOrderWidget';
 export default class Home extends Component {
   render() {
     return (
-      <div class="container">
+      <div className="container">
         <Navbar />
 
-        <div class="columns">
-          <div class="column is-three-fifths">
-            <div class="box">
+        <div className="columns">
+          <div className="column is-three-fifths">
+            <div className="box">
               <PairOverviewChart />
             </div>
           </div>
 
-          <div class="column is-two-fifths">
-            <div class="box">
+          <div className="column is-two-fifths">
+            <div className="box">
               <SwapOrderWidget />
             </div>
 
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">
+            <div className="card">
+              <header className="card-header">
+                <p className="card-header-title">
                   Exchange Comparsion
                 </p>
-                <div class="card-header-icon">
-                  <span class="icon">
-                    <i class="fas fa-search"></i>
+                <div className="card-header-icon">
+                  <span className="icon">
+                    <i className="fas fa-search"></i>
                   </span>
                 </div>
               </header>
-              <div class="card-content">
-                <div class="content">
-                  <div class="columns">
-                    <div class="column">
-                      <div class="mb-5">Exchange</div>
-                      <div class="mb-5">Polkaswitch</div>
-                      <div class="mb-5">Uniswap</div>
-                      <div class="mb-2">Sushiswap</div>
+              <div className="card-content">
+                <div className="content">
+                  <div className="columns">
+                    <div className="column">
+                      <div className="mb-5">Exchange</div>
+                      <div className="mb-5">Polkaswitch</div>
+                      <div className="mb-5">Uniswap</div>
+                      <div className="mb-2">Sushiswap</div>
                     </div>
-                    <div class="column">
-                      <div class="mb-5">Amount</div>
-                      <div class="mb-5">13232</div>
-                      <div class="mb-5">3455</div>
-                      <div class="mb-2">8844</div>
+                    <div className="column">
+                      <div className="mb-5">Amount</div>
+                      <div className="mb-5">13232</div>
+                      <div className="mb-5">3455</div>
+                      <div className="mb-2">8844</div>
                     </div>
-                    <div class="column">
-                      <div class="mb-5">Result</div>
-                      <div class="mb-5">BEST</div>
-                      <div class="mb-5">Match</div>
-                      <div class="mb-2">-4%</div>
+                    <div className="column">
+                      <div className="mb-5">Result</div>
+                      <div className="mb-5">BEST</div>
+                      <div className="mb-5">Match</div>
+                      <div className="mb-2">-4%</div>
                     </div>
                   </div>
                 </div>

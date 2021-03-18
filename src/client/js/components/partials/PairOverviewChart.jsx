@@ -35,35 +35,35 @@ export default class PairOverviewChart extends Component {
   render() {
     return (
       <div>
-        <div class="block" style={{ width: "100%",  height: "600px" }}>
-          <div class="tradingview-widget-container"
+        <div className="block" style={{ width: "100%",  height: "600px" }}>
+          <div className="tradingview-widget-container"
             ref={el => (this.instance = el)}>
-            <div class="tradingview-widget-container__widget"></div>
-            <div class="tradingview-widget-copyright">by TradingView</div>
+            <div className="tradingview-widget-container__widget"></div>
+            <div className="tradingview-widget-copyright">by TradingView</div>
           </div>
         </div>
 
-        <div class="block">
-          <div class="level notification is-light is-info">
-            <div class="level-item has-text-centered">
+        <div className="block">
+          <div className="level notification is-light is-info">
+            <div className="level-item has-text-centered">
               <div>
                 <p>Total Supply</p>
                 <p><b>$15.54M</b></p>
               </div>
             </div>
-            <div class="level-item has-text-centered">
+            <div className="level-item has-text-centered">
               <div>
                 <p>24 Hour Volume</p>
                 <p><b>$19.54B</b></p>
               </div>
             </div>
-            <div class="level-item has-text-centered">
+            <div className="level-item has-text-centered">
               <div>
                 <p>Pooled ETH</p>
                 <p><b>837.83</b></p>
               </div>
             </div>
-            <div class="level-item has-text-centered">
+            <div className="level-item has-text-centered">
               <div>
                 <p>Market Cap</p>
                 <p><b>$61.83B</b></p>
@@ -72,30 +72,30 @@ export default class PairOverviewChart extends Component {
           </div>
         </div>
 
-        <div class="block is-size-6"><b>Routing</b></div>
-        <div class="block">
-          <div class="columns">
-            <div class="column is-half">
-              <div class="tile is-ancestor">
-                <div class="tile is-parent">
-                  <article class="tile is-child notification is-light is-info is-flex
+        <div className="block is-size-6"><b>Routing</b></div>
+        <div className="block">
+          <div className="columns">
+            <div className="column is-half">
+              <div className="tile is-ancestor">
+                <div className="tile is-parent">
+                  <article className="tile is-child notification is-light is-info is-flex
                     is-flex-direction-column is-align-items-center is-justify-content-center">
                     <b>Balancer</b>
                   </article>
                 </div>
-                <div class="tile is-parent is-vertical">
-                  <article class="tile is-child notification is-light is-info is-flex
+                <div className="tile is-parent is-vertical">
+                  <article className="tile is-child notification is-light is-info is-flex
                     is-flex-direction-column is-align-items-center is-justify-content-center">
                     <b>Sushiswap</b>
                   </article>
-                  <article class="tile is-child notification is-light is-info is-flex
+                  <article className="tile is-child notification is-light is-info is-flex
                     is-flex-direction-column is-align-items-center is-justify-content-center">
                     <b>Uniswap</b>
                   </article>
                 </div>
               </div>
             </div>
-            <div class="column">
+            <div className="column">
             </div>
           </div>
         </div>
