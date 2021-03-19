@@ -2,7 +2,7 @@
   {
     "name": "Ethereum",
     "symbol": "ETH",
-    "id": "0x5456BC77Dd275c45c3C15f0cF936b763cF57c3B5"
+    "top": true
   },
   {
     "name": "Anchor",
@@ -707,6 +707,7 @@
   {
     "name": "Balancer",
     "symbol": "BAL",
+    "top": true,
     "id": "0xba100000625a3754423978a60c9317c58a424e3D"
   },
   {
@@ -3355,6 +3356,7 @@
   {
     "name": "Uniswap",
     "symbol": "UNI",
+    "top": true,
     "id": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
   },
   {
@@ -4061,6 +4063,7 @@
   {
     "name": "Bancor",
     "symbol": "BNT",
+    "top": true,
     "id": "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C"
   },
   {
@@ -6312,6 +6315,7 @@
   {
     "name": "BNB",
     "symbol": "BNB",
+    "top": true,
     "id": "0xB8c77482e45F1F44dE1745F52C74426C631bDD52"
   },
   {
@@ -6898,6 +6902,7 @@
   {
     "name": "USD Coin",
     "symbol": "USDC",
+    "top": true,
     "id": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
   },
   {
@@ -7667,6 +7672,7 @@
   {
     "name": "Multi-collateral DAI",
     "symbol": "DAI",
+    "top": true,
     "id": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
   },
   {
@@ -8047,6 +8053,7 @@
   {
     "name": "Tether",
     "symbol": "USDT",
+    "top": true,
     "id": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
   },
   {
@@ -9493,6 +9500,7 @@
   {
     "name": "Sushi",
     "symbol": "SUSHI",
+    "top": true,
     "id": "0x6B3595068778DD592e39A122f4f5a5cF09C90fE2"
   },
   {
