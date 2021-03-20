@@ -2,7 +2,8 @@
   {
     "name": "Ethereum",
     "symbol": "ETH",
-    "top": true
+    "top": true,
+    "coin": true
   },
   {
     "name": "Anchor",

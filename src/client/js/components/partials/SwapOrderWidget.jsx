@@ -11,7 +11,7 @@ export default class Navbar extends Component {
 
   render() {
     return (
-      <div>
+      <div className="swap-widget">
         <div className="level">
           <div className="level-left is-flex-grow-1">
             <div className="level-item">
@@ -58,7 +58,8 @@ export default class Navbar extends Component {
         </div>
 
         <div>
-          <i class="fas fa-exchange-alt fa-rotate-90"></i>
+          <i class="fas fa-long-arrow-alt-up"></i>
+          <i class="fas fa-long-arrow-alt-down"></i>
         </div>
 
         <div className="notification is-link is-light px-6">

@@ -33,9 +33,10 @@ export default class TokenSearchBar extends Component {
 
     if (_query.length > 0) {
       filteredTokens = _.first(_.filter(window.tokens, function(t) {
-        return (t.id && t.symbol && t.name) &&
-          (t.symbol.toLowerCase().includes(_query) ||
-          t.name.toLowerCase().includes(_query));
+        return (t.symbol && t.name) && (
+          t.symbol.toLowerCase().includes(_query) ||
+          t.name.toLowerCase().includes(_query)
+        );
       }), 10);
     }
 
@@ -67,7 +68,7 @@ export default class TokenSearchBar extends Component {
                     <span className="level-item">
                       <img
                         style={{ height: "40px" }}
-                        src={`/tokens/erc20/${window.ethers.utils.getAddress(v.id)}/logo.png`} />
+                        src={`/tokens/erc20/${v.id || v.symbol}/logo.png`} />
                     </span>
                     <span className="level-item is-size-5">{v.name}</span>
                     <span className="level-item has-text-grey is-size-5">{v.symbol}</span>

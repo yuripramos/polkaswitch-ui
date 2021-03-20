@@ -2,8 +2,10 @@
 
 @import 'reset';
 
+// override Bulma Variables
 $radius-small: 6px;
 $radius: 8px;
 $radius-large: 10px;
 
 @import "~bulma/bulma";
+@import 'custom/swap';

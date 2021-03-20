@@ -9,4 +9,19 @@ if (Wallet.isSupported()) {
   console.error('Metamask not installed!');
 }
 
+window.tokens = _.map(_.filter(window.tokens, function(v) {
+  return (v.coin) || window.ethers.utils.isAddress(v.id);
+}), function(v) {
+  if (v.id) {
+    v.id = window.ethers.utils.getAddress(v.id);
+  }
+  return v;
+});
+
+window.tokens = _.filter(window.tokens, function(v) {
+  return (v.coin) || (
+    v.name && v.symbol && v.id && _.include(window.topt, v.id)
+  );
+});
+
 ReactDOM.render(<App />, document.getElementById('root'));
