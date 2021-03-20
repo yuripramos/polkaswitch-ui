@@ -31,7 +31,10 @@ export default class Navbar extends Component {
           </div>
         </div>
 
-        <div className="notification is-white px-6">
+        <div className="notification is-white px-6 my-0">
+          <div>
+            <span>You Pay</span>
+          </div>
           <div className="level">
             <div className="level-left is-flex-shrink-1 is-flex-grow-1">
               <div className="level-item">
@@ -54,7 +57,14 @@ export default class Navbar extends Component {
           </div>
         </div>
 
+        <div>
+          <i class="fas fa-exchange-alt fa-rotate-90"></i>
+        </div>
+
         <div className="notification is-link is-light px-6">
+          <div>
+            <span>You Recieve</span>
+          </div>
           <div className="level">
             <div className="level-left is-flex-shrink-1 is-flex-grow-1">
               <div className="level-item">

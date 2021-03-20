@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import ConnectWalletButton from './ConnectWalletButton';
+import TokenSearchBar from './TokenSearchBar';
 
 export default class Navbar extends Component {
   render() {
@@ -23,14 +24,7 @@ export default class Navbar extends Component {
             <div className="is-family-monospace is-size-4 mr-4 has-text-weight-bold">polkaswitch</div>
           </div>
           <div className="level-item is-flex-grow-3 is-justify-content-left">
-            <div className="field" style={{ width: "75%" }}>
-              <div className="control has-icons-left has-icons-right">
-                <input className="input is-medium" type="email" placeholder="Search by token name, symbol, or address ..." />
-                <span className="icon is-left">
-                  <i className="fas fa-search fa-sm"></i>
-                </span>
-              </div>
-            </div>
+            <TokenSearchBar />
           </div>
         </div>
 

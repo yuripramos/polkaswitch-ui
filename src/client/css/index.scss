@@ -1,4 +1,9 @@
 @charset "utf-8";
 
 @import 'reset';
+
+$radius-small: 6px;
+$radius: 8px;
+$radius-large: 10px;
+
 @import "~bulma/bulma";

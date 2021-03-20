@@ -14,7 +14,7 @@
     <script type="module">
       import { ethers } from "/js/ethers-5.0.esm.min.js";
       window.ethers = ethers;
-      var t = await fetch('/tokens_erc20.json');
+      var t = await fetch('/tokens/erc20_list.json');
       window.tokens = await t.json();
     </script>
 
