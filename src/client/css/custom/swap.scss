@@ -4,6 +4,32 @@
   .swap-icon {
   }
 
+  .notification {
+    padding-left: 12%;
+    padding-right: 12%;
+
+    .level-item {
+      flex-grow: 0;
+
+      &:not(:last-child) {
+        margin-right: 0.75em;
+      }
+    }
+  }
+
+  .token-dropdown {
+    flex: 1 0 auto;
+    padding: 1% 4%;
+    margin-right: 3% !important;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #ccc;
+    }
+  }
+
 
 
 }

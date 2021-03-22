@@ -6360,6 +6360,11 @@
     "id": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e"
   },
   {
+    "name": "Wrapped Ethereum",
+    "symbol": "WETH",
+    "id": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
     "name": "Based Money",
     "dapp": "https://stake.based.money",
     "symbol": "$BASED",
@@ -8343,7 +8348,7 @@
     "id": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811"
   },
   {
-    "name": "ZRX",
+    "name": "0x",
     "symbol": "ZRX",
     "id": "0xE41d2489571d322189246DaFA5ebDe1F4699F498"
   },
@@ -9224,7 +9229,7 @@
     "id": "0x3B7f247f21BF3A07088C2D3423F64233d4B069F7"
   },
   {
-    "name": "OMG",
+    "name": "OMG Network",
     "symbol": "OMG",
     "id": "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07"
   },

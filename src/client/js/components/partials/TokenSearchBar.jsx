@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import _ from 'underscore';
 import classnames from 'classnames';
 
+import TokenIconImg from './TokenIconImg';
+
 export default class TokenSearchBar extends Component {
   constructor(props) {
     super(props);
@@ -66,9 +68,9 @@ export default class TokenSearchBar extends Component {
                 <a href="#" className="dropdown-item level my-0 px-6">
                   <span className="level-left my-2">
                     <span className="level-item">
-                      <img
-                        style={{ height: "40px" }}
-                        src={`/tokens/erc20/${v.id || v.symbol}/logo.png`} />
+                      <TokenIconImg
+                        style={{ height: "30px" }}
+                        token={v} />
                     </span>
                     <span className="level-item is-size-5">{v.name}</span>
                     <span className="level-item has-text-grey is-size-5">{v.symbol}</span>
