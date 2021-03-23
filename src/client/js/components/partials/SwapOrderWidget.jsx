@@ -3,30 +3,50 @@ import { Link } from "react-router-dom";
 import _ from "underscore";
 
 import TokenIconImg from './TokenIconImg';
+import TokenSearchBar from './TokenSearchBar';
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
       // RSR
-      to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
+      // to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
+      // DAI
+      to: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       // ETH
-      from: "ETH"
+      from: "ETH",
+
+      toSearch: false,
+      fromSearch: false
     };
+
+    this.onSwapTokens = this.onSwapTokens.bind(this);
+    this.onTokenSearchToggle = this.onTokenSearchToggle.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  onTokenSearchToggle(target) {
+    return function(e) {
+      var _s = {};
+      _s[target + "Search"] = !this.state[target + "Search"];
+      this.setState(_s);
+    }.bind(this);
   }
 
-  renderToken(tid) {
+  onSwapTokens(e) {
+    this.setState({
+      to: this.state.from,
+      from: this.state.to
+    });
+  }
+
+  renderToken(target, tid) {
     var token = _.find(window.tokens, function(v) {
       return v.id == tid || v.symbol == tid;
     });
 
     return (
       <div className="level">
-        <div className="level my-0 token-dropdown">
+        <div className="level my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
           <div className="level-item">
             <TokenIconImg
               style={{ height: "35px" }}
@@ -39,13 +59,13 @@ export default class SwapOrderWidget extends Component {
             <i className="fas fa-angle-down"></i>
           </div>
         </div>
-          <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
-            <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
-              <div className="control" style={{ width: "100%" }}>
-                <input className="input is-medium" placeholder="0.0" />
-              </div>
+        <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
+          <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
+            <div className="control" style={{ width: "100%" }}>
+              <input className="input is-medium" placeholder="0.0" />
             </div>
           </div>
+        </div>
       </div>
     );
   }
@@ -73,29 +93,33 @@ export default class SwapOrderWidget extends Component {
         </div>
 
         <div className="notification is-white my-0">
-          <div>
+          <div className="text-gray-stylized">
             <span>You Pay</span>
           </div>
-          {this.renderToken(this.state.from)}
-      </div>
-
-      <div>
-        <i class="fas fa-long-arrow-alt-up"></i>
-        <i class="fas fa-long-arrow-alt-down"></i>
-      </div>
-
-      <div className="notification is-link is-light">
-        <div>
-          <span>You Recieve</span>
+          {this.renderToken("from", this.state.from)}
+          {this.state.fromSearch && (<TokenSearchBar />)}
         </div>
-        {this.renderToken(this.state.to)}
-      </div>
 
-      <div>
-        <button className="button is-danger is-fullwidth is-medium">
-          Review Order
-        </button>
-      </div>
+        <div class="swap-icon-wrapper">
+          <div class="swap-icon" onClick={this.onSwapTokens}>
+            <i class="fas fa-long-arrow-alt-up"></i>
+            <i class="fas fa-long-arrow-alt-down"></i>
+          </div>
+        </div>
+
+        <div className="notification is-info is-light">
+          <div className="text-gray-stylized">
+            <span>You Recieve</span>
+          </div>
+          {this.renderToken("to", this.state.to)}
+          {this.state.toSearch && (<TokenSearchBar />)}
+        </div>
+
+        <div>
+          <button className="button is-danger is-fullwidth is-medium">
+            Review Order
+          </button>
+        </div>
       </div>
     );
   }

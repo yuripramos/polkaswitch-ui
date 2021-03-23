@@ -44,8 +44,8 @@ export default class TokenSearchBar extends Component {
 
     return (
       <div
-        className={classnames("dropdown", { "is-active": showDropdown })}
-        style={{ width: "75%" }}>
+        className={classnames("dropdown token-search-bar", { "is-active": showDropdown })}
+        style={{ width: this.props.width || "100%" }}>
         <div className="dropdown-trigger" style={{ width: "100%" }}>
           <div className="field" style={{ width: "100%" }}>
             <div className="control has-icons-left has-icons-right">
@@ -65,15 +65,15 @@ export default class TokenSearchBar extends Component {
           <div className="dropdown-content">
             {_.map(filteredTokens, function(v) {
               return (
-                <a href="#" className="dropdown-item level my-0 px-6">
+                <a href="#"
+                  className="dropdown-item level">
                   <span className="level-left my-2">
                     <span className="level-item">
                       <TokenIconImg
-                        style={{ height: "30px" }}
                         token={v} />
                     </span>
-                    <span className="level-item is-size-5">{v.name}</span>
-                    <span className="level-item has-text-grey is-size-5">{v.symbol}</span>
+                    <span className="level-item">{v.name}</span>
+                    <span className="level-item has-text-grey">{v.symbol}</span>
                   </span>
                 </a>
               )

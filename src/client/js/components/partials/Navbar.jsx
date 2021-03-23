@@ -24,7 +24,7 @@ export default class Navbar extends Component {
             <div className="is-family-monospace is-size-4 mr-4 has-text-weight-bold">polkaswitch</div>
           </div>
           <div className="level-item is-flex-grow-3 is-justify-content-left">
-            <TokenSearchBar />
+            <TokenSearchBar width={"75%"} />
           </div>
         </div>
 
