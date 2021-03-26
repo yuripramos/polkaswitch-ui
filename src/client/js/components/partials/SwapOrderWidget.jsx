@@ -8,13 +8,20 @@ import TokenSearchBar from './TokenSearchBar';
 export default class SwapOrderWidget extends Component {
   constructor(props) {
     super(props);
+
+    var findTokenById = function(tid) {
+      return _.find(window.tokens, function(v) {
+        return v.id == tid || v.symbol == tid;
+      });
+    };
+
     this.state = {
       // RSR
       // to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
       // DAI
-      to: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      to: findTokenById("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
       // ETH
-      from: "ETH",
+      from: findTokenById("ETH"),
 
       toSearch: false,
       fromSearch: false
@@ -22,6 +29,8 @@ export default class SwapOrderWidget extends Component {
 
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.onTokenSearchToggle = this.onTokenSearchToggle.bind(this);
+    this.handleTokenToChange = this.handleTokenToChange.bind(this);
+    this.handleTokenFromChange = this.handleTokenFromChange.bind(this);
   }
 
   onTokenSearchToggle(target) {
@@ -39,11 +48,23 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  renderToken(target, tid) {
-    var token = _.find(window.tokens, function(v) {
-      return v.id == tid || v.symbol == tid;
+  handleTokenFromChange(token) {
+    this.setState({
+      from: token,
+      toSearch: false,
+      fromSearch: false
     });
+  }
 
+  handleTokenToChange(token) {
+    this.setState({
+      to: token,
+      toSearch: false,
+      fromSearch: false
+    });
+  }
+
+  renderToken(target, token) {
     return (
       <div className="level">
         <div className="level my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
@@ -97,7 +118,10 @@ export default class SwapOrderWidget extends Component {
             <span>You Pay</span>
           </div>
           {this.renderToken("from", this.state.from)}
-          {this.state.fromSearch && (<TokenSearchBar />)}
+          {this.state.fromSearch && (
+            <TokenSearchBar
+              handleTokenChange={this.handleTokenFromChange} />
+            )}
         </div>
 
         <div class="swap-icon-wrapper">
@@ -112,7 +136,10 @@ export default class SwapOrderWidget extends Component {
             <span>You Recieve</span>
           </div>
           {this.renderToken("to", this.state.to)}
-          {this.state.toSearch && (<TokenSearchBar />)}
+          {this.state.toSearch && (
+            <TokenSearchBar
+              handleTokenChange={this.handleTokenToChange} />
+            )}
         </div>
 
         <div>

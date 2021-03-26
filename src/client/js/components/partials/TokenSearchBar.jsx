@@ -10,6 +10,7 @@ export default class TokenSearchBar extends Component {
     super(props);
     this.state = { focused: false, value: "" };
     this.handleChange = this.handleChange.bind(this);
+    this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);
   }
@@ -26,6 +27,14 @@ export default class TokenSearchBar extends Component {
 
   onFocus(e) {
     this.setState({ focused: true })
+  }
+
+  handleDropdownClick(token) {
+    return function handleClick(e) {
+      if (this.props.handleTokenChange) {
+        this.props.handleTokenChange(token);
+      }
+    }.bind(this);
   }
 
   render() {
@@ -66,6 +75,7 @@ export default class TokenSearchBar extends Component {
             {_.map(filteredTokens, function(v) {
               return (
                 <a href="#"
+                  onClick={this.handleDropdownClick(v)}
                   className="dropdown-item level">
                   <span className="level-left my-2">
                     <span className="level-item">
@@ -77,7 +87,7 @@ export default class TokenSearchBar extends Component {
                   </span>
                 </a>
               )
-            })}
+            }.bind(this))}
           </div>
         </div>
       </div>
