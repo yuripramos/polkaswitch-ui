@@ -65,6 +65,9 @@ export default class SwapOrderWidget extends Component {
   }
 
   renderToken(target, token) {
+    if (!token) {
+      return (<div />);
+    }
     return (
       <div className="level">
         <div className="level my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
