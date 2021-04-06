@@ -29,9 +29,7 @@ export default class Home extends Component {
           }
 
           <div className="column swap-column" style={{ margin: "0 auto" }}>
-            <div className="box">
-              <SwapOrderWidget />
-            </div>
+            <SwapOrderWidget />
 
             <div className="is-hidden card">
               <header className="card-header">

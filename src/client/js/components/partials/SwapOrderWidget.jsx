@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import CSSTransitionGroup from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 
 import TokenIconImg from './TokenIconImg';
@@ -9,6 +9,8 @@ import TokenSearchBar from './TokenSearchBar';
 export default class SwapOrderWidget extends Component {
   constructor(props) {
     super(props);
+
+    this.box = React.createRef();
 
     var findTokenById = function(tid) {
       return _.find(window.tokens, function(v) {
@@ -37,6 +39,15 @@ export default class SwapOrderWidget extends Component {
     this.handleTokenFromChange = this.handleTokenFromChange.bind(this);
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleReview = this.handleReview.bind(this);
+    this.triggerHeightResize = this.triggerHeightResize.bind(this);
+  }
+
+  componentDidMount() {
+    this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+  }
+
+  triggerHeightResize(node, isAppearing) {
+    this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
   onTokenSearchToggle(target) {
@@ -128,201 +139,214 @@ export default class SwapOrderWidget extends Component {
 
   renderOrderView() {
     return (
-      <>
-        <div className="level">
-          <div className="level-left is-flex-grow-1">
-            <div className="level-item">
-              <div className="buttons has-addons">
-                <button className="button is-link is-outlined is-selected px-6">Market</button>
-                <button className="button px-6">Limit</button>
+      <div className="page">
+        <div className="page-inner">
+          <div className="level">
+            <div className="level-left is-flex-grow-1">
+              <div className="level-item">
+                <div className="buttons has-addons">
+                  <button className="button is-link is-outlined is-selected px-6">Market</button>
+                  <button className="button px-6">Limit</button>
+                </div>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item">
+                <span className="icon is-medium" onClick={this.handleSettingsToggle}>
+                  <i className="fas fa-sliders-h"></i>
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="level-right">
-            <div className="level-item">
-              <span className="icon is-medium" onClick={this.handleSettingsToggle}>
-                <i className="fas fa-sliders-h"></i>
-              </span>
+          <div className="notification is-white my-0">
+            <div className="text-gray-stylized">
+              <span>You Pay</span>
+            </div>
+            {this.renderTokenInput("from", this.state.from)}
+            {this.state.fromSearch && (
+              <TokenSearchBar
+                handleTokenChange={this.handleTokenFromChange} />
+            )}
+          </div>
+
+          <div class="swap-icon-wrapper">
+            <div class="swap-icon" onClick={this.onSwapTokens}>
+              <i class="fas fa-long-arrow-alt-up"></i>
+              <i class="fas fa-long-arrow-alt-down"></i>
             </div>
           </div>
-        </div>
 
-        <div className="notification is-white my-0">
-          <div className="text-gray-stylized">
-            <span>You Pay</span>
-          </div>
-          {this.renderTokenInput("from", this.state.from)}
-          {this.state.fromSearch && (
-            <TokenSearchBar
-              handleTokenChange={this.handleTokenFromChange} />
+          <div className="notification is-info is-light">
+            <div className="text-gray-stylized">
+              <span>You Recieve</span>
+            </div>
+            {this.renderTokenInput("to", this.state.to)}
+            {this.state.toSearch && (
+              <TokenSearchBar
+                handleTokenChange={this.handleTokenToChange} />
             )}
-        </div>
+          </div>
 
-        <div class="swap-icon-wrapper">
-          <div class="swap-icon" onClick={this.onSwapTokens}>
-            <i class="fas fa-long-arrow-alt-up"></i>
-            <i class="fas fa-long-arrow-alt-down"></i>
+          <div>
+            <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
+              Review Order
+            </button>
           </div>
         </div>
-
-        <div className="notification is-info is-light">
-          <div className="text-gray-stylized">
-            <span>You Recieve</span>
-          </div>
-          {this.renderTokenInput("to", this.state.to)}
-          {this.state.toSearch && (
-            <TokenSearchBar
-              handleTokenChange={this.handleTokenToChange} />
-            )}
-        </div>
-
-        <div>
-          <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
-            Review Order
-          </button>
-        </div>
-      </>
+      </div>
     );
   }
 
   renderConfirmView() {
     return (
-      <>
-      <div className="level">
-        <div className="level-left">
-          <div className="level-item">
-            <span className="icon is-medium" onClick={this.handleReview}>
-              <i className="fas fa-arrow-left"></i>
-            </span>
+      <div className="page page-stack">
+        <div className="page-inner">
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <span className="icon is-medium" onClick={this.handleReview}>
+                  <i className="fas fa-arrow-left"></i>
+                </span>
+              </div>
+              <div className="level-item">
+                <b className="widget-title">Review Order</b>
+              </div>
+            </div>
           </div>
-          <div className="level-item">
-            <b className="widget-title">Review Order</b>
+
+          <hr />
+
+          <div className="text-gray-stylized">
+            <span>You Pay</span>
+          </div>
+
+          <div className="level">
+            <div className="level-left">
+              {this.renderToken(this.state.from)}
+            </div>
+
+            <div className="level-right">
+              <div className="level-item currency-text is-size-3">
+                1.0
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div className="text-gray-stylized">
+            <span>You Recieve</span>
+          </div>
+
+          <div className="level">
+            <div className="level-left">
+              {this.renderToken(this.state.to)}
+            </div>
+
+            <div className="level-right">
+              <div className="level-item currency-text is-size-3">
+                0.00000324
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <b>Gas Price</b>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item currency-text">
+                0.00000324 ETH
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div>
+            <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
+              Confirm
+            </button>
           </div>
         </div>
       </div>
-
-      <hr />
-
-      <div className="text-gray-stylized">
-        <span>You Pay</span>
-      </div>
-
-      <div className="level">
-        <div className="level-left">
-          {this.renderToken(this.state.from)}
-        </div>
-
-        <div className="level-right">
-          <div className="level-item currency-text is-size-3">
-            1.0
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="text-gray-stylized">
-        <span>You Recieve</span>
-      </div>
-
-      <div className="level">
-        <div className="level-left">
-          {this.renderToken(this.state.to)}
-        </div>
-
-        <div className="level-right">
-          <div className="level-item currency-text is-size-3">
-            0.00000324
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="level">
-        <div className="level-left">
-          <div className="level-item">
-            <b>Gas Price</b>
-          </div>
-        </div>
-
-        <div className="level-right">
-          <div className="level-item currency-text">
-            0.00000324 ETH
-          </div>
-        </div>
-      </div>
-
-      <hr />
-
-      <div>
-        <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
-          Confirm
-        </button>
-      </div>
-      </>
     );
   }
 
   renderSettingsView() {
     return (
-      <>
-        <div className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <span className="icon is-medium" onClick={this.handleSettingsToggle}>
-                <i className="fas fa-arrow-left"></i>
-              </span>
-            </div>
-            <div className="level-item">
-              <b className="widget-title">Advanced Settings</b>
-            </div>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <b>Gas Price</b>
+      <div className="page page-stack">
+        <div className="page-inner">
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <span className="icon is-medium" onClick={this.handleSettingsToggle}>
+                  <i className="fas fa-arrow-left"></i>
+                </span>
+              </div>
+              <div className="level-item">
+                <b className="widget-title">Advanced Settings</b>
+              </div>
             </div>
           </div>
 
-          <div className="level-right">
-            <div className="level-item">
-              <div className="select">
-                <select>
-                  <option>Instant</option>
-                  <option>Cheapest</option>
-                </select>
+          <hr />
+
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <b>Gas Price</b>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item">
+                <div className="select">
+                  <select>
+                    <option>Instant</option>
+                    <option>Cheapest</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
   render() {
-    var output;
-
-    if (this.state.showConfirm) {
-      output = this.renderConfirmView();
-    }
-
-    else if (this.state.showSettings) {
-      output = this.renderSettingsView();
-    }
-
-    else {
-      output = this.renderOrderView();
-    }
-
+    var animTiming = 300;
     return (
-      <div className="swap-widget">
-        {output}
+      <div ref={this.box} className="box swap-widget">
+        <CSSTransition
+          in={!this.state.showSettings && !this.state.showConfirm}
+          timeout={animTiming}
+          onEntering={this.triggerHeightResize}
+          classNames="fade">
+          {this.renderOrderView()}
+        </CSSTransition>
+        <CSSTransition
+          in={this.state.showSettings}
+          timeout={animTiming}
+          onEntering={this.triggerHeightResize}
+          classNames="slidein">
+          {this.renderSettingsView()}
+        </CSSTransition>
+        <CSSTransition
+          in={this.state.showConfirm}
+          timeout={animTiming}
+          onEntering={this.triggerHeightResize}
+          classNames="slidein">
+          {this.renderConfirmView()}
+        </CSSTransition>
       </div>
     );
   }

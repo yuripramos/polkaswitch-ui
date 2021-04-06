@@ -87,21 +87,93 @@
   }
 }
 
-.transition-card-slidein-appear {
-  position: relative;
-  margin-left: -100%;
-}
-
-.transition-card-slidein-appear.transition-card-slidein-appear-active {
-  margin-left: 0;
-  transition: margin-left .5s ease-in;
-}
+$swap-widget-anim-timing: 300ms;
 
 .swap-widget {
-  padding: 5px;
-  min-height: 350px;
+  padding: 0px;
   overflow: hidden;
   position: relative;
+  max-height: 800px;
+  transition: height $swap-widget-anim-timing;
+
+  .page {
+    transition: left $swap-widget-anim-timing ease-in-out,
+      opacity $swap-widget-anim-timing ease-in-out,
+      transform $swap-widget-anim-timing ease-in-out;
+    min-height: 370px;
+    background: white;
+    position: relative;
+    z-index: 10;
+    top: 0;
+    width: 100%;
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  .page-inner {
+    padding: 1.25em;
+  }
+
+  .page-stack {
+    display: none;
+  }
+
+  .fade-enter {
+    opacity: 0;
+    transform: scale(0.75);
+    pointer-events: none;
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: none;
+  }
+  .fade-exit {
+    opacity: 1;
+    transform: scale(1);
+    position: absolute;
+    height: 800px;
+    pointer-events: none;
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transform: scale(0.75);
+    pointer-events: none;
+    height: 800px;
+    position: absolute;
+  }
+  .fade-exit-done {
+    display: none;
+  }
+
+  .slidein-enter {
+    display: block;
+    left: 120%;
+  }
+  .slidein-enter-active {
+    display: block;
+    left: 0%;
+    pointer-events: none;
+  }
+  .slidein-exit {
+    display: block;
+    left: 0%;
+    position: absolute;
+    height: 800px;
+  }
+  .slidein-exit-active {
+    display: block;
+    left: 120%;
+    position: absolute;
+    height: 800px;
+    pointer-events: none;
+  }
+  .slidein-enter-done {
+    display: block;
+  }
+  .slidein-exit-done {
+    display: none;
+  }
 
   .widget-title {
     font-size: 1.10rem;
@@ -165,8 +237,14 @@
     }
   }
 
+  //override bulma
   .level:not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+  }
+
+  //override bulma
+  .level-left + .level-right {
+    margin-top: 0;
   }
 
   hr {
