@@ -19,18 +19,21 @@ export default class Home extends Component {
         <Navbar />
 
         <div className="columns">
+          { /*
           <div className="column is-three-fifths">
             <div className="box">
               <PairOverviewChart />
             </div>
           </div>
+          */
+          }
 
-          <div className="column is-two-fifths">
+          <div className="column swap-column" style={{ margin: "0 auto" }}>
             <div className="box">
               <SwapOrderWidget />
             </div>
 
-            <div className="card">
+            <div className="is-hidden card">
               <header className="card-header">
                 <p className="card-header-title">
                   Exchange Comparsion

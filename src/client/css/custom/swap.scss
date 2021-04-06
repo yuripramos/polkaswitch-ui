@@ -1,3 +1,44 @@
+.level,
+.level-item,
+.level-left,
+.level-right {
+  display: flex;
+}
+
+@media screen and (max-width: 1023px) {
+  .container {
+    margin-right: 15px;
+    margin-left: 15px;
+  }
+}
+
+#nav {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  .level-left,
+  .level-right,
+  .level-item {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .level-item {
+  }
+
+  .level-left .level-item:not(:last-child),
+  .level-right .level-item:not(:last-child) {
+    margin-right: 0.75rem;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  #nav {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+}
+
 .text-gray-stylized {
   color: #999;
 }
@@ -22,6 +63,27 @@
 
   .level-item {
     font-size: 1.25rem;
+  }
+}
+
+@media screen and (min-width: 769px), print {
+  .swap-column {
+    flex: none;
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .swap-column {
+    flex: none;
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .swap-column {
+    flex: none;
+    width: 100%;
   }
 }
 

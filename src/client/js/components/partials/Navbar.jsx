@@ -13,7 +13,7 @@ import TokenSearchBar from './TokenSearchBar';
 export default class Navbar extends Component {
   render() {
     return (
-      <nav className="level my-6">
+      <nav id="nav" className="level" style={{ display: "flex" }}>
         <div className="level-left is-flex-grow-1">
           <div className="level-item">
             <span className="icon is-left">
@@ -21,15 +21,15 @@ export default class Navbar extends Component {
             </span>
           </div>
           <div className="level-item">
-            <div className="is-family-monospace is-size-4 mr-4 has-text-weight-bold">polkaswitch</div>
+            <div className="is-family-monospace is-size-4 mr-4 has-text-weight-bold is-hidden-mobile">polkaswitch</div>
+            <div className="is-family-monospace is-size-5 mr-4 has-text-weight-bold is-hidden-tablet">polkaswitch</div>
           </div>
-          <div className="level-item is-flex-grow-3 is-justify-content-left">
-            <TokenSearchBar width={"75%"} />
+          <div className="level-item is-flex-grow-3 is-justify-content-left is-hidden-touch">
+            { /* <TokenSearchBar width={"75%"} /> */ }
           </div>
         </div>
 
         <div className="level-right">
-          <div className="level-item"><a className="button is-light">Explore</a></div>
           <div className="level-item"><ConnectWalletButton /></div>
         </div>
       </nav>
