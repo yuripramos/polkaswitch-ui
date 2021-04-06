@@ -25,6 +25,7 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-router-dom": "^5.2.0",
+    "react-transition-group": "^4.4.1",
     "underscore": "^1.12.1"
   },
   "devDependencies": {

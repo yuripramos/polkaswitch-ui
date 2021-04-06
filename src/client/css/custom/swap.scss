@@ -87,7 +87,30 @@
   }
 }
 
+.transition-card-slidein-appear {
+  position: relative;
+  margin-left: -100%;
+}
+
+.transition-card-slidein-appear.transition-card-slidein-appear-active {
+  margin-left: 0;
+  transition: margin-left .5s ease-in;
+}
+
 .swap-widget {
+  padding: 5px;
+  min-height: 350px;
+  overflow: hidden;
+  position: relative;
+
+  .widget-title {
+    font-size: 1.10rem;
+  }
+
+  .currency-text {
+    font-family: monospace;
+    color: #999;
+  }
 
   .swap-icon-wrapper {
     position: relative;
@@ -119,6 +142,17 @@
     }
   }
 
+  .icon {
+    cursor: pointer;
+    color: #aaa;
+
+    &:hover {
+      color: #333;
+      border-radius: 40px;
+      background: #eee;
+    }
+  }
+
   .notification {
     padding: 1.25rem 9%;
 
@@ -129,6 +163,14 @@
         margin-right: 0.75em;
       }
     }
+  }
+
+  .level:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  hr {
+    margin: 1rem 0;
   }
 
   .token-dropdown {

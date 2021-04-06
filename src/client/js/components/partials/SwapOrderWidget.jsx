@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import CSSTransitionGroup from 'react-transition-group';
 import _ from "underscore";
 
 import TokenIconImg from './TokenIconImg';
@@ -24,13 +25,18 @@ export default class SwapOrderWidget extends Component {
       from: findTokenById("ETH"),
 
       toSearch: false,
-      fromSearch: false
+      fromSearch: false,
+
+      showSettings: false,
+      showConfirm: false
     };
 
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.onTokenSearchToggle = this.onTokenSearchToggle.bind(this);
     this.handleTokenToChange = this.handleTokenToChange.bind(this);
     this.handleTokenFromChange = this.handleTokenFromChange.bind(this);
+    this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
+    this.handleReview = this.handleReview.bind(this);
   }
 
   onTokenSearchToggle(target) {
@@ -45,6 +51,20 @@ export default class SwapOrderWidget extends Component {
     this.setState({
       to: this.state.from,
       from: this.state.to
+    });
+  }
+
+  handleSettingsToggle(e) {
+    this.setState({
+      showSettings: !this.state.showSettings
+    });
+  }
+
+  handleReview(e) {
+    // TODO validate form swap
+
+    this.setState({
+      showConfirm: !this.state.showConfirm
     });
   }
 
@@ -64,21 +84,33 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  renderToken(target, token) {
+  renderToken(token) {
+    if (!token) {
+      return (<div />);
+    }
+
+    return (
+      <>
+      <div className="level-item">
+        <TokenIconImg
+          size={"35"}
+          token={token} />
+      </div>
+      <div className="level-item">
+        <div className="is-size-3"><b>{token.symbol}</b></div>
+      </div>
+      </>
+    )
+  }
+
+  renderTokenInput(target, token) {
     if (!token) {
       return (<div />);
     }
     return (
       <div className="level">
         <div className="level my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
-          <div className="level-item">
-            <TokenIconImg
-              style={{ height: "35px" }}
-              token={token} />
-          </div>
-          <div className="level-item">
-            <div className="is-size-3"><b>{token.symbol}</b></div>
-          </div>
+          {this.renderToken(token)}
           <div className="level-item">
             <i className="fas fa-angle-down"></i>
           </div>
@@ -94,9 +126,9 @@ export default class SwapOrderWidget extends Component {
     );
   }
 
-  render() {
+  renderOrderView() {
     return (
-      <div className="swap-widget">
+      <>
         <div className="level">
           <div className="level-left is-flex-grow-1">
             <div className="level-item">
@@ -109,7 +141,7 @@ export default class SwapOrderWidget extends Component {
 
           <div className="level-right">
             <div className="level-item">
-              <span className="icon is-medium">
+              <span className="icon is-medium" onClick={this.handleSettingsToggle}>
                 <i className="fas fa-sliders-h"></i>
               </span>
             </div>
@@ -120,7 +152,7 @@ export default class SwapOrderWidget extends Component {
           <div className="text-gray-stylized">
             <span>You Pay</span>
           </div>
-          {this.renderToken("from", this.state.from)}
+          {this.renderTokenInput("from", this.state.from)}
           {this.state.fromSearch && (
             <TokenSearchBar
               handleTokenChange={this.handleTokenFromChange} />
@@ -138,7 +170,7 @@ export default class SwapOrderWidget extends Component {
           <div className="text-gray-stylized">
             <span>You Recieve</span>
           </div>
-          {this.renderToken("to", this.state.to)}
+          {this.renderTokenInput("to", this.state.to)}
           {this.state.toSearch && (
             <TokenSearchBar
               handleTokenChange={this.handleTokenToChange} />
@@ -146,10 +178,151 @@ export default class SwapOrderWidget extends Component {
         </div>
 
         <div>
-          <button className="button is-danger is-fullwidth is-medium">
+          <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
             Review Order
           </button>
         </div>
+      </>
+    );
+  }
+
+  renderConfirmView() {
+    return (
+      <>
+      <div className="level">
+        <div className="level-left">
+          <div className="level-item">
+            <span className="icon is-medium" onClick={this.handleReview}>
+              <i className="fas fa-arrow-left"></i>
+            </span>
+          </div>
+          <div className="level-item">
+            <b className="widget-title">Review Order</b>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="text-gray-stylized">
+        <span>You Pay</span>
+      </div>
+
+      <div className="level">
+        <div className="level-left">
+          {this.renderToken(this.state.from)}
+        </div>
+
+        <div className="level-right">
+          <div className="level-item currency-text is-size-3">
+            1.0
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="text-gray-stylized">
+        <span>You Recieve</span>
+      </div>
+
+      <div className="level">
+        <div className="level-left">
+          {this.renderToken(this.state.to)}
+        </div>
+
+        <div className="level-right">
+          <div className="level-item currency-text is-size-3">
+            0.00000324
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="level">
+        <div className="level-left">
+          <div className="level-item">
+            <b>Gas Price</b>
+          </div>
+        </div>
+
+        <div className="level-right">
+          <div className="level-item currency-text">
+            0.00000324 ETH
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div>
+        <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
+          Confirm
+        </button>
+      </div>
+      </>
+    );
+  }
+
+  renderSettingsView() {
+    return (
+      <>
+        <div className="level">
+          <div className="level-left">
+            <div className="level-item">
+              <span className="icon is-medium" onClick={this.handleSettingsToggle}>
+                <i className="fas fa-arrow-left"></i>
+              </span>
+            </div>
+            <div className="level-item">
+              <b className="widget-title">Advanced Settings</b>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div className="level">
+          <div className="level-left">
+            <div className="level-item">
+              <b>Gas Price</b>
+            </div>
+          </div>
+
+          <div className="level-right">
+            <div className="level-item">
+              <div className="select">
+                <select>
+                  <option>Instant</option>
+                  <option>Cheapest</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  render() {
+    var output;
+
+    if (this.state.showConfirm) {
+      output = this.renderConfirmView();
+    }
+
+    else if (this.state.showSettings) {
+      output = this.renderSettingsView();
+    }
+
+    else {
+      output = this.renderOrderView();
+    }
+
+    return (
+      <div className="swap-widget">
+        {output}
       </div>
     );
   }
