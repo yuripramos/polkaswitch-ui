@@ -13,14 +13,14 @@ import TokenSearchBar from './TokenSearchBar';
 export default class Navbar extends Component {
   render() {
     return (
-      <nav id="nav" className="level" style={{ display: "flex" }}>
+      <nav id="nav" className="level is-mobile" style={{ display: "flex" }}>
         <div className="level-left is-flex-grow-1">
-          <div className="level-item">
+          <div className="level-item is-narrow">
             <span className="icon is-left">
               <i className="fab fa-octopus-deploy is-size-5 has-text-danger"></i>
             </span>
           </div>
-          <div className="level-item">
+          <div className="level-item is-narrow">
             <div className="is-family-monospace is-size-4 mr-4 has-text-weight-bold is-hidden-mobile">polkaswitch</div>
             <div className="is-family-monospace is-size-5 mr-4 has-text-weight-bold is-hidden-tablet">polkaswitch</div>
           </div>
@@ -30,7 +30,7 @@ export default class Navbar extends Component {
         </div>
 
         <div className="level-right">
-          <div className="level-item"><ConnectWalletButton /></div>
+          <div className="level-item is-narrow"><ConnectWalletButton /></div>
         </div>
       </nav>
     );

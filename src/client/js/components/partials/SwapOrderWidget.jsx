@@ -40,10 +40,23 @@ export default class SwapOrderWidget extends Component {
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleReview = this.handleReview.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
+    this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
+  }
+
+  componentDidUnmount() {
+    window.removeEventListener('resize', this.updateBoxHeight);
   }
 
   componentDidMount() {
-    this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+    window.addEventListener('resize', this.updateBoxHeight);
+    this.updateBoxHeight();
+  }
+
+  updateBoxHeight() {
+    this.box.current.style.height = "";
+    _.defer(function() {
+      this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+    }.bind(this))
   }
 
   triggerHeightResize(node, isAppearing) {
@@ -119,8 +132,8 @@ export default class SwapOrderWidget extends Component {
       return (<div />);
     }
     return (
-      <div className="level">
-        <div className="level my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
+      <div className="level is-mobile">
+        <div className="level is-mobile my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
           {this.renderToken(token)}
           <div className="level-item">
             <i className="fas fa-angle-down"></i>
@@ -141,9 +154,9 @@ export default class SwapOrderWidget extends Component {
     return (
       <div className="page">
         <div className="page-inner">
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left is-flex-grow-1">
-              <div className="level-item">
+              <div className="level-item is-narrow">
                 <div className="buttons has-addons">
                   <button className="button is-link is-outlined is-selected px-6">Market</button>
                   <button className="button px-6">Limit</button>
@@ -203,7 +216,7 @@ export default class SwapOrderWidget extends Component {
     return (
       <div className="page page-stack">
         <div className="page-inner">
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
                 <span className="icon is-medium" onClick={this.handleReview}>
@@ -222,7 +235,7 @@ export default class SwapOrderWidget extends Component {
             <span>You Pay</span>
           </div>
 
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left">
               {this.renderToken(this.state.from)}
             </div>
@@ -240,7 +253,7 @@ export default class SwapOrderWidget extends Component {
             <span>You Recieve</span>
           </div>
 
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left">
               {this.renderToken(this.state.to)}
             </div>
@@ -254,7 +267,7 @@ export default class SwapOrderWidget extends Component {
 
           <hr />
 
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
                 <b>Gas Price</b>
@@ -284,7 +297,7 @@ export default class SwapOrderWidget extends Component {
     return (
       <div className="page page-stack">
         <div className="page-inner">
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
                 <span className="icon is-medium" onClick={this.handleSettingsToggle}>
@@ -299,7 +312,7 @@ export default class SwapOrderWidget extends Component {
 
           <hr />
 
-          <div className="level">
+          <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
                 <b>Gas Price</b>
