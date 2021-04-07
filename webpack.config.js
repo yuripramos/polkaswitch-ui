@@ -66,6 +66,9 @@ module.exports = (env) => {
         template: './src/client/index.html',
         hash: true
       })
-    ]
+    ],
+    experiments: {
+      topLevelAwait: true
+    }
   };
 };
