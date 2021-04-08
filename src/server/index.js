@@ -19,6 +19,18 @@ app.use(cookieSession({
 
 app.use(compression())
 app.use(csrf());
+app.enable('trust proxy')
+
+// force HTTPS
+app.use(function(request, response, next) {
+  if (isProduction && !request.secure) {
+    return response.redirect(
+      "https://" + request.headers.host + request.url
+    );
+  }
+
+  next();
+})
 
 app.use(express.static('dist'));
 app.use(express.static('public'));
