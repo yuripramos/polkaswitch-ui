@@ -13,13 +13,17 @@ if (isProduction) {
 }
 
 app.use(cookieSession({
-    name: 'session',
-    keys: ['key1', 'key2']
-}))
+  name: 'session',
+  keys: ['key1', 'key2'],
+  cookie: {
+    secure: true,
+    httpOnly: true
+  }
+}));
 
-app.use(compression())
+app.use(compression());
 app.use(csrf());
-app.enable('trust proxy')
+app.enable('trust proxy');
 
 // force HTTPS
 app.use(function(request, response, next) {
@@ -30,7 +34,7 @@ app.use(function(request, response, next) {
   }
 
   next();
-})
+});
 
 app.use(express.static('dist'));
 app.use(express.static('public'));
