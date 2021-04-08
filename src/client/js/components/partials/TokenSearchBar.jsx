@@ -74,6 +74,7 @@ export default class TokenSearchBar extends Component {
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
+                size={35}
                 token={v} />
             </span>
             <span className="level-item has-text-grey">{v.symbol}</span>
@@ -87,7 +88,7 @@ export default class TokenSearchBar extends Component {
         <div className="text-gray-stylized">
           <span>Popular</span>
         </div>
-        <div className="columns">
+        <div className="columns is-mobile">
           {top3Content}
         </div>
         {this.renderDropList(rest)}
@@ -104,6 +105,7 @@ export default class TokenSearchBar extends Component {
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
+                size={35}
                 token={v} />
             </span>
             <span className="level-item">{v.name}</span>

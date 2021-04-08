@@ -77,10 +77,6 @@ html, body {
     padding-right: 3rem;
     margin-top: 0;
     margin-bottom: 0;
-
-    img {
-      height: 30px;
-    }
   }
 
   .close-icon {
@@ -303,20 +299,30 @@ $swap-widget-anim-timing: 300ms;
 
     .token-top-list {
       > .text-gray-stylized {
-        margin: 0 20px;
+        margin: 0 10px;
       }
 
       > .columns {
-        margin: 0 10px;
+        margin: 0px;
+        margin-right: 20px;
       }
 
       .top-item {
         border-radius: 16px;
-        padding: 2px 20px;
+        padding: 2px 10px;
         margin-bottom: 10px;
 
         &:hover {
           background: #f2f7f9;
+        }
+
+        .level-item {
+          font-size: 1rem;
+        }
+
+        .level-item:not(:last-child) {
+          margin-bottom: 0;
+          margin-right: 0.5rem;
         }
       }
     }
@@ -348,6 +354,10 @@ $swap-widget-anim-timing: 300ms;
         background-color: #ddd;
         z-index: 20;
       }
+
+      .rcs-custom-scroll .rcs-custom-scrollbar {
+        z-index: 20;
+      }
     }
 
     .token-inline-list-bottom {
@@ -360,7 +370,7 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .dropdown-item {
-      padding: 2px 20px;
+      padding: 2px 10px;
       margin: 0;
       margin-bottom: 10px;
       margin-right: 14px;
@@ -377,11 +387,7 @@ $swap-widget-anim-timing: 300ms;
       }
 
       .level-item {
-        font-size: 1.15rem;
-      }
-
-      img {
-        height: 25px;
+        font-size: 1rem;
       }
     }
   }
