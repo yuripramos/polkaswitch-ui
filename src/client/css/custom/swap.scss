@@ -11,6 +11,10 @@
   padding: 0;
 }
 
+html, body {
+  background: #f2f7f9;
+}
+
 @keyframes flickerAnimation {
   0%   { opacity:1; }
   50%  { opacity:0.3; }
@@ -76,6 +80,15 @@
 
     img {
       height: 30px;
+    }
+  }
+
+  .close-icon {
+    pointer-events: initial !important;
+    cursor: pointer;
+
+    &:hover {
+      color: #333;
     }
   }
 
@@ -232,7 +245,7 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
-  .icon {
+  .icon.clickable {
     cursor: pointer;
     color: #aaa;
 
@@ -283,16 +296,93 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
-  .dropdown-item {
-    padding-left: 20px;
-    padding-right: 20px;
-
-    .level-item {
-      font-size: 1.15rem;
+  .token-search-bar {
+    input {
+      border-radius: 16px;
     }
 
-    img {
-      height: 25px;
+    .token-top-list {
+      > .text-gray-stylized {
+        margin: 0 20px;
+      }
+
+      > .columns {
+        margin: 0 10px;
+      }
+
+      .top-item {
+        border-radius: 16px;
+        padding: 2px 20px;
+        margin-bottom: 10px;
+
+        &:hover {
+          background: #f2f7f9;
+        }
+      }
+    }
+
+    .token-empty-list {
+      height: 300px;
+      display: flex;
+      margin: 0 auto;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 4rem;
+      }
+
+      .empty-text {
+        margin-bottom: 17px;
+        font-weight: bold;
+      }
+    }
+
+    .token-inline-list {
+      position: relative;
+      height: 325px;
+      margin-top: 15px;
+
+      .rcs-custom-scroll .rcs-inner-handle {
+        background-color: #ddd;
+        z-index: 20;
+      }
+    }
+
+    .token-inline-list-bottom {
+      position: absolute;
+      height: 30px;
+      bottom: 0;
+      width: 100%;
+      box-shadow: inset 0px -8px 12px 6px #fff;
+      z-index: 15;
+    }
+
+    .dropdown-item {
+      padding: 2px 20px;
+      margin: 0;
+      margin-bottom: 10px;
+      margin-right: 14px;
+      border-radius: 16px;
+      width: auto;
+      z-index: 10;
+
+      &:last-child {
+        z-index: 100;
+      }
+
+      &:hover {
+        background: #f2f7f9;
+      }
+
+      .level-item {
+        font-size: 1.15rem;
+      }
+
+      img {
+        height: 25px;
+      }
     }
   }
 

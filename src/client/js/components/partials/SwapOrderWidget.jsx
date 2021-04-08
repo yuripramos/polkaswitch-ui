@@ -26,17 +26,15 @@ export default class SwapOrderWidget extends Component {
       // ETH
       from: findTokenById("ETH"),
 
-      toSearch: false,
-      fromSearch: false,
-
+      searchTarget: "",
       showSettings: false,
-      showConfirm: false
+      showConfirm: false,
+      showSearch: false
     };
 
     this.onSwapTokens = this.onSwapTokens.bind(this);
-    this.onTokenSearchToggle = this.onTokenSearchToggle.bind(this);
-    this.handleTokenToChange = this.handleTokenToChange.bind(this);
-    this.handleTokenFromChange = this.handleTokenFromChange.bind(this);
+    this.handleTokenChange = this.handleTokenChange.bind(this);
+    this.handleSearchToggle = this.handleSearchToggle.bind(this);
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleReview = this.handleReview.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
@@ -63,19 +61,20 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
-  onTokenSearchToggle(target) {
-    return function(e) {
-      var _s = {};
-      _s[target + "Search"] = !this.state[target + "Search"];
-      this.setState(_s);
-    }.bind(this);
-  }
-
   onSwapTokens(e) {
     this.setState({
       to: this.state.from,
       from: this.state.to
     });
+  }
+
+  handleSearchToggle(target) {
+    return function(e) {
+      this.setState({
+        searchTarget: target,
+        showSearch: !this.state.showSearch
+      });
+    }.bind(this);
   }
 
   handleSettingsToggle(e) {
@@ -92,20 +91,10 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  handleTokenFromChange(token) {
-    this.setState({
-      from: token,
-      toSearch: false,
-      fromSearch: false
-    });
-  }
-
-  handleTokenToChange(token) {
-    this.setState({
-      to: token,
-      toSearch: false,
-      fromSearch: false
-    });
+  handleTokenChange(token) {
+    var _s = { showSearch: false };
+    _s[this.state.searchTarget] = token;
+    this.setState(_s);
   }
 
   renderToken(token) {
@@ -133,7 +122,8 @@ export default class SwapOrderWidget extends Component {
     }
     return (
       <div className="level is-mobile">
-        <div className="level is-mobile my-0 token-dropdown" onClick={this.onTokenSearchToggle(target)}>
+        <div className="level is-mobile my-0 token-dropdown"
+          onClick={this.handleSearchToggle(target)}>
           {this.renderToken(token)}
           <div className="level-item">
             <i className="fas fa-angle-down"></i>
@@ -166,7 +156,7 @@ export default class SwapOrderWidget extends Component {
 
             <div className="level-right">
               <div className="level-item">
-                <span className="icon is-medium" onClick={this.handleSettingsToggle}>
+                <span className="icon clickable is-medium" onClick={this.handleSettingsToggle}>
                   <i className="fas fa-sliders-h"></i>
                 </span>
               </div>
@@ -178,10 +168,6 @@ export default class SwapOrderWidget extends Component {
               <span>You Pay</span>
             </div>
             {this.renderTokenInput("from", this.state.from)}
-            {this.state.fromSearch && (
-              <TokenSearchBar
-                handleTokenChange={this.handleTokenFromChange} />
-            )}
           </div>
 
           <div class="swap-icon-wrapper">
@@ -196,10 +182,6 @@ export default class SwapOrderWidget extends Component {
               <span>You Recieve</span>
             </div>
             {this.renderTokenInput("to", this.state.to)}
-            {this.state.toSearch && (
-              <TokenSearchBar
-                handleTokenChange={this.handleTokenToChange} />
-            )}
           </div>
 
           <div>
@@ -219,7 +201,7 @@ export default class SwapOrderWidget extends Component {
           <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
-                <span className="icon is-medium" onClick={this.handleReview}>
+                <span className="icon clickable is-medium" onClick={this.handleReview}>
                   <i className="fas fa-arrow-left"></i>
                 </span>
               </div>
@@ -300,7 +282,7 @@ export default class SwapOrderWidget extends Component {
           <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
-                <span className="icon is-medium" onClick={this.handleSettingsToggle}>
+                <span className="icon clickable is-medium" onClick={this.handleSettingsToggle}>
                   <i className="fas fa-arrow-left"></i>
                 </span>
               </div>
@@ -335,16 +317,43 @@ export default class SwapOrderWidget extends Component {
     );
   }
 
+  renderTokenSearch() {
+    return (
+      <div className="page page-stack">
+        <div className="page-inner">
+          <TokenSearchBar
+            inline={true}
+            placeholder={"Try DAI, LINK or Ethereum ... "}
+            handleClose={this.handleSearchToggle("to")}
+            handleTokenChange={this.handleTokenChange} />
+        </div>
+      </div>
+    );
+  }
+
   render() {
     var animTiming = 300;
+    var isStack = !(
+      this.state.showSettings ||
+      this.state.showConfirm ||
+      this.state.showSearch
+    );
+
     return (
       <div ref={this.box} className="box swap-widget">
         <CSSTransition
-          in={!this.state.showSettings && !this.state.showConfirm}
+          in={isStack}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="fade">
           {this.renderOrderView()}
+        </CSSTransition>
+        <CSSTransition
+          in={this.state.showSearch}
+          timeout={animTiming}
+          onEntering={this.triggerHeightResize}
+          classNames="slidein">
+          {this.renderTokenSearch()}
         </CSSTransition>
         <CSSTransition
           in={this.state.showSettings}

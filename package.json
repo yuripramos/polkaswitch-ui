@@ -23,6 +23,7 @@
     "helmet": "^4.4.1",
     "moment": "^2.29.1",
     "react": "^16.5.2",
+    "react-custom-scroll": "^4.2.2",
     "react-dom": "^16.5.2",
     "react-router-dom": "^5.2.0",
     "react-transition-group": "^4.4.1",
