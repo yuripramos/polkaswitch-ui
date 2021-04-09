@@ -19,6 +19,9 @@ export default class ConnectWalletButton extends Component {
       return (
         <>
         <i className="fas fa-user-circle"></i>
+        <span className="wallet-address">
+          {Wallet.currentAddress().substring(0, 7)}
+        </span>
         <span className="icon is-small">
           <i className="fas fa-angle-down" aria-hidden="true"></i>
         </span>
@@ -69,7 +72,7 @@ export default class ConnectWalletButton extends Component {
 
   render() {
     return (
-      <div>
+      <div className="wallet-status">
         <div className="dropdown is-right is-hoverable">
           <div className="dropdown-trigger">
             <button className="button is-danger"

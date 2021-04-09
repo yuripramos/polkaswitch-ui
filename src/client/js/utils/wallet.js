@@ -14,7 +14,8 @@ window.WalletJS = {
     window.abiMeth = await abi.json();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const methAddress = "0x62a545BE35AEA3dc50D2d45cfA90657Ef3EBcFE8";
+    const methAddress = "0x798fA7Cf084129616B0108452aF3E1d5d1B32179";
+    // const methAddress = "0x62a545BE35AEA3dc50D2d45cfA90657Ef3EBcFE8";
 
     const incrementer = new window.ethers.Contract(methAddress, abiMeth, signer);
     const contractFn = async () => {
