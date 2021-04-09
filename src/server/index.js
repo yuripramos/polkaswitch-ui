@@ -3,7 +3,8 @@ const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 var csrf = require('csurf');
 const os = require('os');
-var compression = require('compression')
+var compression = require('compression');
+const basicAuth = require('express-basic-auth');
 
 const isProduction = (process.env.NODE_ENV === 'production');
 const app = express();
@@ -35,6 +36,13 @@ app.use(function(request, response, next) {
 
   next();
 });
+
+app.use(basicAuth({
+  users: {
+    'alphabuild': 'access2021'
+  },
+  challenge: true
+}))
 
 app.use(express.static('dist'));
 app.use(express.static('public'));

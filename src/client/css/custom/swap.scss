@@ -42,22 +42,29 @@ html, body {
   animation: flickerAnimation 2s infinite;
 }
 
-@media screen and (max-width: 1023px) {
+.container {
+  margin: 9px;
+}
+
+@media screen and (min-width: 769px) {
   .container {
-    margin-right: 15px;
-    margin-left: 15px;
+    margin: 15px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    margin: 15px auto;
   }
 }
 
 #nav {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin: 25px auto;
 }
 
 @media screen and (min-width: 769px) {
   #nav {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
+    margin: 50px auto;
   }
 }
 

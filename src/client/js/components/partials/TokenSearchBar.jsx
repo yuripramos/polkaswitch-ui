@@ -10,6 +10,9 @@ export default class TokenSearchBar extends Component {
   constructor(props) {
     super(props);
     this.state = { focused: false, value: "" };
+
+    this.input = React.createRef();
+
     this.handleChange = this.handleChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -33,6 +36,16 @@ export default class TokenSearchBar extends Component {
     ], function(v) { return findTokenById(v) });
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.focused !== prevProps.focused && this.props.focused) {
+      // wait for animation to clear;
+      _.delay(function() {
+        this.input.current.focus();
+        this.input.current.dispatchEvent(new Event('fullScreenStart'));
+      }.bind(this), 200);
+    }
+  }
+
   handleChange(event) {
     this.setState({value: event.target.value});
   }
@@ -45,6 +58,7 @@ export default class TokenSearchBar extends Component {
 
   onFocus(e) {
     this.setState({ focused: true })
+
   }
 
   handleDropdownClick(token) {
@@ -187,6 +201,7 @@ export default class TokenSearchBar extends Component {
           <div className="field" style={{ width: "100%" }}>
             <div className="control has-icons-left has-icons-right">
               <input
+                ref={this.input}
                 className="input is-medium"
                 onFocus={this.onFocus} onBlur={this.onBlur}
                 value={this.state.value} onChange={this.handleChange}

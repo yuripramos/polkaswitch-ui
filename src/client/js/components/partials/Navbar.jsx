@@ -11,6 +11,12 @@ import ConnectWalletButton from './ConnectWalletButton';
 import TokenSearchBar from './TokenSearchBar';
 
 export default class Navbar extends Component {
+  componentDidMount() {
+  }
+
+  componentDidUnmount() {
+  }
+
   render() {
     return (
       <nav id="nav" className="level is-mobile" style={{ display: "flex" }}>

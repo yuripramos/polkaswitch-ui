@@ -266,7 +266,8 @@ export default class SwapOrderWidget extends Component {
           <hr />
 
           <div>
-            <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
+            <button className="button is-danger is-fullwidth is-medium"
+              onClick={this.handleReview}>
               Confirm
             </button>
           </div>
@@ -323,6 +324,7 @@ export default class SwapOrderWidget extends Component {
         <div className="page-inner">
           <TokenSearchBar
             inline={true}
+            focused={this.state.showSearch}
             placeholder={"Try DAI, LINK or Ethereum ... "}
             handleClose={this.handleSearchToggle("to")}
             handleTokenChange={this.handleTokenChange} />
