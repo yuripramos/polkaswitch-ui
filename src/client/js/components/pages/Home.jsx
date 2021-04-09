@@ -1,13 +1,6 @@
 
 import React, { Component } from 'react';
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-
 import Navbar from '../partials/Navbar';
 import PairOverviewChart from '../partials/PairOverviewChart';
 import SwapOrderWidget from '../partials/SwapOrderWidget';

@@ -7,7 +7,13 @@ const outputDirectory = 'dist';
 
 module.exports = (env) => {
   console.log(env);
-  const isProduction = env === 'production';
+  const isProduction = env.production;
+
+  if (isProduction) {
+    console.log('Using PRODUCTION config');
+  } else {
+    console.log('Using DEVELOPMENT config');
+  }
 
   return {
     entry: ['babel-polyfill', './src/client/js/index.js'],
@@ -58,7 +64,7 @@ module.exports = (env) => {
         '/api': 'http://localhost:8080'
       }
     },
-    devtool : isProduction ?'source-map' : 'inline-source-map',
+    devtool : isProduction ? 'source-map' : 'inline-source-map',
     plugins: [
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin(),
