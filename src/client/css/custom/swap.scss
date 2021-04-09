@@ -60,11 +60,20 @@ html, body {
 
 #nav {
   margin: 25px auto;
+  transition: margin-top 300ms;
 }
 
 @media screen and (min-width: 769px) {
   #nav {
     margin: 50px auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .fullscreen {
+    #nav {
+      margin-top: -65px;
+    }
   }
 }
 

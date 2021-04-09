@@ -37,12 +37,21 @@ export default class TokenSearchBar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.focused !== prevProps.focused && this.props.focused) {
-      // wait for animation to clear;
-      _.delay(function() {
-        this.input.current.focus();
-        this.input.current.dispatchEvent(new Event('fullScreenStart'));
-      }.bind(this), 200);
+    if (this.props.focused !== prevProps.focused) {
+      if (this.props.focused) {
+        _.defer(function() {
+          window.document.dispatchEvent(new Event('fullScreenOn'));
+
+          // wait for animation to clear;
+          _.delay(function() {
+            this.input.current.focus();
+          }.bind(this), 200);
+        }.bind(this));
+      } else {
+        _.defer(function() {
+          window.document.dispatchEvent(new Event('fullScreenOff'));
+        });
+      }
     }
   }
 
@@ -51,14 +60,11 @@ export default class TokenSearchBar extends Component {
   }
 
   onBlur(e) {
-    _.delay(function() {
-      this.setState({ focused: false })
-    }.bind(this), 200);
+    this.setState({ focused: false });
   }
 
   onFocus(e) {
-    this.setState({ focused: true })
-
+    this.setState({ focused: true });
   }
 
   handleDropdownClick(token) {
