@@ -10,7 +10,13 @@ const isProduction = (process.env.NODE_ENV === 'production');
 const app = express();
 
 if (isProduction) {
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "image-src": ["'self'", "polkaswitch.freshstatus.com"],
+    }
+  }));
 }
 
 app.use(cookieSession({
