@@ -14,7 +14,7 @@ if (isProduction) {
   app.use(helmet.contentSecurityPolicy({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "image-src": ["'self'", "public-api.freshstatus.io"],
+      "img-src": ["'self'", "public-api.freshstatus.io"],
     }
   }));
 }
