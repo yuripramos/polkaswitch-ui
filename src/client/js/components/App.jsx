@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import Home from './pages/Home';
+import Footer from './partials/Footer';
 import classnames from 'classnames';
 
 require('../../css/index.scss');
@@ -51,6 +52,7 @@ export default class App extends Component {
               <Home />
             </Route>
           </Switch>
+          <Footer />
         </div>
       </Router>
     );
