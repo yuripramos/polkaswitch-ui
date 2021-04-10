@@ -64,8 +64,9 @@ html, body {
   }
 }
 
-.alpha-banner {
+.alpha-banner.notification {
   font-size: 11px;
+  margin: 0;
 
   b {
     font-size: 14px;

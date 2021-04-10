@@ -5,9 +5,6 @@ export default class Footer extends Component {
     return (
       <footer className="footer">
         <div class="content has-text-centered">
-          <p>
-            <strong>Polkaswitch Alpha V1.2</strong>
-          </p>
           <script type="module" src="https://cdn.freshstatus.io/widget/index.js"></script>
           <a href="https://polkaswitch.freshstatus.io" id="freshstatus-badge-root"
             data-banner-style="compact">
