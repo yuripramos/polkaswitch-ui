@@ -58,6 +58,24 @@ html, body {
   }
 }
 
+.fullscreen {
+  .alpha-banner {
+    display: none;
+  }
+}
+
+.alpha-banner {
+  font-size: 11px;
+
+  b {
+    font-size: 14px;
+  }
+
+  .container {
+    margin: 0 auto;
+  }
+}
+
 #nav {
   margin: 25px auto;
   transition: margin-top 300ms;

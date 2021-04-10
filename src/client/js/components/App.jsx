@@ -47,6 +47,13 @@ export default class App extends Component {
     return (
       <Router>
         <div className={classnames({ fullscreen: this.state.fullscreen })}>
+          <div className="alpha-banner notification is-warning is-light">
+            <div className="container">
+              <b>Welcome to the Polkaswitch Alpha launch!</b><br/>
+              As we work closely with our technology partners for the Mainnet launch, you will experience intermittent issues until then.
+            </div>
+          </div>
+
           <Switch>
             <Route path="/">
               <Home />
