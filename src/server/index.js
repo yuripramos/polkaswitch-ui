@@ -14,7 +14,7 @@ if (isProduction) {
   app.use(helmet.contentSecurityPolicy({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "image-src": ["'self'", "polkaswitch.freshstatus.com"],
+      "image-src": ["'self'", "public-api.freshstatus.io"],
     }
   }));
 }
@@ -52,7 +52,6 @@ app.use(basicAuth({
 
 app.use(express.static('dist'));
 app.use(express.static('public'));
-app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
 app.use(function (req, res, next) {
   res.status(404).send({ error: "not found" });
