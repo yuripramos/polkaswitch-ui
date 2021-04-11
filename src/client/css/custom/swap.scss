@@ -463,15 +463,10 @@ $swap-widget-anim-timing: 300ms;
   }
 
   .token-dropdown {
-    padding: 1% 4%;
-    margin-right: 3% !important;
+    margin-right: 9% !important;
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
-
-    &:hover {
-      background-color: $info-light;
-    }
   }
 
   .token-search-bar {
