@@ -37,7 +37,7 @@ window.WalletJS = {
   },
 
   _mint: async function(symbol, value) {
-    var abi = await fetch(`/abi/${symbol.toUpperCase()}.abi`);
+    var abi = await fetch(`/abi/test/${symbol.toUpperCase()}.abi`);
     window.abiMeth = await abi.json();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
