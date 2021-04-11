@@ -29,9 +29,24 @@ window.tokens = _.filter(window.tokens, function(v) {
 });
 
 window.tokens.push({
-  "name": "Meth Test Token",
+  "name": "METH Test Token",
   "symbol": "METH",
   "id": "0x798fA7Cf084129616B0108452aF3E1d5d1B32179"
+});
+window.tokens.push({
+  "name": "MUNI Test Token",
+  "symbol": "MUNI",
+  "id": "0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913"
+});
+window.tokens.push({
+  "name": "MSUSHI Test Token",
+  "symbol": "MSUSHI",
+  "id": "0xFb9BCff3C409AF21a9a55E01717491aDEd7223B1"
+});
+window.tokens.push({
+  "name": "MBAL Test Token",
+  "symbol": "MBAL",
+  "id": "0x99f23F9A4b3BBCBA9dDe9fe533C32649A555a939"
 });
 
 await Wallet.initialize();

@@ -5,6 +5,8 @@ import classnames from 'classnames';
 import TokenIconImg from './TokenIconImg';
 import CustomScroll from 'react-custom-scroll';
 
+import Wallet from '../../utils/wallet';
+
 export default class TokenSearchBar extends Component {
   constructor(props) {
     super(props);
@@ -17,12 +19,6 @@ export default class TokenSearchBar extends Component {
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);
 
-    var findTokenById = function(tid) {
-      return _.find(window.tokens, function(v) {
-        return v.id == tid || v.symbol == tid;
-      });
-    };
-
     this.TOP_TOKENS = _.map([
       "ETH",
       "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
@@ -32,7 +28,7 @@ export default class TokenSearchBar extends Component {
       "0xba100000625a3754423978a60c9317c58a424e3D", // Balancor
       "0xE41d2489571d322189246DaFA5ebDe1F4699F498", // 0x
       "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07" // OMG
-    ], function(v) { return findTokenById(v) });
+    ], function(v) { return Wallet.findTokenById(v) });
   }
 
   componentDidUpdate(prevProps) {

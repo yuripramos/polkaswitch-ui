@@ -27,22 +27,26 @@ window.WalletJS = {
       window.erc20Abi,
       this.getProvider()
     );
-    const balance = await contract.balanceOf(this.currentAddress());
-    return window.ethers.utils.formatEther(balance);
+    return await contract.balanceOf(this.currentAddress());
   },
 
-  _mint: async function(value) {
-    var abi = await fetch('/abi/METH.abi');
+  findTokenById: function(tid) {
+    return _.find(window.tokens, function(v) {
+      return v.id == tid || v.symbol == tid;
+    });
+  },
+
+  _mint: async function(symbol, value) {
+    var abi = await fetch(`/abi/${symbol.toUpperCase()}.abi`);
     window.abiMeth = await abi.json();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const methAddress = "0x798fA7Cf084129616B0108452aF3E1d5d1B32179";
-    // const methAddress = "0x62a545BE35AEA3dc50D2d45cfA90657Ef3EBcFE8";
+    const token = this.findTokenById(symbol);
 
-    const incrementer = new window.ethers.Contract(methAddress, abiMeth, signer);
+    const incrementer = new window.ethers.Contract(token.id, abiMeth, signer);
     const contractFn = async () => {
       console.log(
-        `Calling the mint function in contract at address: ${methAddress}`
+        `Calling the mint function for: ${token.symbol} ${token.id}`
       );
 
       // Sign-Send Tx and Wait for Receipt

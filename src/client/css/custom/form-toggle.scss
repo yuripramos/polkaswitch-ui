@@ -8,13 +8,16 @@ $switcher-width: 200px;
 $switcher-toggle-padding: 5px;
 $switcher-off-color: #a2bcce;
 $switcher-on-color: #666;
+$switcher-radius: 17px;
 
 .switcher {
   position: relative;
   width: $switcher-width;
   height: $switcher-height;
-  border-radius:25px;
+  border-radius: $switcher-radius;
   cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 
   input {
     appearance: none;
@@ -24,10 +27,16 @@ $switcher-on-color: #666;
 
     width: $switcher-width;
     height: $switcher-height;
-    border-radius:25px;
+    border-radius: $switcher-radius;
 
     background-color: $switcher-background;
     outline:none;
+    user-select: none;
+
+    &:focus {
+      appearance: none;
+      outline: none
+    }
 
     &:before, &:after {
       z-index:2;
@@ -49,12 +58,13 @@ $switcher-on-color: #666;
     }
   }
   label {
+    user-select: none;
     z-index:1;
     position: absolute;
     top: $switcher-toggle-padding;
     bottom: $switcher-toggle-padding;
     background:$white;
-    border-radius:20px;
+    border-radius: $switcher-radius - $switcher-toggle-padding;
   }
 
   input {
