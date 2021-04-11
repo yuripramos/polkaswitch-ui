@@ -5,12 +5,6 @@ import Wallet from './utils/wallet';
 import _ from 'underscore';
 import { ethers } from 'ethers';
 
-if (Wallet.isSupported()) {
-  console.log('MetaMask is installed!');
-} else {
-  console.error('Metamask not installed!');
-}
-
 window.ethers = ethers;
 window._ = _;
 
@@ -33,5 +27,13 @@ window.tokens = _.filter(window.tokens, function(v) {
     v.name && v.symbol && v.id && _.include(window.topt, v.id)
   );
 });
+
+await Wallet.initialize();
+
+if (Wallet.isSupported()) {
+  console.log('MetaMask is installed!');
+} else {
+  console.error('Metamask not installed!');
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));

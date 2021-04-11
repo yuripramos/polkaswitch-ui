@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 
-export default class TokenIconImg extends Component {
+export default class TokenConversionRate extends Component {
   constructor(props) {
     super(props);
     this.state = { errored: false };

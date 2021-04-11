@@ -1,12 +1,32 @@
 
 window.WalletJS = {
-  initialize: function() {
+  initialize: async function() {
     window.ethereum.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
+      console.log(accounts);
     });
 
     window.ethereum.on('disconnect', function(providerRpcError) {
+      console.log(providerRpcError);
     });
+
+    window.erc20Abi = await fetch('/abi/erc20_standard.abi');
+  },
+
+  getProvider: function() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    return provider;
+  },
+
+  getERC20Balance: async function(tokenContractAddress) {
+    const contract = new window.ethers.Contract(
+      tokenContractAddress,
+      window.erc20Abi,
+      this.getProvider()
+    );
+    const balance = await contract.balanceOf(this.currentAddress());
+    return window.ethers.utils.formatEther(balance);
   },
 
   _mint: async function(value) {

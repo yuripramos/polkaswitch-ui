@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 
+import TokenSymbolBalance from './TokenSymbolBalance';
+import TokenConversionRate from './TokenConversionRate';
 import TokenIconImg from './TokenIconImg';
 import TokenSearchBar from './TokenSearchBar';
 
@@ -109,7 +111,10 @@ export default class SwapOrderWidget extends Component {
           token={token} />
       </div>
       <div className="level-item">
-        <div className="is-size-3"><b>{token.symbol}</b></div>
+        <div className="token-symbol-wrapper">
+          <div className="symbol">{token.symbol}</div>
+          <div className="balance">Bal: 0</div>
+        </div>
       </div>
       </>
     )
@@ -121,7 +126,7 @@ export default class SwapOrderWidget extends Component {
     }
     return (
       <div className="level is-mobile">
-        <div className="level is-mobile my-0 token-dropdown"
+        <div className="level is-mobile is-narrow my-0 token-dropdown"
           onClick={this.handleSearchToggle(target)}>
           {this.renderToken(token)}
           <div className="level-item">
