@@ -72,6 +72,12 @@ window.WalletJS = {
     // await approveFn();
   },
 
+  _getExpectedReturn: function() {
+  },
+
+  _swap: function() {
+  },
+
   isSupported: function() {
     return (typeof window.ethereum !== 'undefined');
   },

@@ -15,7 +15,7 @@ if (isProduction) {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       "img-src": ["'self'", "public-api.freshstatus.io"],
-      "script-src": ["'self'", "blob:"]
+      "script-src": ["'self'", "blob:", "cdn.polyfill.io"]
     }
   }));
 }
