@@ -16,13 +16,12 @@ export default class Navbar extends Component {
       <nav id="nav" className="level is-mobile" style={{ display: "flex" }}>
         <div className="level-left is-flex-grow-1">
           <div className="level-item is-narrow">
-            <span className="icon is-left">
-              <i className="fab fa-octopus-deploy is-size-5 has-text-danger"></i>
+            <span className="logo-icon icon is-left">
+              <i className="fab fa-octopus-deploy"></i>
             </span>
           </div>
-          <div className="level-item is-narrow">
-            <div className="is-family-monospace is-size-4 mr-4 has-text-weight-bold is-hidden-mobile">polkaswitch</div>
-            <div className="is-family-monospace is-size-5 mr-4 has-text-weight-bold is-hidden-tablet">polkaswitch</div>
+          <div className="logo-title level-item is-narrow">
+            polkaswitch
           </div>
           <div className="level-item is-flex-grow-3 is-justify-content-left is-hidden-touch">
             { /* <TokenSearchBar width={"75%"} /> */ }

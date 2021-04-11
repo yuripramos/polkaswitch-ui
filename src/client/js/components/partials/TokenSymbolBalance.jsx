@@ -5,8 +5,7 @@ import classnames from 'classnames';
 export default class TokenSymbolBalance extends Component {
   constructor(props) {
     super(props);
-    this.state = { errored: false };
-    this.onError = this.onError.bind(this);
+    this.state = { balance: 0 };
   }
 
   onError(e) {
@@ -15,19 +14,10 @@ export default class TokenSymbolBalance extends Component {
 
   render() {
     return (
-      <span
-        className={classnames("token-icon-img-wrapper", { "errored": this.state.errored })}
-        style={{ height: `${this.props.size || 40}px`, width: `${this.props.size || 40}px` }}>
-        <img
-          { ... this.props }
-          onError={this.onError}
-          style={{
-            height: `${this.props.size || 40}px`,
-            width: `${this.props.size || 40}px`
-          }}
-          src={`/tokens/erc20/${this.props.token.id || this.props.token.symbol}/logo.png`} />
-        <i className="fas fa-exclamation"></i>
-      </span>
+      <div className="token-symbol-wrapper">
+        <div className="symbol">{this.props.token.symbol}</div>
+        <div className="balance">Bal: {this.state.balance}</div>
+      </div>
     );
   }
 }

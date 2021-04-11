@@ -18,12 +18,14 @@ export default class ConnectWalletButton extends Component {
     if (Wallet.isConnected()) {
       return (
         <>
-        <i className="fas fa-user-circle"></i>
+        <span className="icon icon-person">
+          <ion-icon name="person-circle"></ion-icon>
+        </span>
         <span className="wallet-address">
           {Wallet.currentAddress().substring(0, 7)}
         </span>
-        <span className="icon is-small">
-          <i className="fas fa-angle-down" aria-hidden="true"></i>
+        <span className="icon icon-arrow-down">
+          <ion-icon name="chevron-down"></ion-icon>
         </span>
         </>
       );

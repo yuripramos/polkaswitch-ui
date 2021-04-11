@@ -7,6 +7,9 @@ $radius-small: 6px;
 $radius: 8px;
 $radius-large: 10px;
 
+$light-blue: #f2f7f9;
+
 @import "~bulma/bulma";
+@import 'custom/form-toggle';
 @import 'custom/scroll';
 @import 'custom/swap';

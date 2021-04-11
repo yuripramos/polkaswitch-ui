@@ -6,6 +6,7 @@ import TokenSymbolBalance from './TokenSymbolBalance';
 import TokenConversionRate from './TokenConversionRate';
 import TokenIconImg from './TokenIconImg';
 import TokenSearchBar from './TokenSearchBar';
+import MarketLimitToggle from './MarketLimitToggle';
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {
@@ -111,10 +112,7 @@ export default class SwapOrderWidget extends Component {
           token={token} />
       </div>
       <div className="level-item">
-        <div className="token-symbol-wrapper">
-          <div className="symbol">{token.symbol}</div>
-          <div className="balance">Bal: 0</div>
-        </div>
+        <TokenSymbolBalance token={token} />
       </div>
       </>
     )
@@ -130,13 +128,15 @@ export default class SwapOrderWidget extends Component {
           onClick={this.handleSearchToggle(target)}>
           {this.renderToken(token)}
           <div className="level-item">
-            <i className="fas fa-angle-down"></i>
+            <span className="icon-down">
+              <ion-icon name="chevron-down"></ion-icon>
+            </span>
           </div>
         </div>
         <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
           <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
             <div className="control" style={{ width: "100%" }}>
-              <input className="input is-medium" placeholder="0.0" />
+              <input type="number" className="input is-medium" placeholder="0.0" />
             </div>
           </div>
         </div>
@@ -150,18 +150,13 @@ export default class SwapOrderWidget extends Component {
         <div className="page-inner">
           <div className="level is-mobile">
             <div className="level-left is-flex-grow-1">
-              <div className="level-item is-narrow">
-                <div className="buttons has-addons">
-                  <button className="button is-link is-outlined is-selected px-6">Market</button>
-                  <button className="button px-6">Limit</button>
-                </div>
-              </div>
+              <MarketLimitToggle />
             </div>
 
             <div className="level-right">
               <div className="level-item">
-                <span className="icon clickable is-medium" onClick={this.handleSettingsToggle}>
-                  <i className="fas fa-sliders-h"></i>
+                <span className="icon clickable settings-icon" onClick={this.handleSettingsToggle}>
+                  <ion-icon name="settings-outline"></ion-icon>
                 </span>
               </div>
             </div>

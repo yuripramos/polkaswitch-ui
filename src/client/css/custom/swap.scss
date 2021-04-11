@@ -12,7 +12,7 @@
 }
 
 html, body {
-  background: #f2f7f9;
+  background: $light-blue;
 }
 
 @keyframes flickerAnimation {
@@ -80,11 +80,27 @@ html, body {
 #nav {
   margin: 25px auto;
   transition: margin-top 300ms;
+
+  .logo-icon {
+    color: $danger;
+    font-size: 24px;
+  }
+
+  .logo-title {
+    margin-right: 1rem;
+    font-weight: 400;
+    font-size: 21px;
+    color: #73929f;
+  }
 }
 
 @media screen and (min-width: 769px) {
   #nav {
     margin: 50px auto;
+
+    .logo-title {
+      font-size: 24px;
+    }
   }
 }
 
@@ -158,11 +174,28 @@ html, body {
     padding: 2px 8px;
     color: $danger;
     font-size: 11px;
-    margin-left: 5px;
   }
 
   .button .icon:last-child:not(:first-child) {
     margin-left: 0;
+  }
+
+  .button {
+  }
+
+  .icon {
+    padding: 0;
+    font-size: 21px;
+    height: 30px;
+  }
+
+  .icon-arrow-down {
+    font-size: 16px;
+  }
+
+  .icon-person {
+    margin-right: 0 !important;
+    font-size: 24px;
   }
 }
 
@@ -197,6 +230,7 @@ html, body {
 .swap-column {
   flex: none;
   width: 33%;
+  max-width: 400px;
 }
 
 @media screen and (max-width: 1214px), print {
@@ -217,7 +251,6 @@ html, body {
   .swap-column {
     flex: none;
     width: 100%;
-    max-width: 400px;
   }
 }
 
@@ -228,6 +261,7 @@ $swap-widget-anim-timing: 300ms;
   overflow: hidden;
   position: relative;
   max-height: 800px;
+  border-radius: 20px;
   transition: height $swap-widget-anim-timing;
 
   .page {
@@ -348,6 +382,18 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .settings-icon {
+    font-size: 24px;
+    height: 34px;
+    width: 34px;
+    line-height: 34px;
+    text-align: center;
+  }
+
+  .icon-down {
+    width: auto;
+  }
+
   .icon.clickable {
     cursor: pointer;
     color: #aaa;
@@ -357,6 +403,16 @@ $swap-widget-anim-timing: 300ms;
       border-radius: 40px;
       background: #eee;
     }
+  }
+
+  .input {
+    box-shadow: none;
+    border-color: #eee;
+    font-family: monospace;
+    font-size: 26px;
+    line-height: 1rem;
+    height: 50px;
+    color: $link;
   }
 
   .notification {
@@ -374,7 +430,7 @@ $swap-widget-anim-timing: 300ms;
     }
 
     &.is-info {
-      background-color: #f2f7f9 !important;
+      background-color: $light-blue !important;
     }
   }
 
@@ -426,7 +482,7 @@ $swap-widget-anim-timing: 300ms;
         margin-bottom: 10px;
 
         &:hover {
-          background: #f2f7f9;
+          background: $light-blue;
         }
 
         .level-item {
@@ -496,7 +552,7 @@ $swap-widget-anim-timing: 300ms;
       }
 
       &:hover {
-        background: #f2f7f9;
+        background: $light-blue;
       }
 
       .level-item {
