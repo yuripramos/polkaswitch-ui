@@ -1,14 +1,16 @@
 
 window.WalletJS = {
   initialize: async function() {
-    window.ethereum.on('accountsChanged', function (accounts) {
-      // Time to reload your interface with accounts[0]!
-      console.log(accounts);
-    });
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', function (accounts) {
+        // Time to reload your interface with accounts[0]!
+        console.log(accounts);
+      });
 
-    window.ethereum.on('disconnect', function(providerRpcError) {
-      console.log(providerRpcError);
-    });
+      window.ethereum.on('disconnect', function(providerRpcError) {
+        console.log(providerRpcError);
+      });
+    }
 
     window.erc20Abi = await fetch('/abi/erc20_standard.abi');
   },
