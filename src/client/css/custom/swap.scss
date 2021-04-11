@@ -420,9 +420,13 @@ $swap-widget-anim-timing: 300ms;
   }
 
   .notification {
-    padding: 1.25rem 5%;
+    padding: 15px;
 
     .text-gray-stylized {
+    }
+
+    .token-symbol-wrapper {
+      width: 80px;
     }
 
     .level-item {
@@ -454,7 +458,7 @@ $swap-widget-anim-timing: 300ms;
   }
 
   .token-dropdown {
-    margin-right: 9% !important;
+    margin-right: 15px !important;
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;

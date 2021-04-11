@@ -7,10 +7,15 @@ export default class TokenIconImg extends Component {
     super(props);
     this.state = { errored: false };
     this.onError = this.onError.bind(this);
+    this.onLoad = this.onLoad.bind(this);
   }
 
   onError(e) {
     this.setState({ errored: true });
+  }
+
+  onLoad(e) {
+    this.setState({ errored: false });
   }
 
   render() {
@@ -20,6 +25,7 @@ export default class TokenIconImg extends Component {
         style={{ height: `${this.props.size || 40}px`, width: `${this.props.size || 40}px` }}>
         <img
           { ... this.props }
+          onLoad={this.onLoad}
           onError={this.onError}
           style={{
             height: `${this.props.size || 40}px`,
