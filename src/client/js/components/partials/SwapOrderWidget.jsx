@@ -24,7 +24,9 @@ export default class SwapOrderWidget extends Component {
       // RSR
       // to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
       // DAI
-      to: findTokenById("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
+      // to: findTokenById("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
+      // METH
+      to: findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
       // ETH
       from: findTokenById("ETH"),
 

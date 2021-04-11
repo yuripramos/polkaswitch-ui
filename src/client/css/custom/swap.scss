@@ -153,13 +153,14 @@ html, body {
 
 .token-symbol-wrapper {
   .symbol {
-    line-height: 1.2rem;
-    font-size: 1.2rem;
+    line-height: 10px;
+    font-size: 20px;
     font-weight: bold;
+    margin-top: 8px;
   }
 
   .balance {
-    line-height: 1rem;
+    line-height: 10px;
     font-size: 12px;
     opacity: 0.7;
   }
@@ -413,6 +414,18 @@ $swap-widget-anim-timing: 300ms;
     line-height: 1rem;
     height: 50px;
     color: $link;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
   }
 
   .notification {

@@ -12,7 +12,7 @@ window.WalletJS = {
       });
     }
 
-    window.erc20Abi = await fetch('/abi/erc20_standard.abi');
+    window.erc20Abi = await (await fetch('/abi/erc20_standard.abi')).json();
   },
 
   getProvider: function() {

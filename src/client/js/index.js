@@ -28,6 +28,12 @@ window.tokens = _.filter(window.tokens, function(v) {
   );
 });
 
+window.tokens.push({
+  "name": "Meth Test Token",
+  "symbol": "METH",
+  "id": "0x798fA7Cf084129616B0108452aF3E1d5d1B32179"
+});
+
 await Wallet.initialize();
 
 if (Wallet.isSupported()) {
