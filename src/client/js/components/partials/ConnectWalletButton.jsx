@@ -77,7 +77,7 @@ export default class ConnectWalletButton extends Component {
       <div className="wallet-status">
         <div className="dropdown is-right is-hoverable">
           <div className="dropdown-trigger">
-            <button className="button is-danger"
+            <button className="button is-primary"
               onClick={this.handleConnection.bind(this)}
               aria-haspopup="true" aria-controls="dropdown-menu6">
               {this.renderButtonContent()}

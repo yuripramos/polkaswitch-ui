@@ -73,15 +73,12 @@ html, body {
   transition: margin-top 300ms;
 
   .logo-icon {
-    color: $danger;
-    font-size: 24px;
-  }
+    width: auto;
+    height: auto;
 
-  .logo-title {
-    margin-right: 1rem;
-    font-weight: 400;
-    font-size: 21px;
-    color: #73929f;
+    img {
+      height: 37px;
+    }
   }
 }
 
@@ -366,7 +363,7 @@ $swap-widget-anim-timing: 300ms;
     cursor: pointer;
 
     i {
-      color: $danger;
+      color: $primary;
     }
 
     &:hover {

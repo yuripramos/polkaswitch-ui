@@ -183,7 +183,7 @@ export default class SwapOrderWidget extends Component {
           </div>
 
           <div>
-            <button className="button is-danger is-fullwidth is-medium" onClick={this.handleReview}>
+            <button className="button is-primary is-fullwidth is-medium" onClick={this.handleReview}>
               Review Order
             </button>
           </div>
@@ -264,7 +264,7 @@ export default class SwapOrderWidget extends Component {
           <hr />
 
           <div>
-            <button className="button is-danger is-fullwidth is-medium"
+            <button className="button is-primary is-fullwidth is-medium"
               onClick={this.handleReview}>
               Confirm
             </button>

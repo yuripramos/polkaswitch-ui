@@ -17,11 +17,8 @@ export default class Navbar extends Component {
         <div className="level-left is-flex-grow-1">
           <div className="level-item is-narrow">
             <span className="logo-icon icon is-left">
-              <i className="fab fa-octopus-deploy"></i>
+              <img src="/images/logo.svg" />
             </span>
-          </div>
-          <div className="logo-title level-item is-narrow">
-            polkaswitch
           </div>
           <div className="level-item is-flex-grow-3 is-justify-content-left is-hidden-touch">
             { /* <TokenSearchBar width={"75%"} /> */ }
