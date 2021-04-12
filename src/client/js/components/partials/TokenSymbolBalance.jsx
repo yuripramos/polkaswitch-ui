@@ -7,15 +7,42 @@ import numeral from 'numeral';
 export default class TokenSymbolBalance extends Component {
   constructor(props) {
     super(props);
-    this.state = { balance: window.ethers.BigNumber.from(0) };
+    this.state = {
+      balance: window.ethers.BigNumber.from(0),
+      errored: false
+    };
+
+    this.fetchBalance = this.fetchBalance.bind(this);
   }
 
   componentDidMount() {
+    this.fetchBalance();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.token.symbol !== prevProps.token.symbol) {
+      this.fetchBalance();
+    }
+  }
+
+  fetchBalance() {
     if (Wallet.isConnected() && this.props.token.id) {
-      Wallet.getERC20Balance(this.props.token.id).then(function(bal) {
-        // balance is in WEI and is a BigNumber
-        this.setState({ balance: bal });
-      }.bind(this));
+      Wallet.getERC20Balance(this.props.token.id)
+        .then(function(bal) {
+          _.defer(function() {
+            // balance is in WEI and is a BigNumber
+            this.setState({
+              balance: bal,
+              errored: false
+            });
+          }.bind(this))
+        }.bind(this))
+        .catch(function(e) {
+          console.error(e);
+          _.defer(function() {
+            this.setState({ errored: true });
+          }.bind(this))
+        }.bind(this));
     }
   }
 
@@ -23,7 +50,9 @@ export default class TokenSymbolBalance extends Component {
     var balOutput;
     const Utils = window.ethers.utils;
 
-    if (this.state.balance.isZero()) {
+    if (this.state.errored) {
+      balOutput = "N/A";
+    } else if (this.state.balance.isZero()) {
       balOutput = "0.0";
     } else if (this.state.balance.lt(Utils.parseEther("0.0001"))) {
       balOutput = "< 0.0001";
