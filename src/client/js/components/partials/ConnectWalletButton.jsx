@@ -48,9 +48,6 @@ export default class ConnectWalletButton extends Component {
               {Wallet.currentAddress()}
             </span>
           </div>
-          <div className="dropdown-item">
-            Balance: $0.00
-          </div>
         </div>
       );
     } else if (Wallet.isSupported()) {

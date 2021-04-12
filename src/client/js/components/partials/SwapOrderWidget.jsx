@@ -169,7 +169,11 @@ export default class SwapOrderWidget extends Component {
           </div>
 
           <div class="swap-icon-wrapper">
-            <div class="swap-icon" onClick={this.onSwapTokens}>
+            <div class="swap-icon-v2 icon" onClick={this.onSwapTokens}>
+              <ion-icon name="swap-vertical-outline"></ion-icon>
+            </div>
+
+            <div class="swap-icon is-hidden" onClick={this.onSwapTokens}>
               <i class="fas fa-long-arrow-alt-up"></i>
               <i class="fas fa-long-arrow-alt-down"></i>
             </div>

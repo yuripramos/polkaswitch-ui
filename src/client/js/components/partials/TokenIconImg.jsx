@@ -32,7 +32,9 @@ export default class TokenIconImg extends Component {
             width: `${this.props.size || 40}px`
           }}
           src={`/tokens/erc20/${this.props.token.id || this.props.token.symbol}/logo.png`} />
-        <i className="fas fa-exclamation"></i>
+        <span className="icon">
+          <ion-icon name="cube-outline"></ion-icon>
+        </span>
       </span>
     );
   }

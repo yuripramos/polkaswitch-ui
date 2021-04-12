@@ -124,18 +124,20 @@ html, body {
     position: absolute;
   }
 
-  i {
+  .icon {
     display: none;
     color: $link;
     position: absolute;
-    font-size: 16px;
+    font-size: 23px;
     opacity: 0.4;
+    width: 100%;
+    height: 100%;
   }
 
   &.errored {
     background: $info-light;
     img { display: none }
-    i { display: block }
+    .icon { display: flex }
   }
 }
 
@@ -371,6 +373,22 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .swap-icon-v2 {
+    color: $primary;
+    text-align: center;
+    font-size: 20px;
+    position: absolute;
+    left: 50%;
+    width: $swap-icon-width;
+    height: $swap-icon-width;
+    margin-left: - ($swap-icon-width / 2);
+    margin-top: - ($swap-icon-width / 2);
+    background: white;
+    border-radius: 40px;
+    border: 4px solid $light-blue;
+    z-index: 10;
+  }
+
   .settings-icon {
     font-size: 24px;
     height: 34px;
@@ -398,7 +416,7 @@ $swap-widget-anim-timing: 300ms;
     box-shadow: none;
     border-color: #eee;
     font-family: monospace;
-    font-size: 26px;
+    font-size: 18px;
     line-height: 1rem;
     height: 50px;
     color: $link;
