@@ -425,7 +425,7 @@ $swap-widget-anim-timing: 300ms;
     &:hover, &:focus {
       transform: scale(1.05);
       box-shadow: 0 0px 10px 0 #efefef;
-      border: 1px solid #3273dc;
+      border: 1px solid $link;
     }
   }
 
