@@ -70,7 +70,9 @@ export default class SwapOrderWidget extends Component {
   }
 
   fetchSwapEstimate() {
-    if (!this.state.fromAmount) {
+    if (!this.state.fromAmount ||
+      this.state.fromAmount.length == 0 ||
+      !Wallet.isConnected()) {
       return;
     }
 
