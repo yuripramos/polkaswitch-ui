@@ -145,7 +145,7 @@ export default class SwapOrderWidget extends Component {
 
   renderOrderView() {
     return (
-      <div className="page">
+      <div className="page page-view-order">
         <div className="page-inner">
           <div className="level is-mobile">
             <div className="level-left is-flex-grow-1">
@@ -322,7 +322,7 @@ export default class SwapOrderWidget extends Component {
 
   renderTokenSearch() {
     return (
-      <div className="page page-stack">
+      <div className="page page-stack page-view-search">
         <div className="page-inner">
           <TokenSearchBar
             inline={true}
