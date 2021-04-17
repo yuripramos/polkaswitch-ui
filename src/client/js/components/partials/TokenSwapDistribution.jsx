@@ -23,6 +23,8 @@ export default class TokenSwapDistribution extends Component {
   }
 
   render() {
+    var parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
+
     /*
       This returns the destToken output amount and the optimized
       list of distributions accross different liquidity pools.
@@ -34,9 +36,9 @@ export default class TokenSwapDistribution extends Component {
       will route to Uniswap and 2/3 will route to Balancer.
     */
 
-    var sumUni = this.props.parts[0] + this.props.parts[1];
-    var sumSushi = this.props.parts[2] + this.props.parts[3];
-    var sumBal = this.props.parts[4] + this.props.parts[5] + this.props.parts[6];
+    var sumUni = parts[0] + parts[1];
+    var sumSushi = parts[2] + parts[3];
+    var sumBal = parts[4] + parts[5] + parts[6];
 
     var pools = [{
       name: "Uniswap",

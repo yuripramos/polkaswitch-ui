@@ -270,6 +270,16 @@ html, body {
   }
 }
 
+.token-dist-expand-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms;
+
+  &.expand {
+    max-height: 83px;
+  }
+}
+
 .token-dist-wrapper {
   display: flex;
   margin-bottom: 1.5rem;

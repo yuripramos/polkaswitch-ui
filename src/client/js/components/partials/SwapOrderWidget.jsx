@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
+import classnames from 'classnames';
 
 import TokenSymbolBalance from './TokenSymbolBalance';
 import TokenConversionRate from './TokenConversionRate';
@@ -16,6 +17,7 @@ export default class SwapOrderWidget extends Component {
     super(props);
 
     this.box = React.createRef();
+    this.orderPage = React.createRef();
 
     this.state = {
       // RSR
@@ -29,7 +31,8 @@ export default class SwapOrderWidget extends Component {
       // METH
       from: Wallet.findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
 
-      fromAmount: 0,
+      fromAmount: undefined,
+      toAmount: undefined,
 
       searchTarget: "",
       showSettings: false,
@@ -66,6 +69,33 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
+  fetchSwapEstimate() {
+    if (!this.state.fromAmount) {
+      return;
+    }
+
+    var fromAmount = window.ethers.utils.parseUnits(this.state.fromAmount);
+
+    Wallet.getExpectedReturn(
+      this.state.from,
+      this.state.to,
+      fromAmount
+    ).then(function(result) {
+      var dist = _.map(result.distribution, function(e) {
+        return e.toNumber();
+      });
+
+      console.log(dist);
+
+      this.box.current.style.height = "";
+
+      this.setState({
+        toAmount: window.ethers.utils.formatEther(result.returnAmount),
+        swapDistribution: dist
+      });
+    }.bind(this));
+  }
+
   onSwapTokens(e) {
     this.setState({
       to: this.state.from,
@@ -91,14 +121,6 @@ export default class SwapOrderWidget extends Component {
   handleReview(e) {
     // TODO validate form swap
 
-    return Wallet.getExpectedReturn(
-      this.state.from,
-      this.state.to,
-      this.state.fromAmount
-    ).then(function(result) {
-      return console.log(result);
-    });
-
     this.setState({
       showConfirm: !this.state.showConfirm
     });
@@ -112,9 +134,15 @@ export default class SwapOrderWidget extends Component {
 
   handleTokenAmountChange(target) {
     return function(e) {
+      var targetAmount = e.target.value;
       var _s = {};
-      _s[`${target}Amount`] = e.target.value;
-      this.setState(_s);
+      _s[`${target}Amount`] = targetAmount;
+
+      this.setState(_s, function() {
+        if (target == 'from') {
+          this.fetchSwapEstimate();
+        }
+      }.bind(this));
     }.bind(this);
   }
 
@@ -157,7 +185,9 @@ export default class SwapOrderWidget extends Component {
             <div className="control" style={{ width: "100%" }}>
               <input
                 onChange={this.handleTokenAmountChange(target)}
+                value={this.state[`${target}Amount`]}
                 type="number"
+                min="0"
                 className="input is-medium"
                 placeholder="0.0" />
             </div>
@@ -169,7 +199,7 @@ export default class SwapOrderWidget extends Component {
 
   renderOrderView() {
     return (
-      <div className="page page-view-order">
+      <div className="page page-view-order" ref={this.orderPage}>
         <div className="page-inner">
           <div className="level is-mobile">
             <div className="level-left is-flex-grow-1">
@@ -211,7 +241,9 @@ export default class SwapOrderWidget extends Component {
           </div>
 
           <div
-            className="hint--top"
+            className={classnames("hint--top", "token-dist-expand-wrapper", {
+              "expand": this.state.swapDistribution
+            })}
             aria-label="Routing distribution for the swap"
           >
             <div className="token-dist-hint-text">
@@ -220,7 +252,7 @@ export default class SwapOrderWidget extends Component {
             </div>
             <TokenSwapDistribution
               totalParts={3}
-              parts={[1, 0, 0, 0, 0, 1, 1]}/>
+              parts={this.state.swapDistribution}/>
           </div>
 
           <div>
