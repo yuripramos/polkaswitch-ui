@@ -210,7 +210,14 @@ export default class SwapOrderWidget extends Component {
             {this.renderTokenInput("to", this.state.to)}
           </div>
 
-          <div>
+          <div
+            className="hint--top"
+            aria-label="Routing distribution for the swap"
+          >
+            <div className="token-dist-hint-text">
+              <span>Routing Distribution</span>
+              <span className="hint-icon">?</span>
+            </div>
             <TokenSwapDistribution
               totalParts={3}
               parts={[1, 0, 0, 0, 0, 1, 1]}/>

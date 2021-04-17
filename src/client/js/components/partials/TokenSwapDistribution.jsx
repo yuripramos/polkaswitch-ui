@@ -53,7 +53,10 @@ export default class TokenSwapDistribution extends Component {
     }];
 
     return (
-      <div className="token-dist-wrapper">
+      <div
+        className="token-dist-wrapper"
+        aria-label="Routing distribution for the swap"
+      >
         {_.map(pools, function(v) {
           return this.renderPool(v.name, v.icon, v.size);
         }.bind(this))}

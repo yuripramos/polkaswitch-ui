@@ -48,25 +48,30 @@ export default class TokenSymbolBalance extends Component {
 
   render() {
     var balOutput;
+    var fullOutput;
     const Utils = window.ethers.utils;
 
     if (this.state.errored) {
       balOutput = "N/A";
+      fullOutput = "";
     } else if (this.state.balance.isZero()) {
       balOutput = "0.0";
+      fullOutput = balOutput;
     } else if (this.state.balance.lt(Utils.parseEther("0.0001"))) {
       balOutput = "< 0.0001";
+      fullOutput = Utils.formatEther(this.state.balance);
     } else {
       balOutput = numeral(Utils.formatEther(this.state.balance)).format('0.00a');
+      fullOutput = Utils.formatEther(this.state.balance);
     }
 
     return (
-      <div className="token-symbol-wrapper">
+      <div
+        className="token-symbol-wrapper hint--bottom"
+        aria-label={`Bal: ${fullOutput}`}
+      >
         <div className="symbol">{this.props.token.symbol}</div>
-        <div
-          className="balance hint--bottom"
-          aria-label={this.state.balance}
-        >
+        <div className="balance">
           Bal: {balOutput}
         </div>
       </div>

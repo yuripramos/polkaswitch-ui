@@ -143,14 +143,15 @@ html, body {
 
 .token-symbol-wrapper {
   .symbol {
-    line-height: 10px;
+    line-height: 20px;
     font-size: 20px;
     font-weight: bold;
     margin-top: 8px;
   }
 
   .balance {
-    line-height: 10px;
+    display: block;
+    line-height: 14px;
     font-size: 12px;
     opacity: 0.7;
   }
@@ -245,6 +246,30 @@ html, body {
   }
 }
 
+.token-dist-hint-text {
+  font-size: 10px;
+  color: #999;
+  padding-bottom: 4px;
+  display: flex;
+
+  span {
+    line-height: 15px;
+  }
+
+  .hint-icon {
+    width: 11px;
+    height: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: $info;
+    font-size: 10px;
+    border-radius: 10px;
+    margin: 2px 4px;
+  }
+}
+
 .token-dist-wrapper {
   display: flex;
   margin-bottom: 1.5rem;
@@ -258,7 +283,7 @@ html, body {
     background: $light-blue;
     margin: 0 2px;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: $radius;
     text-align: center;
     font-size: 12px;
     color: $info;
@@ -271,6 +296,23 @@ html, body {
   .token-icon-img-wrapper {
     margin-right: 5px;
   }
+}
+
+[class*=hint--] {
+  display: block;
+}
+
+[class*=hint--]:after {
+  border-radius: $radius-small;
+  background: $info;
+}
+
+[class*=hint--top]:before {
+  border-top-color: $info;
+}
+
+[class*=hint--bottom]:before {
+  border-bottom-color: $info;
 }
 
 $swap-widget-anim-timing: 300ms;
