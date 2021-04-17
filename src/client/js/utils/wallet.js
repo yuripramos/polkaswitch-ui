@@ -1,5 +1,10 @@
 
 window.WalletJS = {
+  ADDRESSES: {
+    ONE_SPLIT: "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
+    ONE_SPLIT_VIEW: "0x4B5Dc79B38B6e75347Da6d9172Fa240F743401ad"
+  },
+
   initialize: async function() {
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', function (accounts) {
@@ -12,7 +17,8 @@ window.WalletJS = {
       });
     }
 
-    window.erc20Abi = await (await fetch('/abi/erc20_standard.abi')).json();
+    window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
+    window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
   },
 
   getProvider: function() {
@@ -37,7 +43,7 @@ window.WalletJS = {
   },
 
   _mint: async function(symbol, value) {
-    var abi = await fetch(`/abi/test/${symbol.toUpperCase()}.abi`);
+    var abi = await fetch(`/abi/test/${symbol.toUpperCase()}.json`);
     window.abiMeth = await abi.json();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -72,10 +78,35 @@ window.WalletJS = {
     // await approveFn();
   },
 
-  _getExpectedReturn: function() {
+  getExpectedReturn: async function(fromToken, toToken, amount) {
+    const contract = new window.ethers.Contract(
+      this.ADDRESSES.ONE_SPLIT,
+      window.oneSplitAbi,
+      this.getProvider()
+    );
+    return await contract.getExpectedReturn(
+      fromToken.id,
+      toToken.id,
+      amount, // uint256 in wei
+      3, // desired parts of splits accross pools(3 is recommended)
+      0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+    );
+
+    /*
+    returns(
+      uint256 returnAmount,
+      uint256[] memory distribution
+    )
+    */
   },
 
-  _swap: function() {
+  swap: async function() {
+    const contract = new window.ethers.Contract(
+      tokenContractAddress,
+      window.erc20Abi,
+      this.getProvider()
+    );
+    return await contract.balanceOf(this.currentAddress());
   },
 
   isSupported: function() {

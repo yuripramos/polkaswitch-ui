@@ -6,6 +6,7 @@ import TokenSymbolBalance from './TokenSymbolBalance';
 import TokenConversionRate from './TokenConversionRate';
 import TokenIconImg from './TokenIconImg';
 import TokenSearchBar from './TokenSearchBar';
+import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
 
 import Wallet from '../../utils/wallet';
@@ -21,11 +22,14 @@ export default class SwapOrderWidget extends Component {
       // to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
       // DAI
       // to: Wallet.findTokenById("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
-      // METH
-      to: Wallet.findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
+      // MUNI
+      to: Wallet.findTokenById("0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913"),
       // ETH
       //from: Wallet.findTokenById("ETH"),
-      from: Wallet.findTokenById("0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913"),
+      // METH
+      from: Wallet.findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
+
+      fromAmount: 0,
 
       searchTarget: "",
       showSettings: false,
@@ -87,6 +91,14 @@ export default class SwapOrderWidget extends Component {
   handleReview(e) {
     // TODO validate form swap
 
+    return Wallet.getExpectedReturn(
+      this.state.from,
+      this.state.to,
+      this.state.fromAmount
+    ).then(function(result) {
+      return console.log(result);
+    });
+
     this.setState({
       showConfirm: !this.state.showConfirm
     });
@@ -96,6 +108,14 @@ export default class SwapOrderWidget extends Component {
     var _s = { showSearch: false };
     _s[this.state.searchTarget] = token;
     this.setState(_s);
+  }
+
+  handleTokenAmountChange(target) {
+    return function(e) {
+      var _s = {};
+      _s[`${target}Amount`] = e.target.value;
+      this.setState(_s);
+    }.bind(this);
   }
 
   renderToken(token) {
@@ -135,7 +155,11 @@ export default class SwapOrderWidget extends Component {
         <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
           <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
             <div className="control" style={{ width: "100%" }}>
-              <input type="number" className="input is-medium" placeholder="0.0" />
+              <input
+                onChange={this.handleTokenAmountChange(target)}
+                type="number"
+                className="input is-medium"
+                placeholder="0.0" />
             </div>
           </div>
         </div>
@@ -184,6 +208,12 @@ export default class SwapOrderWidget extends Component {
               <span>You Recieve</span>
             </div>
             {this.renderTokenInput("to", this.state.to)}
+          </div>
+
+          <div>
+            <TokenSwapDistribution
+              totalParts={3}
+              parts={[1, 0, 0, 0, 0, 1, 1]}/>
           </div>
 
           <div>

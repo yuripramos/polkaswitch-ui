@@ -245,6 +245,34 @@ html, body {
   }
 }
 
+.token-dist-wrapper {
+  display: flex;
+  margin-bottom: 1.5rem;
+
+  .token-dist-pool-wrapper {
+    display: block;
+    overflow: hidden;
+  }
+
+  .token-dist-pool {
+    background: $light-blue;
+    margin: 0 2px;
+    padding: 5px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: $info;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .token-icon-img-wrapper {
+    margin-right: 5px;
+  }
+}
+
 $swap-widget-anim-timing: 300ms;
 
 .swap-widget {
