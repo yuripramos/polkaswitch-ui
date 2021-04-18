@@ -65,6 +65,7 @@ $switcher-radius: 17px;
     bottom: $switcher-toggle-padding;
     background:$white;
     border-radius: $switcher-radius - $switcher-toggle-padding;
+    box-shadow: 0px 0px 10px #f1f1f1;
   }
 
   input {

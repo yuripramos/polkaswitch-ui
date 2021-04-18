@@ -15,11 +15,14 @@ export default class MarketLimitToggle extends Component {
 
   render() {
     return (
-      <span className="switcher">
+      <span
+        className="switcher hint--bottom hint--medium"
+        aria-label="Limit orders are coming soon to Polkaswitch! Currently only Market orders are available"
+      >
         <input
           id="order-type-switcher"
           type="checkbox"
-          checked={this.state.checked}
+          checked={true || this.state.checked}
           onChange={this.handleChange} />
         <label for="order-type-switcher"></label>
       </span>

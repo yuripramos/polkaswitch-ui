@@ -243,10 +243,10 @@ export default class SwapOrderWidget extends Component {
           </div>
 
           <div
-            className={classnames("hint--top", "token-dist-expand-wrapper", {
+            className={classnames("hint--top", "hint--large", "token-dist-expand-wrapper", {
               "expand": this.state.swapDistribution
             })}
-            aria-label="Routing distribution for the swap"
+            aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
           >
             <div className="token-dist-hint-text">
               <span>Routing Distribution</span>
@@ -296,8 +296,8 @@ export default class SwapOrderWidget extends Component {
             </div>
 
             <div className="level-right">
-              <div className="level-item currency-text is-size-3">
-                1.0
+              <div className="level-item currency-text">
+                {this.state.fromAmount}
               </div>
             </div>
           </div>
@@ -314,8 +314,8 @@ export default class SwapOrderWidget extends Component {
             </div>
 
             <div className="level-right">
-              <div className="level-item currency-text is-size-3">
-                0.00000324
+              <div className="level-item currency-text">
+                {this.state.toAmount}
               </div>
             </div>
           </div>
