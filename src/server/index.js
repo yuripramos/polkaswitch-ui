@@ -6,6 +6,7 @@ const os = require('os');
 var compression = require('compression');
 var morgan = require('morgan');
 var flash = require('connect-flash');
+var _ = require('underscore');
 
 var passport = require('./middleware/auth');
 
@@ -16,19 +17,39 @@ app.use(morgan('dev'));
 
 if (isProduction) {
   app.use(helmet({ contentSecurityPolicy: false }));
-  app.use(helmet.contentSecurityPolicy({
-    directives: {
-      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "img-src": ["'self'", "public-api.freshstatus.io"],
-      "script-src": [
-        "'self'", "blob:",
-        "cdn.polyfill.io",
-        "*.mxpnl.com",
-        "*.mixpanel.com",
-      ]
-    }
-  }));
 }
+
+var defaultCsp;
+
+if (isProduction) {
+  defaultCsp = helmet.contentSecurityPolicy.getDefaultDirectives();
+} else {
+  defaultCsp = _.omit(
+    helmet.contentSecurityPolicy.getDefaultDirectives(),
+    'upgrade-insecure-requests'
+  );
+}
+
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    ...defaultCsp,
+    "img-src": ["'self'", "public-api.freshstatus.io"],
+    "style-src": [
+      "'self'",
+      "https:",
+      "'unsafe-inline'",
+      "fonts.googleapis.com"
+    ],
+    "script-src": [
+      "'self'", "blob:",
+      "cdn.polyfill.io",
+      "*.mxpnl.com",
+      "*.mixpanel.com",
+      // mixpanel script
+      "'sha256-Ek6kJj5tJB6qdv7Ix1leD6oYPx929aOB8lylPKsTDlE='"
+    ]
+  }
+}));
 
 app.use(cookieSession({
   name: 'session',
