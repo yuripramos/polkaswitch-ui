@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Wallet from '../../utils/wallet';
+import Metrics from '../../utils/metrics';
 
 export default class ConnectWalletButton extends Component {
   constructor(props) {
@@ -8,9 +9,18 @@ export default class ConnectWalletButton extends Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    if (Wallet.isConnected()) {
+      Metrics.identify(Wallet.currentAddress());
+    }
+  }
+
   handleConnection(e) {
+    Metrics.track("connect-wallet", { type: "metamask" });
+
     Wallet.connectWallet().then(function(account) {
-        this.setState({ account: account });
+      Metrics.identity(account);
+      this.setState({ account: account });
     }.bind(this));
   }
 

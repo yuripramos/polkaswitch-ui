@@ -11,6 +11,7 @@ import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
 
 import Wallet from '../../utils/wallet';
+import Metrics from '../../utils/metrics';
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {
@@ -94,11 +95,20 @@ export default class SwapOrderWidget extends Component {
       this.setState({
         toAmount: window.ethers.utils.formatEther(result.returnAmount),
         swapDistribution: dist
-      });
+      }, function() {
+        Metrics.track("swap-estimate-result", {
+          from: this.state.from,
+          to: this.state.to,
+          fromAmont: this.state.fromAmount,
+          toAmount: this.state.toAmount,
+          swapDistribution: this.state.swapDistribution
+        });
+      }.bind(this));
     }.bind(this));
   }
 
   onSwapTokens(e) {
+    Metrics.track("swap-flipped-tokens");
     this.setState({
       to: this.state.from,
       from: this.state.to
@@ -107,6 +117,7 @@ export default class SwapOrderWidget extends Component {
 
   handleSearchToggle(target) {
     return function(e) {
+      Metrics.track("swap-search-view", { closing: this.state.showSearch });
       this.setState({
         searchTarget: target,
         showSearch: !this.state.showSearch
@@ -115,12 +126,14 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleSettingsToggle(e) {
+    Metrics.track("swap-settings-view", { closing: this.state.showSettings });
     this.setState({
       showSettings: !this.state.showSettings
     });
   }
 
   handleReview(e) {
+    Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
     // TODO validate form swap
 
     this.setState({
@@ -131,7 +144,13 @@ export default class SwapOrderWidget extends Component {
   handleTokenChange(token) {
     var _s = { showSearch: false };
     _s[this.state.searchTarget] = token;
-    this.setState(_s);
+    this.setState(_s, function() {
+      Metrics.track("swap-token-changed", {
+        changed: this.state.searchTarget,
+        from: this.state.from,
+        to: this.state.to
+      });
+    }.bind(this));
   }
 
   handleTokenAmountChange(target) {
@@ -139,6 +158,12 @@ export default class SwapOrderWidget extends Component {
       var targetAmount = e.target.value;
       var _s = {};
       _s[`${target}Amount`] = targetAmount;
+
+      Metrics.track("swap-token-value", {
+        value: e.target.value,
+        from: this.state.from,
+        to: this.state.to
+      });
 
       this.setState(_s, function() {
         if (target == 'from') {
