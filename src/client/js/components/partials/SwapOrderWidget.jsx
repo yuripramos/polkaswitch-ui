@@ -38,7 +38,9 @@ export default class SwapOrderWidget extends Component {
       searchTarget: "",
       showSettings: false,
       showConfirm: false,
-      showSearch: false
+      showSearch: false,
+
+      lastWalletUpdate: Date.now()
     };
 
     this.onSwapTokens = this.onSwapTokens.bind(this);
@@ -48,15 +50,24 @@ export default class SwapOrderWidget extends Component {
     this.handleReview = this.handleReview.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
+    this.handleWalletChange = this.handleWalletChange.bind(this);
+  }
+
+  componentDidMount() {
+    window.document.addEventListener('walletUpdated', this.handleWalletChange);
+    window.addEventListener('resize', this.updateBoxHeight);
+    this.updateBoxHeight();
   }
 
   componentDidUnmount() {
     window.removeEventListener('resize', this.updateBoxHeight);
+    window.document.removeEventListener('walletUpdated', this.handleWalletChange);
   }
 
-  componentDidMount() {
-    window.addEventListener('resize', this.updateBoxHeight);
-    this.updateBoxHeight();
+  handleWalletChange(e) {
+    this.setState({
+      lastWalletUpdate: Date.now()
+    });
   }
 
   updateBoxHeight() {
@@ -186,7 +197,9 @@ export default class SwapOrderWidget extends Component {
           token={token} />
       </div>
       <div className="level-item">
-        <TokenSymbolBalance token={token} />
+        <TokenSymbolBalance
+          refresh={this.state.lastWalletUpdate}
+          token={token} />
       </div>
       </>
     )

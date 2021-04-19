@@ -26,6 +26,7 @@ export default class AlphaOnboardingCard extends Component {
           success: true
         });
         console.log("done");
+        window.document.dispatchEvent(new Event('walletUpdated'));
       }.bind(this));
     }.bind(this));
   }
