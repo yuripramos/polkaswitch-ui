@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Navbar from '../partials/Navbar';
 import PairOverviewChart from '../partials/PairOverviewChart';
 import SwapOrderWidget from '../partials/SwapOrderWidget';
+import AlphaOnboardingCard from '../partials/AlphaOnboardingCard';
 
 export default class Home extends Component {
   render() {
@@ -24,10 +25,7 @@ export default class Home extends Component {
           <div className="column swap-column" style={{ margin: "0 auto" }}>
             <SwapOrderWidget />
 
-            <div className="alpha-banner notification is-warning is-light">
-              <b>Welcome to the Polkaswitch Alpha launch!</b><br/>
-              As we work closely with our technology partners for the Mainnet launch, you will experience intermittent issues until then.
-            </div>
+            <AlphaOnboardingCard />
 
             <div className="is-hidden card">
               <header className="card-header">

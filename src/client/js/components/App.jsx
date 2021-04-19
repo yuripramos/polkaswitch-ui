@@ -9,6 +9,7 @@ import {
 
 import Home from './pages/Home';
 import Footer from './partials/Footer';
+import NotificationSystem from './partials/NotificationSystem';
 import classnames from 'classnames';
 
 require('../../css/index.scss');
@@ -47,6 +48,7 @@ export default class App extends Component {
     return (
       <Router>
         <div className={classnames({ fullscreen: this.state.fullscreen })}>
+          <NotificationSystem />
           <Switch>
             <Route path="/">
               <Home />

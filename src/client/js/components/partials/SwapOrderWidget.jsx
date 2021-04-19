@@ -268,7 +268,8 @@ export default class SwapOrderWidget extends Component {
           </div>
 
           <div
-            className={classnames("hint--top", "hint--large", "token-dist-expand-wrapper", {
+            className={classnames("hint--large", "token-dist-expand-wrapper", {
+              "hint--top": this.state.swapDistribution,
               "expand": this.state.swapDistribution
             })}
             aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
