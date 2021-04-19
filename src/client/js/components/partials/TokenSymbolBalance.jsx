@@ -20,7 +20,8 @@ export default class TokenSymbolBalance extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.token.symbol !== prevProps.token.symbol) {
+    if (this.props.token.symbol !== prevProps.token.symbol ||
+      this.props.refresh !== prevProps.refresh) {
       this.fetchBalance();
     }
   }
