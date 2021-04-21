@@ -284,9 +284,11 @@ html, body {
   max-height: 0;
   transition: max-height 300ms;
   cursor: pointer;
+  opacity: 0;
 
   &.expand {
     max-height: 83px;
+    opacity: 1;
   }
 }
 

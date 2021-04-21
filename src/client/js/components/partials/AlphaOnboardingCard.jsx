@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
+import EventManager from '../../utils/events';
 
 export default class AlphaOnboardingCard extends Component {
   constructor(props) {
@@ -14,24 +15,25 @@ export default class AlphaOnboardingCard extends Component {
 
   handleMint(e) {
     if (!Wallet.isConnected()) {
+      EventManager.emitEvent('initiateWalletConnect', 1);
+    } else {
 
-    }
-
-    this.setState({
-      minting: true
-    }, function() {
-      Promise.all(_.map([
-        "METH", "MUNI", "MSUSHI", "MBAL"
-      ], function(sym) {
-        return Wallet._mint(sym, window.ethers.utils.parseEther("100"));
-      })).then(function(values) {
-        this.setState({
-          minting: false,
-          success: true
-        });
-        console.log("done");
+      this.setState({
+        minting: true
+      }, function() {
+        Promise.all(_.map([
+          "METH", "MUNI", "MSUSHI", "MBAL"
+        ], function(sym) {
+          return Wallet._mint(sym, window.ethers.utils.parseEther("100"));
+        })).then(function(values) {
+          this.setState({
+            minting: false,
+            success: true
+          });
+          console.log("done");
+        }.bind(this));
       }.bind(this));
-    }.bind(this));
+    }
   }
 
   render() {

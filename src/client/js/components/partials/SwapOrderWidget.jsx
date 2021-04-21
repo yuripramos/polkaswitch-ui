@@ -88,7 +88,10 @@ export default class SwapOrderWidget extends Component {
   }
 
   validateOrderForm() {
-
+    return (this.state.from && this.state.to &&
+      this.state.fromAmount && this.state.fromAmount.length > 0 &&
+      this.state.toAmount && this.state.toAmount.length > 0 &&
+      !this.state.calculatingSwap);
   }
 
   fetchSwapEstimate() {
@@ -171,12 +174,14 @@ export default class SwapOrderWidget extends Component {
     }
 
     else {
-      Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
-      // TODO validate form swap
+      if (this.validateOrderForm()) {
+        Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
+        // TODO validate form swap
 
-      this.setState({
-        showConfirm: !this.state.showConfirm
-      });
+        this.setState({
+          showConfirm: !this.state.showConfirm
+        });
+      }
     }
   }
 
@@ -335,7 +340,11 @@ export default class SwapOrderWidget extends Component {
           </div>
 
           <div>
-            <button className="button is-primary is-fullwidth is-medium" onClick={this.handleReview}>
+            <button
+              disabled={Wallet.isConnected() && !this.validateOrderForm()}
+              className="button is-primary is-fullwidth is-medium"
+              onClick={this.handleReview}
+            >
               {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
             </button>
           </div>
