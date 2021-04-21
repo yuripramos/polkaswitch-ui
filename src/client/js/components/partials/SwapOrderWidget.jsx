@@ -53,6 +53,8 @@ export default class SwapOrderWidget extends Component {
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
+
+    this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
   }
 
   componentDidMount() {
@@ -96,33 +98,46 @@ export default class SwapOrderWidget extends Component {
       return;
     }
 
-    var fromAmount = window.ethers.utils.parseUnits(this.state.fromAmount);
+    var timeNow = Date.now();
 
-    Wallet.getExpectedReturn(
-      this.state.from,
-      this.state.to,
-      fromAmount
-    ).then(function(result) {
-      var dist = _.map(result.distribution, function(e) {
-        return e.toNumber();
-      });
+    this.setState({
+      calculatingSwap: true,
+      calculatingSwapTimestamp: timeNow
+    }, function() {
+      var fromAmount = window.ethers.utils.parseUnits(this.state.fromAmount);
 
-      console.log(dist);
+      _.delay(function() {
+        Wallet.getExpectedReturn(
+          this.state.from,
+          this.state.to,
+          fromAmount
+        ).then(function(result) {
+          if (this.state.calculatingSwapTimestamp != timeNow) {
+            return;
+          }
 
-      this.box.current.style.height = "";
+          var dist = _.map(result.distribution, function(e) {
+            return e.toNumber();
+          });
 
-      this.setState({
-        toAmount: window.ethers.utils.formatEther(result.returnAmount),
-        swapDistribution: dist
-      }, function() {
-        Metrics.track("swap-estimate-result", {
-          from: this.state.from,
-          to: this.state.to,
-          fromAmont: this.state.fromAmount,
-          toAmount: this.state.toAmount,
-          swapDistribution: this.state.swapDistribution
-        });
-      }.bind(this));
+          this.box.current.style.height = "";
+
+          this.setState({
+            toAmount: window.ethers.utils.formatEther(result.returnAmount),
+            swapDistribution: dist,
+            calculatingSwap: false
+          }, function() {
+            Metrics.track("swap-estimate-result", {
+              from: this.state.from,
+              to: this.state.to,
+              fromAmont: this.state.fromAmount,
+              toAmount: this.state.toAmount,
+              swapDistribution: this.state.swapDistribution
+            });
+          }.bind(this));
+        }.bind(this));
+      }.bind(this), 500);
+
     }.bind(this));
   }
 
@@ -152,12 +167,18 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleReview(e) {
-    Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
-    // TODO validate form swap
+    if (!Wallet.isConnected()) {
+      EventManager.emitEvent('initiateWalletConnect', 1);
+    }
 
-    this.setState({
-      showConfirm: !this.state.showConfirm
-    });
+    else {
+      Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
+      // TODO validate form swap
+
+      this.setState({
+        showConfirm: !this.state.showConfirm
+      });
+    }
   }
 
   handleTokenChange(token) {
@@ -217,6 +238,9 @@ export default class SwapOrderWidget extends Component {
     if (!token) {
       return (<div />);
     }
+
+    var isFrom = (target === "from");
+
     return (
       <div className="level is-mobile">
         <div className="level is-mobile is-narrow my-0 token-dropdown"
@@ -230,14 +254,21 @@ export default class SwapOrderWidget extends Component {
         </div>
         <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
           <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
-            <div className="control" style={{ width: "100%" }}>
+            <div
+              className={classnames("control", {
+                "is-loading": !isFrom && this.state.calculatingSwap
+              })}
+              style={{ width: "100%" }}
+            >
               <input
                 onChange={this.handleTokenAmountChange(target)}
                 value={this.state[`${target}Amount`]}
                 type="number"
                 min="0"
                 className="input is-medium"
-                placeholder="0.0" />
+                placeholder="0.0"
+                disabled={!isFrom}
+              />
             </div>
           </div>
         </div>
@@ -306,7 +337,7 @@ export default class SwapOrderWidget extends Component {
 
           <div>
             <button className="button is-primary is-fullwidth is-medium" onClick={this.handleReview}>
-              Review Order
+              {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
             </button>
           </div>
         </div>

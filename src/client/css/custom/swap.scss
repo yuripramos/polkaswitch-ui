@@ -237,15 +237,15 @@ html, body {
 
 [class*=hint--]:after {
   border-radius: $radius-small;
-  background: $info;
+  background: #2D3039;
 }
 
 [class*=hint--top]:before {
-  border-top-color: $info;
+  border-top-color: #2D3039;
 }
 
 [class*=hint--bottom]:before {
-  border-bottom-color: $info;
+  border-bottom-color: #2D3039;
 }
 
 .hint-icon {
@@ -533,6 +533,16 @@ $swap-widget-anim-timing: 300ms;
 
       &.is-info {
         background-color: $light-blue !important;
+      }
+    }
+
+    input[disabled] {
+      background: white;
+    }
+
+    .is-loading {
+      input {
+        color: $info-light;
       }
     }
 

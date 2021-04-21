@@ -31,11 +31,12 @@ export default class ConnectWalletButton extends Component {
     }
 
     Metrics.track("connect-wallet", { type: "metamask" });
-    Wallet.connectWallet();
+    EventManager.emitEvent('initiateWalletConnect', 1);
   }
 
   handleWalletChange() {
     this.setState({ refresh: Date.now() });
+    Metrics.identify(Wallet.currentAddress());
   }
 
   renderButtonContent() {

@@ -1,4 +1,5 @@
 
+import _ from "underscore";
 import EventManager from './events';
 
 window.WalletJS = {
@@ -22,6 +23,8 @@ window.WalletJS = {
 
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
+
+    EventManager.listenFor('initiateWalletConnect', this.connectWallet);
   },
 
   getProvider: function() {
@@ -82,13 +85,13 @@ window.WalletJS = {
     // await approveFn();
   },
 
-  getExpectedReturn: async function(fromToken, toToken, amount) {
+  getExpectedReturn: function(fromToken, toToken, amount) {
     const contract = new window.ethers.Contract(
       this.ADDRESSES.ONE_SPLIT,
       window.oneSplitAbi,
       this.getProvider()
     );
-    return await contract.getExpectedReturn(
+    return contract.getExpectedReturn(
       fromToken.id,
       toToken.id,
       amount, // uint256 in wei
