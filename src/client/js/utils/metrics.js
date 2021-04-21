@@ -13,5 +13,5 @@ window.Metrics = {
   }
 };
 
-module.exports = window.Metrics;
+export default window.Metrics;
 

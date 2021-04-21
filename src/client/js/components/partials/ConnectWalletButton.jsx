@@ -2,26 +2,36 @@ import React, { Component } from 'react';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
+import EventManager from '../../utils/events';
 
 export default class ConnectWalletButton extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { refresh: Date.now() };
+    this.handleWalletChange = this.handleWalletChange.bind(this);
   }
 
   componentDidMount() {
     if (Wallet.isConnected()) {
       Metrics.identify(Wallet.currentAddress());
     }
+
+    this.subWalletChange = EventManager.listenFor(
+      'walletUpdated', this.handleWalletChange
+    );
+  }
+
+  componentDidUnmount() {
+    this.subWalletChange.unsubscribe();
   }
 
   handleConnection(e) {
     Metrics.track("connect-wallet", { type: "metamask" });
+    Wallet.connectWallet();
+  }
 
-    Wallet.connectWallet().then(function(account) {
-      Metrics.identity(account);
-      this.setState({ account: account });
-    }.bind(this));
+  handleWalletChange() {
+    this.setState({ refresh: Date.now() });
   }
 
   renderButtonContent() {

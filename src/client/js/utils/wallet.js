@@ -1,4 +1,6 @@
 
+import EventManager from './events';
+
 window.WalletJS = {
   ADDRESSES: {
     ONE_SPLIT: "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
@@ -14,6 +16,7 @@ window.WalletJS = {
 
       window.ethereum.on('disconnect', function(providerRpcError) {
         console.log(providerRpcError);
+        EventManager.emitEvent('walletUpdated', 1);
       });
     }
 
@@ -60,6 +63,7 @@ window.WalletJS = {
       await createReceipt.wait();
 
       console.log(`Tx successful with hash: ${createReceipt.hash}`);
+      EventManager.emitEvent('walletUpdated', 1);
     };
 
     const approveFn = async () => {
@@ -128,6 +132,7 @@ window.WalletJS = {
           // Metamask currently only ever provide a single account
           const account = accounts[0];
           console.log('Ethereum Account: ', account);
+          EventManager.emitEvent('walletUpdated', 1);
           resolve(account);
         })
         .catch(function(e) {
@@ -138,5 +143,5 @@ window.WalletJS = {
   }
 };
 
-module.exports = window.WalletJS;
+export default window.WalletJS;
 

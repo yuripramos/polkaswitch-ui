@@ -13,6 +13,10 @@ export default class AlphaOnboardingCard extends Component {
   }
 
   handleMint(e) {
+    if (!Wallet.isConnected()) {
+
+    }
+
     this.setState({
       minting: true
     }, function() {
@@ -26,7 +30,6 @@ export default class AlphaOnboardingCard extends Component {
           success: true
         });
         console.log("done");
-        window.document.dispatchEvent(new Event('walletUpdated'));
       }.bind(this));
     }.bind(this));
   }

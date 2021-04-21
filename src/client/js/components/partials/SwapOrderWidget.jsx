@@ -12,6 +12,7 @@ import MarketLimitToggle from './MarketLimitToggle';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
+import EventManager from '../../utils/events';
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ export default class SwapOrderWidget extends Component {
       lastWalletUpdate: Date.now()
     };
 
+    this.subscribers = [];
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
@@ -54,14 +56,16 @@ export default class SwapOrderWidget extends Component {
   }
 
   componentDidMount() {
-    window.document.addEventListener('walletUpdated', this.handleWalletChange);
+    this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
   }
 
   componentDidUnmount() {
     window.removeEventListener('resize', this.updateBoxHeight);
-    window.document.removeEventListener('walletUpdated', this.handleWalletChange);
+    this.subscribers.forEach(function(v) {
+      EventManager.unsubscribe(v);
+    });
   }
 
   handleWalletChange(e) {
@@ -79,6 +83,10 @@ export default class SwapOrderWidget extends Component {
 
   triggerHeightResize(node, isAppearing) {
     this.box.current.style.height = `${node.offsetHeight}px`;
+  }
+
+  validateOrderForm() {
+
   }
 
   fetchSwapEstimate() {
