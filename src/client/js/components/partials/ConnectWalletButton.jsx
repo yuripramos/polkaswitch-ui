@@ -26,6 +26,10 @@ export default class ConnectWalletButton extends Component {
   }
 
   handleConnection(e) {
+    if (Wallet.isConnected()) {
+      return false;
+    }
+
     Metrics.track("connect-wallet", { type: "metamask" });
     Wallet.connectWallet();
   }

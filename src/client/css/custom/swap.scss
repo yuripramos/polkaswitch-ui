@@ -231,6 +231,36 @@ html, body {
   }
 }
 
+[class*=hint--] {
+  display: block;
+}
+
+[class*=hint--]:after {
+  border-radius: $radius-small;
+  background: $info;
+}
+
+[class*=hint--top]:before {
+  border-top-color: $info;
+}
+
+[class*=hint--bottom]:before {
+  border-bottom-color: $info;
+}
+
+.hint-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: lighten($info, 30%);
+  font-size: 10px;
+  border-radius: 10px;
+  margin: 2px 6px;
+}
+
 .token-dist-hint-text {
   font-size: 10px;
   color: #999;
@@ -245,13 +275,8 @@ html, body {
     width: 11px;
     height: 11px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    background: $info;
-    font-size: 10px;
-    border-radius: 10px;
     margin: 2px 4px;
+    background: $info;
   }
 }
 
@@ -293,23 +318,6 @@ html, body {
   .token-icon-img-wrapper {
     margin-right: 5px;
   }
-}
-
-[class*=hint--] {
-  display: block;
-}
-
-[class*=hint--]:after {
-  border-radius: $radius-small;
-  background: $info;
-}
-
-[class*=hint--top]:before {
-  border-top-color: $info;
-}
-
-[class*=hint--bottom]:before {
-  border-bottom-color: $info;
 }
 
 $swap-widget-anim-timing: 300ms;
@@ -561,6 +569,12 @@ $swap-widget-anim-timing: 300ms;
 
   hr {
     margin: 1rem 0;
+  }
+
+  .page-view-settings {
+    .option {
+      margin-bottom: 10px;
+    }
   }
 
   .page-view-search {

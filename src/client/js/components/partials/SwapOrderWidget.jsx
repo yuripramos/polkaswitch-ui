@@ -398,7 +398,7 @@ export default class SwapOrderWidget extends Component {
 
   renderSettingsView() {
     return (
-      <div className="page page-stack">
+      <div className="page page-stack page-view-settings">
         <div className="page-inner">
           <div className="level is-mobile">
             <div className="level-left">
@@ -415,10 +415,16 @@ export default class SwapOrderWidget extends Component {
 
           <hr />
 
-          <div className="level is-mobile">
+          <div className="level is-mobile option">
             <div className="level-left">
               <div className="level-item">
-                <b>Gas Price</b>
+                <span>
+                  <b>Gas Price</b>
+                  <span
+                    className="hint-icon hint--bottom hint--medium"
+                    aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees."
+                  >?</span>
+                </span>
               </div>
             </div>
 
@@ -433,6 +439,33 @@ export default class SwapOrderWidget extends Component {
               </div>
             </div>
           </div>
+
+          <div className="level is-mobile option">
+            <div className="level-left">
+              <div className="level-item">
+                <span>
+                  <b>Slippage Tolerance</b>
+                  <span
+                    className="hint-icon hint--bottom hint--medium"
+                    aria-label="Your transaction will revert if the price changes unfavorably by more than this percentage"
+                  >?</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item">
+                <div className="select">
+                  <select>
+                    <option>0.1%</option>
+                    <option>0.5%</option>
+                    <option>1%</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     );
