@@ -546,6 +546,11 @@ $swap-widget-anim-timing: 300ms;
       input {
         color: $info-light;
       }
+
+      &:after {
+        left: calc(50% - (1em / 2));
+        top: calc(50% - (1em / 2));
+      }
     }
 
     .token-dropdown {
