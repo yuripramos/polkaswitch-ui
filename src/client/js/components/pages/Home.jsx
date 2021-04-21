@@ -5,12 +5,15 @@ import Navbar from '../partials/Navbar';
 import PairOverviewChart from '../partials/PairOverviewChart';
 import SwapOrderWidget from '../partials/SwapOrderWidget';
 import AlphaOnboardingCard from '../partials/AlphaOnboardingCard';
+import ConnectPanel from '../partials/ConnectPanel';
 
 export default class Home extends Component {
   render() {
     return (
       <div className="container">
         <Navbar />
+
+        <ConnectPanel />
 
         <div className="columns">
           { /*
