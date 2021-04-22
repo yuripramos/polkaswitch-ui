@@ -221,10 +221,10 @@ html, body {
 
 .swap-column {
   flex: none;
-  max-width: 420px;
+  width: 420px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 450px) {
   .swap-column {
     flex: none;
     width: 100%;
