@@ -360,9 +360,11 @@ export default class SwapOrderWidget extends Component {
           <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
-                <span className="icon clickable is-medium" onClick={this.handleReview}>
-                  <i className="fas fa-arrow-left"></i>
-                </span>
+                <div className="level-item">
+                  <span className="icon ion-icon clickable" onClick={this.handleReview}>
+                    <ion-icon name="arrow-back-outline"></ion-icon>
+                  </span>
+                </div>
               </div>
               <div className="level-item">
                 <b className="widget-title">Review Order</b>
@@ -442,8 +444,8 @@ export default class SwapOrderWidget extends Component {
           <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
-                <span className="icon clickable is-medium" onClick={this.handleSettingsToggle}>
-                  <i className="fas fa-arrow-left"></i>
+                <span className="icon ion-icon clickable" onClick={this.handleSettingsToggle}>
+                  <ion-icon name="arrow-back-outline"></ion-icon>
                 </span>
               </div>
               <div className="level-item">
@@ -512,7 +514,7 @@ export default class SwapOrderWidget extends Component {
                   <b>Liquidity Sources</b>
                   <span
                     className="hint-icon hint--bottom hint--medium"
-                    aria-label="COMING SOON. Customize which sources to route your swap through."
+                    aria-label="COMING SOON! Customize which sources to route your swap through"
                   >?</span>
                 </span>
               </div>
@@ -522,11 +524,32 @@ export default class SwapOrderWidget extends Component {
               <div className="level-item">
                 <div className="select">
                   <select disabled>
-                    <option>3</option>
+                    <option>10</option>
                     <option>2</option>
                     <option>1</option>
                   </select>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="level is-mobile option">
+            <div className="level-left">
+              <div className="level-item">
+                <span>
+                  <b>Custom Tokens</b>
+                  <span
+                    className="hint-icon hint--bottom"
+                    aria-label="COMING SOON">?</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item">
+                <span className="icon ion-icon clickable is-medium">
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                </span>
               </div>
             </div>
           </div>
