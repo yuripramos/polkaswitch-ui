@@ -9,7 +9,7 @@ import EventManager from '../../utils/events';
 export default class ConnectPanel extends Component {
   constructor(props) {
     super(props);
-    this.state = { refresh: Date.now(), open: true };
+    this.state = { refresh: Date.now(), open: false };
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
