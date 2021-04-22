@@ -221,7 +221,7 @@ html, body {
 
 .swap-column {
   flex: none;
-  width: 420px;
+  width: 440px;
 }
 
 @media screen and (max-width: 450px) {
@@ -382,6 +382,12 @@ html, body {
   &.clickable {
     color: #aaa;
     cursor: pointer;
+
+    &:hover {
+      color: #333;
+      border-radius: 40px;
+      background: #eee;
+    }
   }
 
   &.disabled {
@@ -390,12 +396,6 @@ html, body {
 
   &.ion-icon {
     font-size: 30px;
-  }
-
-  &:hover {
-    color: #333;
-    border-radius: 40px;
-    background: #eee;
   }
 }
 
@@ -495,7 +495,10 @@ $swap-widget-anim-timing: 300ms;
 
   .currency-text {
     font-family: monospace;
-    color: #999;
+    color: $link;
+    font-size: 22px;
+    text-align: left;
+    overflow: hidden;
   }
 
 

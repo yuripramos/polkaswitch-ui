@@ -183,7 +183,6 @@ export default class SwapOrderWidget extends Component {
     else {
       if (this.validateOrderForm()) {
         Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
-        // TODO validate form swap
 
         this.setState({
           showConfirm: !this.state.showConfirm

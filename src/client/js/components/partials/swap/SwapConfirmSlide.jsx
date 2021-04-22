@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
+import numeral from 'numeral';
 
 import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
@@ -25,6 +26,10 @@ export default class SwapConfirmSlide extends Component {
   }
 
   render() {
+    if (!this.props.toAmount || !this.props.fromAmount) {
+      return (<div />)
+    }
+
     return (
       <div className="page page-stack">
         <div className="page-inner">
@@ -60,8 +65,12 @@ export default class SwapConfirmSlide extends Component {
             </div>
 
             <div className="level-right">
-              <div className="level-item currency-text">
-                {this.props.fromAmount}
+              <div className="level-item">
+                <div class="currency-text">
+                  {window.ethers.utils.formatEther(
+                    window.ethers.utils.parseEther(this.props.fromAmount)
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -81,8 +90,12 @@ export default class SwapConfirmSlide extends Component {
             </div>
 
             <div className="level-right">
-              <div className="level-item currency-text">
-                {this.props.toAmount}
+              <div className="level-item">
+                <div className="currency-text">
+                  {window.ethers.utils.formatEther(
+                    window.ethers.utils.parseEther(this.props.toAmount)
+                  )}
+                </div>
               </div>
             </div>
           </div>
