@@ -322,6 +322,67 @@ html, body {
   }
 }
 
+.connect-panel {
+  max-width: 420px;
+  margin: 0 auto;
+  border-radius: 20px;
+
+  .option {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
+
+    &:hover {
+      border: 1px solid $link;
+      background: $link-light;
+    }
+
+    .connected {
+      font-size: 12px;
+      color: $link;
+      font-weight: bold;
+    }
+
+    img {
+      height: 35px;
+      width: 35px;
+    }
+
+    &.coming-soon {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .footnote {
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+.icon.clickable {
+  cursor: pointer;
+  color: #aaa;
+
+  &.ion-icon {
+    font-size: 30px;
+  }
+
+  &:hover {
+    color: #333;
+    border-radius: 40px;
+    background: #eee;
+  }
+}
+
+
 $swap-widget-anim-timing: 300ms;
 
 .swap-widget {
@@ -420,16 +481,6 @@ $swap-widget-anim-timing: 300ms;
     color: #999;
   }
 
-  .icon.clickable {
-    cursor: pointer;
-    color: #aaa;
-
-    &:hover {
-      color: #333;
-      border-radius: 40px;
-      background: #eee;
-    }
-  }
 
   .switcher {
     cursor: not-allowed;

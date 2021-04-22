@@ -170,7 +170,7 @@ export default class SwapOrderWidget extends Component {
 
   handleReview(e) {
     if (!Wallet.isConnected()) {
-      EventManager.emitEvent('initiateWalletConnect', 1);
+      EventManager.emitEvent('promptWalletConnect', 1);
     }
 
     else {

@@ -26,17 +26,11 @@ export default class ConnectWalletButton extends Component {
   }
 
   handleConnection(e) {
-    if (Wallet.isConnected()) {
-      return false;
-    }
-
-    Metrics.track("connect-wallet", { type: "metamask" });
-    EventManager.emitEvent('initiateWalletConnect', 1);
+    EventManager.emitEvent('promptWalletConnect', 1);
   }
 
   handleWalletChange() {
     this.setState({ refresh: Date.now() });
-    Metrics.identify(Wallet.currentAddress());
   }
 
   renderButtonContent() {
@@ -75,22 +69,8 @@ export default class ConnectWalletButton extends Component {
           </div>
         </div>
       );
-    } else if (Wallet.isSupported()) {
-      return (
-        <div className="dropdown-content">
-          <div className="dropdown-item has-text-info">
-            Connect via Metamask
-          </div>
-        </div>
-      )
     } else {
-      return (
-        <div className="dropdown-content">
-          <div className="dropdown-item has-text-danger">
-            Please install Metamask first!
-          </div>
-        </div>
-      )
+      return (<div/>);
     }
   }
 

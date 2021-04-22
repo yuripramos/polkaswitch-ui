@@ -34,6 +34,12 @@ app.use(helmet.contentSecurityPolicy({
   directives: {
     ...defaultCsp,
     "img-src": ["'self'", "public-api.freshstatus.io"],
+    "font-src": [
+      "'self'",
+      "https:",
+      "data:",
+      "fonts.gstatic.com"
+    ],
     "style-src": [
       "'self'",
       "https:",
