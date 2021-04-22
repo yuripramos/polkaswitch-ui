@@ -379,14 +379,13 @@ html, body {
 }
 
 .icon {
-  color: #aaa;
-
   &.clickable {
+    color: #aaa;
     cursor: pointer;
   }
 
   &.disabled {
-    opacity: 0.7;
+    color: #ddd;
   }
 
   &.ion-icon {
