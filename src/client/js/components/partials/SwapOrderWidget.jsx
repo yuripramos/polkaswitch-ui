@@ -505,6 +505,32 @@ export default class SwapOrderWidget extends Component {
             </div>
           </div>
 
+          <div className="level is-mobile option">
+            <div className="level-left">
+              <div className="level-item">
+                <span>
+                  <b>Liquidity Sources</b>
+                  <span
+                    className="hint-icon hint--bottom hint--medium"
+                    aria-label="COMING SOON. Customize which sources to route your swap through."
+                  >?</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item">
+                <div className="select">
+                  <select disabled>
+                    <option>3</option>
+                    <option>2</option>
+                    <option>1</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     );
