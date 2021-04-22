@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import TokenIconImg from './TokenIconImg';
-import Wallet from '../../utils/wallet';
+import TokenIconImg from './../TokenIconImg';
+import Wallet from '../../../utils/wallet';
 
 export default class TokenSwapDistribution extends Component {
   constructor(props) {

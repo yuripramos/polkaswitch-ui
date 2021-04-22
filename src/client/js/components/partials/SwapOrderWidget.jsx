@@ -3,12 +3,14 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 import classnames from 'classnames';
 
-import TokenSymbolBalance from './TokenSymbolBalance';
-import TokenConversionRate from './TokenConversionRate';
+import TokenSymbolBalance from './swap/TokenSymbolBalance';
 import TokenIconImg from './TokenIconImg';
 import TokenSearchBar from './TokenSearchBar';
-import TokenSwapDistribution from './TokenSwapDistribution';
-import MarketLimitToggle from './MarketLimitToggle';
+import TokenSwapDistribution from './swap/TokenSwapDistribution';
+import TokenIconBalanceGroupView from './swap/TokenIconBalanceGroupView';
+import MarketLimitToggle from './swap/MarketLimitToggle';
+
+import SwapConfirmSlide from './swap/SwapConfirmSlide';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
@@ -50,6 +52,7 @@ export default class SwapOrderWidget extends Component {
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleReview = this.handleReview.bind(this);
+    this.handleBackOnConfirm = this.handleBackOnConfirm.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -185,6 +188,10 @@ export default class SwapOrderWidget extends Component {
     }
   }
 
+  handleBackOnConfirm(e) {
+    this.setState({ showConfirm: false });
+  }
+
   handleTokenChange(token) {
     var _s = { showSearch: false };
     _s[this.state.searchTarget] = token;
@@ -217,27 +224,6 @@ export default class SwapOrderWidget extends Component {
     }.bind(this);
   }
 
-  renderToken(token) {
-    if (!token) {
-      return (<div />);
-    }
-
-    return (
-      <>
-      <div className="level-item">
-        <TokenIconImg
-          size={"35"}
-          token={token} />
-      </div>
-      <div className="level-item">
-        <TokenSymbolBalance
-          refresh={this.state.lastWalletUpdate}
-          token={token} />
-      </div>
-      </>
-    )
-  }
-
   renderTokenInput(target, token) {
     if (!token) {
       return (<div />);
@@ -249,7 +235,10 @@ export default class SwapOrderWidget extends Component {
       <div className="level is-mobile">
         <div className="level is-mobile is-narrow my-0 token-dropdown"
           onClick={this.handleSearchToggle(target)}>
-          {this.renderToken(token)}
+          <TokenIconBalanceGroupView
+            token={token}
+            refresh={this.state.walletUpdated}
+          />
           <div className="level-item">
             <span className="icon-down">
               <ion-icon name="chevron-down"></ion-icon>
@@ -353,89 +342,7 @@ export default class SwapOrderWidget extends Component {
     );
   }
 
-  renderConfirmView() {
-    return (
-      <div className="page page-stack">
-        <div className="page-inner">
-          <div className="level is-mobile">
-            <div className="level-left">
-              <div className="level-item">
-                <div className="level-item">
-                  <span className="icon ion-icon clickable" onClick={this.handleReview}>
-                    <ion-icon name="arrow-back-outline"></ion-icon>
-                  </span>
-                </div>
-              </div>
-              <div className="level-item">
-                <b className="widget-title">Review Order</b>
-              </div>
-            </div>
-          </div>
 
-          <hr />
-
-          <div className="text-gray-stylized">
-            <span>You Pay</span>
-          </div>
-
-          <div className="level is-mobile">
-            <div className="level-left">
-              {this.renderToken(this.state.from)}
-            </div>
-
-            <div className="level-right">
-              <div className="level-item currency-text">
-                {this.state.fromAmount}
-              </div>
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="text-gray-stylized">
-            <span>You Recieve</span>
-          </div>
-
-          <div className="level is-mobile">
-            <div className="level-left">
-              {this.renderToken(this.state.to)}
-            </div>
-
-            <div className="level-right">
-              <div className="level-item currency-text">
-                {this.state.toAmount}
-              </div>
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="level is-mobile">
-            <div className="level-left">
-              <div className="level-item">
-                <b>Gas Price</b>
-              </div>
-            </div>
-
-            <div className="level-right">
-              <div className="level-item currency-text">
-                0.00000324 ETH
-              </div>
-            </div>
-          </div>
-
-          <hr />
-
-          <div>
-            <button className="button is-primary is-fullwidth is-medium"
-              onClick={this.handleReview}>
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   renderSettingsView() {
     return (
@@ -610,7 +517,14 @@ export default class SwapOrderWidget extends Component {
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          {this.renderConfirmView()}
+          <SwapConfirmSlide
+            to={this.state.to}
+            from={this.state.from}
+            fromAmount={this.state.fromAmount}
+            toAmount={this.state.fromAmount}
+            refresh={this.state.walletUpdated}
+            handleBackOnConfirm={this.handleBackOnConfirm}
+          />
         </CSSTransition>
       </div>
     );
