@@ -127,13 +127,37 @@ window.WalletJS = {
     */
   },
 
-  swap: async function() {
+  /*
+    function swap(
+      IERC20 fromToken,
+      IERC20 destToken,
+      uint256 amount,
+      uint256 minReturn,
+      uint256[] memory distribution,
+      uint256 flags
+    ) public payable returns(uint256 returnAmount)
+  */
+
+  swap: function(fromToken, toToken, amount, minReturn, distribution) {
     const contract = new window.ethers.Contract(
-      tokenContractAddress,
-      window.erc20Abi,
+      this.ADDRESSES.ONE_SPLIT,
+      window.oneSplitAbi,
       this.getProvider()
     );
-    return await contract.balanceOf(this.currentAddress());
+    return contract.swap(
+      fromToken.id,
+      toToken.id,
+      amount, // uint256 in wei
+      minReturn,
+      distribution,
+      0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+    );
+
+    /*
+    returns(
+      uint256 returnAmount
+    )
+    */
   },
 
   isSupported: function() {
