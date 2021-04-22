@@ -547,7 +547,7 @@ export default class SwapOrderWidget extends Component {
 
             <div className="level-right">
               <div className="level-item">
-                <span className="icon ion-icon clickable is-medium">
+                <span className="icon ion-icon disabled is-medium">
                   <ion-icon name="add-circle-outline"></ion-icon>
                 </span>
               </div>
