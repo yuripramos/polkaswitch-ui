@@ -10,6 +10,8 @@ import TokenSwapDistribution from './swap/TokenSwapDistribution';
 import TokenIconBalanceGroupView from './swap/TokenIconBalanceGroupView';
 import MarketLimitToggle from './swap/MarketLimitToggle';
 
+import SwapOrderSlide from './swap/SwapOrderSlide';
+import SwapTokenSearchSlide from './swap/SwapTokenSearchSlide';
 import SwapConfirmSlide from './swap/SwapConfirmSlide';
 import SwapAdvancedSettingsSlide from './swap/SwapAdvancedSettingsSlide';
 
@@ -44,12 +46,13 @@ export default class SwapOrderWidget extends Component {
       showConfirm: false,
       showSearch: false,
 
-      lastWalletUpdate: Date.now()
+      refresh: Date.now()
     };
 
     this.subscribers = [];
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
+    this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleReview = this.handleReview.bind(this);
@@ -57,7 +60,7 @@ export default class SwapOrderWidget extends Component {
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
-
+    this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
   }
 
@@ -76,7 +79,7 @@ export default class SwapOrderWidget extends Component {
 
   handleWalletChange(e) {
     this.setState({
-      lastWalletUpdate: Date.now()
+      refresh: Date.now()
     });
   }
 
@@ -225,140 +228,6 @@ export default class SwapOrderWidget extends Component {
     }.bind(this);
   }
 
-  renderTokenInput(target, token) {
-    if (!token) {
-      return (<div />);
-    }
-
-    var isFrom = (target === "from");
-
-    return (
-      <div className="level is-mobile">
-        <div className="level is-mobile is-narrow my-0 token-dropdown"
-          onClick={this.handleSearchToggle(target)}>
-          <TokenIconBalanceGroupView
-            token={token}
-            refresh={this.state.walletUpdated}
-          />
-          <div className="level-item">
-            <span className="icon-down">
-              <ion-icon name="chevron-down"></ion-icon>
-            </span>
-          </div>
-        </div>
-        <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
-          <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
-            <div
-              className={classnames("control", {
-                "is-loading": !isFrom && this.state.calculatingSwap
-              })}
-              style={{ width: "100%" }}
-            >
-              <input
-                onChange={this.handleTokenAmountChange(target)}
-                value={this.state[`${target}Amount`]}
-                type="number"
-                min="0"
-                step="0.000000000000000001"
-                className="input is-medium"
-                placeholder="0.0"
-                disabled={!isFrom}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderOrderView() {
-    return (
-      <div className="page page-view-order" ref={this.orderPage}>
-        <div className="page-inner">
-          <div className="level is-mobile">
-            <div className="level-left is-flex-grow-1">
-              <MarketLimitToggle />
-            </div>
-
-            <div className="level-right">
-              <div className="level-item">
-                <span className="icon clickable settings-icon" onClick={this.handleSettingsToggle}>
-                  <ion-icon name="settings-outline"></ion-icon>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="notification is-white my-0">
-            <div className="text-gray-stylized">
-              <span>You Pay</span>
-            </div>
-            {this.renderTokenInput("from", this.state.from)}
-          </div>
-
-          <div class="swap-icon-wrapper">
-            <div class="swap-icon-v2 icon" onClick={this.onSwapTokens}>
-              <ion-icon name="swap-vertical-outline"></ion-icon>
-            </div>
-
-            <div class="swap-icon is-hidden" onClick={this.onSwapTokens}>
-              <i class="fas fa-long-arrow-alt-up"></i>
-              <i class="fas fa-long-arrow-alt-down"></i>
-            </div>
-          </div>
-
-          <div className="notification is-info is-light">
-            <div className="text-gray-stylized">
-              <span>You Recieve</span>
-            </div>
-            {this.renderTokenInput("to", this.state.to)}
-          </div>
-
-          <div
-            className={classnames("hint--large", "token-dist-expand-wrapper", {
-              "hint--top": this.state.swapDistribution,
-              "expand": this.state.swapDistribution
-            })}
-            aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
-          >
-            <div className="token-dist-hint-text">
-              <span>Routing Distribution</span>
-              <span className="hint-icon">?</span>
-            </div>
-            <TokenSwapDistribution
-              totalParts={3}
-              parts={this.state.swapDistribution}/>
-          </div>
-
-          <div>
-            <button
-              disabled={Wallet.isConnected() && !this.validateOrderForm()}
-              className="button is-primary is-fullwidth is-medium"
-              onClick={this.handleReview}
-            >
-              {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderTokenSearch() {
-    return (
-      <div className="page page-stack page-view-search">
-        <div className="page-inner">
-          <TokenSearchBar
-            inline={true}
-            focused={this.state.showSearch}
-            placeholder={"Try DAI, LINK or Ethereum ... "}
-            handleClose={this.handleSearchToggle("to")}
-            handleTokenChange={this.handleTokenChange} />
-        </div>
-      </div>
-    );
-  }
-
   render() {
     var animTiming = 300;
     var isStack = !(
@@ -374,14 +243,33 @@ export default class SwapOrderWidget extends Component {
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="fade">
-          {this.renderOrderView()}
+          <SwapOrderSlide
+            ref={this.orderPage}
+            to={this.state.to}
+            from={this.state.from}
+            fromAmount={this.state.fromAmount}
+            toAmount={this.state.toAmount}
+            refresh={this.state.refresh}
+            calculatingSwap={this.state.calculatingSwap}
+            swapDistribution={this.state.swapDistribution}
+            validateOrderForm={this.validateOrderForm}
+            handleSearchToggle={this.handleSearchToggle}
+            handleSettingsToggle={this.handleSettingsToggle}
+            handleTokenAmountChange={this.handleTokenAmountChange}
+            onSwapTokens={this.onSwapTokens}
+            handleSubmit={this.handleReview}
+          />
         </CSSTransition>
         <CSSTransition
           in={this.state.showSearch}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          {this.renderTokenSearch()}
+          <SwapTokenSearchSlide
+            showSearch={this.state.showSearch}
+            handleSearchToggle={this.handleSearchToggle}
+            handleTokenChange={this.handleTokenChange}
+          />
         </CSSTransition>
         <CSSTransition
           in={this.state.showSettings}
@@ -401,8 +289,8 @@ export default class SwapOrderWidget extends Component {
             to={this.state.to}
             from={this.state.from}
             fromAmount={this.state.fromAmount}
-            toAmount={this.state.fromAmount}
-            refresh={this.state.walletUpdated}
+            toAmount={this.state.toAmount}
+            refresh={this.state.refresh}
             handleBackOnConfirm={this.handleBackOnConfirm}
           />
         </CSSTransition>
