@@ -8,23 +8,31 @@ window.WalletJS = {
     ONE_SPLIT_VIEW: "0x4B5Dc79B38B6e75347Da6d9172Fa240F743401ad"
   },
 
+  isValidNetwork: false,
+
   initialize: async function() {
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', function (accounts) {
         // Time to reload your interface with accounts[0]!
         console.log(accounts);
+        EventManager.emitEvent('walletUpdated', 1);
       });
 
       window.ethereum.on('disconnect', function(providerRpcError) {
         console.log(providerRpcError);
         EventManager.emitEvent('walletUpdated', 1);
       });
+
+      if (window.ethereum.selectedAddress) {
+        // cache value
+        await this._isValidTestNetwork();
+      }
     }
 
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
 
-    EventManager.listenFor('initiateWalletConnect', this.connectWallet);
+    EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
   },
 
   getProvider: function() {
@@ -132,8 +140,29 @@ window.WalletJS = {
     return (typeof window.ethereum !== 'undefined');
   },
 
+  _isValidTestNetwork: async function() {
+    if (!(window.ethereum && window.ethereum.selectedAddress)) {
+      this.isValidNetwork = false;
+      return false;
+    }
+
+    else {
+      let network = await this.getProvider().getNetwork();
+      // moonbeam test-network ID
+      this.isValidNetwork = (network.chainId === 1287);
+      return this.isValidNetwork;
+    }
+  },
+
   isConnected: function() {
-    return window.ethereum && window.ethereum.selectedAddress;
+    return window.ethereum &&
+      window.ethereum.selectedAddress &&
+      this.isValidNetwork;
+  },
+
+  isConnectedToAnyNetwork: function() {
+    return window.ethereum &&
+      window.ethereum.selectedAddress;
   },
 
   currentAddress: function() {
@@ -146,15 +175,18 @@ window.WalletJS = {
         .then(function(accounts) {
           // Metamask currently only ever provide a single account
           const account = accounts[0];
-          console.log('Ethereum Account: ', account);
           EventManager.emitEvent('walletUpdated', 1);
-          resolve(account);
-        })
+
+          return this._isValidTestNetwork().then(function(v) {
+            EventManager.emitEvent('walletUpdated', 1);
+            resolve(account);
+          });
+        }.bind(this))
         .catch(function(e) {
           console.error(e);
           reject(e);
         });
-    });
+    }.bind(this));
   }
 };
 

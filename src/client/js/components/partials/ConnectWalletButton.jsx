@@ -57,38 +57,14 @@ export default class ConnectWalletButton extends Component {
     }
   }
 
-  renderDropdownContent() {
-    if (Wallet.isConnected()) {
-      return (
-        <div className="dropdown-content">
-          <div className="dropdown-item">
-            <div>Account:</div>
-            <span className="tag is-info is-light">
-              {Wallet.currentAddress()}
-            </span>
-          </div>
-        </div>
-      );
-    } else {
-      return (<div/>);
-    }
-  }
-
   render() {
     return (
       <div className="wallet-status">
-        <div className="dropdown is-right is-hoverable">
-          <div className="dropdown-trigger">
-            <button className="button is-primary"
-              onClick={this.handleConnection.bind(this)}
-              aria-haspopup="true" aria-controls="dropdown-menu6">
-              {this.renderButtonContent()}
-            </button>
-          </div>
-          <div className="dropdown-menu" id="dropdown-menu6" role="menu">
-            {this.renderDropdownContent()}
-          </div>
-        </div>
+        <button className="button is-primary"
+          onClick={this.handleConnection.bind(this)}
+          aria-haspopup="true" aria-controls="dropdown-menu6">
+          {this.renderButtonContent()}
+        </button>
       </div>
     );
   }

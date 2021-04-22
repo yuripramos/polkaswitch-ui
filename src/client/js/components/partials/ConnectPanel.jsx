@@ -83,7 +83,12 @@ export default class ConnectPanel extends Component {
               </div>
             </div>
 
-            <div className="option" onClick={this.handleConnection}>
+            <div
+              className={classnames("option", {
+                "connected": Wallet.isConnected()
+              })}
+              onClick={this.handleConnection}
+            >
               <div className="level is-mobile is-narrow">
                 <div className="level-left">
                   <div className="level-item">
@@ -91,19 +96,28 @@ export default class ConnectPanel extends Component {
                       <div>MetaMask</div>
                       {Wallet.isConnected() && (
                         <>
-                          <span className="connected">Connected</span><br/>
-                          <span className="connected">
+                          <div className="connected">Connected</div>
+                          <div className="connected">
                             {Wallet.currentAddress()}
-                          </span>
+                          </div>
                         </>
                       )}
                       {!Wallet.isSupported() && (
                         <>
-                          <span className="connected">
+                          <div className="error">
                             Please install Metamask Plugin first!
-                          </span>
+                          </div>
                         </>
                       )}
+                      {Wallet.isConnectedToAnyNetwork() &&
+                          !Wallet.isValidNetwork && (
+                            <>
+                            <div className="error">
+                              You are connected to the wrong test network!<br/>
+                              Please connect to the Moonbeam Alphanet
+                            </div>
+                            </>
+                          )}
                     </div>
                   </div>
                 </div>

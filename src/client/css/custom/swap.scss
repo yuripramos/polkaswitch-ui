@@ -344,9 +344,20 @@ html, body {
       background: $link-light;
     }
 
+    &.connected {
+      background: $success-light;
+      border-color: $success;
+    }
+
     .connected {
       font-size: 12px;
-      color: $link;
+      color: $success;
+      font-weight: bold;
+    }
+
+    .error {
+      color: $danger;
+      font-size: 12px;
       font-weight: bold;
     }
 
