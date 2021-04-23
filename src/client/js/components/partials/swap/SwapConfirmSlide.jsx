@@ -6,6 +6,7 @@ import numeral from 'numeral';
 import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
+import SwapTransactionDetails from './SwapTransactionDetails';
 import MarketLimitToggle from './MarketLimitToggle';
 
 import Wallet from '../../../utils/wallet';
@@ -102,21 +103,12 @@ export default class SwapConfirmSlide extends Component {
 
           <hr />
 
-          <div className="level is-mobile">
-            <div className="level-left">
-              <div className="level-item">
-                <b>Gas Price</b>
-              </div>
-            </div>
-
-            <div className="level-right">
-              <div className="level-item currency-text">
-                0.00000324 ETH
-              </div>
-            </div>
-          </div>
-
-          <hr />
+          <SwapTransactionDetails
+            to={this.props.to}
+            from={this.props.from}
+            toAmount={this.props.toAmount}
+            fromAmount={this.props.fromAmount}
+          />
 
           <div
             className={classnames("hint--large", "token-dist-expand-wrapper", {

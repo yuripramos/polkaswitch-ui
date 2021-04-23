@@ -92,9 +92,13 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
-  onSwapEstimateComplete(fromAmount, toAmount) {
+  onSwapEstimateComplete(fromAmount, toAmount, dist) {
     this.box.current.style.height = "";
-    this.setState({ fromAmount: fromAmount, toAmount: toAmount });
+    this.setState({
+      fromAmount: fromAmount,
+      toAmount: toAmount,
+      swapDistribution: dist
+    });
   }
 
   onSwapTokens(e) {
@@ -169,6 +173,7 @@ export default class SwapOrderWidget extends Component {
             refresh={this.state.refresh}
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
+            swapDistribution={this.state.swapDistribution}
             onSwapEstimateComplete={this.onSwapEstimateComplete}
             onSwapTokens={this.onSwapTokens}
             handleSubmit={this.handleConfirm}

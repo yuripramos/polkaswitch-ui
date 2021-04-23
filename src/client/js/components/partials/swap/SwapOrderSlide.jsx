@@ -54,11 +54,11 @@ export default class SwapOrderSlide extends Component {
 
           this.props.onSwapEstimateComplete(
             fromAmount,
-            window.ethers.utils.formatEther(result.returnAmount)
+            window.ethers.utils.formatEther(result.returnAmount),
+            dist
           )
 
           this.setState({
-            swapDistribution: dist,
             calculatingSwap: false
           }, function() {
             Metrics.track("swap-estimate-result", {
@@ -66,7 +66,7 @@ export default class SwapOrderSlide extends Component {
               to: this.props.to,
               fromAmont: this.props.fromAmount,
               toAmount: this.props.toAmount,
-              swapDistribution: this.state.swapDistribution
+              swapDistribution: this.props.swapDistribution
             });
           }.bind(this));
         }.bind(this));
@@ -86,7 +86,8 @@ export default class SwapOrderSlide extends Component {
 
     this.props.onSwapEstimateComplete(
       targetAmount,
-      this.props.toAmount
+      this.props.toAmount,
+      this.props.swapDistribution
     )
 
     this.fetchSwapEstimate(targetAmount);
@@ -204,8 +205,8 @@ export default class SwapOrderSlide extends Component {
 
           <div
             className={classnames("hint--large", "token-dist-expand-wrapper", {
-              "hint--top": this.state.swapDistribution,
-              "expand": this.state.swapDistribution
+              "hint--top": this.props.swapDistribution,
+              "expand": this.props.swapDistribution
             })}
             aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
           >
@@ -215,7 +216,7 @@ export default class SwapOrderSlide extends Component {
             </div>
             <TokenSwapDistribution
               totalParts={3}
-              parts={this.state.swapDistribution}/>
+              parts={this.props.swapDistribution}/>
           </div>
 
           <div>

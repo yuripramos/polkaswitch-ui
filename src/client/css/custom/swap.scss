@@ -261,10 +261,45 @@ html, body {
   margin: 2px 6px;
 }
 
+.swap-trans-details {
+  padding: 15px;
+  background: #f2f7f9;
+  border-radius: 10px;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+
+  .detail {
+    padding-bottom: 10px;
+  }
+
+  .detail-title {
+    font-size: 13px;
+    color: #9db0be;
+    display: flex;
+    line-height: 15px;
+  }
+
+  .detail-value {
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 15px;
+    color: #2160c4;
+  }
+
+  .hint-icon {
+    width: 11px;
+    height: 11px;
+    display: flex;
+    margin: 2px 4px;
+    background: #9db0be;
+    line-height: 15px;
+  }
+}
+
 .token-dist-hint-text {
-  font-size: 10px;
-  color: #999;
-  padding-bottom: 4px;
+  font-size: 14px;
+  color: #9db0be;
+  padding-bottom: 6px;
   display: flex;
 
   span {
@@ -276,7 +311,7 @@ html, body {
     height: 11px;
     display: flex;
     margin: 2px 4px;
-    background: $info;
+    background: #9db0be;
   }
 }
 

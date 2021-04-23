@@ -20,15 +20,15 @@ export default class SwapTransactionDetails extends Component {
   render() {
     return (
       <div className="swap-trans-details">
-        <div className="level is-mobile is-narrow detail">
+        <div
+          className="level is-mobile is-narrow detail hint--bottom hint--medium"
+          aria-label="The calculated exchange rate for this transaction"
+        >
           <div className="level-left">
             <div className="level-item">
-              <div className-"detail-title">
-                <span>Title</span>
-                <span
-                  className="hint-icon hint--bottom hint--medium"
-                  aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees."
-                >?</span>
+              <div className="detail-title">
+                <span>Rate</span>
+                <span className="hint-icon">?</span>
               </div>
             </div>
           </div>
@@ -36,20 +36,20 @@ export default class SwapTransactionDetails extends Component {
           <div className="level-right">
             <div className="level-item">
               <div className="detail-value">
-                0.00000324 ETH
+                1 {this.props.from.symbol} ~= {numeral(this.props.toAmount / this.props.fromAmount).format("0.0[0000000000000]")} {this.props.to.symbol}
               </div>
             </div>
           </div>
         </div>
-        <div className="level is-mobile is-narrow detail">
+        <div
+          className="level is-mobile is-narrow detail hint--bottom hint--medium"
+          aria-label="Minimum Received"
+        >
           <div className="level-left">
             <div className="level-item">
-              <div className-"detail-title">
-                <span>Title</span>
-                <span
-                  className="hint-icon hint--bottom hint--medium"
-                  aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees."
-                >?</span>
+              <div className="detail-title">
+                <span>Minimum Received</span>
+                <span className="hint-icon">?</span>
               </div>
             </div>
           </div>
@@ -57,7 +57,49 @@ export default class SwapTransactionDetails extends Component {
           <div className="level-right">
             <div className="level-item">
               <div className="detail-value">
-                0.00000324 ETH
+                {this.props.toAmount} {this.props.to.symbol}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="level is-mobile is-narrow detail hint--bottom hint--medium"
+          aria-label="The difference between the current market price and the price you will actually pay when performing this swap"
+        >
+          <div className="level-left">
+            <div className="level-item">
+              <div className="detail-title">
+                <span>Price Impact</span>
+                <span className="hint-icon">?</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="level-right">
+            <div className="level-item">
+              <div className="detail-value">
+                + 3.5%
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="level is-mobile is-narrow detail hint--bottom hint--medium"
+          aria-label="Total transaction cost for this swap which includes Gas fees and Liquidity Provider Fees"
+        >
+          <div className="level-left">
+            <div className="level-item">
+              <div className="detail-title">
+                <span>Transaction Cost</span>
+                <span className="hint-icon">?</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="level-right">
+            <div className="level-item">
+              <div className="detail-value">
+                0.003434 ETH
               </div>
             </div>
           </div>

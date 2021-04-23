@@ -23,6 +23,13 @@ window.WalletJS = {
         EventManager.emitEvent('walletUpdated', 1);
       });
 
+      window.ethereum.on('chainChanged', function(chainId) {
+        console.log(chainId);
+        this._isValidTestNetwork().then(function() {
+          EventManager.emitEvent('walletUpdated', 1);
+        }.bind(this));
+      }.bind(this));
+
       if (window.ethereum.selectedAddress) {
         // cache value
         await this._isValidTestNetwork();
