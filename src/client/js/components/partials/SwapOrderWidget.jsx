@@ -52,16 +52,14 @@ export default class SwapOrderWidget extends Component {
     this.subscribers = [];
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
-    this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
-    this.handleReview = this.handleReview.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
     this.handleBackOnConfirm = this.handleBackOnConfirm.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
-    this.validateOrderForm = this.validateOrderForm.bind(this);
-    this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
+    this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
   }
 
   componentDidMount() {
@@ -94,60 +92,9 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
-  validateOrderForm() {
-    return (this.state.from && this.state.to &&
-      this.state.fromAmount && this.state.fromAmount.length > 0 &&
-      this.state.toAmount && this.state.toAmount.length > 0 &&
-      !this.state.calculatingSwap);
-  }
-
-  fetchSwapEstimate() {
-    if (!this.state.fromAmount ||
-      this.state.fromAmount.length == 0) {
-      return;
-    }
-
-    var timeNow = Date.now();
-
-    this.setState({
-      calculatingSwap: true,
-      calculatingSwapTimestamp: timeNow
-    }, function() {
-      var fromAmount = window.ethers.utils.parseUnits(this.state.fromAmount);
-
-      _.delay(function() {
-        Wallet.getExpectedReturn(
-          this.state.from,
-          this.state.to,
-          fromAmount
-        ).then(function(result) {
-          if (this.state.calculatingSwapTimestamp != timeNow) {
-            return;
-          }
-
-          var dist = _.map(result.distribution, function(e) {
-            return e.toNumber();
-          });
-
-          this.box.current.style.height = "";
-
-          this.setState({
-            toAmount: window.ethers.utils.formatEther(result.returnAmount),
-            swapDistribution: dist,
-            calculatingSwap: false
-          }, function() {
-            Metrics.track("swap-estimate-result", {
-              from: this.state.from,
-              to: this.state.to,
-              fromAmont: this.state.fromAmount,
-              toAmount: this.state.toAmount,
-              swapDistribution: this.state.swapDistribution
-            });
-          }.bind(this));
-        }.bind(this));
-      }.bind(this), 500);
-
-    }.bind(this));
+  onSwapEstimateComplete(fromAmount, toAmount) {
+    this.box.current.style.height = "";
+    this.setState({ fromAmount: fromAmount, toAmount: toAmount });
   }
 
   onSwapTokens(e) {
@@ -175,20 +122,11 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  handleReview(e) {
-    if (!Wallet.isConnected()) {
-      EventManager.emitEvent('promptWalletConnect', 1);
-    }
-
-    else {
-      if (this.validateOrderForm()) {
-        Metrics.track("swap-review-step", { clossing: this.state.showConfirm });
-
-        this.setState({
-          showConfirm: !this.state.showConfirm
-        });
-      }
-    }
+  handleConfirm(e) {
+    Metrics.track("swap-review-step", { closing: this.state.showConfirm });
+    this.setState({
+      showConfirm: true
+    });
   }
 
   handleBackOnConfirm(e) {
@@ -205,26 +143,6 @@ export default class SwapOrderWidget extends Component {
         to: this.state.to
       });
     }.bind(this));
-  }
-
-  handleTokenAmountChange(target) {
-    return function(e) {
-      var targetAmount = e.target.value;
-      var _s = {};
-      _s[`${target}Amount`] = targetAmount;
-
-      Metrics.track("swap-token-value", {
-        value: e.target.value,
-        from: this.state.from,
-        to: this.state.to
-      });
-
-      this.setState(_s, function() {
-        if (target == 'from') {
-          this.fetchSwapEstimate();
-        }
-      }.bind(this));
-    }.bind(this);
   }
 
   render() {
@@ -249,14 +167,11 @@ export default class SwapOrderWidget extends Component {
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
             refresh={this.state.refresh}
-            calculatingSwap={this.state.calculatingSwap}
-            swapDistribution={this.state.swapDistribution}
-            validateOrderForm={this.validateOrderForm}
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
-            handleTokenAmountChange={this.handleTokenAmountChange}
+            onSwapEstimateComplete={this.onSwapEstimateComplete}
             onSwapTokens={this.onSwapTokens}
-            handleSubmit={this.handleReview}
+            handleSubmit={this.handleConfirm}
           />
         </CSSTransition>
         <CSSTransition
@@ -290,6 +205,7 @@ export default class SwapOrderWidget extends Component {
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
             refresh={this.state.refresh}
+            swapDistribution={this.state.swapDistribution}
             handleBackOnConfirm={this.handleBackOnConfirm}
           />
         </CSSTransition>

@@ -14,6 +14,101 @@ import EventManager from '../../../utils/events';
 export default class SwapOrderSlide extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      calculatingSwap: false,
+      calculatingSwapTimestamp: Date.now()
+    };
+
+    this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
+    this.validateOrderForm = this.validateOrderForm.bind(this);
+    this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  fetchSwapEstimate(fromAmount) {
+    if (!fromAmount || fromAmount.length == 0) {
+      return;
+    }
+
+    var timeNow = Date.now();
+
+    this.setState({
+      calculatingSwap: true,
+      calculatingSwapTimestamp: timeNow
+    }, function() {
+      var fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
+
+      _.delay(function() {
+        Wallet.getExpectedReturn(
+          this.props.from,
+          this.props.to,
+          fromAmountBN
+        ).then(function(result) {
+          if (this.state.calculatingSwapTimestamp != timeNow) {
+            return;
+          }
+
+          var dist = _.map(result.distribution, function(e) {
+            return e.toNumber();
+          });
+
+          this.props.onSwapEstimateComplete(
+            fromAmount,
+            window.ethers.utils.formatEther(result.returnAmount)
+          )
+
+          this.setState({
+            swapDistribution: dist,
+            calculatingSwap: false
+          }, function() {
+            Metrics.track("swap-estimate-result", {
+              from: this.props.from,
+              to: this.props.to,
+              fromAmont: this.props.fromAmount,
+              toAmount: this.props.toAmount,
+              swapDistribution: this.state.swapDistribution
+            });
+          }.bind(this));
+        }.bind(this));
+      }.bind(this), 500);
+
+    }.bind(this));
+  }
+
+  handleTokenAmountChange(e) {
+    var targetAmount = e.target.value;
+
+    Metrics.track("swap-token-value", {
+      value: targetAmount,
+      from: this.props.from,
+      to: this.props.to
+    });
+
+    this.props.onSwapEstimateComplete(
+      targetAmount,
+      this.props.toAmount
+    )
+
+    this.fetchSwapEstimate(targetAmount);
+  }
+
+  validateOrderForm() {
+    return (this.props.from && this.props.to &&
+      this.props.fromAmount && this.props.fromAmount.length > 0 &&
+      this.props.toAmount && this.props.toAmount.length > 0 &&
+      !this.state.calculatingSwap);
+  }
+
+  handleSubmit(e) {
+    if (!Wallet.isConnected()) {
+      EventManager.emitEvent('promptWalletConnect', 1);
+    }
+
+    else {
+      if (this.validateOrderForm()) {
+        this.props.handleSubmit();
+      }
+    }
   }
 
   renderTokenInput(target, token) {
@@ -41,12 +136,12 @@ export default class SwapOrderSlide extends Component {
           <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
             <div
               className={classnames("control", {
-                "is-loading": !isFrom && this.props.calculatingSwap
+                "is-loading": !isFrom && this.state.calculatingSwap
               })}
               style={{ width: "100%" }}
             >
               <input
-                onChange={this.props.handleTokenAmountChange(target)}
+                onChange={this.handleTokenAmountChange}
                 value={this.props[`${target}Amount`]}
                 type="number"
                 min="0"
@@ -109,8 +204,8 @@ export default class SwapOrderSlide extends Component {
 
           <div
             className={classnames("hint--large", "token-dist-expand-wrapper", {
-              "hint--top": this.props.swapDistribution,
-              "expand": this.props.swapDistribution
+              "hint--top": this.state.swapDistribution,
+              "expand": this.state.swapDistribution
             })}
             aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
           >
@@ -120,14 +215,14 @@ export default class SwapOrderSlide extends Component {
             </div>
             <TokenSwapDistribution
               totalParts={3}
-              parts={this.props.swapDistribution}/>
+              parts={this.state.swapDistribution}/>
           </div>
 
           <div>
             <button
-              disabled={Wallet.isConnected() && !this.props.validateOrderForm()}
+              disabled={Wallet.isConnected() && !this.validateOrderForm()}
               className="button is-primary is-fullwidth is-medium"
-              onClick={this.props.handleSubmit}
+              onClick={this.handleSubmit}
             >
               {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
             </button>
