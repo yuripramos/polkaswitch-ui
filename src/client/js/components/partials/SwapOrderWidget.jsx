@@ -158,7 +158,10 @@ export default class SwapOrderWidget extends Component {
   handleBackOnResults(e) {
     this.setState({
       showConfirm: false,
-      showResults: false
+      showResults: false,
+      toAmount: '',
+      fromAmount: '',
+      swapDistribution: undefined
     });
   }
 
