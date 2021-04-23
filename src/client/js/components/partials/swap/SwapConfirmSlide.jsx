@@ -118,6 +118,22 @@ export default class SwapConfirmSlide extends Component {
 
           <hr />
 
+          <div
+            className={classnames("hint--large", "token-dist-expand-wrapper", {
+              "hint--top": this.props.swapDistribution,
+              "expand": this.props.swapDistribution
+            })}
+            aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
+          >
+            <div className="token-dist-hint-text">
+              <span>Routing Distribution</span>
+              <span className="hint-icon">?</span>
+            </div>
+            <TokenSwapDistribution
+              totalParts={3}
+              parts={this.props.swapDistribution}/>
+          </div>
+
           <div>
             <button className="button is-primary is-fullwidth is-medium"
               onClick={this.handleSwapConfirm}>
