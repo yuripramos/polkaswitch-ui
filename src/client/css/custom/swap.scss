@@ -467,33 +467,7 @@ $swap-widget-anim-timing: 300ms;
     display: none;
   }
 
-  .fade-enter {
-    opacity: 0;
-    transform: scale(0.75);
-    pointer-events: none;
-  }
-  .fade-enter-active {
-    opacity: 1;
-    transform: scale(1);
-    pointer-events: none;
-  }
-  .fade-exit {
-    opacity: 1;
-    transform: scale(1);
-    position: absolute;
-    height: 800px;
-    pointer-events: none;
-  }
-  .fade-exit-active {
-    opacity: 0;
-    transform: scale(0.75);
-    pointer-events: none;
-    height: 800px;
-    position: absolute;
-  }
-  .fade-exit-done {
-    display: none;
-  }
+  // TRANSITIONS
 
   .slidein-enter {
     display: block;
@@ -523,6 +497,41 @@ $swap-widget-anim-timing: 300ms;
   .slidein-exit-done {
     display: none;
   }
+
+  .fade-enter {
+    opacity: 0;
+    transform: scale(0.75);
+    pointer-events: none;
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: none;
+  }
+  .fade-exit {
+    opacity: 1;
+    transform: scale(1);
+    position: absolute;
+    height: 800px;
+    pointer-events: none;
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transform: scale(0.75);
+    pointer-events: none;
+    height: 800px;
+    position: absolute;
+  }
+  .fade-exit-done {
+    display: none;
+  }
+
+  // special case for double-stacked cards (confirm)
+  .fade-enter.slidein-exit {
+    display: none;
+  }
+
+  // END OF TRANSITIONS
 
   .widget-title {
     font-size: 1.10rem;

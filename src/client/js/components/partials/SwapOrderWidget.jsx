@@ -14,6 +14,7 @@ import SwapOrderSlide from './swap/SwapOrderSlide';
 import SwapTokenSearchSlide from './swap/SwapTokenSearchSlide';
 import SwapConfirmSlide from './swap/SwapConfirmSlide';
 import SwapAdvancedSettingsSlide from './swap/SwapAdvancedSettingsSlide';
+import SwapFinalResultSlide from './swap/SwapFinalResultSlide';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
@@ -45,6 +46,7 @@ export default class SwapOrderWidget extends Component {
       showSettings: false,
       showConfirm: false,
       showSearch: false,
+      showResults: false,
 
       refresh: Date.now()
     };
@@ -55,7 +57,9 @@ export default class SwapOrderWidget extends Component {
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
+    this.handleResults = this.handleResults.bind(this);
     this.handleBackOnConfirm = this.handleBackOnConfirm.bind(this);
+    this.handleBackOnResults = this.handleBackOnResults.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
@@ -98,7 +102,12 @@ export default class SwapOrderWidget extends Component {
       fromAmount: fromAmount,
       toAmount: toAmount,
       swapDistribution: dist
-    });
+    }, function() {
+      _.delay(function() {
+        // put back height after dist expand anim
+        this.updateBoxHeight();
+      }.bind(this), 301)
+    }.bind(this));
   }
 
   onSwapTokens(e) {
@@ -133,8 +142,22 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
+  handleResults(e) {
+    this.setState({
+      showConfirm: false,
+      showResults: true
+    });
+  }
+
   handleBackOnConfirm(e) {
     this.setState({ showConfirm: false });
+  }
+
+  handleBackOnResults(e) {
+    this.setState({
+      showConfirm: false,
+      showResults: false
+    });
   }
 
   handleTokenChange(token) {
@@ -154,7 +177,8 @@ export default class SwapOrderWidget extends Component {
     var isStack = !(
       this.state.showSettings ||
       this.state.showConfirm ||
-      this.state.showSearch
+      this.state.showSearch ||
+      this.state.showResults
     );
 
     return (
@@ -200,18 +224,33 @@ export default class SwapOrderWidget extends Component {
           />
         </CSSTransition>
         <CSSTransition
-          in={this.state.showConfirm}
+          in={this.state.showConfirm || this.state.showResults}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          <SwapConfirmSlide
-            to={this.state.to}
-            from={this.state.from}
-            fromAmount={this.state.fromAmount}
-            toAmount={this.state.toAmount}
-            refresh={this.state.refresh}
-            swapDistribution={this.state.swapDistribution}
-            handleBackOnConfirm={this.handleBackOnConfirm}
+          <CSSTransition
+            in={!this.state.showResults}
+            timeout={animTiming}
+            classNames="fade">
+            <SwapConfirmSlide
+              to={this.state.to}
+              from={this.state.from}
+              fromAmount={this.state.fromAmount}
+              toAmount={this.state.toAmount}
+              refresh={this.state.refresh}
+              swapDistribution={this.state.swapDistribution}
+              handleTransactionComplete={this.handleResults}
+              handleBackOnConfirm={this.handleBackOnConfirm}
+            />
+          </CSSTransition>
+        </CSSTransition>
+        <CSSTransition
+          in={this.state.showResults}
+          timeout={animTiming}
+          onEntering={this.triggerHeightResize}
+          classNames="slidein">
+          <SwapFinalResultSlide
+            handleDismiss={this.handleBackOnResults}
           />
         </CSSTransition>
       </div>

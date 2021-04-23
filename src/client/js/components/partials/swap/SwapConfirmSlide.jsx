@@ -16,6 +16,8 @@ import EventManager from '../../../utils/events';
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
     super(props);
+
+    this.handleSwapConfirm = this.handleSwapConfirm.bind(this);
   }
 
   componentDidMount() {
@@ -24,6 +26,43 @@ export default class SwapConfirmSlide extends Component {
 
   componentDidUnmount() {
     this.subWalletUpdated.unsubscribe();
+  }
+
+  handleSwapConfirm() {
+    this.props.handleTransactionComplete();
+    return;
+
+    Wallet.getExpectedReturn(
+      this.props.from,
+      this.props.to,
+      fromAmountBN
+    ).then(function(result) {
+      if (this.state.calculatingSwapTimestamp != timeNow) {
+        return;
+      }
+
+      var dist = _.map(result.distribution, function(e) {
+        return e.toNumber();
+      });
+
+      this.props.onSwapEstimateComplete(
+        fromAmount,
+        window.ethers.utils.formatEther(result.returnAmount),
+        dist
+      )
+
+      this.setState({
+        calculatingSwap: false
+      }, function() {
+        Metrics.track("swap-estimate-result", {
+          from: this.props.from,
+          to: this.props.to,
+          fromAmont: this.props.fromAmount,
+          toAmount: this.props.toAmount,
+          swapDistribution: this.props.swapDistribution
+        });
+      }.bind(this));
+    }.bind(this));
   }
 
   render() {
@@ -129,7 +168,7 @@ export default class SwapConfirmSlide extends Component {
           <div>
             <button className="button is-primary is-fullwidth is-medium"
               onClick={this.handleSwapConfirm}>
-              Confirm
+              Confirm Order
             </button>
           </div>
         </div>
