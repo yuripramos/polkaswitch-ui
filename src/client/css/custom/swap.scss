@@ -709,6 +709,28 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .page-view-results {
+    .view {
+      text-align: center;
+      margin: 70px 0;
+
+      .icon {
+        font-size: 65px;
+        width: 75px;
+        color: $primary;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .details {
+        font-size: 15px;
+        color: #9db0be;
+      }
+    }
+  }
+
   .page-view-search {
     .token-search-bar {
       input {

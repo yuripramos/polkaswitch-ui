@@ -18,7 +18,7 @@ export default class SwapFinalResultSlide extends Component {
 
   render() {
     return (
-      <div className="page page-stack">
+      <div className="page page-stack page-view-results">
         <div className="page-inner">
           <div className="level is-mobile">
             <div className="level-left">
@@ -28,19 +28,26 @@ export default class SwapFinalResultSlide extends Component {
                   <ion-icon name="arrow-back-outline"></ion-icon>
                 </span>
               </div>
-              <div className="level-item">
-                <b className="widget-title">Transaction</b>
-              </div>
             </div>
           </div>
 
-          <hr />
-
+          <div className="view">
+            <div className="icon">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </div>
+            <div className="title">
+              Transaction Complete
+            </div>
+            <div className="details">
+              <div>{this.props.transactionHash}</div>
+              <div>Swapped {this.props.fromAmount} {this.props.from.symbol} to {this.props.toAmount} {this.props.to.symbol}</div>
+            </div>
+          </div>
 
           <div>
             <button
               className="button is-primary is-fullwidth is-medium"
-              onClick={this.props.handleDimiss}
+              onClick={this.props.handleDismiss}
             >
               Return Home
             </button>

@@ -48,6 +48,8 @@ export default class SwapOrderWidget extends Component {
       showSearch: false,
       showResults: false,
 
+      transactionHash: "0xf520e322b0ff308e4ae2db38b57b5fa081192df1",
+
       refresh: Date.now()
     };
 
@@ -250,6 +252,11 @@ export default class SwapOrderWidget extends Component {
           onEntering={this.triggerHeightResize}
           classNames="slidein">
           <SwapFinalResultSlide
+            to={this.state.to}
+            from={this.state.from}
+            fromAmount={this.state.fromAmount}
+            toAmount={this.state.toAmount}
+            transactionHash={this.state.transactionHash}
             handleDismiss={this.handleBackOnResults}
           />
         </CSSTransition>
