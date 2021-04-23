@@ -8,10 +8,35 @@ var morgan = require('morgan');
 var flash = require('connect-flash');
 var _ = require('underscore');
 
+var Sentry = require('@sentry/node');
+var Tracing = require('@sentry/tracing');
+
 var passport = require('./middleware/auth');
 
 const isProduction = (process.env.NODE_ENV === 'production');
 const app = express();
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [
+    // enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // enable Express.js middleware tracing
+    new Tracing.Integrations.Express({ app }),
+  ],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
+
+// RequestHandler creates a separate execution context using
+// domains, so that every transaction/span/breadcrumb is
+// attached to its own Hub instance
+app.use(Sentry.Handlers.requestHandler());
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
 
 app.use(morgan('dev'));
 
@@ -53,6 +78,10 @@ app.use(helmet.contentSecurityPolicy({
       "*.mixpanel.com",
       // mixpanel script
       "'sha256-Ek6kJj5tJB6qdv7Ix1leD6oYPx929aOB8lylPKsTDlE='"
+    ],
+    "default-src": [
+      "'self'",
+      "*.ingest.sentry.io"
     ]
   }
 }));
@@ -99,6 +128,10 @@ app.get('/', function(req, res, next) {
   }
 });
 
+app.get("/debug", function(req, res) {
+    throw new Error("Test Error");
+});
+
 app.get('/login', function(req, res, next) {
   res.render('pages/login', { messages: req.flash('error') });
 });
@@ -120,11 +153,15 @@ app.use(function(req, res, next) {
 app.use(express.static('dist'));
 app.use(express.static('public'));
 
-app.use(function (req, res, next) {
+app.use(function onNotFound(req, res, next) {
   res.status(404).send({ error: "not found" });
 })
 
-app.use(function(err, req, res, next) {
+// The error handler must be before any other error
+// middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
+
+app.use(function onError(err, req, res, next) {
   console.error(err);
   res.status(500).send({ error: 'crash - (X_X)' })
 });

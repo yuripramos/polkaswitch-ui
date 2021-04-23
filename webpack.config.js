@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -7,7 +8,7 @@ const outputDirectory = 'dist';
 
 module.exports = (env) => {
   console.log(env);
-  const isProduction = env.production;
+  const isProduction = !!env.production;
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
@@ -71,6 +72,9 @@ module.exports = (env) => {
       new HtmlWebpackPlugin({
         template: './src/client/index.html',
         hash: true
+      }),
+      new webpack.EnvironmentPlugin({
+        IS_PRODUCTION: !!isProduction
       })
     ],
     experiments: {

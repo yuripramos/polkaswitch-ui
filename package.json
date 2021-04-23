@@ -14,6 +14,9 @@
   },
   "author": "polkaswitch",
   "dependencies": {
+    "@sentry/node": "^6.3.1",
+    "@sentry/react": "^6.3.1",
+    "@sentry/tracing": "^6.3.1",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
     "compression": "1.7.4",
