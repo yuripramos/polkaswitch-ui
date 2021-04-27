@@ -12,6 +12,7 @@ var Sentry = require('@sentry/node');
 var Tracing = require('@sentry/tracing');
 
 var passport = require('./middleware/auth');
+var redis = require('./middleware/redis');
 
 const isProduction = (process.env.NODE_ENV === 'production');
 const app = express();
@@ -169,6 +170,7 @@ app.use(function onError(err, req, res, next) {
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Listening on port ${process.env.PORT || 5000}!`);
 });
+
 
 process.on('SIGTERM', () => {
   debug('SIGTERM signal received: closing HTTP server')
