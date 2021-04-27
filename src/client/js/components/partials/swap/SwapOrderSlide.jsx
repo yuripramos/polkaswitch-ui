@@ -25,9 +25,11 @@ export default class SwapOrderSlide extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  fetchSwapEstimate(fromAmount) {
+  fetchSwapEstimate(origFromAmount) {
+    var fromAmount = origFromAmount;
+
     if (!fromAmount || fromAmount.length == 0) {
-      return;
+      fromAmount = '0';
     }
 
     var timeNow = Date.now();
@@ -53,7 +55,7 @@ export default class SwapOrderSlide extends Component {
           });
 
           this.props.onSwapEstimateComplete(
-            fromAmount,
+            origFromAmount,
             window.ethers.utils.formatEther(result.returnAmount),
             dist
           )
@@ -64,7 +66,7 @@ export default class SwapOrderSlide extends Component {
             Metrics.track("swap-estimate-result", {
               from: this.props.from,
               to: this.props.to,
-              fromAmont: this.props.fromAmount,
+              fromAmont: fromAmount,
               toAmount: this.props.toAmount,
               swapDistribution: this.props.swapDistribution
             });
@@ -198,7 +200,7 @@ export default class SwapOrderSlide extends Component {
 
           <div className="notification is-info is-light">
             <div className="text-gray-stylized">
-              <span>You Recieve</span>
+              <span>You Receive</span>
             </div>
             {this.renderTokenInput("to", this.props.to)}
           </div>
