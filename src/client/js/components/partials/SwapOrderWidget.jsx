@@ -48,7 +48,7 @@ export default class SwapOrderWidget extends Component {
       showSearch: false,
       showResults: false,
 
-      transactionHash: "0xf520e322b0ff308e4ae2db38b57b5fa081192df1",
+      transactionHash: "",
 
       refresh: Date.now()
     };
@@ -144,8 +144,9 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  handleResults(e) {
+  handleResults(transactionResult) {
     this.setState({
+      transactionHash: transactionResult.transactionHash,
       showConfirm: false,
       showResults: true
     });

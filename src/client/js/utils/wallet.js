@@ -1,6 +1,11 @@
 
 import _ from "underscore";
 import EventManager from './events';
+import * as ethers from 'ethers';
+
+const BigNumber = ethers.BigNumber;
+const Utils = ethers.utils;
+const Contract = ethers.Contract;
 
 window.WalletJS = {
   ADDRESSES: {
@@ -49,7 +54,7 @@ window.WalletJS = {
   },
 
   getERC20Balance: async function(tokenContractAddress) {
-    const contract = new window.ethers.Contract(
+    const contract = new Contract(
       tokenContractAddress,
       window.erc20Abi,
       this.getProvider()
@@ -70,7 +75,7 @@ window.WalletJS = {
     const signer = provider.getSigner();
     const token = this.findTokenById(symbol);
 
-    const incrementer = new window.ethers.Contract(token.id, abiMeth, signer);
+    const incrementer = new Contract(token.id, abiMeth, signer);
     const contractFn = async () => {
       console.log(
         `Calling the mint function for: ${token.symbol} ${token.id}`
@@ -84,26 +89,78 @@ window.WalletJS = {
       EventManager.emitEvent('walletUpdated', 1);
     };
 
-    const approveFn = async () => {
-      console.log(
-        `Calling the approve function in contract at address: ${methAddress}`
-      );
-
-      // Sign-Send Tx and Wait for Receipt
-      const createReceipt = await incrementer.approve(window.ethereum.selectedAddress, value);
-      await createReceipt.wait();
-
-      console.log(`Tx successful with hash: ${createReceipt.hash}`);
-    }
-
     await contractFn();
-    // await approveFn();
   },
+
+  performSwap: function(fromToken, toToken, amountBN, minReturnBN, distribution) {
+    return this._getAllowance(fromToken.id).then(function(allowanceBN) {
+      console.log(`Got Allowance of ${allowanceBN.toString()}`);
+      if (allowanceBN.gte(amountBN)) {
+        return this._swap(fromToken, toToken, amountBN, minReturnBN, distribution);
+      } else {
+        return this._approve(
+          fromToken.id,
+          // approve arbitrarily large number
+          amountBN.add(BigNumber.from(Utils.parseUnits("100000000")))
+        ).then(function(confirmedTransaction) {
+          return this._swap(fromToken, toToken, amountBN, minReturnBN, distribution);
+        }.bind(this));
+      }
+    }.bind(this));
+  },
+
+  _approve: function(tokenContractAddress, amountBN) {
+    console.log(`Calling APPROVE() with ${tokenContractAddress} ${amountBN.toString()}`);
+    const signer = this.getProvider().getSigner();
+    const contract = new Contract(
+      tokenContractAddress,
+      window.erc20Abi,
+      signer
+    );
+    return contract.approve(
+      this.ADDRESSES.ONE_SPLIT,
+      amountBN,
+      {
+        // gasPrice: // the price to pay per gas
+        // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice
+      }
+    ).then(function(transaction) {
+      console.log(`Waiting on APPROVE() with ${tokenContractAddress} ${amountBN.toString()}`);
+      return transaction.wait();
+    });
+  },
+
+  _getAllowance: function(tokenContractAddress) {
+    console.log(`Calling ALLOWANCE() with ${tokenContractAddress}`);
+    const contract = new Contract(
+      tokenContractAddress,
+      window.erc20Abi,
+      this.getProvider()
+    );
+    return contract.allowance(
+      this.currentAddress(),
+      this.ADDRESSES.ONE_SPLIT
+    );
+  },
+
+  /*
+    function getExpectedReturn(
+      IERC20 fromToken,
+      IERC20 destToken,
+      uint256 amount,
+      uint256 parts,
+      uint256 flags
+    )
+    public view returns (
+      uint256 returnAmount,
+      uint256[] memory distribution
+    )
+  */
 
   getExpectedReturn: function(fromToken, toToken, amount) {
     if (!this.isConnected()) {
       return new Promise(function(resolve) {
-        var _U = window.ethers.utils;
+        var _U = Utils;
         var _p0 = _U.parseUnits("0", "wei");
         var _p1 = _U.parseUnits("1", "wei");
         resolve({
@@ -113,7 +170,7 @@ window.WalletJS = {
       });
     }
 
-    const contract = new window.ethers.Contract(
+    const contract = new Contract(
       this.ADDRESSES.ONE_SPLIT,
       window.oneSplitAbi,
       this.getProvider()
@@ -125,13 +182,6 @@ window.WalletJS = {
       3, // desired parts of splits accross pools(3 is recommended)
       0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
     );
-
-    /*
-    returns(
-      uint256 returnAmount,
-      uint256[] memory distribution
-    )
-    */
   },
 
   /*
@@ -145,20 +195,29 @@ window.WalletJS = {
     ) public payable returns(uint256 returnAmount)
   */
 
-  swap: function(fromToken, toToken, amount, minReturn, distribution) {
-    const contract = new window.ethers.Contract(
+  _swap: function(fromToken, toToken, amountBN, minReturnBN, distribution) {
+    console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
+    const signer = this.getProvider().getSigner();
+    const contract = new Contract(
       this.ADDRESSES.ONE_SPLIT,
       window.oneSplitAbi,
-      this.getProvider()
+      signer
     );
     return contract.swap(
       fromToken.id,
       toToken.id,
-      amount, // uint256 in wei
-      minReturn,
+      amountBN, // uint256 in wei
+      minReturnBN,
       distribution,
-      0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
-    );
+      0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+      {
+        // gasPrice: // the price to pay per gas
+        // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice
+      }
+    ).then(function(transaction) {
+      console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
+      return transaction.wait();
+    });
 
     /*
     returns(

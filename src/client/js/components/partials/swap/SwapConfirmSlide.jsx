@@ -16,8 +16,10 @@ import EventManager from '../../../utils/events';
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
     super(props);
+    this.state = { loading: false }
 
     this.handleSwapConfirm = this.handleSwapConfirm.bind(this);
+    this.handleBack = this.handleBack.bind(this);
   }
 
   componentDidMount() {
@@ -28,38 +30,45 @@ export default class SwapConfirmSlide extends Component {
     this.subWalletUpdated.unsubscribe();
   }
 
+  handleBack(e) {
+    if (!this.state.loading) {
+      this.props.handleBackOnConfirm();
+    }
+  }
+
   handleSwapConfirm() {
-    this.props.handleTransactionComplete();
-    return;
+    this.setState({
+      loading: true,
+    }, function() {
+      var fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount);
+      var toAmountBN = window.ethers.utils.parseUnits("100000000", "wei");
 
-    Wallet.getExpectedReturn(
-      this.props.from,
-      this.props.to,
-      fromAmountBN
-    ).then(function(result) {
-      if (this.state.calculatingSwapTimestamp != timeNow) {
-        return;
-      }
-
-      var dist = _.map(result.distribution, function(e) {
-        return e.toNumber();
+      var distBN = _.map(this.props.swapDistribution, function(e) {
+        return window.ethers.utils.parseUnits("" + e, "wei");
       });
 
-      this.props.onSwapEstimateComplete(
-        fromAmount,
-        window.ethers.utils.formatEther(result.returnAmount),
-        dist
-      )
+      Wallet.performSwap(
+        this.props.from,
+        this.props.to,
+        fromAmountBN,
+        toAmountBN,
+        distBN
+      ).then(function(result) {
+        console.log(result);
+        console.log(`Transaction Hash: ${result.transactionHash}`);
+        console.log(`Gas Used: ${result.gasUsed.toString()}`);
+        // var toAmountString = window.ethers.utils.formatEther(result.returnAmount);
 
-      this.setState({
-        calculatingSwap: false
-      }, function() {
-        Metrics.track("swap-estimate-result", {
+        this.props.handleTransactionComplete(result);
+
+        Metrics.track("swap-complete", {
           from: this.props.from,
           to: this.props.to,
-          fromAmont: this.props.fromAmount,
-          toAmount: this.props.toAmount,
-          swapDistribution: this.props.swapDistribution
+          fromAmont: this.props.fromAmount
+        });
+
+        this.setState({
+          loading: false
         });
       }.bind(this));
     }.bind(this));
@@ -79,7 +88,8 @@ export default class SwapConfirmSlide extends Component {
                 <div className="level-item">
                   <span
                     className="icon ion-icon clickable"
-                    onClick={this.props.handleBackOnConfirm}>
+                    onClick={this.handleBack}
+                  >
                     <ion-icon name="arrow-back-outline"></ion-icon>
                   </span>
                 </div>
@@ -166,7 +176,11 @@ export default class SwapConfirmSlide extends Component {
           </div>
 
           <div>
-            <button className="button is-primary is-fullwidth is-medium"
+            <button
+              className={classnames("button is-primary is-fullwidth is-medium", {
+                "is-loading": this.state.loading
+              })}
+              disabled={this.state.loading}
               onClick={this.handleSwapConfirm}>
               Confirm Order
             </button>

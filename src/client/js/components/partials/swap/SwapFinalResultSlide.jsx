@@ -39,8 +39,7 @@ export default class SwapFinalResultSlide extends Component {
               Transaction Complete
             </div>
             <div className="details">
-              <div>{this.props.transactionHash}</div>
-              <div>Swapped {this.props.fromAmount} {this.props.from.symbol} to {this.props.toAmount} {this.props.to.symbol}</div>
+              <div style={{ wordBreak: "break-all" }}>{this.props.transactionHash}</div>
             </div>
           </div>
 
