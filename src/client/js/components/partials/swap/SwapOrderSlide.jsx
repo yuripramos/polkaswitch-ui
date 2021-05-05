@@ -23,10 +23,17 @@ export default class SwapOrderSlide extends Component {
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleMax = this.handleMax.bind(this);
   }
 
   fetchSwapEstimate(origFromAmount) {
     var fromAmount = origFromAmount;
+
+    this.props.onSwapEstimateComplete(
+      origFromAmount,
+      this.props.toAmount,
+      this.props.swapDistribution
+    )
 
     if (!fromAmount || fromAmount.length == 0) {
       fromAmount = '0';
@@ -87,12 +94,6 @@ export default class SwapOrderSlide extends Component {
       to: this.props.to
     });
 
-    this.props.onSwapEstimateComplete(
-      targetAmount,
-      this.props.toAmount,
-      this.props.swapDistribution
-    )
-
     this.fetchSwapEstimate(targetAmount);
   }
 
@@ -112,6 +113,23 @@ export default class SwapOrderSlide extends Component {
       if (this.validateOrderForm()) {
         this.props.handleSubmit();
       }
+    }
+  }
+
+  handleMax(e) {
+    if (Wallet.isConnected() && this.props.from.id) {
+      Wallet.getERC20Balance(this.props.from.id)
+        .then(function(bal) {
+          _.defer(function() {
+            // balance is in WEI and is a BigNumber
+            this.fetchSwapEstimate(
+              window.ethers.utils.formatEther(bal)
+            )
+          }.bind(this))
+        }.bind(this))
+        .catch(function(e) {
+          console.error(e);
+        }.bind(this));
     }
   }
 
@@ -154,6 +172,9 @@ export default class SwapOrderSlide extends Component {
                 placeholder="0.0"
                 disabled={!isFrom}
               />
+
+            {isFrom && !this.props[`${target}Amount`] &&
+                (<div className="max-btn" onClick={this.handleMax}>Max</div>)}
             </div>
           </div>
         </div>

@@ -630,6 +630,27 @@ $swap-widget-anim-timing: 300ms;
       }
     }
 
+    .control{
+      .max-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        height: 35px;
+        line-height: 35px;
+        background: $light-blue;
+        border-radius: 10px;
+        color: $primary;
+        padding: 0 10px;
+        font-size: 14px;
+        text-transform: uppercase;
+        cursor: pointer;
+
+        &:hover {
+          background: $danger-light;
+        }
+      }
+    }
+
     .notification {
       padding: 15px;
 
