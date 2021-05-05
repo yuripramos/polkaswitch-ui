@@ -110,14 +110,24 @@ export default class ConnectPanel extends Component {
                         </>
                       )}
                       {Wallet.isConnectedToAnyNetwork() &&
-                          !Wallet.isValidNetwork && (
-                            <>
-                            <div className="error">
-                              You are connected to the wrong test network!<br/>
-                              Please connect to the Moonbeam Alphanet
-                            </div>
-                            </>
-                          )}
+                          !Wallet.isValidNetwork &&
+                      (
+                        <>
+                        <div className="error">
+                          You are connected to the wrong test network!<br/>
+                          Please connect to the Moonbeam Alphanet
+                        </div>
+                        </>
+                      )}
+                      {Wallet.isSupported() &&
+                          !Wallet.isConnectedToAnyNetwork() &&
+                      (
+                        <>
+                        <div className="has-text-info">
+                          via Moonbeam Alphanet
+                        </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -159,7 +169,9 @@ export default class ConnectPanel extends Component {
 
             <div className="footnote">
               New to Ethereum?&nbsp;
-              <a href="https://ethereum.org/wallets/">Learn more about wallets</a>
+              <a href="https://ethereum.org/wallets/">Learn more</a><br/>
+              New to Polkadot?&nbsp;
+              <a href="https://wiki.polkadot.network/docs/en/getting-started">Learn more</a>
             </div>
           </div>
         </div>

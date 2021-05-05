@@ -48,7 +48,7 @@ export default class SwapFinalResultSlide extends Component {
               className="button is-primary is-fullwidth is-medium"
               onClick={this.props.handleDismiss}
             >
-              Return Home
+              Dismiss
             </button>
           </div>
 

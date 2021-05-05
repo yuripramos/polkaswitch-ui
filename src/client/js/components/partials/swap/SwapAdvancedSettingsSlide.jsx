@@ -94,7 +94,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
                   <b>Liquidity Sources</b>
                   <span
                     className="hint-icon hint--bottom hint--medium"
-                    aria-label="COMING SOON! Customize which sources to route your swap through"
+                    aria-label="Coming Soon! Customize which sources to route your swap through"
                   >?</span>
                 </span>
               </div>
@@ -120,7 +120,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
                   <b>Custom Tokens</b>
                   <span
                     className="hint-icon hint--bottom"
-                    aria-label="COMING SOON">?</span>
+                    aria-label="Coming Soon">?</span>
                 </span>
               </div>
             </div>
