@@ -115,7 +115,7 @@ export default class ConnectPanel extends Component {
                         <>
                         <div className="error">
                           You are connected to the wrong test network!<br/>
-                          Please connect to the Moonbeam Alphanet
+                          Click here to switch to the Moonbeam Alphanet
                         </div>
                         </>
                       )}
@@ -124,7 +124,7 @@ export default class ConnectPanel extends Component {
                       (
                         <>
                         <div className="has-text-info">
-                          via Moonbeam Alphanet
+                          Click here to connect to Moonbeam Alphanet
                         </div>
                         </>
                       )}

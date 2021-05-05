@@ -30,9 +30,11 @@ window.WalletJS = {
 
       window.ethereum.on('chainChanged', function(chainId) {
         console.log(chainId);
-        this._isValidTestNetwork().then(function() {
-          EventManager.emitEvent('walletUpdated', 1);
-        }.bind(this));
+        if (this.isConnectedToAnyNetwork()) {
+          this._isValidTestNetwork().then(function() {
+            EventManager.emitEvent('walletUpdated', 1);
+          }.bind(this));
+        }
       }.bind(this));
 
       if (window.ethereum.selectedAddress) {
@@ -261,21 +263,32 @@ window.WalletJS = {
 
   connectWallet: function() {
     return new Promise(function (resolve, reject) {
-      window.ethereum.request({ method: 'eth_requestAccounts' })
-        .then(function(accounts) {
-          // Metamask currently only ever provide a single account
-          const account = accounts[0];
-          EventManager.emitEvent('walletUpdated', 1);
+      window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [{
+          chainId: "0x507",
+          rpcUrls: ["https://rpc.testnet.moonbeam.network"],
+          chainName: "Moonbeam Alphanet"
+        }]
+      }).then(function() {
+        _.delay(function() {
+          window.ethereum.request({ method: 'eth_requestAccounts' })
+            .then(function(accounts) {
+              // Metamask currently only ever provide a single account
+              const account = accounts[0];
+              EventManager.emitEvent('walletUpdated', 1);
 
-          return this._isValidTestNetwork().then(function(v) {
-            EventManager.emitEvent('walletUpdated', 1);
-            resolve(account);
-          });
-        }.bind(this))
-        .catch(function(e) {
-          console.error(e);
-          reject(e);
-        });
+              return this._isValidTestNetwork().then(function(v) {
+                EventManager.emitEvent('walletUpdated', 1);
+                resolve(account);
+              });
+            }.bind(this))
+            .catch(function(e) {
+              console.error(e);
+              reject(e);
+            });
+        }.bind(this), 1000)
+      }.bind(this));
     }.bind(this));
   }
 };
