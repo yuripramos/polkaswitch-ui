@@ -43,9 +43,8 @@ export default class AlphaOnboardingCard extends Component {
           <p className="is-size-6">
             <b>Welcome to the Polkaswitch Alpha launch!</b>
           </p>
-          <p>As we work closely with our technology partners for the Mainnet launch, you will experience intermittent issues until then.</p>
-          <p>To be able to perform swaps on the Polkaswitch Alpha we need
-            to mint test tokens on the Moonbeam Alphanet.</p>
+          <p>As we work closely with our technology partners for the Mainnet launch, you may experience intermittent issues.</p>
+          <p>To be able to perform swaps on the Polkaswitch Alpha, we have built the following tool to conveniently mint test tokens into your connected wallet.</p>
           <p className="is-italic">100 Tokens will be added under METH, MUNI, MSUSHI and MBAL</p>
           <div className="buttons">
             <button disabled className={classnames("button is-success", {

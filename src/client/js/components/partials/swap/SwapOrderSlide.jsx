@@ -40,6 +40,7 @@ export default class SwapOrderSlide extends Component {
     }, function() {
       var fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
 
+      // add delay to slow down UI snappiness
       _.delay(function() {
         Wallet.getExpectedReturn(
           this.props.from,
