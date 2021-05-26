@@ -122,14 +122,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('*', function(req, res, next) {
-  if (req.user) {
-    next();
-  } else {
-    res.redirect('/login');
-  }
-});
-
 app.get("/debug", function(req, res) {
     throw new Error("Test Error");
 });
@@ -143,6 +135,14 @@ app.post('/login', passport.authenticate('local', {
   failureRedirect: '/login',
   failureFlash: 'Invalid access credentials'
 }));
+
+app.get('*', function(req, res, next) {
+  if (req.user) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+});
 
 app.use(function(req, res, next) {
   if (req.user) {
