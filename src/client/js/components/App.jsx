@@ -4,10 +4,12 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom";
 
-import Home from './pages/Home';
+import SwapHome from './pages/SwapHome';
+import TokenClaimHome from './pages/TokenClaimHome';
 import Footer from './partials/Footer';
 import NotificationSystem from './partials/NotificationSystem';
 import classnames from 'classnames';
@@ -50,8 +52,14 @@ export default class App extends Component {
         <div className={classnames({ fullscreen: this.state.fullscreen })}>
           <NotificationSystem />
           <Switch>
-            <Route path="/">
-              <Home />
+            <Route exact path="/">
+              <Redirect to="/swap" />
+            </Route>
+            <Route path="/swap">
+              <SwapHome />
+            </Route>
+            <Route path="/claim">
+              <TokenClaimHome />
             </Route>
           </Switch>
           <Footer />

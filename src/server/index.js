@@ -3,6 +3,7 @@ const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 var csrf = require('csurf');
 const os = require('os');
+const path = require('path');
 var compression = require('compression');
 var morgan = require('morgan');
 var flash = require('connect-flash');
@@ -121,7 +122,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', function(req, res, next) {
+app.get('*', function(req, res, next) {
   if (req.user) {
     next();
   } else {
@@ -154,6 +155,10 @@ app.use(function(req, res, next) {
 app.use(express.static('dist'));
 app.use(express.static('public'));
 
+app.use('*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../../', '/dist/index.html'));
+});
+
 app.use(function onNotFound(req, res, next) {
   res.status(404).send({ error: "not found" });
 })
@@ -170,7 +175,6 @@ app.use(function onError(err, req, res, next) {
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Listening on port ${process.env.PORT || 5000}!`);
 });
-
 
 process.on('SIGTERM', () => {
   debug('SIGTERM signal received: closing HTTP server')
