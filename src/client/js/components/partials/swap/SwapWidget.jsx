@@ -3,22 +3,22 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 import classnames from 'classnames';
 
-import TokenSymbolBalance from './swap/TokenSymbolBalance';
-import TokenIconImg from './TokenIconImg';
-import TokenSearchBar from './TokenSearchBar';
-import TokenSwapDistribution from './swap/TokenSwapDistribution';
-import TokenIconBalanceGroupView from './swap/TokenIconBalanceGroupView';
-import MarketLimitToggle from './swap/MarketLimitToggle';
+import TokenSymbolBalance from './TokenSymbolBalance';
+import TokenIconImg from './../TokenIconImg';
+import TokenSearchBar from './../TokenSearchBar';
+import TokenSwapDistribution from './TokenSwapDistribution';
+import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
+import MarketLimitToggle from './MarketLimitToggle';
 
-import SwapOrderSlide from './swap/SwapOrderSlide';
-import SwapTokenSearchSlide from './swap/SwapTokenSearchSlide';
-import SwapConfirmSlide from './swap/SwapConfirmSlide';
-import SwapAdvancedSettingsSlide from './swap/SwapAdvancedSettingsSlide';
-import SwapFinalResultSlide from './swap/SwapFinalResultSlide';
+import SwapOrderSlide from './SwapOrderSlide';
+import SwapTokenSearchSlide from './SwapTokenSearchSlide';
+import SwapConfirmSlide from './SwapConfirmSlide';
+import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
+import SwapFinalResultSlide from './SwapFinalResultSlide';
 
-import Wallet from '../../utils/wallet';
-import Metrics from '../../utils/metrics';
-import EventManager from '../../utils/events';
+import Wallet from '../../../utils/wallet';
+import Metrics from '../../../utils/metrics';
+import EventManager from '../../../utils/events';
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {

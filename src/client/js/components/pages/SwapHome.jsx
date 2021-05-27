@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 
 import Navbar from '../partials/Navbar';
-import PairOverviewChart from '../partials/PairOverviewChart';
-import SwapOrderWidget from '../partials/SwapOrderWidget';
-import AlphaOnboardingCard from '../partials/AlphaOnboardingCard';
+import PairOverviewChart from '../partials/swap/PairOverviewChart';
+import SwapWidget from '../partials/swap/SwapWidget';
+import AlphaOnboardingCard from '../partials/swap/AlphaOnboardingCard';
+import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
 import ConnectPanel from '../partials/ConnectPanel';
 
 export default class Home extends Component {
@@ -26,7 +27,9 @@ export default class Home extends Component {
           }
 
           <div className="column swap-column" style={{ margin: "0 auto" }}>
-            <SwapOrderWidget />
+            <SwapNetworkToggle />
+
+            <SwapWidget />
 
             <AlphaOnboardingCard />
 

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 
-import Wallet from '../../utils/wallet';
-import Metrics from '../../utils/metrics';
-import EventManager from '../../utils/events';
+import Wallet from '../../../utils/wallet';
+import Metrics from '../../../utils/metrics';
+import EventManager from '../../../utils/events';
 
 export default class AlphaOnboardingCard extends Component {
   constructor(props) {
