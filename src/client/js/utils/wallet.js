@@ -66,7 +66,7 @@ window.WalletJS = {
 
   findTokenById: function(tid) {
     return _.find(window.tokens, function(v) {
-      return v.id == tid || v.symbol == tid;
+      return v.address == tid || v.symbol == tid;
     });
   },
 
@@ -77,10 +77,10 @@ window.WalletJS = {
     const signer = provider.getSigner();
     const token = this.findTokenById(symbol);
 
-    const incrementer = new Contract(token.id, abiMeth, signer);
+    const incrementer = new Contract(token.address, abiMeth, signer);
     const contractFn = async () => {
       console.log(
-        `Calling the mint function for: ${token.symbol} ${token.id}`
+        `Calling the mint function for: ${token.symbol} ${token.address}`
       );
 
       // Sign-Send Tx and Wait for Receipt
@@ -95,13 +95,13 @@ window.WalletJS = {
   },
 
   performSwap: function(fromToken, toToken, amountBN, minReturnBN, distribution) {
-    return this._getAllowance(fromToken.id).then(function(allowanceBN) {
+    return this._getAllowance(fromToken.address).then(function(allowanceBN) {
       console.log(`Got Allowance of ${allowanceBN.toString()}`);
       if (allowanceBN.gte(amountBN)) {
         return this._swap(fromToken, toToken, amountBN, minReturnBN, distribution);
       } else {
         return this._approve(
-          fromToken.id,
+          fromToken.address,
           // approve arbitrarily large number
           amountBN.add(BigNumber.from(Utils.parseUnits("100000000")))
         ).then(function(confirmedTransaction) {
@@ -178,8 +178,8 @@ window.WalletJS = {
       this.getProvider()
     );
     return contract.getExpectedReturn(
-      fromToken.id,
-      toToken.id,
+      fromToken.address,
+      toToken.address,
       amount, // uint256 in wei
       3, // desired parts of splits accross pools(3 is recommended)
       0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
@@ -206,8 +206,8 @@ window.WalletJS = {
       signer
     );
     return contract.swap(
-      fromToken.id,
-      toToken.id,
+      fromToken.address,
+      toToken.address,
       amountBN, // uint256 in wei
       minReturnBN,
       distribution,

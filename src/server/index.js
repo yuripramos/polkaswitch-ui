@@ -60,7 +60,11 @@ if (isProduction) {
 app.use(helmet.contentSecurityPolicy({
   directives: {
     ...defaultCsp,
-    "img-src": ["'self'", "public-api.freshstatus.io"],
+    "img-src": [
+      "'self'",
+      "public-api.freshstatus.io",
+      "raw.githubusercontent.com"
+    ],
     "font-src": [
       "'self'",
       "https:",

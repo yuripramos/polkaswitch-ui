@@ -19,6 +19,12 @@ export default class TokenIconImg extends Component {
   }
 
   render() {
+    var imgSrc = this.props.token.logoURI;
+
+    if (!imgSrc) {
+      imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${this.props.token.address || this.props.token.symbol}/logo.png`;
+    }
+
     return (
       <span
         className={classnames("token-icon-img-wrapper", { "errored": this.state.errored })}
@@ -31,7 +37,7 @@ export default class TokenIconImg extends Component {
             height: `${this.props.size || 40}px`,
             width: `${this.props.size || 40}px`
           }}
-          src={`/tokens/erc20/${this.props.token.id || this.props.token.symbol}/logo.png`} />
+          src={imgSrc} />
         <span className="icon">
           <ion-icon name="cube-outline"></ion-icon>
         </span>

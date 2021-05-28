@@ -27,8 +27,8 @@ export default class TokenSymbolBalance extends Component {
   }
 
   fetchBalance() {
-    if (Wallet.isConnected() && this.props.token.id) {
-      Wallet.getERC20Balance(this.props.token.id)
+    if (Wallet.isConnected() && this.props.token.address) {
+      Wallet.getERC20Balance(this.props.token.address)
         .then(function(bal) {
           _.defer(function() {
             // balance is in WEI and is a BigNumber
