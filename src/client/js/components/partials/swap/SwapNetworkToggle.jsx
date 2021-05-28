@@ -15,14 +15,22 @@ export default class SwapNetworkToggle extends Component {
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
 
     this.NETWORKS = _.map([
-      "ETH",
-      "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0", // MATIC
-      "0xB8c77482e45F1F44dE1745F52C74426C631bDD52" // BNB
-    ], function(v) { return Wallet.findTokenById(v) });
+      { name: "Ethereum", token: "ETH" },
+      { name: "Polygon", token: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0" },
+      { name: "Binance Smart Chain", token: "0xB8c77482e45F1F44dE1745F52C74426C631bDD52" },
+    ], function(v) {
+      v.token = Wallet.findTokenById(v.token);
+      return v;
+    });
+
+    this.state = { selected: _.first(this.NETWORKS), active: false };
   }
 
   handleDropdownClick(token) {
     return function handleClick(e) {
+      this.setState({
+        selected: token
+      });
     }.bind(this);
   }
 
@@ -31,14 +39,14 @@ export default class SwapNetworkToggle extends Component {
       return (
         <a href="#"
           onClick={this.handleDropdownClick(v)}
-          className={classnames("dropdown-item level column is-mobile")}>
+          className={classnames("dropdown-item level is-mobile")}>
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
-                size={35}
-                token={v} />
+                size={30}
+                token={v.token} />
             </span>
-            <span className="level-item has-text-grey">{v.symbol}</span>
+            <span className="level-item">{v.name}</span>
           </span>
         </a>
       );
@@ -50,10 +58,10 @@ export default class SwapNetworkToggle extends Component {
           <div className="level-left">
             <div className="level-item">
               <span>
-                <b>Choose Network</b>
+                <span className="option-title">Network</span>
                 <span
-                  className="hint-icon hint--bottom hint--medium"
-                  aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees."
+                  className="is-hidden hint-icon hint--top hint--medium"
+                  aria-label="Change Network"
                 >?</span>
               </span>
             </div>
@@ -61,10 +69,19 @@ export default class SwapNetworkToggle extends Component {
 
           <div className="level-right">
             <div className="level-item">
-              <div className="dropdown is-active">
+              <div className={classnames("dropdown is-right is-hoverable")}>
                 <div className="dropdown-trigger">
-                  <button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span>Dropdown button</span>
+                  <button className="button is-outlined" aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span className="level">
+                      <span className="level-left my-2">
+                        <span className="level-item">
+                          <TokenIconImg
+                            size={30}
+                            token={this.state.selected.token} />
+                        </span>
+                        <span className="level-item has-text-grey">{this.state.selected.name}</span>
+                      </span>
+                    </span>
                     <span className="icon is-small">
                       <i className="fas fa-angle-down" aria-hidden="true"></i>
                     </span>
