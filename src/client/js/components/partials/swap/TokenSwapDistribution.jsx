@@ -41,6 +41,8 @@ export default class TokenSwapDistribution extends Component {
     var sumSushi = parts[2] + parts[3];
     var sumBal = parts[4] + parts[5] + parts[6];
 
+    // TODO Support multiple networks
+
     var pools = [{
       name: "Uniswap",
       icon: TokenListManager.findTokenById("UNI"),

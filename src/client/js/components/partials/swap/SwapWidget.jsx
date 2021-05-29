@@ -28,6 +28,8 @@ export default class SwapOrderWidget extends Component {
     this.box = React.createRef();
     this.orderPage = React.createRef();
 
+    // TODO support default PAIRs per network
+
     this.state = {
       // RSR
       // to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
