@@ -19,7 +19,7 @@ export default class TokenIconImg extends Component {
   }
 
   render() {
-    var imgSrc = this.props.token.logoURI;
+    var imgSrc = this.props.imgSrc || this.props.token.logoURI;
 
     if (!imgSrc) {
       imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${this.props.token.address || this.props.token.symbol}/logo.png`;

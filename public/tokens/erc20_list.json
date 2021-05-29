@@ -7194,8 +7194,7 @@
   {
     "name": "Matic Network",
     "symbol": "MATIC",
-    "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
-    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png"
+    "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0"
   },
   {
     "name": "CWV Chain",

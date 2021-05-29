@@ -6,6 +6,7 @@ import TokenIconImg from './TokenIconImg';
 import CustomScroll from 'react-custom-scroll';
 
 import Wallet from '../../utils/wallet';
+import TokenListManager from '../../utils/tokenList';
 
 export default class TokenSearchBar extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export default class TokenSearchBar extends Component {
       "0xba100000625a3754423978a60c9317c58a424e3D", // Balancor
       "0xE41d2489571d322189246DaFA5ebDe1F4699F498", // 0x
       "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07" // OMG
-    ], function(v) { return Wallet.findTokenById(v) });
+    ], function(v) { return TokenListManager.findTokenById(v) });
   }
 
   componentDidUpdate(prevProps) {
@@ -150,9 +151,9 @@ export default class TokenSearchBar extends Component {
 
     if (_query.length > 0) {
       filteredTokens = _.first(_.filter(window.tokens, function(t) {
-        return (t.symbol && t.name) && (
-          t.symbol.toLowerCase().includes(_query) ||
-          t.name.toLowerCase().includes(_query)
+        return (t.symbol) && (
+          (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
+          (t.name && t.name.toLowerCase().includes(_query))
         );
       }), 10);
 

@@ -1,7 +1,7 @@
 [
   {
     "name": "Ethereum",
-    "enabled": true,
+    "enabled": false,
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     "tokenList": "/tokens/eth.list.json",
@@ -12,7 +12,7 @@
     }
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Polygon",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
@@ -29,9 +29,9 @@
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
     "chain": {
-      "chainId": "97",
-      "rpcUrls": ["https://data-seed-prebsc-1-s1.binance.org:8545"],
-      "chainName": "Smart Chain Testnet"
+      "chainId": "56",
+      "rpcUrls": ["https://bsc-dataseed.binance.org"],
+      "chainName": "Smart Chain Mainnet"
     }
   }
 ]

@@ -14,23 +14,19 @@ export default class SwapNetworkToggle extends Component {
 
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
 
-    this.NETWORKS = _.map([
-      { name: "Ethereum", token: "ETH" },
-      { name: "Polygon", token: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0" },
-      { name: "Binance Smart Chain", token: "0xB8c77482e45F1F44dE1745F52C74426C631bDD52" },
-    ], function(v) {
-      v.token = Wallet.findTokenById(v.token);
-      return v;
-    });
+    this.NETWORKS = window.NETWORK_CONFIGS;
+    var network = _.findWhere(window.NETWORK_CONFIGS, { name: window.SELECTED_NETWORK });
 
-    this.state = { selected: _.first(this.NETWORKS), active: false };
+    this.state = { selected: network, active: false };
   }
 
   handleDropdownClick(token) {
     return function handleClick(e) {
-      this.setState({
-        selected: token
-      });
+      if (token.enabled) {
+        this.setState({
+          selected: token
+        });
+      }
     }.bind(this);
   }
 
@@ -39,14 +35,17 @@ export default class SwapNetworkToggle extends Component {
       return (
         <a href="#"
           onClick={this.handleDropdownClick(v)}
-          className={classnames("dropdown-item level is-mobile")}>
+          className={classnames("dropdown-item level is-mobile", {
+            "disabled": !v.enabled
+          })}
+        >
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
                 size={30}
-                token={v.token} />
+                imgSrc={v.logoURI} />
             </span>
-            <span className="level-item">{v.name}</span>
+            <span className="level-item">{v.name} {!v.enabled && "(Coming Soon)"}</span>
           </span>
         </a>
       );
@@ -77,7 +76,7 @@ export default class SwapNetworkToggle extends Component {
                         <span className="level-item">
                           <TokenIconImg
                             size={30}
-                            token={this.state.selected.token} />
+                            imgSrc={this.state.selected.logoURI} />
                         </span>
                         <span className="level-item has-text-grey">{this.state.selected.name}</span>
                       </span>

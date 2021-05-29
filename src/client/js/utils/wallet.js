@@ -2,6 +2,7 @@
 import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
+import TokenListManager from './tokenList';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
@@ -64,18 +65,12 @@ window.WalletJS = {
     return await contract.balanceOf(this.currentAddress());
   },
 
-  findTokenById: function(tid) {
-    return _.find(window.tokens, function(v) {
-      return v.address == tid || v.symbol == tid;
-    });
-  },
-
   _mint: async function(symbol, value) {
     var abi = await fetch(`/abi/test/${symbol.toUpperCase()}.json`);
     window.abiMeth = await abi.json();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const token = this.findTokenById(symbol);
+    const token = TokenListManager.findTokenById(symbol);
 
     const incrementer = new Contract(token.address, abiMeth, signer);
     const contractFn = async () => {

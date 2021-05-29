@@ -17,6 +17,7 @@ import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
 
 import Wallet from '../../../utils/wallet';
+import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 
@@ -33,11 +34,11 @@ export default class SwapOrderWidget extends Component {
       // DAI
       // to: Wallet.findTokenById("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
       // MUNI
-      to: Wallet.findTokenById("0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913"),
+      to: TokenListManager.findTokenById("0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913"),
       // ETH
       //from: Wallet.findTokenById("ETH"),
       // METH
-      from: Wallet.findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
+      from: TokenListManager.findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
 
       fromAmount: undefined,
       toAmount: undefined,

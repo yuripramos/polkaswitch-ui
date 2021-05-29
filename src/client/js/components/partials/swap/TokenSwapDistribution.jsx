@@ -3,6 +3,7 @@ import _ from "underscore";
 import classnames from 'classnames';
 import TokenIconImg from './../TokenIconImg';
 import Wallet from '../../../utils/wallet';
+import TokenListManager from '../../../utils/tokenList';
 
 export default class TokenSwapDistribution extends Component {
   constructor(props) {
@@ -42,15 +43,15 @@ export default class TokenSwapDistribution extends Component {
 
     var pools = [{
       name: "Uniswap",
-      icon: Wallet.findTokenById("UNI"),
+      icon: TokenListManager.findTokenById("UNI"),
       size: sumUni / this.props.totalParts
     }, {
       name: "Sushiswap",
-      icon: Wallet.findTokenById("SUSHI"),
+      icon: TokenListManager.findTokenById("SUSHI"),
       size: sumSushi / this.props.totalParts
     }, {
       name: "Balancer",
-      icon: Wallet.findTokenById("BAL"),
+      icon: TokenListManager.findTokenById("BAL"),
       size: sumBal / this.props.totalParts
     }];
 
