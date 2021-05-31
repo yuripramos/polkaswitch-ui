@@ -28,19 +28,11 @@ export default class SwapOrderWidget extends Component {
     this.box = React.createRef();
     this.orderPage = React.createRef();
 
-    // TODO support default PAIRs per network
+    var network = TokenListManager.getCurrentNetworkConfig();
 
     this.state = {
-      // RSR
-      // to: "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
-      // DAI
-      // to: Wallet.findTokenById("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
-      // MUNI
-      to: TokenListManager.findTokenById("0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913"),
-      // ETH
-      //from: Wallet.findTokenById("ETH"),
-      // METH
-      from: TokenListManager.findTokenById("0x798fA7Cf084129616B0108452aF3E1d5d1B32179"),
+      to: TokenListManager.findTokenById(network.defaultPair.to),
+      from: TokenListManager.findTokenById(network.defaultPair.from),
 
       fromAmount: undefined,
       toAmount: undefined,
@@ -68,11 +60,13 @@ export default class SwapOrderWidget extends Component {
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
+    this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
   }
 
   componentDidMount() {
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
+    this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
   }
@@ -81,6 +75,15 @@ export default class SwapOrderWidget extends Component {
     window.removeEventListener('resize', this.updateBoxHeight);
     this.subscribers.forEach(function(v) {
       EventManager.unsubscribe(v);
+    });
+  }
+
+  handleNetworkChange(e) {
+    var network = TokenListManager.getCurrentNetworkConfig();
+
+    this.setState({
+      to: TokenListManager.findTokenById(network.defaultPair.to),
+      from: TokenListManager.findTokenById(network.defaultPair.from)
     });
   }
 

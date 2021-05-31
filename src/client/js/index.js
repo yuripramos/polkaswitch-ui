@@ -25,8 +25,10 @@ window._ = _;
 
 var config  = await fetch('/config/test.config.json');
 window.NETWORK_CONFIGS = await config.json();
+// Default to the ETH network
 window.SELECTED_NETWORK = "Ethereum";
 
+// initialize TokenList
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 

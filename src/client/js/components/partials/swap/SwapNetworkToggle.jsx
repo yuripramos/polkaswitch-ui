@@ -15,17 +15,19 @@ export default class SwapNetworkToggle extends Component {
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
 
     this.NETWORKS = window.NETWORK_CONFIGS;
-    var network = _.findWhere(window.NETWORK_CONFIGS, { name: window.SELECTED_NETWORK });
-
-    this.state = { selected: network, active: false };
+    this.state = {
+      selected: TokenListManager.getCurrentNetworkConfig(),
+      active: false
+    };
   }
 
-  handleDropdownClick(token) {
+  handleDropdownClick(network) {
     return function handleClick(e) {
-      if (token.enabled) {
+      if (network.enabled) {
         this.setState({
-          selected: token
+          selected: network
         });
+        TokenListManager.updateNetwork(network);
       }
     }.bind(this);
   }

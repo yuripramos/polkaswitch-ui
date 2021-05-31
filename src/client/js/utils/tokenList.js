@@ -9,11 +9,23 @@ const Contract = ethers.Contract;
 
 window.TokenListManager = {
   initialize: async function() {
-    EventManager.listenFor('chainNetworkSettingsChanged', this.updateTokenList.bind(this));
+  },
+
+  getCurrentNetworkConfig: function() {
+    var network = _.findWhere(window.NETWORK_CONFIGS, { name: window.SELECTED_NETWORK });
+    return network;
+  },
+
+  updateNetwork: function(network) {
+    window.SELECTED_NETWORK = network.name;
+
+    this.updateTokenList().then(function() {
+      EventManager.emitEvent('networkUpdated', 1);
+    });
   },
 
   updateTokenList: async function() {
-    var network = _.findWhere(window.NETWORK_CONFIGS, { name: window.SELECTED_NETWORK });
+    var network = this.getCurrentNetworkConfig();
     var tokenList = await(await fetch(network.tokenList)).json();
 
     tokenList = _.map(_.filter(tokenList, function(v) {

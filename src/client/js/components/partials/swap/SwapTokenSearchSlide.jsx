@@ -23,7 +23,7 @@ export default class SwapTokenSearchSlide extends Component {
           <TokenSearchBar
             inline={true}
             focused={this.props.showSearch}
-            placeholder={"Try DAI, LINK or Ethereum ... "}
+            placeholder={"Try DAI, USDT or Ethereum ... "}
             handleClose={this.props.handleSearchToggle("to")}
             handleTokenChange={this.props.handleTokenChange} />
         </div>

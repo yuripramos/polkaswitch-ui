@@ -1,7 +1,7 @@
 [
   {
-    "name": "Ethereum",
     "enabled": true,
+    "name": "Ethereum",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     "tokenList": "/tokens/eth.list.json",
@@ -9,10 +9,24 @@
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
       "chainName": "Moonbeam Alphanet"
-    }
+    },
+    "defaultPair": {
+      "to": "0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913",
+      "from": "0x798fA7Cf084129616B0108452aF3E1d5d1B32179"
+    },
+    "topTokens": [
+      "ETH",
+      "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+      "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      "0x6B3595068778DD592e39A122f4f5a5cF09C90fE2",
+      "0xba100000625a3754423978a60c9317c58a424e3D",
+      "0xE41d2489571d322189246DaFA5ebDe1F4699F498",
+      "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07"
+    ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Polygon",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
@@ -21,7 +35,19 @@
       "chainId": "137",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
       "chainName": "Matic Mainnet"
-    }
+    },
+    "defaultPair": {
+      "to": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "from": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+    },
+    "topTokens": [
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+      "0xb33EaAd8d922B1083446DC23f610c2567fB5180f",
+      "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+      "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+    ]
   },
   {
     "enabled": false,

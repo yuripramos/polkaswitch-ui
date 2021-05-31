@@ -5,31 +5,35 @@ import classnames from 'classnames';
 import TokenIconImg from './TokenIconImg';
 import CustomScroll from 'react-custom-scroll';
 
+import EventManager from '../../utils/events';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 
 export default class TokenSearchBar extends Component {
   constructor(props) {
     super(props);
-    this.state = { focused: false, value: "" };
+    this.state = { focused: false, value: "", refresh: Date.now() };
 
     this.input = React.createRef();
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.onBlur = this.onBlur.bind(this);
-    this.onFocus = this.onFocus.bind(this);
+    this.onFocus = this.onFocus.bind(this)
 
-    this.TOP_TOKENS = _.map([
-      "ETH",
-      "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
-      "0x514910771AF9Ca656af840dff83E8264EcF986CA", // LINK
-      "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", // UNI
-      "0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", // Sushi
-      "0xba100000625a3754423978a60c9317c58a424e3D", // Balancor
-      "0xE41d2489571d322189246DaFA5ebDe1F4699F498", // 0x
-      "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07" // OMG
-    ], function(v) { return TokenListManager.findTokenById(v) });
+    // init
+    this.handleNetworkChange();
+  }
+
+  componentDidMount() {
+    this.subNetworkUpdate = EventManager.listenFor(
+      'networkUpdated', this.handleNetworkChange
+    );
+  }
+
+  componentDidUnmount() {
+    this.subNetworkUpdate.unsubscribe();
   }
 
   componentDidUpdate(prevProps) {
@@ -49,6 +53,16 @@ export default class TokenSearchBar extends Component {
         });
       }
     }
+  }
+
+  handleNetworkChange(e) {
+    var network = TokenListManager.getCurrentNetworkConfig();
+    this.TOP_TOKENS = _.map(network.topTokens, function(v) {
+      return TokenListManager.findTokenById(v)
+    });
+    this.setState({
+      refresh: Date.now()
+    });
   }
 
   handleChange(event) {
@@ -150,7 +164,7 @@ export default class TokenSearchBar extends Component {
     var dropContent;
 
     if (_query.length > 0) {
-      filteredTokens = _.first(_.filter(window.tokens, function(t) {
+      filteredTokens = _.first(_.filter(window.TOKEN_LIST, function(t) {
         return (t.symbol) && (
           (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
           (t.name && t.name.toLowerCase().includes(_query))

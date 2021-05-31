@@ -24,38 +24,75 @@ export default class TokenSwapDistribution extends Component {
   }
 
   render() {
-    var parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
+    var pools;
+    var network = TokenListManager.getCurrentNetworkConfig();
+    var sumOne, sumTwo, sumThree, parts;
 
-    /*
-      This returns the destToken output amount and the optimized
-      list of distributions accross different liquidity pools.
-      There are 7 pools: pool 1 and 2 are Uniswap pools,
-      pool 3 and 4 are Sushiswap pools, and pool 5 - 7 are
-      Balancer pools. For example, the distribution [1, 0, 2, 0, 0, 0, 0]
-      means 1/3 of the swap amount will route to Uniswap and 2/3 will
-      route to Sushiswap.[1, 0, 0, 0, 0, 1, 1] means 1/3 of amount
-      will route to Uniswap and 2/3 will route to Balancer.
-    */
+    if (network.name == "Ethereum") {
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
 
-    var sumUni = parts[0] + parts[1];
-    var sumSushi = parts[2] + parts[3];
-    var sumBal = parts[4] + parts[5] + parts[6];
+      /*
+        This returns the destToken output amount and the optimized
+        list of distributions accross different liquidity pools.
+        There are 7 pools: pool 1 and 2 are Uniswap pools,
+        pool 3 and 4 are Sushiswap pools, and pool 5 - 7 are
+        Balancer pools. For example, the distribution [1, 0, 2, 0, 0, 0, 0]
+        means 1/3 of the swap amount will route to Uniswap and 2/3 will
+        route to Sushiswap.[1, 0, 0, 0, 0, 1, 1] means 1/3 of amount
+        will route to Uniswap and 2/3 will route to Balancer.
+      */
 
-    // TODO Support multiple networks
+      sumOne = parts[0] + parts[1];
+      sumTwo = parts[2] + parts[3];
+      sumThree = parts[4] + parts[5] + parts[6];
 
-    var pools = [{
-      name: "Uniswap",
-      icon: TokenListManager.findTokenById("UNI"),
-      size: sumUni / this.props.totalParts
-    }, {
-      name: "Sushiswap",
-      icon: TokenListManager.findTokenById("SUSHI"),
-      size: sumSushi / this.props.totalParts
-    }, {
-      name: "Balancer",
-      icon: TokenListManager.findTokenById("BAL"),
-      size: sumBal / this.props.totalParts
-    }];
+      var pools = [{
+        name: "Uniswap",
+        icon: TokenListManager.findTokenById("UNI"),
+        size: sumOne / this.props.totalParts
+      }, {
+        name: "Sushiswap",
+        icon: TokenListManager.findTokenById("SUSHI"),
+        size: sumTwo / this.props.totalParts
+      }, {
+        name: "Balancer",
+        icon: TokenListManager.findTokenById("BAL"),
+        size: sumThree / this.props.totalParts
+      }];
+    }
+
+    else if (network.name == "Polygon") {
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0];
+
+      /*
+        This returns the destToken output amount and the optimized list
+        of distributions accross different liquidity pools.
+        There are 6 pools: pool 1 and 2 are Quickswap pools,
+        pool 3 and 4 are Sushiswap pools, and pool 5 - 6 are Dfyn
+        exchange pools. For example, the distribution [1, 0, 2, 0, 0, 0]
+        means 1/3 of the swap amount will route to Quickswap and 2/3 will
+        route to Sushiswap.[1, 0, 0, 0, 3] means 1/3 of amount will
+        route to Quickswap and 2/3 will route to Dfyn.
+      */
+
+      sumOne = parts[0] + parts[1];
+      sumTwo = parts[2] + parts[3];
+      sumThree = parts[4] + parts[5];
+
+      var pools = [{
+        name: "Quickswap",
+        icon: TokenListManager.findTokenById("QUICK"),
+        size: sumOne / this.props.totalParts
+      }, {
+        name: "Sushiswap",
+        icon: TokenListManager.findTokenById("SUSHI"),
+        size: sumTwo / this.props.totalParts
+      }, {
+        name: "Dfyn",
+        icon: TokenListManager.findTokenById("DfynWMATIC"),
+        size: sumThree / this.props.totalParts
+      }];
+    }
 
     return (
       <div
