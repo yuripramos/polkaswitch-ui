@@ -238,7 +238,6 @@ export default class SwapOrderSlide extends Component {
               <span className="hint-icon">?</span>
             </div>
             <TokenSwapDistribution
-              totalParts={3}
               parts={this.props.swapDistribution}/>
           </div>
 

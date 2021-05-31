@@ -171,7 +171,6 @@ export default class SwapConfirmSlide extends Component {
               <span className="hint-icon">?</span>
             </div>
             <TokenSwapDistribution
-              totalParts={3}
               parts={this.props.swapDistribution}/>
           </div>
 

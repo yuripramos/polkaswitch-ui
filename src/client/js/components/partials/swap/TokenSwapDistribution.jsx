@@ -26,9 +26,10 @@ export default class TokenSwapDistribution extends Component {
   render() {
     var pools;
     var network = TokenListManager.getCurrentNetworkConfig();
-    var sumOne, sumTwo, sumThree, parts;
+    var sumOne, sumTwo, sumThree, parts, totalParts;
 
     if (network.name == "Ethereum") {
+      totalParts = 3;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -49,26 +50,27 @@ export default class TokenSwapDistribution extends Component {
       var pools = [{
         name: "Uniswap",
         icon: TokenListManager.findTokenById("UNI"),
-        size: sumOne / this.props.totalParts
+        size: sumOne / totalParts
       }, {
         name: "Sushiswap",
         icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / this.props.totalParts
+        size: sumTwo / totalParts
       }, {
         name: "Balancer",
         icon: TokenListManager.findTokenById("BAL"),
-        size: sumThree / this.props.totalParts
+        size: sumThree / totalParts
       }];
     }
 
     else if (network.name == "Polygon") {
+      totalParts = 3;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0];
 
       /*
         This returns the destToken output amount and the optimized list
         of distributions accross different liquidity pools.
         There are 6 pools: pool 1 and 2 are Quickswap pools,
-        pool 3 and 4 are Sushiswap pools, and pool 5 - 6 are Dfyn
+        pool 3 and 4 are Sushiswap pools, and pool 5 - 7 are Dfyn
         exchange pools. For example, the distribution [1, 0, 2, 0, 0, 0]
         means 1/3 of the swap amount will route to Quickswap and 2/3 will
         route to Sushiswap.[1, 0, 0, 0, 3] means 1/3 of amount will
@@ -77,20 +79,20 @@ export default class TokenSwapDistribution extends Component {
 
       sumOne = parts[0] + parts[1];
       sumTwo = parts[2] + parts[3];
-      sumThree = parts[4] + parts[5];
+      sumThree = parts[4] + parts[5] + parts[6];
 
-      var pools = [{
+      pools = [{
         name: "Quickswap",
         icon: TokenListManager.findTokenById("QUICK"),
-        size: sumOne / this.props.totalParts
+        size: sumOne / totalParts
       }, {
         name: "Sushiswap",
         icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / this.props.totalParts
+        size: sumTwo / totalParts
       }, {
         name: "Dfyn",
-        icon: TokenListManager.findTokenById("DfynWMATIC"),
-        size: sumThree / this.props.totalParts
+        icon: TokenListManager.findTokenById("Dfyn"),
+        size: sumThree / totalParts
       }];
     }
 

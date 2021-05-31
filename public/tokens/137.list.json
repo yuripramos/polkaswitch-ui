@@ -90,6 +90,12 @@
     "chainId": 137
   },
   {
+    "symbol": "Dfyn",
+    "address": "0xc168e40227e4ebd8c1cae80f7a55a4f0e6d66c97",
+    "logoURI": "https://assets.coingecko.com/markets/images/674/large/dyfn.png",
+    "chainId": 137
+  },
+  {
     "symbol": "DfynWMATIC",
     "address": "0x4c28f48448720e9000907BC2611F73022fdcE1fA",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png",

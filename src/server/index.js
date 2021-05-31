@@ -62,8 +62,7 @@ app.use(helmet.contentSecurityPolicy({
     ...defaultCsp,
     "img-src": [
       "'self'",
-      "public-api.freshstatus.io",
-      "raw.githubusercontent.com"
+      "https:"
     ],
     "font-src": [
       "'self'",
