@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
 import EventManager from '../../utils/events';
+import TokenListManager from '../../utils/tokenList';
 
 export default class ConnectPanel extends Component {
   constructor(props) {
@@ -114,8 +115,10 @@ export default class ConnectPanel extends Component {
                       (
                         <>
                         <div className="error">
-                          You are connected to the wrong test network!<br/>
-                          Click here to switch to the Moonbeam Alphanet
+                          You are connected to the wrong network!<br/>
+                          Click here to switch to the {
+                            TokenListManager.getCurrentNetworkConfig().chain.chainName
+                          }
                         </div>
                         </>
                       )}

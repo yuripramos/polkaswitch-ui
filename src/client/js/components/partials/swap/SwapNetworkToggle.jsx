@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
-
+import TokenListManager from '../../../utils/tokenList';
 import TokenIconImg from './../TokenIconImg';
 
 export default class SwapNetworkToggle extends Component {
