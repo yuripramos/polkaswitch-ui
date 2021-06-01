@@ -9,12 +9,7 @@ const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.WalletJS = {
-  ADDRESSES: {
-    ONE_SPLIT: "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
-    ONE_SPLIT_VIEW: "0x4B5Dc79B38B6e75347Da6d9172Fa240F743401ad"
-  },
-
-  isValidNetwork: false,
+  currentNetworkId: -1,
 
   initialize: async function() {
     if (window.ethereum) {
@@ -32,7 +27,9 @@ window.WalletJS = {
       window.ethereum.on('chainChanged', function(chainId) {
         console.log(chainId);
         if (this.isConnectedToAnyNetwork()) {
-          this._isValidTestNetwork().then(function() {
+
+          this._currentConnectedNetworkId().then(function(chainId) {
+            this.currentNetworkId = chainId;
             EventManager.emitEvent('walletUpdated', 1);
           }.bind(this));
         }
@@ -40,7 +37,9 @@ window.WalletJS = {
 
       if (window.ethereum.selectedAddress) {
         // cache value
-        await this._isValidTestNetwork();
+        this._currentConnectedNetworkId().then(function(chainId) {
+          this.currentNetworkId = chainId;
+        }.bind(this));
       }
     }
 
@@ -115,7 +114,7 @@ window.WalletJS = {
       signer
     );
     return contract.approve(
-      this.ADDRESSES.ONE_SPLIT,
+      TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
       amountBN,
       {
         // gasPrice: // the price to pay per gas
@@ -136,7 +135,7 @@ window.WalletJS = {
     );
     return contract.allowance(
       this.currentAddress(),
-      this.ADDRESSES.ONE_SPLIT
+      TokenListManager.getCurrentNetworkConfig().aggregatorAddress
     );
   },
 
@@ -168,7 +167,7 @@ window.WalletJS = {
     }
 
     const contract = new Contract(
-      this.ADDRESSES.ONE_SPLIT,
+      TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
       window.oneSplitAbi,
       this.getProvider()
     );
@@ -196,7 +195,7 @@ window.WalletJS = {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const signer = this.getProvider().getSigner();
     const contract = new Contract(
-      this.ADDRESSES.ONE_SPLIT,
+      TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
       window.oneSplitAbi,
       signer
     );
@@ -227,24 +226,21 @@ window.WalletJS = {
     return (typeof window.ethereum !== 'undefined');
   },
 
-  _isValidTestNetwork: async function() {
+  _currentConnectedNetworkId: async function() {
     if (!(window.ethereum && window.ethereum.selectedAddress)) {
-      this.isValidNetwork = false;
-      return false;
+      return -1;
     }
 
     else {
-      let network = await this.getProvider().getNetwork();
-      // moonbeam test-network ID
-      this.isValidNetwork = (network.chainId === 1287);
-      return this.isValidNetwork;
+      let connectedNetwork = await this.getProvider().getNetwork();
+      return connectedNetwork.chainId;
     }
   },
 
   isConnected: function() {
     return window.ethereum &&
       window.ethereum.selectedAddress &&
-      this.isValidNetwork;
+      this.isMatchingConnectedNetwork();
   },
 
   isConnectedToAnyNetwork: function() {
@@ -252,20 +248,25 @@ window.WalletJS = {
       window.ethereum.selectedAddress;
   },
 
+  isMatchingConnectedNetwork: function() {
+    var network = TokenListManager.getCurrentNetworkConfig();
+    return +network.chainId === +this.currentNetworkId;
+  },
+
   currentAddress: function() {
-    return this.isConnected() ? window.ethereum.selectedAddress : undefined;
+    return this.isConnectedToAnyNetwork() ? window.ethereum.selectedAddress : undefined;
+  },
+
+  changeNetwork: function(network) {
+    return window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [network.chain]
+    });
   },
 
   connectWallet: function() {
     return new Promise(function (resolve, reject) {
-      window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId: "0x507",
-          rpcUrls: ["https://rpc.testnet.moonbeam.network"],
-          chainName: "Moonbeam Alphanet"
-        }]
-      }).then(function() {
+      this.changeNetwork(TokenListManager.getCurrentNetworkConfig()).then(function() {
         _.delay(function() {
           window.ethereum.request({ method: 'eth_requestAccounts' })
             .then(function(accounts) {
@@ -273,10 +274,11 @@ window.WalletJS = {
               const account = accounts[0];
               EventManager.emitEvent('walletUpdated', 1);
 
-              return this._isValidTestNetwork().then(function(v) {
+              return this._currentConnectedNetworkId().then(function(chainId) {
+                this.currentNetworkId = chainId;
                 EventManager.emitEvent('walletUpdated', 1);
                 resolve(account);
-              });
+              }.bind(this));
             }.bind(this))
             .catch(function(e) {
               console.error(e);

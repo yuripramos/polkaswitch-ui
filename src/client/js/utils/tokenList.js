@@ -21,6 +21,7 @@ window.TokenListManager = {
 
     this.updateTokenList().then(function() {
       EventManager.emitEvent('networkUpdated', 1);
+      EventManager.emitEvent('walletUpdated', 1);
     });
   },
 

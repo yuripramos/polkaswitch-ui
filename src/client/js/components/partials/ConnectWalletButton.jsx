@@ -12,7 +12,7 @@ export default class ConnectWalletButton extends Component {
   }
 
   componentDidMount() {
-    if (Wallet.isConnected()) {
+    if (Wallet.isConnectedToAnyNetwork()) {
       Metrics.identify(Wallet.currentAddress());
     }
 
@@ -34,7 +34,7 @@ export default class ConnectWalletButton extends Component {
   }
 
   renderButtonContent() {
-    if (Wallet.isConnected()) {
+    if (Wallet.isConnectedToAnyNetwork()) {
       return (
         <>
         <span className="icon icon-person">

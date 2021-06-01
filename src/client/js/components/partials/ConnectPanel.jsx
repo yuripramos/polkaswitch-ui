@@ -110,7 +110,7 @@ export default class ConnectPanel extends Component {
                         </>
                       )}
                       {Wallet.isConnectedToAnyNetwork() &&
-                          !Wallet.isValidNetwork &&
+                          !Wallet.isMatchingConnectedNetwork() &&
                       (
                         <>
                         <div className="error">

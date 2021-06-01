@@ -5,6 +5,7 @@
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     "tokenList": "/tokens/eth.list.json",
+    "chainId": "1287",
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -31,8 +32,9 @@
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "tokenList": "/tokens/137.list.json",
+    "chainId": "137",
     "chain": {
-      "chainId": "137",
+      "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
       "chainName": "Matic Mainnet"
     },
