@@ -29,7 +29,7 @@
   {
     "enabled": true,
     "name": "Polygon",
-    "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
+    "aggregatorAddress": "0x361678a65Ca6874Ec1aca70150cb74639106853e",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "tokenList": "/tokens/137.list.json",
     "chainId": "137",
@@ -39,11 +39,11 @@
       "chainName": "Matic Mainnet"
     },
     "defaultPair": {
-      "to": "0x0000000000000000000000000000000000001010",
+      "to": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       "from": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
     },
     "topTokens": [
-      "0x0000000000000000000000000000000000001010",
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       "0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
       "0xb33EaAd8d922B1083446DC23f610c2567fB5180f",
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",

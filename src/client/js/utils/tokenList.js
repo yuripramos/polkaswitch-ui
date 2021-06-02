@@ -30,7 +30,7 @@ window.TokenListManager = {
     var tokenList = await(await fetch(network.tokenList)).json();
 
     tokenList = _.map(_.filter(tokenList, function(v) {
-      return (v.coin) || (v.symbol && Utils.isAddress(v.address));
+      return (v.native) || (v.symbol && Utils.isAddress(v.address));
     }), function(v) {
       if (v.address) {
         v.address = Utils.getAddress(v.address);
