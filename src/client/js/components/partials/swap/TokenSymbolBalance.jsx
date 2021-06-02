@@ -27,23 +27,44 @@ export default class TokenSymbolBalance extends Component {
   }
 
   fetchBalance() {
-    if (Wallet.isConnected() && this.props.token.address) {
-      Wallet.getERC20Balance(this.props.token.address)
-        .then(function(bal) {
-          _.defer(function() {
-            // balance is in WEI and is a BigNumber
-            this.setState({
-              balance: bal,
-              errored: false
-            });
+    if (Wallet.isConnected()) {
+      if (this.props.token.native) {
+        Wallet.getDefaultBalance()
+          .then(function(bal) {
+            _.defer(function() {
+              // balance is in WEI and is a BigNumber
+              this.setState({
+                balance: bal,
+                errored: false
+              });
+            }.bind(this))
           }.bind(this))
-        }.bind(this))
-        .catch(function(e) {
-          console.error(e);
-          _.defer(function() {
-            this.setState({ errored: true });
+          .catch(function(e) {
+            console.error(e);
+            _.defer(function() {
+              this.setState({ errored: true });
+            }.bind(this))
+          }.bind(this));
+      }
+
+      else if (this.props.token.address) {
+        Wallet.getERC20Balance(this.props.token.address)
+          .then(function(bal) {
+            _.defer(function() {
+              // balance is in WEI and is a BigNumber
+              this.setState({
+                balance: bal,
+                errored: false
+              });
+            }.bind(this))
           }.bind(this))
-        }.bind(this));
+          .catch(function(e) {
+            console.error(e);
+            _.defer(function() {
+              this.setState({ errored: true });
+            }.bind(this))
+          }.bind(this));
+      }
     }
   }
 

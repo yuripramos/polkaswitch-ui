@@ -63,6 +63,8 @@ export default class ConnectPanel extends Component {
   }
 
   render() {
+    var currentNetworkName = TokenListManager.getCurrentNetworkConfig().chain.chainName;
+
     return (
       <div className={classnames("modal", { "is-active": this.state.open })}>
         <div onClick={this.handleClose} className="modal-background"></div>
@@ -116,9 +118,7 @@ export default class ConnectPanel extends Component {
                         <>
                         <div className="error">
                           You are connected to the wrong network!<br/>
-                          Click here to switch to the {
-                            TokenListManager.getCurrentNetworkConfig().chain.chainName
-                          }
+                          Click here to switch to the {currentNetworkName}
                         </div>
                         </>
                       )}
@@ -127,7 +127,7 @@ export default class ConnectPanel extends Component {
                       (
                         <>
                         <div className="has-text-info">
-                          Click here to connect to Moonbeam Alphanet
+                          Click here to connect to {currentNetworkName}
                         </div>
                         </>
                       )}

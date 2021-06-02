@@ -55,6 +55,10 @@ window.WalletJS = {
     return provider;
   },
 
+  getDefaultBalance: async function() {
+    return this.getProvider().getBalance(this.currentAddress());
+  },
+
   getERC20Balance: async function(tokenContractAddress) {
     const contract = new Contract(
       tokenContractAddress,
