@@ -9,6 +9,7 @@ import MarketLimitToggle from './MarketLimitToggle';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+import SwapFn from '../../../utils/swapFn';
 
 export default class SwapOrderSlide extends Component {
   constructor(props) {
@@ -48,7 +49,7 @@ export default class SwapOrderSlide extends Component {
 
       // add delay to slow down UI snappiness
       _.delay(function() {
-        Wallet.getExpectedReturn(
+        SwapFn.getExpectedReturn(
           this.props.from,
           this.props.to,
           fromAmountBN

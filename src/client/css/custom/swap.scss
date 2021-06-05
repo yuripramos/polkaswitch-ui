@@ -420,8 +420,15 @@ $swap-widget-anim-timing: 300ms;
   }
 
   .page-view-settings {
+    .level {
+      margin-bottom: 0;
+    }
+
     .option {
       margin-bottom: 10px;
+    }
+
+    .slippage-control {
     }
   }
 

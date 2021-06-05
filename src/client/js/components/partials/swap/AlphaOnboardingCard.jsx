@@ -6,6 +6,7 @@ import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
+import SwapFn from '../../../utils/swapFn';
 
 export default class AlphaOnboardingCard extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ export default class AlphaOnboardingCard extends Component {
         Promise.all(_.map([
           "METH", "MUNI", "MSUSHI", "MBAL"
         ], function(sym) {
-          return Wallet._mint(sym, window.ethers.utils.parseEther("100"));
+          return SwapFn._mint(sym, window.ethers.utils.parseEther("100"));
         })).then(function(values) {
           this.setState({
             minting: false,

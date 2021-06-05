@@ -12,6 +12,7 @@ import MarketLimitToggle from './MarketLimitToggle';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+import SwapFn from '../../../utils/swapFn';
 
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
@@ -47,11 +48,11 @@ export default class SwapConfirmSlide extends Component {
         return window.ethers.utils.parseUnits("" + e, "wei");
       });
 
-      Wallet.performSwap(
+      SwapFn.performSwap(
         this.props.from,
         this.props.to,
         fromAmountBN,
-        toAmountBN,
+        window.ethers.BigNumber.from('0'), // TODO support slippage
         distBN
       ).then(function(result) {
         console.log(result);

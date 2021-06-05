@@ -61,28 +61,32 @@ export default class SwapAdvancedSettingsSlide extends Component {
             </div>
           </div>
 
-          <div className="level is-mobile option">
-            <div className="level-left">
-              <div className="level-item">
-                <span>
-                  <b>Slippage Tolerance</b>
-                  <span
-                    className="hint-icon hint--bottom hint--medium"
-                    aria-label="Your transaction will revert if the price changes unfavorably by more than this percentage"
-                  >?</span>
-                </span>
-              </div>
+          <div className="option">
+            <div>
+              <span>
+                <b>Slippage Tolerance</b>
+                <span
+                  className="hint-icon hint--bottom hint--medium"
+                  aria-label="Your transaction will revert if the price changes unfavorably by more than this percentage"
+                >?</span>
+              </span>
             </div>
 
-            <div className="level-right">
-              <div className="level-item">
-                <div className="select">
-                  <select>
-                    <option>0.1%</option>
-                    <option>0.5%</option>
-                    <option>1%</option>
-                  </select>
-                </div>
+            <div className="slippage-control">
+              <span class="button">
+                0.1%
+              </span>
+              <span class="button">
+                0.5%
+              </span>
+              <span class="button">
+                1.0%
+              </span>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input is-rounded" type="number" placeholder="0.0" />
+                <span class="icon is-right">
+                  %
+                </span>
               </div>
             </div>
           </div>
