@@ -86,7 +86,9 @@ app.use(helmet.contentSecurityPolicy({
     ],
     "default-src": [
       "'self'",
-      "*.ingest.sentry.io"
+      "*.ingest.sentry.io",
+      "ethgasstation.info",
+      "gasstation-mainnet.matic.network"
     ]
   }
 }));

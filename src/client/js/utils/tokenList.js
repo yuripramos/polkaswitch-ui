@@ -28,6 +28,7 @@ window.TokenListManager = {
   updateTokenList: async function() {
     var network = this.getCurrentNetworkConfig();
     var tokenList = await(await fetch(network.tokenList)).json();
+    var gasStats = await(await fetch(network.gasApi)).json();
 
     tokenList = _.map(_.filter(tokenList, function(v) {
       return (v.native) || (v.symbol && Utils.isAddress(v.address));
@@ -38,6 +39,9 @@ window.TokenListManager = {
       return v;
     });
 
+    window.GAS_STATS = _.pick(gasStats, [
+      'fast', 'fastest', 'safeLow'
+    ]);
     window.TOKEN_LIST = tokenList;
   },
 

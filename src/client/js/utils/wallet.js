@@ -103,7 +103,7 @@ window.WalletJS = {
     return this.isConnectedToAnyNetwork() ? window.ethereum.selectedAddress : undefined;
   },
 
-  changeNetwork: function(network) {
+  _changeNetwork: function(network) {
     return window.ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [network.chain]
@@ -112,7 +112,9 @@ window.WalletJS = {
 
   connectWallet: function() {
     return new Promise(function (resolve, reject) {
-      this.changeNetwork(TokenListManager.getCurrentNetworkConfig()).then(function() {
+      let network = TokenListManager.getCurrentNetworkConfig();
+
+      this.changeNetwork(network).then(function() {
         _.delay(function() {
           window.ethereum.request({ method: 'eth_requestAccounts' })
             .then(function(accounts) {
@@ -125,6 +127,7 @@ window.WalletJS = {
                 EventManager.emitEvent('walletUpdated', 1);
                 resolve(account);
               }.bind(this));
+
             }.bind(this))
             .catch(function(e) {
               console.error(e);

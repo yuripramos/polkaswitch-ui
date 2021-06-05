@@ -6,6 +6,7 @@
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     "tokenList": "/tokens/eth.list.json",
     "chainId": "1287",
+    "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -33,6 +34,7 @@
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "tokenList": "/tokens/137.list.json",
     "chainId": "137",
+    "gasApi": "https://gasstation-mainnet.matic.network",
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],

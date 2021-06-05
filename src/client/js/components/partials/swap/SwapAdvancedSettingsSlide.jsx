@@ -6,10 +6,15 @@ import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
+import SwapSlippageControl from './SwapSlippageControl';
 
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+
+import * as ethers from 'ethers';
+const BigNumber = ethers.BigNumber;
+const Utils = ethers.utils;
 
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
@@ -53,8 +58,9 @@ export default class SwapAdvancedSettingsSlide extends Component {
               <div className="level-item">
                 <div className="select">
                   <select>
-                    <option>Instant</option>
-                    <option>Cheapest</option>
+                    <option selected>Auto (~{window.GAS_STATS.safeLow})</option>
+                    <option>Fast (~{window.GAS_STATS.fast})</option>
+                    <option>Fastest (~{window.GAS_STATS.fastest})</option>
                   </select>
                 </div>
               </div>
@@ -72,23 +78,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <div className="slippage-control">
-              <span class="button">
-                0.1%
-              </span>
-              <span class="button">
-                0.5%
-              </span>
-              <span class="button">
-                1.0%
-              </span>
-              <div class="control has-icons-left has-icons-right">
-                <input class="input is-rounded" type="number" placeholder="0.0" />
-                <span class="icon is-right">
-                  %
-                </span>
-              </div>
-            </div>
+            <SwapSlippageControl />
           </div>
 
           <div className="level is-mobile option">

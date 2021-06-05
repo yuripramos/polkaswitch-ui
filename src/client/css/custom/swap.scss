@@ -429,6 +429,21 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .slippage-control {
+      margin-top: 5px;
+      display: flex;
+
+      .button {
+        margin-right: 5px;
+        padding-left: 1.2em;
+        padding-right: 1.2em;
+      }
+
+      .current {
+      }
+
+      .control {
+        display: inline-flex;
+      }
     }
   }
 
