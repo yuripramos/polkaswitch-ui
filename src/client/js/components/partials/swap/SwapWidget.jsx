@@ -145,11 +145,12 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  handleResults(transactionResult) {
+  handleResults(success, hash) {
     this.setState({
-      transactionHash: transactionResult.transactionHash,
+      transactionHash: hash,
       showConfirm: false,
       showResults: true,
+      transactionSuccess: success,
       refresh: Date.now() // refresh Balances
     });
   }
@@ -248,6 +249,7 @@ export default class SwapOrderWidget extends Component {
               refresh={this.state.refresh}
               swapDistribution={this.state.swapDistribution}
               handleTransactionComplete={this.handleResults}
+              handleTransactionComplete={this.handleResults}
               handleBackOnConfirm={this.handleBackOnConfirm}
             />
           </CSSTransition>
@@ -262,6 +264,7 @@ export default class SwapOrderWidget extends Component {
             from={this.state.from}
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
+            transactionSuccess={this.state.transactionSuccess}
             transactionHash={this.state.transactionHash}
             handleDismiss={this.handleBackOnResults}
           />

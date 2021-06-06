@@ -462,6 +462,12 @@ $swap-widget-anim-timing: 300ms;
         color: $primary;
       }
 
+      &.failed {
+        .title, .icon, .details {
+          color: $danger;
+        }
+      }
+
       .title {
         font-size: 24px;
       }
