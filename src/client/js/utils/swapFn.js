@@ -10,6 +10,79 @@ const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.SwapFn = {
+  settings: {
+    gasPrice: -1, // auto,
+    slippage: 0.5
+  },
+
+  updateSettings: function(settings) {
+    this.settings = _.extend(this.settings, settings);
+  },
+
+  calculateMinReturn: function(fromToken, toToken, amount) {
+    return this._findSmallResult(
+      fromToken, toToken, 1
+    ).then(function(small) {
+      const [smallResult, smallAmount] = small;
+
+      return this.getExpectedReturn(
+        fromToken, toToken, amount
+      ).then(function(actualReturn) {
+        var x = this._safeBnDivision(smallAmount, smallResult.returnAmount);
+        var y = x * (1.0 - (this.settings.slippage / 100.0));
+
+        var minReturn = Utils.formatEther(amount.mul(y), toToken.decimals);
+
+        return minReturn;
+      }.bind(this));
+    }.bind(this));
+  },
+
+  calculateEstimatedTransactionCost: function() {
+  },
+
+  calculatePriceImpact: function(fromToken, toToken, amount) {
+    return this._findSmallResult(
+      fromToken, toToken, 1
+    ).then(function(small) {
+      const [smallResult, smallAmount] = small;
+
+      return this.getExpectedReturn(
+        fromToken, toToken, amount
+      ).then(function(actualReturn) {
+        var x = this._safeBnDivision(smallResult.returnAmount, smallAmount);
+        var y = this._safeBnDivision(actualReturn.returnAmount, amount);
+
+        return (Math.abs(x - y) / x);
+      }.bind(this));
+    }.bind(this));
+  },
+
+  _safeBnDivision: function(a, b) {
+    if (a.gte(b)) {
+      return a.mul(1000).div(b).toString() / 1000.0
+    } else {
+      return 1.0 / this._safeBnDivision(b, a);
+    }
+  },
+
+  _findSmallResult: function(fromToken, toToken, factor) {
+    let smallAmount = Utils.parseUnits(
+      "" + Math.ceil(10 ** (factor * 6)), 0
+    );
+
+    return this.getExpectedReturn(
+      fromToken, toToken, smallAmount
+    ).then(function(smallResult) {
+      if (smallResult.returnAmount.gt(0)) {
+        return [smallResult, smallAmount];
+      }
+      else {
+        return this._findSmallResult(fromToken, toToken, factor + 1);
+      }
+    }.bind(this));
+  },
+
   _mint: async function(symbol, value) {
     var abi = await fetch(`/abi/test/${symbol.toUpperCase()}.json`);
     window.abiMeth = await abi.json();
@@ -34,21 +107,21 @@ window.SwapFn = {
     await contractFn();
   },
 
-  performSwap: function(fromToken, toToken, amountBN, minReturnBN, distribution) {
+  performSwap: function(fromToken, toToken, amountBN, distribution) {
     return this._getAllowance(fromToken).then(function(allowanceBN) {
       if (allowanceBN) {
         console.log(`Got Allowance of ${allowanceBN.toString()}`);
       }
 
       if (fromToken.native || allowanceBN.gte(amountBN)) {
-        return this._swap(fromToken, toToken, amountBN, minReturnBN, distribution);
+        return this._swap(fromToken, toToken, amountBN, distribution);
       } else {
         return this._approve(
           fromToken.address,
           // approve arbitrarily large number
           amountBN.add(BigNumber.from(Utils.parseUnits("100000000")))
         ).then(function(confirmedTransaction) {
-          return this._swap(fromToken, toToken, amountBN, minReturnBN, distribution);
+          return this._swap(fromToken, toToken, amountBN, distribution);
         }.bind(this));
       }
     }.bind(this));
@@ -144,7 +217,7 @@ window.SwapFn = {
     ) public payable returns(uint256 returnAmount)
   */
 
-  _swap: function(fromToken, toToken, amountBN, minReturnBN, distribution) {
+  _swap: function(fromToken, toToken, amountBN, distribution) {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const signer = Wallet.getProvider().getSigner();
     const contract = new Contract(
@@ -152,28 +225,39 @@ window.SwapFn = {
       window.oneSplitAbi,
       signer
     );
-    return contract.swap(
-      fromToken.address,
-      toToken.address,
-      amountBN, // uint256 in wei
-      minReturnBN,
-      distribution,
-      0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
-      {
-        // gasPrice: // the price to pay per gas
-        // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
-        value: fromToken.native ? amountBN : undefined
-      }
-    ).then(function(transaction) {
-      console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
-      return transaction.wait();
-    });
 
-    /*
-    returns(
-      uint256 returnAmount
-    )
-    */
+    this.calculateMinReturn(
+      fromToken, toToken, amountBN
+    ).then(function(minReturn) {
+
+      /*
+        returns(
+          uint256 returnAmount
+        )
+      */
+
+      return contract.swap(
+        fromToken.address,
+        toToken.address,
+        amountBN, // uint256 in wei
+        Utils.parseUnit(minReturn, toToken.decimals),
+        distribution,
+        0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+        {
+          // gasPrice: // the price to pay per gas
+          // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
+          value: fromToken.native ? amountBN : undefined,
+          gasPrice: this.settings.gasPrice > 0
+          ? Utils.parseUnit(this.settings.gasPrice, "gwei")
+          : undefined
+        }
+      ).then(function(transaction) {
+        console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
+        return transaction.wait();
+      });
+
+    }.bind(this));
+
   },
 };
 

@@ -11,6 +11,7 @@ import SwapSlippageControl from './SwapSlippageControl';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+import SwapFn from '../../../utils/swapFn';
 
 import * as ethers from 'ethers';
 const BigNumber = ethers.BigNumber;
@@ -19,6 +20,21 @@ const Utils = ethers.utils;
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
+
+    this.handleGasPrice = this.handleGasPrice.bind(this);
+    this.handleSlippage = this.handleSlippage.bind(this);
+  }
+
+  handleGasPrice(e) {
+    SwapFn.updateSettings({
+      gasPrice: +e.currentTarget.value
+    });
+  }
+
+  handleSlippage(v) {
+    SwapFn.updateSettings({
+      slippage: v
+    });
   }
 
   render() {
@@ -48,7 +64,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
                   <b>Gas Price</b>
                   <span
                     className="hint-icon hint--bottom hint--medium"
-                    aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees."
+                    aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees (in GWei)"
                   >?</span>
                 </span>
               </div>
@@ -57,10 +73,10 @@ export default class SwapAdvancedSettingsSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div className="select">
-                  <select>
-                    <option selected>Auto (~{window.GAS_STATS.safeLow})</option>
-                    <option>Fast (~{window.GAS_STATS.fast})</option>
-                    <option>Fastest (~{window.GAS_STATS.fastest})</option>
+                  <select onChange={this.handleGasPrice}>
+                    <option selected value="-1">Auto (~{window.GAS_STATS.safeLow})</option>
+                    <option value={window.GAS_STATS.fast}>Fast (~{window.GAS_STATS.fast})</option>
+                    <option value={window.GAS_STATS.fastest}>Fastest (~{window.GAS_STATS.fastest})</option>
                   </select>
                 </div>
               </div>
@@ -78,7 +94,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <SwapSlippageControl />
+            <SwapSlippageControl handleSlippage={this.handleSlippage} />
           </div>
 
           <div className="level is-mobile option">
@@ -107,7 +123,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
             </div>
           </div>
 
-          <div className="level is-mobile option">
+          <div className="level is-hidden is-mobile option">
             <div className="level-left">
               <div className="level-item">
                 <span>

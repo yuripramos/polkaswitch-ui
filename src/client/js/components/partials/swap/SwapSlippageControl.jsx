@@ -27,6 +27,8 @@ export default class SwapSlippageControl extends Component {
         custom: false,
         customValue: ''
       });
+
+      this.props.handleSlippage(+v);
     }.bind(this);
   }
 
@@ -34,7 +36,11 @@ export default class SwapSlippageControl extends Component {
     this.setState({
       custom: true,
       customValue: e.target.value
-    })
+    });
+
+    if (!isNaN(e.target.value)) {
+      this.props.handleSlippage(+e.target.value);
+    }
   }
 
   render() {

@@ -51,7 +51,6 @@ export default class SwapConfirmSlide extends Component {
         this.props.from,
         this.props.to,
         fromAmountBN,
-        window.ethers.BigNumber.from('0'), // TODO support slippage
         distBN
       ).then(function(result) {
         console.log(result);
