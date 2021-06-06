@@ -41,8 +41,7 @@ export default class SwapConfirmSlide extends Component {
     this.setState({
       loading: true,
     }, function() {
-      var fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount);
-      var toAmountBN = window.ethers.utils.parseUnits("100000000", "wei");
+      var fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
 
       var distBN = _.map(this.props.swapDistribution, function(e) {
         return window.ethers.utils.parseUnits("" + e, "wei");
@@ -118,8 +117,9 @@ export default class SwapConfirmSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div class="currency-text">
-                  {window.ethers.utils.formatEther(
-                    window.ethers.utils.parseEther(this.props.fromAmount)
+                  {window.ethers.utils.formatUnits(
+                    window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals),
+                    this.props.from.decimals
                   )}
                 </div>
               </div>
@@ -143,8 +143,9 @@ export default class SwapConfirmSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div className="currency-text">
-                  {window.ethers.utils.formatEther(
-                    window.ethers.utils.parseEther(this.props.toAmount)
+                  {window.ethers.utils.formatUnits(
+                    window.ethers.utils.parseUnits(this.props.toAmount, this.props.to.decimals),
+                    this.props.to.decimals
                   )}
                 </div>
               </div>

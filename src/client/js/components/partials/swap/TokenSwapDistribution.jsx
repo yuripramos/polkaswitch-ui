@@ -79,7 +79,7 @@ export default class TokenSwapDistribution extends Component {
 
       sumOne = parts[0] + parts[1];
       sumTwo = parts[2] + parts[3];
-      sumThree = parts[4] + parts[5] + parts[6];
+      sumThree = parts[4] + parts[5] + (parts[6] || 0.0); // sometimes get 7th part
 
       pools = [{
         name: "Quickswap",

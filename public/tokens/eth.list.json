@@ -552,6 +552,7 @@
   {
     "name": "renBTC",
     "symbol": "renBTC",
+    "decimals": 8,
     "address": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D"
   },
   {
@@ -612,6 +613,7 @@
   {
     "name": "Telcoin",
     "symbol": "TEL",
+    "decimals": 2,
     "address": "0x467Bccd9d29f223BcE8043b84E8C8B282827790F"
   },
   {
@@ -692,6 +694,7 @@
   {
     "name": "Wrapped Bitcoin",
     "symbol": "WBTC",
+    "decimals": 8,
     "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
   },
   {
@@ -757,7 +760,7 @@
   {
     "name": "USD Coin",
     "symbol": "USDC",
-    "top": true,
+    "decimals": 6,
     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
   },
   {
@@ -884,7 +887,7 @@
   {
     "name": "Tether",
     "symbol": "USDT",
-    "top": true,
+    "decimals": 6,
     "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
   },
   {

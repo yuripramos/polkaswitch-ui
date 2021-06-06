@@ -26,6 +26,12 @@ export default class SwapOrderSlide extends Component {
     this.handleMax = this.handleMax.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.fromAmount !== prevProps.fromAmount) {
+      this.fetchSwapEstimate(this.props.fromAmount);
+    }
+  }
+
   fetchSwapEstimate(origFromAmount) {
     var fromAmount = origFromAmount;
 
@@ -45,7 +51,7 @@ export default class SwapOrderSlide extends Component {
       calculatingSwap: true,
       calculatingSwapTimestamp: timeNow
     }, function() {
-      var fromAmountBN = window.ethers.utils.parseUnits(fromAmount);
+      var fromAmountBN = window.ethers.utils.parseUnits(fromAmount, this.props.from.decimals);
 
       // add delay to slow down UI snappiness
       _.delay(function() {
@@ -64,7 +70,7 @@ export default class SwapOrderSlide extends Component {
 
           this.props.onSwapEstimateComplete(
             origFromAmount,
-            window.ethers.utils.formatEther(result.returnAmount),
+            window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
             dist
           )
 
@@ -117,13 +123,13 @@ export default class SwapOrderSlide extends Component {
   }
 
   handleMax(e) {
-    if (Wallet.isConnected() && this.props.from.id) {
-      Wallet.getERC20Balance(this.props.from.id)
+    if (Wallet.isConnected() && this.props.from.address) {
+      Wallet.getERC20Balance(this.props.from.address)
         .then(function(bal) {
           _.defer(function() {
             // balance is in WEI and is a BigNumber
             this.fetchSwapEstimate(
-              window.ethers.utils.formatEther(bal)
+              window.ethers.utils.formatUnits(bal, this.props.from.decimals)
             )
           }.bind(this))
         }.bind(this))

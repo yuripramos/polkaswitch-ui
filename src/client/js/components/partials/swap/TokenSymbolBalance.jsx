@@ -79,12 +79,12 @@ export default class TokenSymbolBalance extends Component {
     } else if (this.state.balance.isZero()) {
       balOutput = "0.0";
       fullOutput = balOutput;
-    } else if (this.state.balance.lt(Utils.parseEther("0.0001"))) {
+    } else if (this.state.balance.lt(Utils.parseUnits("0.0001", this.props.token.decimals))) {
       balOutput = "< 0.0001";
-      fullOutput = Utils.formatEther(this.state.balance);
+      fullOutput = Utils.formatUnits(this.state.balance, this.props.token.decimals);
     } else {
-      balOutput = numeral(Utils.formatEther(this.state.balance)).format('0.00a');
-      fullOutput = Utils.formatEther(this.state.balance);
+      balOutput = numeral(Utils.formatUnits(this.state.balance, this.props.token.decimals)).format('0.0000a');
+      fullOutput = Utils.formatUnits(this.state.balance, this.props.token.decimals);
     }
 
     return (

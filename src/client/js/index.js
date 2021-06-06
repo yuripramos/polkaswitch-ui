@@ -26,7 +26,7 @@ window._ = _;
 var config  = await fetch('/config/test.config.json');
 window.NETWORK_CONFIGS = await config.json();
 // Default to the ETH network
-window.SELECTED_NETWORK = "Ethereum";
+window.SELECTED_NETWORK = _.findWhere(window.NETWORK_CONFIGS, { enabled: true }).name;
 
 // initialize TokenList
 await TokenListManager.updateTokenList();

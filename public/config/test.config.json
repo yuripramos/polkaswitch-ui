@@ -1,6 +1,6 @@
 [
   {
-    "enabled": true,
+    "enabled": false,
     "name": "Ethereum",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",

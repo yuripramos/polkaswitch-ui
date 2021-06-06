@@ -46,7 +46,8 @@ export default class SwapSlippageControl extends Component {
               <span
                 onClick={this.handleClick(v)}
                 className={classnames("button", {
-                  "is-info is-light is-outlined": !this.state.custom && +v === this.state.current
+                  "is-info is-light is-outlined": !this.state.custom && +v === this.state.current,
+                  "disabled": this.state.custom
                 })}>
                 {v}%
               </span>

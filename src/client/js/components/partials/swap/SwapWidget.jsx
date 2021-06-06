@@ -3,13 +3,6 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 import classnames from 'classnames';
 
-import TokenSymbolBalance from './TokenSymbolBalance';
-import TokenIconImg from './../TokenIconImg';
-import TokenSearchBar from './../TokenSearchBar';
-import TokenSwapDistribution from './TokenSwapDistribution';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
-import MarketLimitToggle from './MarketLimitToggle';
-
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
@@ -122,7 +115,9 @@ export default class SwapOrderWidget extends Component {
     Metrics.track("swap-flipped-tokens");
     this.setState({
       to: this.state.from,
-      from: this.state.to
+      fromAmount: this.state.toAmount,
+      from: this.state.to,
+      toAmount: 0.0
     });
   }
 
@@ -154,7 +149,8 @@ export default class SwapOrderWidget extends Component {
     this.setState({
       transactionHash: transactionResult.transactionHash,
       showConfirm: false,
-      showResults: true
+      showResults: true,
+      refresh: Date.now() // refresh Balances
     });
   }
 
