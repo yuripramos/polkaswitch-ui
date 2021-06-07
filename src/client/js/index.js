@@ -23,7 +23,9 @@ if (process.env.IS_PRODUCTION) {
 window.ethers = ethers;
 window._ = _;
 
-var config  = await fetch('/config/test.config.json');
+var config  = await fetch(
+  process.env.IS_MAIN_NETWORK ? '/config/test.config.json' : '/config/main.config.json'
+);
 window.NETWORK_CONFIGS = await config.json();
 // Default to the ETH network
 window.SELECTED_NETWORK = _.findWhere(window.NETWORK_CONFIGS, { enabled: true }).name;
