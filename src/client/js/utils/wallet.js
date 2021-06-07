@@ -55,6 +55,16 @@ window.WalletJS = {
     return provider;
   },
 
+  getBalance: async function(token) {
+    if (token.native) {
+      return this.getDefaultBalance();
+    }
+
+    else if (token.address) {
+      return this.getERC20Balance(token.address);
+    }
+  },
+
   getDefaultBalance: async function() {
     return this.getProvider().getBalance(this.currentAddress());
   },

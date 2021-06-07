@@ -124,7 +124,7 @@ export default class SwapOrderSlide extends Component {
 
   handleMax(e) {
     if (Wallet.isConnected() && this.props.from.address) {
-      Wallet.getERC20Balance(this.props.from.address)
+      Wallet.getBalance(this.props.from)
         .then(function(bal) {
           _.defer(function() {
             // balance is in WEI and is a BigNumber

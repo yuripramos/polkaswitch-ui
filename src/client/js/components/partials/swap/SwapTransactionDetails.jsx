@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Wallet from '../../../utils/wallet';
 import numeral from 'numeral';
 import * as ethers from 'ethers';
+import EventManager from '../../../utils/events';
 
 const Utils = ethers.utils;
 
@@ -14,16 +15,29 @@ export default class SwapTransactionDetails extends Component {
       minReturn: 0,
       priceImpact: 0
     };
+
+    this.handleSettingsChange = this.handleSettingsChange.bind(this);
   }
 
   componentDidMount() {
+    this.subNetworkChange = EventManager.listenFor(
+      'swapSettingsUpdated', this.handleSettingsChange
+    );
     this.updateValues();
+  }
+
+  componentDidUnmount() {
+    this.subNetworkChange.unsubscribe();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.fromAmount != this.props.fromAmount) {
       this.updateValues();
     }
+  }
+
+  handleSettingsChange() {
+    this.updateValues();
   }
 
   updateValues() {

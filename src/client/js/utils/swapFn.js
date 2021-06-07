@@ -18,6 +18,7 @@ window.SwapFn = {
 
   updateSettings: function(settings) {
     this.settings = _.extend(this.settings, settings);
+    EventManager.emitEvent('swapSettingsUpdated', 1);
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {
@@ -223,7 +224,7 @@ window.SwapFn = {
       signer
     );
 
-    this.calculateMinReturn(
+    return this.calculateMinReturn(
       fromToken, toToken, amountBN
     ).then(function(minReturn) {
 
@@ -237,7 +238,7 @@ window.SwapFn = {
         fromToken.address,
         toToken.address,
         amountBN, // uint256 in wei
-        Utils.parseUnit(minReturn, toToken.decimals),
+        Utils.parseUnits(minReturn, toToken.decimals),
         distribution,
         0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         {
