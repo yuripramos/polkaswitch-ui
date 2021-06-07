@@ -166,6 +166,7 @@ export default class SwapConfirmSlide extends Component {
             from={this.props.from}
             toAmount={this.props.toAmount}
             fromAmount={this.props.fromAmount}
+            swapDistribution={this.props.swapDistribution}
           />
 
           <div

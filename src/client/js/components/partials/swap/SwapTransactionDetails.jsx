@@ -13,7 +13,8 @@ export default class SwapTransactionDetails extends Component {
     super(props);
     this.state = {
       minReturn: 0,
-      priceImpact: 0
+      priceImpact: 0,
+      transactionEstimate: 0
     };
 
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
@@ -58,6 +59,21 @@ export default class SwapTransactionDetails extends Component {
     ).then(function(priceImpact) {
       _.defer(function(){
         this.setState({ priceImpact: priceImpact });
+      }.bind(this));
+    }.bind(this));
+
+    var distBN = _.map(this.props.swapDistribution, function(e) {
+      return window.ethers.utils.parseUnits("" + e, "wei");
+    });
+
+    SwapFn.calculateEstimatedTransactionCost(
+      this.props.from,
+      this.props.to,
+      Utils.parseUnits(this.props.fromAmount, this.props.from.decimals),
+      distBN,
+    ).then(function(v) {
+      _.defer(function(){
+        this.setState({ transactionEstimate: v });
       }.bind(this));
     }.bind(this));
   }
@@ -144,7 +160,7 @@ export default class SwapTransactionDetails extends Component {
           <div className="level-right">
             <div className="level-item">
               <div className="detail-value">
-                {SwapFn.calculateEstimatedTransactionCost()} ETH
+                {this.state.transactionEstimate} {window.NATIVE_TOKEN.symbol}
               </div>
             </div>
           </div>

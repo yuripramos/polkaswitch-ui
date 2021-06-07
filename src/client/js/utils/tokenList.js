@@ -43,6 +43,7 @@ window.TokenListManager = {
       'fast', 'fastest', 'safeLow'
     ]);
     window.TOKEN_LIST = tokenList;
+    window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
   },
 
   findTokenById: function(tid) {

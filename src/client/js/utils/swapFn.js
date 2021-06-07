@@ -42,7 +42,40 @@ window.SwapFn = {
     }.bind(this));
   },
 
-  calculateEstimatedTransactionCost: function() {
+  calculateEstimatedTransactionCost: function(fromToken, toToken, amountBN, distribution) {
+    const signer = Wallet.getProvider().getSigner();
+    const contract = new Contract(
+      TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
+      window.oneSplitAbi,
+      signer
+    );
+
+    return contract.estimateGas.swap(
+      fromToken.address,
+      toToken.address,
+      amountBN, // uint256 in wei
+      BigNumber.from(0),
+      distribution,
+      0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+      {
+        // gasPrice: // the price to pay per gas
+        // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
+        value: fromToken.native ? amountBN : undefined,
+        gasPrice: this.settings.gasPrice > 0
+        ? Utils.parseUnits("" + this.settings.gasPrice, "gwei")
+        : undefined
+      }
+    ).then(function(gasUnitsEstimated) {
+      // Returns the estimate units of gas that would be
+      // required to execute the METHOD_NAME with args and overrides.
+      return Utils.formatUnits(Utils.parseUnits("" +
+        Math.floor((this.settings.gasPrice > 0 ?
+          this.settings.gasPrice :
+          window.GAS_STATS.safeLow) * gasUnitsEstimated.toString()),
+        "gwei"
+      ));
+    }.bind(this));
+
   },
 
   calculatePriceImpact: function(fromToken, toToken, amount) {
@@ -246,7 +279,7 @@ window.SwapFn = {
           // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
           value: fromToken.native ? amountBN : undefined,
           gasPrice: this.settings.gasPrice > 0
-          ? Utils.parseUnit(this.settings.gasPrice, "gwei")
+          ? Utils.parseUnits("" + this.settings.gasPrice, "gwei")
           : undefined
         }
       ).then(function(transaction) {
