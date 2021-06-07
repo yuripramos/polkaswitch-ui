@@ -4,6 +4,7 @@ import EventManager from './events';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
+import BN from 'bignumber.js';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
@@ -28,10 +29,12 @@ window.SwapFn = {
       return this.getExpectedReturn(
         fromToken, toToken, amount
       ).then(function(actualReturn) {
-        var x = this._safeBnDivision(smallAmount, smallResult.returnAmount);
-        var y = x * (1.0 - (this.settings.slippage / 100.0));
+        var x = BN(smallResult.returnAmount.toString())
+          .div(BN(smallAmount.toString()));
+        var y = x.times(1.0 - (this.settings.slippage / 100.0));
+        var r = BN(amount.toString()).times(y);
 
-        var minReturn = Utils.formatEther(amount.mul(y), toToken.decimals);
+        var minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
 
         return minReturn;
       }.bind(this));
@@ -50,31 +53,25 @@ window.SwapFn = {
       return this.getExpectedReturn(
         fromToken, toToken, amount
       ).then(function(actualReturn) {
-        var x = this._safeBnDivision(smallResult.returnAmount, smallAmount);
-        var y = this._safeBnDivision(actualReturn.returnAmount, amount);
+        var x = BN(smallResult.returnAmount.toString())
+          .div(BN(smallAmount.toString()));
+        var y = BN(actualReturn.returnAmount.toString())
+          .div(BN(amount.toString()));
 
-        return (Math.abs(x - y) / x);
+        return x.minus(y).abs().div(x).toFixed(6);
       }.bind(this));
     }.bind(this));
   },
 
-  _safeBnDivision: function(a, b) {
-    if (a.gte(b)) {
-      return a.mul(1000).div(b).toString() / 1000.0
-    } else {
-      return 1.0 / this._safeBnDivision(b, a);
-    }
-  },
-
   _findSmallResult: function(fromToken, toToken, factor) {
     let smallAmount = Utils.parseUnits(
-      "" + Math.ceil(10 ** (factor * 6)), 0
+      "" + Math.ceil(10 ** (factor * 3)), 0
     );
 
     return this.getExpectedReturn(
       fromToken, toToken, smallAmount
     ).then(function(smallResult) {
-      if (smallResult.returnAmount.gt(0)) {
+      if (smallResult.returnAmount.gt(100)) {
         return [smallResult, smallAmount];
       }
       else {
