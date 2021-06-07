@@ -124,7 +124,7 @@ window.WalletJS = {
     return new Promise(function (resolve, reject) {
       let network = TokenListManager.getCurrentNetworkConfig();
 
-      this.changeNetwork(network).then(function() {
+      this._changeNetwork(network).then(function() {
         _.delay(function() {
           window.ethereum.request({ method: 'eth_requestAccounts' })
             .then(function(accounts) {
