@@ -12,9 +12,9 @@ export default class SwapTransactionDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      minReturn: 0,
-      priceImpact: 0,
-      transactionEstimate: 0
+      minReturn: "--",
+      priceImpact: "--",
+      transactionEstimate: "--"
     };
 
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
@@ -50,6 +50,10 @@ export default class SwapTransactionDetails extends Component {
       _.defer(function(){
         this.setState({ minReturn: r });
       }.bind(this));
+    }.bind(this)).catch(function(r) {
+      _.defer(function(){
+        this.setState({ minReturn: "--" });
+      }.bind(this));
     }.bind(this));
 
     SwapFn.calculatePriceImpact(
@@ -58,7 +62,11 @@ export default class SwapTransactionDetails extends Component {
       Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
     ).then(function(priceImpact) {
       _.defer(function(){
-        this.setState({ priceImpact: priceImpact });
+        this.setState({ priceImpact: (priceImpact * 100.0).toFixed(5) });
+      }.bind(this));
+    }.bind(this)).catch(function(r) {
+      _.defer(function(){
+        this.setState({ priceImpact: "--" });
       }.bind(this));
     }.bind(this));
 
@@ -74,6 +82,10 @@ export default class SwapTransactionDetails extends Component {
     ).then(function(v) {
       _.defer(function(){
         this.setState({ transactionEstimate: v });
+      }.bind(this));
+    }.bind(this)).catch(function(r) {
+      _.defer(function(){
+        this.setState({ transactionEstimate: "--" });
       }.bind(this));
     }.bind(this));
   }
@@ -139,7 +151,7 @@ export default class SwapTransactionDetails extends Component {
           <div className="level-right">
             <div className="level-item">
               <div className="detail-value">
-                + {(this.state.priceImpact * 100.0).toFixed(5)}%
+                + {this.state.priceImpact}%
               </div>
             </div>
           </div>

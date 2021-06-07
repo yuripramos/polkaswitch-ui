@@ -85,6 +85,10 @@ export default class SwapOrderSlide extends Component {
               swapDistribution: this.props.swapDistribution
             });
           }.bind(this));
+        }.bind(this)).catch(function(e) {
+          this.setState({
+            calculatingSwap: false
+          });
         }.bind(this));
       }.bind(this), 500);
 

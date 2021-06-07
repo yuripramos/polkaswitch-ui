@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 import numeral from 'numeral';
+import BN from 'bignumber.js';
 
 import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
@@ -124,10 +125,16 @@ export default class SwapConfirmSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div class="currency-text">
-                  {window.ethers.utils.formatUnits(
-                    window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals),
-                    this.props.from.decimals
-                  )}
+                  {
+                    BN(
+                      window.ethers.utils.formatUnits(
+                        window.ethers.utils.parseUnits(
+                          this.props.fromAmount, this.props.from.decimals
+                        ),
+                        this.props.from.decimals
+                      )
+                    ).toPrecision(15)
+                  }
                 </div>
               </div>
             </div>
@@ -150,10 +157,16 @@ export default class SwapConfirmSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div className="currency-text">
-                  {window.ethers.utils.formatUnits(
-                    window.ethers.utils.parseUnits(this.props.toAmount, this.props.to.decimals),
-                    this.props.to.decimals
-                  )}
+                  {
+                    BN(
+                      window.ethers.utils.formatUnits(
+                        window.ethers.utils.parseUnits(
+                          this.props.toAmount, this.props.to.decimals
+                        ),
+                        this.props.to.decimals
+                      )
+                    ).toPrecision(20)
+                  }
                 </div>
               </div>
             </div>
