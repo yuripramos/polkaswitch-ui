@@ -9,18 +9,11 @@ const outputDirectory = 'dist';
 module.exports = (env) => {
   console.log(env);
   const isProduction = !!env.production;
-  const isMainNetwork = !!env.main;
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
   } else {
     console.log('Using DEVELOPMENT config');
-  }
-
-  if (isMainNetwork) {
-    console.log('Using MAIN NETWORK config');
-  } else {
-    console.log('Using TEST NETWORK config');
   }
 
   return {
@@ -82,7 +75,7 @@ module.exports = (env) => {
       }),
       new webpack.EnvironmentPlugin({
         IS_PRODUCTION: !!isProduction,
-        IS_MAIN_NETWORK: !!isMainNetwork
+        IS_MAIN_NETWORK: false
       })
     ],
     experiments: {
