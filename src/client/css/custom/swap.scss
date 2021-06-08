@@ -4,19 +4,20 @@
 }
 
 .swap-network-toggle {
-  background: #e6eff3;
-  padding: 15px 1.5em 30px;
-  margin-bottom: -20px !important;
-  border-radius: 20px 20px 0 0;
+  background: white;
+  padding: 13px 1.5em;
+  margin-bottom: 12px !important;
+  border-radius: 20px;
   color: #666;
 
   .button {
+    background-color: $light-blue !important;
   }
 
   .option-title {
-    text-transform: uppercase;
     font-size: 14px;
-    color: #a2bcce;
+    color: #5d5d5d;
+    font-weight: bold;
   }
 
   .dropdown {

@@ -54,7 +54,7 @@ export default class SwapNetworkToggle extends Component {
     }.bind(this));
 
     return (
-      <div className="swap-network-toggle notification">
+      <div className="swap-network-toggle box notification">
         <div className="level is-mobile option">
           <div className="level-left">
             <div className="level-item">
@@ -72,7 +72,7 @@ export default class SwapNetworkToggle extends Component {
             <div className="level-item">
               <div className={classnames("dropdown is-right is-hoverable")}>
                 <div className="dropdown-trigger">
-                  <button className="button is-white" aria-haspopup="true" aria-controls="dropdown-menu">
+                  <button className="button is-info is-light" aria-haspopup="true" aria-controls="dropdown-menu">
                     <span className="level">
                       <span className="level-left my-2">
                         <span className="level-item">

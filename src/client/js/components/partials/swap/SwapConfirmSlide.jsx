@@ -133,7 +133,7 @@ export default class SwapConfirmSlide extends Component {
                         ),
                         this.props.from.decimals
                       )
-                    ).toPrecision(15)
+                    ).toPrecision(18)
                   }
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default class SwapConfirmSlide extends Component {
                         ),
                         this.props.to.decimals
                       )
-                    ).toPrecision(20)
+                    ).toPrecision(18)
                   }
                 </div>
               </div>

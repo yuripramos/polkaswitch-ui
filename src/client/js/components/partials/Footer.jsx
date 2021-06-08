@@ -4,7 +4,7 @@ export default class Footer extends Component {
   render() {
     return (
       <footer className="footer">
-        <div class="content has-text-centered">
+        <div class="content has-text-centered is-hidden">
           <script type="module" src="https://cdn.freshstatus.io/widget/index.js"></script>
           <a href="https://polkaswitch.freshstatus.io" id="freshstatus-badge-root"
             data-banner-style="compact">
