@@ -88,6 +88,7 @@ app.use(helmet.contentSecurityPolicy({
       "'self'",
       "*.ingest.sentry.io",
       "ethgasstation.info",
+      "*.quiknode.pro",
       "gasstation-mainnet.matic.network"
     ]
   }

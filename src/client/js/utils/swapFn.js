@@ -211,18 +211,6 @@ window.SwapFn = {
   */
 
   getExpectedReturn: function(fromToken, toToken, amount) {
-    if (!Wallet.isConnected()) {
-      return new Promise(function(resolve) {
-        var _U = Utils;
-        var _p0 = _U.parseUnits("0", "wei");
-        var _p1 = _U.parseUnits("1", "wei");
-        resolve({
-          returnAmount: amount.mul(_U.parseUnits("99", toToken.decimals)),
-          distribution: [_p0, _p1, _p0, _p1, _p0, _p0, _p1]
-        })
-      });
-    }
-
     const contract = new Contract(
       TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
       window.oneSplitAbi,

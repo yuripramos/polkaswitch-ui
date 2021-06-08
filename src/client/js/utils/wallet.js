@@ -50,9 +50,16 @@ window.WalletJS = {
   },
 
   getProvider: function() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    return provider;
+    if (this.isConnected()) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      return provider;
+    } else {
+      var network = TokenListManager.getCurrentNetworkConfig();
+      const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+      const signer = provider.getSigner();
+      return provider;
+    }
   },
 
   getBalance: async function(token) {
