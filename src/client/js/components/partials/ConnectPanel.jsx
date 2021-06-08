@@ -171,12 +171,7 @@ export default class ConnectPanel extends Component {
             </div>
 
             <div className="footnote">
-              New to Ethereum?&nbsp;
-              <a href="https://ethereum.org/wallets/">Learn more</a><br/>
-              New to Polygon/Matic?&nbsp;
-              <a href="https://polygon.technology/technology/">Learn more</a><br/>
-              New to Polkadot?&nbsp;
-              <a href="https://wiki.polkadot.network/docs/en/getting-started">Learn more</a>
+              New to <a href="https://ethereum.org/wallets/">Ethereum</a>, <a href="https://polygon.technology/technology/">Polygon</a>, or <a href="https://wiki.polkadot.network/docs/en/getting-started">Polkadot</a>?
             </div>
           </div>
         </div>

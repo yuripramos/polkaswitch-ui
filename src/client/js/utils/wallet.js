@@ -50,7 +50,7 @@ window.WalletJS = {
   },
 
   getProvider: function() {
-    if (this.isConnected()) {
+    if (this.isConnectedToAnyNetwork()) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       return provider;

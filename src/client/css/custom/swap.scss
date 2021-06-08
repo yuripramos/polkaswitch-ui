@@ -162,6 +162,10 @@ $swap-widget-anim-timing: 300ms;
     display: none;
   }
 
+  .button.is-primary.is-fullwidth {
+    font-weight: bold;
+  }
+
   // TRANSITIONS
 
   .slidein-enter {
