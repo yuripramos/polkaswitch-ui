@@ -111,13 +111,16 @@ export default class SwapOrderWidget extends Component {
     }.bind(this));
   }
 
-  onSwapTokens(e) {
+  onSwapTokens() {
     Metrics.track("swap-flipped-tokens");
     this.setState({
       to: this.state.from,
       fromAmount: this.state.toAmount,
       from: this.state.to,
-      toAmount: 0.0
+      toAmount: 0.0,
+      refresh: Date.now(),
+      // make it easy coming from token-selection
+      showSearch: false
     });
   }
 
@@ -170,7 +173,17 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleTokenChange(token) {
-    var _s = { showSearch: false };
+    var alt = this.state.searchTarget == "from" ? "to" : "from";
+
+    // if you select the same token pair, do a swap instead
+    if (this.state[alt].address == token.address) {
+      return this.onSwapTokens();
+    }
+
+    var _s = {
+      showSearch: false,
+      refresh: Date.now()
+    };
     _s[this.state.searchTarget] = token;
     this.setState(_s, function() {
       Metrics.track("swap-token-changed", {
