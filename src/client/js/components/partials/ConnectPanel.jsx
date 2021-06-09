@@ -171,7 +171,7 @@ export default class ConnectPanel extends Component {
             </div>
 
             <div className="footnote">
-              New to <a href="https://ethereum.org/wallets/">Ethereum</a>, <a href="https://polygon.technology/technology/">Polygon</a>, or <a href="https://wiki.polkadot.network/docs/en/getting-started">Polkadot</a>?
+              New to <a target="_blank" href="https://ethereum.org/wallets/">Ethereum</a>, <a target="_blank" href="https://polygon.technology/technology/">Polygon</a>, or <a target="_blank" href="https://wiki.polkadot.network/docs/en/getting-started">Polkadot</a>?
             </div>
           </div>
         </div>

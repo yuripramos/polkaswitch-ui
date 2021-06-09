@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import _ from "underscore";
+import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
@@ -37,11 +39,9 @@ export default class ConnectWalletButton extends Component {
     if (Wallet.isConnectedToAnyNetwork()) {
       return (
         <>
-        <span className="icon icon-person">
-          <ion-icon name="person-circle"></ion-icon>
-        </span>
+        <img className="image-icon" src="/images/metamask.png" />
         <span className="wallet-address">
-          {Wallet.currentAddress().substring(0, 7)}
+          {Wallet.currentAddress().substring(0, 13)}
         </span>
         <span className="icon icon-arrow-down">
           <ion-icon name="chevron-down"></ion-icon>
@@ -58,9 +58,15 @@ export default class ConnectWalletButton extends Component {
   }
 
   render() {
+    var isConnected = Wallet.isConnectedToAnyNetwork();
+
     return (
       <div className="wallet-status">
-        <button className="button is-primary"
+        <button
+          className={classnames("button", {
+            "is-white is-medium connected": isConnected,
+            "is-primary": !isConnected
+          })}
           onClick={this.handleConnection.bind(this)}
           aria-haspopup="true" aria-controls="dropdown-menu6">
           {this.renderButtonContent()}

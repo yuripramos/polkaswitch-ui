@@ -116,7 +116,7 @@ export default class SwapTransactionDetails extends Component {
         </div>
         <div
           className="level is-mobile is-narrow detail hint--bottom hint--medium"
-          aria-label="Calculated based on the Slippage Tolerance. If the return amount below below this minimum threshold, the transaction is reverted"
+          aria-label="Calculated based on the Slippage Tolerance. If the return amount is below this minimum threshold, the transaction is reverted"
         >
           <div className="level-left">
             <div className="level-item">

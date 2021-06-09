@@ -105,7 +105,7 @@ html, body {
 }
 
 .text-gray-stylized {
-  color: #999;
+  color: #333;
 }
 
 .token-icon-img-wrapper {
@@ -156,14 +156,15 @@ html, body {
 }
 
 .wallet-status {
+
   .wallet-address {
-    border-radius: 30px;
     font-weight: bold;
-    opacity: 0.7;
-    background: white;
-    padding: 2px 8px;
-    color: $danger;
-    font-size: 11px;
+    color: #333;
+    font-size: 13px;
+    display: block;
+    padding-right: 10px;
+    margin-right: 5px;
+    border-right: 1px solid #ccc;
   }
 
   .button .icon:last-child:not(:first-child) {
@@ -171,6 +172,8 @@ html, body {
   }
 
   .button {
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+    border-radius: 15px;
   }
 
   .icon {
@@ -181,6 +184,11 @@ html, body {
 
   .icon-arrow-down {
     font-size: 16px;
+  }
+
+  .image-icon {
+    height: 19px;
+    margin-right: 11px;
   }
 
   .icon-person {
