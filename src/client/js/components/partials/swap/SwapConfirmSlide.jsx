@@ -82,6 +82,10 @@ export default class SwapConfirmSlide extends Component {
     }.bind(this));
   }
 
+  displayValue(token, amount) {
+    return BN(BN(amount).toPrecision(18)).toString();
+  }
+
   render() {
     if (!this.props.toAmount || !this.props.fromAmount) {
       return (<div />)
@@ -125,16 +129,7 @@ export default class SwapConfirmSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div class="currency-text">
-                  {
-                    BN(
-                      window.ethers.utils.formatUnits(
-                        window.ethers.utils.parseUnits(
-                          this.props.fromAmount, this.props.from.decimals
-                        ),
-                        this.props.from.decimals
-                      )
-                    ).toPrecision(18)
-                  }
+                  {this.displayValue(this.props.from, this.props.fromAmount)}
                 </div>
               </div>
             </div>
@@ -157,16 +152,7 @@ export default class SwapConfirmSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div className="currency-text">
-                  {
-                    BN(
-                      window.ethers.utils.formatUnits(
-                        window.ethers.utils.parseUnits(
-                          this.props.toAmount, this.props.to.decimals
-                        ),
-                        this.props.to.decimals
-                      )
-                    ).toPrecision(18)
-                  }
+                  {this.displayValue(this.props.to, this.props.toAmount)}
                 </div>
               </div>
             </div>
