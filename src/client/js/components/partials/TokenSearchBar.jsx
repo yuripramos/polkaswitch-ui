@@ -150,7 +150,7 @@ export default class TokenSearchBar extends Component {
     return (
       <div className="token-empty-list">
         <div>
-          <div className="empty-text has-text-info">Unrecongized Token</div>
+          <div className="empty-text has-text-info">Unrecognized Token</div>
           <i class="fas fa-question has-text-info-light"></i>
         </div>
       </div>
