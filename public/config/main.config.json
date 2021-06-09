@@ -31,7 +31,7 @@
   {
     "enabled": true,
     "name": "Polygon",
-    "aggregatorAddress": "0x361678a65Ca6874Ec1aca70150cb74639106853e",
+    "aggregatorAddress": "0x060C7C636E62399683dA74abfB00320aE5656Eab",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "tokenList": "/tokens/137.list.json",
     "chainId": "137",
