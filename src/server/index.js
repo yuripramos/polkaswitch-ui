@@ -89,7 +89,7 @@ app.use(helmet.contentSecurityPolicy({
       "*.ingest.sentry.io",
       "ethgasstation.info",
       "*.quiknode.pro",
-      "polkaswitch.com",
+      "*.polkaswitch.com",
       "gasstation-mainnet.matic.network"
     ]
   }
