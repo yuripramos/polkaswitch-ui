@@ -44,6 +44,12 @@ export default class TokenSymbolBalance extends Component {
             this.setState({ errored: true });
           }.bind(this))
         }.bind(this));
+    } else {
+      _.defer(function() {
+        this.setState({
+          errored: true
+        });
+      }.bind(this))
     }
   }
 

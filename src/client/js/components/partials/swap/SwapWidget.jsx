@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 import classnames from 'classnames';
+import * as ethers from 'ethers';
 
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
@@ -29,6 +30,7 @@ export default class SwapOrderWidget extends Component {
 
       fromAmount: undefined,
       toAmount: undefined,
+      availableBal: undefined,
 
       searchTarget: "",
       showSettings: false,
@@ -97,12 +99,13 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
-  onSwapEstimateComplete(fromAmount, toAmount, dist) {
+  onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN) {
     this.box.current.style.height = "";
     this.setState({
       fromAmount: fromAmount,
       toAmount: toAmount,
-      swapDistribution: dist
+      swapDistribution: dist,
+      availableBal: availBalBN
     }, function() {
       _.delay(function() {
         // put back height after dist expand anim
@@ -117,6 +120,7 @@ export default class SwapOrderWidget extends Component {
       to: this.state.from,
       fromAmount: this.state.toAmount,
       from: this.state.to,
+      availableBalance: undefined,
       toAmount: 0.0,
       refresh: Date.now(),
       // make it easy coming from token-selection
@@ -216,6 +220,7 @@ export default class SwapOrderWidget extends Component {
             from={this.state.from}
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
+            availableBalance={this.state.availableBal}
             refresh={this.state.refresh}
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
@@ -259,6 +264,7 @@ export default class SwapOrderWidget extends Component {
               from={this.state.from}
               fromAmount={this.state.fromAmount}
               toAmount={this.state.toAmount}
+              availableBalance={this.state.availableBal}
               refresh={this.state.refresh}
               swapDistribution={this.state.swapDistribution}
               handleTransactionComplete={this.handleResults}

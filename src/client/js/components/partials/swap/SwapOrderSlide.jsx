@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
+import * as ethers from 'ethers';
 
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
@@ -70,22 +71,25 @@ export default class SwapOrderSlide extends Component {
             return e.toNumber();
           });
 
-          this.props.onSwapEstimateComplete(
-            origFromAmount,
-            window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
-            dist
-          )
+          Wallet.getBalance(this.props.from).then(function(bal) {
+            this.props.onSwapEstimateComplete(
+              origFromAmount,
+              window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
+              dist,
+              window.ethers.utils.formatUnits(bal, this.props.from.decimals)
+            )
 
-          this.setState({
-            calculatingSwap: false
-          }, function() {
-            Metrics.track("swap-estimate-result", {
-              from: this.props.from,
-              to: this.props.to,
-              fromAmont: fromAmount,
-              toAmount: this.props.toAmount,
-              swapDistribution: this.props.swapDistribution
-            });
+            this.setState({
+              calculatingSwap: false
+            }, function() {
+              Metrics.track("swap-estimate-result", {
+                from: this.props.from,
+                to: this.props.to,
+                fromAmont: fromAmount,
+                toAmount: this.props.toAmount,
+                swapDistribution: this.props.swapDistribution
+              });
+            }.bind(this));
           }.bind(this));
         }.bind(this)).catch(function(e) {
           this.setState({
@@ -114,6 +118,19 @@ export default class SwapOrderSlide extends Component {
       this.props.fromAmount && this.props.fromAmount.length > 0 &&
       this.props.toAmount && this.props.toAmount.length > 0 &&
       !this.state.calculatingSwap);
+  }
+
+  hasSufficientBalance() {
+    if (Wallet.isConnected() &&
+      this.props.availableBalance &&
+      this.props.fromAmount && this.props.from) {
+
+      var balBN = ethers.utils.parseUnits(this.props.availableBalance, this.props.from.decimals);
+      var fromBN = ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+      return fromBN.lte(balBN);
+    } else {
+      return true;
+    }
   }
 
   handleSubmit(e) {
@@ -180,13 +197,20 @@ export default class SwapOrderSlide extends Component {
                 type="number"
                 min="0"
                 step="0.000000000000000001"
-                className="input is-medium"
+                className={classnames("input is-medium", {
+                  "is-danger": isFrom && !this.hasSufficientBalance()
+                })}
                 placeholder="0.0"
                 disabled={!isFrom}
               />
 
             {isFrom && !this.props[`${target}Amount`] &&
                 (<div className="max-btn" onClick={this.handleMax}>Max</div>)}
+
+            {isFrom && !this.hasSufficientBalance() &&
+                (<div className="warning-funds">
+                   Insufficient funds
+                </div>)}
             </div>
           </div>
         </div>

@@ -241,7 +241,7 @@ $swap-widget-anim-timing: 300ms;
     font-family: monospace;
     color: $link;
     font-size: 22px;
-    text-align: left;
+    text-align: right;
     overflow: hidden;
   }
 
@@ -328,6 +328,19 @@ $swap-widget-anim-timing: 300ms;
         box-shadow: 0 0px 10px 0 #efefef;
         border: 1px solid $link;
       }
+
+      &.is-danger {
+        color: $danger;
+        border-color: $danger;
+      }
+    }
+
+    .warning-funds {
+      font-size: 12px;
+      color: $danger;
+      position: absolute;
+      bottom: -20px;
+      right: 8px;
     }
 
     .control{

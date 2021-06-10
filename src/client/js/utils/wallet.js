@@ -62,17 +62,21 @@ window.WalletJS = {
     }
   },
 
-  getBalance: async function(token) {
-    if (token.native) {
-      return this.getDefaultBalance();
-    }
+  getBalance: function(token) {
+    if (this.isConnected()) {
+      if (token.native) {
+        return this.getDefaultBalance();
+      }
 
-    else if (token.address) {
-      return this.getERC20Balance(token.address);
+      else if (token.address) {
+        return this.getERC20Balance(token.address);
+      }
+    } else {
+      return Promise.resolve(BigNumber.from(0));
     }
   },
 
-  getDefaultBalance: async function() {
+  getDefaultBalance: function() {
     return this.getProvider().getBalance(this.currentAddress());
   },
 

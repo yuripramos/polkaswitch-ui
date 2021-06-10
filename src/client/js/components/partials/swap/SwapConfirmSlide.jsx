@@ -3,6 +3,7 @@ import _ from "underscore";
 import classnames from 'classnames';
 import numeral from 'numeral';
 import BN from 'bignumber.js';
+import * as ethers from 'ethers';
 
 import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
@@ -14,6 +15,8 @@ import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
+
+const BigNumber = ethers.BigNumber;
 
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
@@ -86,6 +89,16 @@ export default class SwapConfirmSlide extends Component {
     return BN(BN(amount).toPrecision(18)).toString();
   }
 
+  hasSufficientBalance() {
+    if (this.props.availableBalance) {
+      var balBN = ethers.utils.parseUnits(this.props.availableBalance, this.props.from.decimals);
+      var fromBN = ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+      return fromBN.lte(balBN);
+    } else {
+      return false;
+    }
+  }
+
   render() {
     if (!this.props.toAmount || !this.props.fromAmount) {
       return (<div />)
@@ -128,8 +141,18 @@ export default class SwapConfirmSlide extends Component {
 
             <div className="level-right">
               <div className="level-item">
-                <div class="currency-text">
-                  {this.displayValue(this.props.from, this.props.fromAmount)}
+                <div>
+                  <div className="currency-text">
+                    {this.displayValue(this.props.from, this.props.fromAmount)}
+                  </div>
+                  <div className={classnames("fund-warning has-text-danger", {
+                    "is-hidden": this.hasSufficientBalance()
+                  })}>
+                    <span className="icon">
+                      <ion-icon name="warning-outline"></ion-icon>
+                    </span>
+                    <span>Insufficient funds</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -188,7 +211,7 @@ export default class SwapConfirmSlide extends Component {
               className={classnames("button is-primary is-fullwidth is-medium", {
                 "is-loading": this.state.loading
               })}
-              disabled={this.state.loading}
+              disabled={this.state.loading || !this.hasSufficientBalance()}
               onClick={this.handleSwapConfirm}>
               Confirm Order
             </button>

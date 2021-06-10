@@ -42,52 +42,54 @@ export default class SwapTransactionDetails extends Component {
   }
 
   updateValues() {
-    SwapFn.calculateMinReturn(
-      this.props.from,
-      this.props.to,
-      Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
-    ).then(function(r) {
-      _.defer(function(){
-        this.setState({ minReturn: r });
+    if (Wallet.isConnected()) {
+      SwapFn.calculateMinReturn(
+        this.props.from,
+        this.props.to,
+        Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
+      ).then(function(r) {
+        _.defer(function(){
+          this.setState({ minReturn: r });
+        }.bind(this));
+      }.bind(this)).catch(function(r) {
+        _.defer(function(){
+          this.setState({ minReturn: "--" });
+        }.bind(this));
       }.bind(this));
-    }.bind(this)).catch(function(r) {
-      _.defer(function(){
-        this.setState({ minReturn: "--" });
-      }.bind(this));
-    }.bind(this));
 
-    SwapFn.calculatePriceImpact(
-      this.props.from,
-      this.props.to,
-      Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
-    ).then(function(priceImpact) {
-      _.defer(function(){
-        this.setState({ priceImpact: (priceImpact * 100.0).toFixed(5) });
+      SwapFn.calculatePriceImpact(
+        this.props.from,
+        this.props.to,
+        Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
+      ).then(function(priceImpact) {
+        _.defer(function(){
+          this.setState({ priceImpact: (priceImpact * 100.0).toFixed(5) });
+        }.bind(this));
+      }.bind(this)).catch(function(r) {
+        _.defer(function(){
+          this.setState({ priceImpact: "--" });
+        }.bind(this));
       }.bind(this));
-    }.bind(this)).catch(function(r) {
-      _.defer(function(){
-        this.setState({ priceImpact: "--" });
-      }.bind(this));
-    }.bind(this));
 
-    var distBN = _.map(this.props.swapDistribution, function(e) {
-      return window.ethers.utils.parseUnits("" + e, "wei");
-    });
+      var distBN = _.map(this.props.swapDistribution, function(e) {
+        return window.ethers.utils.parseUnits("" + e, "wei");
+      });
 
-    SwapFn.calculateEstimatedTransactionCost(
-      this.props.from,
-      this.props.to,
-      Utils.parseUnits(this.props.fromAmount, this.props.from.decimals),
-      distBN,
-    ).then(function(v) {
-      _.defer(function(){
-        this.setState({ transactionEstimate: v });
+      SwapFn.calculateEstimatedTransactionCost(
+        this.props.from,
+        this.props.to,
+        Utils.parseUnits(this.props.fromAmount, this.props.from.decimals),
+        distBN,
+      ).then(function(v) {
+        _.defer(function(){
+          this.setState({ transactionEstimate: v });
+        }.bind(this));
+      }.bind(this)).catch(function(r) {
+        _.defer(function(){
+          this.setState({ transactionEstimate: "--" });
+        }.bind(this));
       }.bind(this));
-    }.bind(this)).catch(function(r) {
-      _.defer(function(){
-        this.setState({ transactionEstimate: "--" });
-      }.bind(this));
-    }.bind(this));
+    }
   }
 
   render() {
