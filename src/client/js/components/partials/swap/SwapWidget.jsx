@@ -62,6 +62,7 @@ export default class SwapOrderWidget extends Component {
   componentDidMount() {
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
     this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
+    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
   }
@@ -172,7 +173,8 @@ export default class SwapOrderWidget extends Component {
       showResults: false,
       toAmount: '',
       fromAmount: '',
-      swapDistribution: undefined
+      swapDistribution: undefined,
+      refresh: Date.now() // refresh Balances
     });
   }
 

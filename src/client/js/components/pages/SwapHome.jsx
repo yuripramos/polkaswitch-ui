@@ -7,12 +7,15 @@ import SwapWidget from '../partials/swap/SwapWidget';
 import AlphaOnboardingCard from '../partials/swap/AlphaOnboardingCard';
 import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
 import ConnectPanel from '../partials/ConnectPanel';
+import NotificationSystem from '../partials/NotificationSystem';
 
 export default class Home extends Component {
   render() {
     return (
       <div className="container">
         <Navbar />
+
+        <NotificationSystem />
 
         <ConnectPanel />
 

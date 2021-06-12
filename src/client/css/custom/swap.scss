@@ -3,6 +3,14 @@
   font-size: 13px;
 }
 
+.txHash {
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 14px;
+  font-family: monospace;
+  font-weight: normal;
+}
+
 .swap-network-toggle {
   background: white;
   padding: 13px 1.5em;
@@ -488,11 +496,13 @@ $swap-widget-anim-timing: 300ms;
 
       .title {
         font-size: 24px;
+        margin-bottom: 5px;
       }
 
       .details {
         font-size: 15px;
         color: #9db0be;
+        margin-bottom: 5px;
       }
     }
   }

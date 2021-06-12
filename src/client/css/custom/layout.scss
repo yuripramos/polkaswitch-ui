@@ -77,6 +77,11 @@ html, body {
       height: 37px;
     }
   }
+
+  .button {
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+    border-radius: 15px;
+  }
 }
 
 @media screen and (min-width: 769px) {
@@ -160,7 +165,7 @@ html, body {
   .wallet-address {
     font-weight: bold;
     color: #333;
-    font-size: 13px;
+    font-size: 14px;
     display: block;
     padding-right: 10px;
     margin-right: 5px;
@@ -169,11 +174,6 @@ html, body {
 
   .button .icon:last-child:not(:first-child) {
     margin-left: 0;
-  }
-
-  .button {
-    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
-    border-radius: 15px;
   }
 
   .icon {

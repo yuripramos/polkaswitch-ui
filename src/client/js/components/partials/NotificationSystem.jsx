@@ -4,26 +4,46 @@ import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
 import Metrics from '../../utils/metrics';
+import EventManager from '../../utils/events';
+import TxQueue from '../../utils/txQueue';
 
 export default class NotificationSystem extends Component {
   constructor(props) {
     super(props);
-    this.state = { errored: false };
-    this.onError = this.onError.bind(this);
-    this.onLoad = this.onLoad.bind(this);
+
+    this.state = { refresh: Date.now() };
+
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
-  onError(e) {
-    this.setState({ errored: true });
+  componentDidMount() {
+    this.sub = EventManager.listenFor(
+      'txQueueUpdated', this.handleUpdate
+    );
+    this.sub2 = EventManager.listenFor(
+      'txSuccess', this.handleUpdate
+    );
   }
 
-  onLoad(e) {
-    this.setState({ errored: false });
+  componentDidUnmount() {
+    this.sub.unsubscribe();
+    this.sub2.unsubscribe();
+  }
+
+  handleUpdate(txNonce) {
+    this.setState({
+      refresh: Date.now()
+    });
   }
 
   render() {
     return (
-      <div></div>
+      <div className="notification-drawer">
+        <div class="notification">
+          <button class="delete"></button>
+          Lorem ipsum
+        </div>
+      </div>
     );
   }
 }

@@ -34,20 +34,26 @@ export default class SwapFinalResultSlide extends Component {
           <div className={classnames("view", { "failed": !this.props.transactionSuccess })}>
             <div className="icon">
               {this.props.transactionSuccess ? (
-                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                <ion-icon name="rocket-outline"></ion-icon>
               ) : (
                 <ion-icon name="alert-circle-outline"></ion-icon>
               )}
             </div>
             <div className="title">
-              {this.props.transactionSuccess ? "Transaction Complete" : "Transaction Failed" }
+              {this.props.transactionSuccess ? "Transaction Pending" : "Transaction Failed" }
             </div>
             <div className="details">
-              <div style={{ wordBreak: "break-all" }}>{
-                this.props.transactionSuccess
-                  ? this.props.transactionHash
-                  : "Please try again"
-              }</div>
+              <div>
+                { this.props.transactionSuccess && (
+                  <div>
+                    <div>Check notifications drawer for updates</div>
+                    <div className="txHash">{this.props.transactionHash}</div>
+                  </div>
+                )}
+                { !this.props.transactionSuccess && (
+                  <div>Please try again</div>
+                )}
+              </div>
             </div>
           </div>
 

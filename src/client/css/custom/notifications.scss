@@ -1,0 +1,21 @@
+
+.notification-drawer {
+  position: absolute;
+  width: 300px;
+  z-index: 100;
+  top: 0;
+  left: 50%;
+  margin-left: -150px;
+  display: none;
+}
+
+.notification-button {
+  position: relative;
+
+  .bubble {
+    position: absolute;
+    z-index: 10;
+    right: -4px;
+    margin-top: -12px;
+  }
+}

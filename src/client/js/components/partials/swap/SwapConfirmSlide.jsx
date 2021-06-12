@@ -56,13 +56,10 @@ export default class SwapConfirmSlide extends Component {
         this.props.to,
         fromAmountBN,
         distBN
-      ).then(function(result) {
-        console.log(result);
-        console.log(`Transaction Hash: ${result.transactionHash}`);
-        console.log(`Gas Used: ${result.gasUsed.toString()}`);
-        // var toAmountString = window.ethers.utils.formatEther(result.returnAmount);
+      ).then(function(nonce) {
+        console.log(nonce);
 
-        this.props.handleTransactionComplete(true, result.transactionHash);
+        this.props.handleTransactionComplete(true, nonce);
 
         Metrics.track("swap-complete", {
           from: this.props.from,

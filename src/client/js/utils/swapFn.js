@@ -1,6 +1,7 @@
 
 import _ from "underscore";
 import EventManager from './events';
+import TxQueue from './txQueue';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
@@ -272,7 +273,13 @@ window.SwapFn = {
         }
       ).then(function(transaction) {
         console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
-        return transaction.wait();
+        TxQueue.queuePendingTx({
+          from: fromToken,
+          to: toToken,
+          amount: amountBN,
+          tx: transaction
+        });
+        return transaction.hash;
       });
 
     }.bind(this));
