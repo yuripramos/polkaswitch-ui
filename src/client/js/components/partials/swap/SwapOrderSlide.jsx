@@ -25,6 +25,7 @@ export default class SwapOrderSlide extends Component {
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
+    this.handleTokenSwap = this.handleTokenSwap.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -145,6 +146,12 @@ export default class SwapOrderSlide extends Component {
     }
   }
 
+  handleTokenSwap(e) {
+    if (!this.state.calculatingSwap) {
+      this.props.onSwapTokens(e);
+    }
+  }
+
   handleMax(e) {
     if (Wallet.isConnected() && this.props.from.address) {
       Wallet.getBalance(this.props.from)
@@ -246,11 +253,11 @@ export default class SwapOrderSlide extends Component {
           </div>
 
           <div class="swap-icon-wrapper">
-            <div class="swap-icon-v2 icon" onClick={this.props.onSwapTokens}>
+            <div class="swap-icon-v2 icon" onClick={this.handleTokenSwap}>
               <ion-icon name="swap-vertical-outline"></ion-icon>
             </div>
 
-            <div class="swap-icon is-hidden" onClick={this.props.onSwapTokens}>
+            <div class="swap-icon is-hidden" onClick={this.handleTokenSwap}>
               <i class="fas fa-long-arrow-alt-up"></i>
               <i class="fas fa-long-arrow-alt-down"></i>
             </div>
