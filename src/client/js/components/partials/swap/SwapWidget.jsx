@@ -30,7 +30,7 @@ export default class SwapOrderWidget extends Component {
 
       fromAmount: undefined,
       toAmount: undefined,
-      availableBal: undefined,
+      availableBalance: undefined,
 
       searchTarget: "",
       showSettings: false,
@@ -105,7 +105,7 @@ export default class SwapOrderWidget extends Component {
       fromAmount: fromAmount,
       toAmount: toAmount,
       swapDistribution: dist,
-      availableBal: availBalBN
+      availableBalance: availBalBN
     }, function() {
       _.delay(function() {
         // put back height after dist expand anim
@@ -220,7 +220,7 @@ export default class SwapOrderWidget extends Component {
             from={this.state.from}
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
-            availableBalance={this.state.availableBal}
+            availableBalance={this.state.availableBalance}
             refresh={this.state.refresh}
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
@@ -264,7 +264,7 @@ export default class SwapOrderWidget extends Component {
               from={this.state.from}
               fromAmount={this.state.fromAmount}
               toAmount={this.state.toAmount}
-              availableBalance={this.state.availableBal}
+              availableBalance={this.state.availableBalance}
               refresh={this.state.refresh}
               swapDistribution={this.state.swapDistribution}
               handleTransactionComplete={this.handleResults}

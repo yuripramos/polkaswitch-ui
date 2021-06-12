@@ -35,13 +35,20 @@ export default class ConnectWalletButton extends Component {
     this.setState({ refresh: Date.now() });
   }
 
+  getTruncWalletAddress() {
+    var address = Wallet.currentAddress();
+    var first = address.substring(0, 7);
+    var last = address.substring(address.length - 5, address.length);
+    return `${first}...${last}`;
+  }
+
   renderButtonContent() {
     if (Wallet.isConnectedToAnyNetwork()) {
       return (
         <>
         <img className="image-icon" src="/images/metamask.png" />
         <span className="wallet-address">
-          {Wallet.currentAddress().substring(0, 13)}
+          {this.getTruncWalletAddress()}
         </span>
         <span className="icon icon-arrow-down">
           <ion-icon name="chevron-down"></ion-icon>
