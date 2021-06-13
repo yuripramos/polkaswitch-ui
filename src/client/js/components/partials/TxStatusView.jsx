@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 import * as ethers from 'ethers';
+import numeral from 'numeral';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
@@ -20,6 +21,8 @@ export default class TxStatusView extends Component {
       return (<div />);
     }
 
+    var output = numeral(Utils.formatUnits(this.props.data.amount, this.props.data.from.decimals)).format('0.0000a');
+
     return (
       <div className="level is-mobile tx-item">
         <div className="level-item tx-icon">
@@ -33,7 +36,7 @@ export default class TxStatusView extends Component {
         </div>
         <div className="level-item">
           <div className="tx-content">
-            <div>SWAPPED {Utils.formatUnits(this.props.data.amount, this.props.data.from.decimals)} {this.props.data.from.symbol} for {this.props.data.to.symbol}</div>
+            <div>SWAPPED {output} {this.props.data.from.symbol} for {this.props.data.to.symbol}</div>
             <div>
               <TxExplorerLink hash={this.props.data.tx.hash}>
                 View on Explorer <ion-icon name="open-outline"></ion-icon>
