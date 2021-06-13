@@ -27,7 +27,7 @@ export default class TxStatusView extends Component {
       <div className="level is-mobile tx-item">
         <div className="level-item tx-icon">
           <div className="icon">
-            {this.props.success ? (
+            {this.props.data.success ? (
               <ion-icon name="checkmark-circle-outline"></ion-icon>
             ) : (
               <ion-icon name="alert-circle-outline"></ion-icon>

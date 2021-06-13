@@ -9,6 +9,7 @@ import TokenListManager from '../../utils/tokenList';
 import TxQueue from '../../utils/txQueue';
 
 import TxExplorerLink from './TxExplorerLink';
+import TxStatusView from './TxStatusView';
 
 export default class TxHistoryModal extends Component {
   constructor(props) {
@@ -72,23 +73,7 @@ export default class TxHistoryModal extends Component {
 
             {_.map(TxQueue.getQueue(), function(item) {
               return (
-                <div className="level is-mobile tx-item">
-                  <div className="level-item">
-                    <div className="icon">
-                      <ion-icon name="checkmark-circle-outline"></ion-icon>
-                    </div>
-                  </div>
-                  <div className="level-item">
-                    <div>
-                      <div>SWAP 0.01 ETH for 4.0 MATIC</div>
-                      <div>
-                        <TxExplorerLink hash={item.tx.hash}>
-                          View on Explorer <ion-icon name="open-outline"></ion-icon>
-                        </TxExplorerLink>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <TxStatusView data={item} />
               );
             })}
           </div>
