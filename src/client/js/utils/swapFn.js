@@ -215,7 +215,7 @@ window.SwapFn = {
     const contract = new Contract(
       TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
       window.oneSplitAbi,
-      Wallet.getProvider()
+      Wallet.getProvider(true)
     );
     return contract.getExpectedReturn(
       fromToken.address,

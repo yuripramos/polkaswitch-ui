@@ -23,8 +23,14 @@ if (process.env.IS_PRODUCTION) {
 window.ethers = ethers;
 window._ = _;
 
+if (process.env.IS_MAIN_NETWORK) {
+  console.log("Loading MAIN config...");
+} else {
+  console.log("Loading TEST config...");
+}
+
 var config  = await fetch(
-  process.env.IS_MAIN_NETWORK ? '/config/test.config.json' : '/config/main.config.json'
+  process.env.IS_MAIN_NETWORK ? '/config/main.config.json' : '/config/test.config.json'
 );
 window.NETWORK_CONFIGS = await config.json();
 // Default to the ETH network

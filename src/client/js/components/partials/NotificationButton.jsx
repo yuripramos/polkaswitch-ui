@@ -15,16 +15,20 @@ export default class NotificationButton extends Component {
   }
 
   componentDidMount() {
-    this.subWalletChange = EventManager.listenFor(
-      'walletUpdated', this.handleWalletChange
+    this.subUpdates = EventManager.listenFor(
+      'walletUpdated', this.handleUpdate
+    );
+    this.subUpdates = EventManager.listenFor(
+      'txQueueUpdated', this.handleUpdate
     );
   }
 
   componentDidUnmount() {
-    this.subWalletChange.unsubscribe();
+    this.subUpdates.unsubscribe();
   }
 
   handleClick(e) {
+    EventManager.emitEvent('promptTxHistory', 1);
   }
 
   handleUpdate() {
@@ -36,8 +40,10 @@ export default class NotificationButton extends Component {
 
     return (
       <div className="notification-button">
-        <div className="bubble tag is-danger">
-          1
+        <div className={classnames("bubble tag is-danger", {
+          "is-hidden": (TxQueue.numOfPending() < 1)
+        })}>
+        {TxQueue.numOfPending()}
         </div>
         <button
           className={classnames("button", {

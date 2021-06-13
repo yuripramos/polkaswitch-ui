@@ -142,7 +142,7 @@ export default class SwapConfirmSlide extends Component {
                   <div className="currency-text">
                     {this.displayValue(this.props.from, this.props.fromAmount)}
                   </div>
-                  <div className={classnames("fund-warning has-text-danger", {
+                  <div className={classnames("fund-warning has-text-danger has-text-right", {
                     "is-hidden": this.hasSufficientBalance()
                   })}>
                     <span className="icon">
@@ -210,7 +210,7 @@ export default class SwapConfirmSlide extends Component {
               })}
               disabled={this.state.loading || !this.hasSufficientBalance()}
               onClick={this.handleSwapConfirm}>
-              Confirm Order
+              Swap
             </button>
           </div>
         </div>

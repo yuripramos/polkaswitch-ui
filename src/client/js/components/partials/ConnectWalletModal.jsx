@@ -7,7 +7,7 @@ import Metrics from '../../utils/metrics';
 import EventManager from '../../utils/events';
 import TokenListManager from '../../utils/tokenList';
 
-export default class ConnectPanel extends Component {
+export default class ConnectWalletModal extends Component {
   constructor(props) {
     super(props);
     this.state = { refresh: Date.now(), open: false };

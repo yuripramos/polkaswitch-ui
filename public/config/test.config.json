@@ -7,6 +7,7 @@
     "tokenList": "/tokens/eth.list.json",
     "chainId": "1287",
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
+    "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "chain": {
       "chainId": "0x507",
@@ -36,6 +37,7 @@
     "tokenList": "/tokens/137.list.json",
     "chainId": "137",
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
+    "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
     "chain": {
       "chainId": "0x89",

@@ -1,12 +1,33 @@
 
 .notification-drawer {
   position: absolute;
-  width: 300px;
-  z-index: 100;
+  width: 350px;
+  z-index: 30;
   top: 0;
   left: 50%;
-  margin-left: -150px;
-  display: none;
+  margin-left: -175px;
+
+  .notification {
+    padding: 10px 5px;
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+  }
+
+  .level, .level-item {
+    margin: 0 !important;
+  }
+
+  .icon {
+    &.clickable {
+      color: #ffffff66;
+      margin: 0 10px;
+
+      &:hover {
+        color: white;
+        border-radius: 40px;
+        background: #ffffff30;
+      }
+    }
+  }
 }
 
 .notification-button {
@@ -17,5 +38,34 @@
     z-index: 10;
     right: -4px;
     margin-top: -12px;
+  }
+}
+
+.tx-history-modal {
+  max-width: 420px;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+
+.tx-item {
+  width: 100%;
+
+  .tx-icon {
+    flex-grow: 0 !important;
+
+    .icon {
+      width: 50px;
+      height: 40px;
+      font-size: 30px;
+    }
+  }
+
+  .tx-content {
+    width: 100%;
+    font-size: 14px;
+
+    a {
+      font-weight: 100;
+    }
   }
 }

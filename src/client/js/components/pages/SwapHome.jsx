@@ -6,7 +6,8 @@ import PairOverviewChart from '../partials/swap/PairOverviewChart';
 import SwapWidget from '../partials/swap/SwapWidget';
 import AlphaOnboardingCard from '../partials/swap/AlphaOnboardingCard';
 import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
-import ConnectPanel from '../partials/ConnectPanel';
+import ConnectWalletModal from '../partials/ConnectWalletModal';
+import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 
 export default class Home extends Component {
@@ -17,7 +18,8 @@ export default class Home extends Component {
 
         <NotificationSystem />
 
-        <ConnectPanel />
+        <ConnectWalletModal />
+        <TxHistoryModal />
 
         <div className="columns">
           { /*

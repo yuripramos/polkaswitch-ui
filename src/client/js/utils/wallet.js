@@ -49,8 +49,10 @@ window.WalletJS = {
     EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
   },
 
-  getProvider: function() {
-    if (this.isConnectedToAnyNetwork()) {
+  getProvider: function(strictCheck) {
+    var condition = strictCheck ? this.isConnected() : this.isConnectedToAnyNetwork();
+
+    if (condition) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       return provider;

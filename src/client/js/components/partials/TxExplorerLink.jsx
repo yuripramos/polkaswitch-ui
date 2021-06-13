@@ -1,0 +1,19 @@
+import React, { Component } from 'react';
+import _ from "underscore";
+import classnames from 'classnames';
+
+import TokenListManager from '../../utils/tokenList';
+
+export default class TxExplorerLink extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    var network = TokenListManager.getCurrentNetworkConfig();
+    return (
+      <a href={`${network.explorerBaseUrl}${this.props.hash}`}>{this.props.children}</a>
+    );
+  }
+}
+

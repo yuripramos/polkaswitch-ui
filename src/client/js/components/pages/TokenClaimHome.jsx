@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 import Navbar from '../partials/Navbar';
-import ConnectPanel from '../partials/ConnectPanel';
+import ConnectWalletModal from '../partials/ConnectWalletModal';
 
 export default class Home extends Component {
   render() {
@@ -10,7 +10,7 @@ export default class Home extends Component {
       <div className="container">
         <Navbar />
 
-        <ConnectPanel />
+        <ConnectWalletModal />
 
         <div className="columns">
           <div className="column swap-column" style={{ margin: "0 auto" }}>

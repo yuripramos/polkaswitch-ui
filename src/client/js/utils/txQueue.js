@@ -22,21 +22,27 @@ export default {
       console.log(`Transaction Hash: ${txReceipt.transactionHash}`);
       console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
       this._queue[hash].receipt = txReceipt;
+      this._queue[hash].success = true;
       EventManager.emitEvent('txQueueUpdated', hash);
       EventManager.emitEvent('txSuccess', hash);
     }.bind(this)).catch(function(err) {
       console.error(err);
+      this._queue[hash].success = false;
       EventManager.emitEvent('txQueueUpdated', hash);
       EventManager.emitEvent('txFailed', hash);
     }.bind(this));
   },
 
+  getQueue: function() {
+    return this._queue;
+  },
+
   numOfPending: function() {
-    return _.keys(_queue).length;
+    return _.keys(this._queue).length;
   },
 
   getTx: function(nonce) {
-    return _queue[nonce];
+    return this._queue[nonce];
   }
 };
 
