@@ -348,3 +348,22 @@ html, body {
   }
 }
 
+.empty-state {
+  height: 300px;
+  display: flex;
+  margin: 0 auto;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    font-size: 70px;
+    height: 70px;
+    width: 70px;
+  }
+
+  .empty-text {
+    font-size: 19px;
+    margin-bottom: 17px;
+  }
+}

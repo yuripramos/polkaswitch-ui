@@ -543,24 +543,6 @@ $swap-widget-anim-timing: 300ms;
         }
       }
 
-      .token-empty-list {
-        height: 300px;
-        display: flex;
-        margin: 0 auto;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-
-        i {
-          font-size: 4rem;
-        }
-
-        .empty-text {
-          margin-bottom: 17px;
-          font-weight: bold;
-        }
-      }
-
       .token-inline-list {
         position: relative;
         height: 325px;

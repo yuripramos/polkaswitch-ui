@@ -148,10 +148,12 @@ export default class TokenSearchBar extends Component {
 
   renderEmptyList() {
     return (
-      <div className="token-empty-list">
+      <div className="empty-state">
         <div>
           <div className="empty-text has-text-info">Unrecognized Token</div>
-          <i class="fas fa-question has-text-info-light"></i>
+          <div className="icon has-text-info-light">
+            <ion-icon name="help-outline"></ion-icon>
+          </div>
         </div>
       </div>
     )

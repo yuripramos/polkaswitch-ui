@@ -50,6 +50,8 @@ export default class TxHistoryModal extends Component {
   }
 
   render() {
+    var queue = TxQueue.getQueue();
+
     return (
       <div className={classnames("modal", { "is-active": this.state.open })}>
         <div onClick={this.handleClose} className="modal-background"></div>
@@ -71,7 +73,20 @@ export default class TxHistoryModal extends Component {
               </div>
             </div>
 
-            {_.map(TxQueue.getQueue(), function(item) {
+            {_.keys(queue).length < 1 && (
+              <div className="empty-state">
+                <div>
+                  <div className="empty-text has-text-info">
+                    No recent transactions
+                  </div>
+                  <div className="icon has-text-info-light">
+                    <ion-icon name="file-tray-outline"></ion-icon>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {_.map(queue, function(item) {
               return (
                 <TxStatusView data={item} />
               );
