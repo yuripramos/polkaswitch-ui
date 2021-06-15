@@ -3,6 +3,7 @@ import _ from "underscore";
 import classnames from 'classnames';
 import * as ethers from 'ethers';
 import numeral from 'numeral';
+import moment from 'moment';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
@@ -46,8 +47,8 @@ export default class TxStatusView extends Component {
             {icon}
           </div>
         </div>
-        <div className="level-item">
-          <div className="tx-content">
+        <div className="level-item tx-content">
+          <div>
             <div>{lang} {output} {this.props.data.from.symbol} for {this.props.data.to.symbol}</div>
             <div>
               <TxExplorerLink hash={this.props.data.tx.hash}>
@@ -55,6 +56,9 @@ export default class TxStatusView extends Component {
               </TxExplorerLink>
             </div>
           </div>
+        </div>
+        <div className="level-item tx-meta">
+          {moment(this.props.data.lastUpdated).format("LT")}
         </div>
       </div>
     );

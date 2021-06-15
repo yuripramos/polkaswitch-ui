@@ -34,6 +34,10 @@
   .tx-content {
     color: white !important;
   }
+
+  .tx-meta {
+    display: none;
+  }
 }
 
 .notification-button {
@@ -84,12 +88,22 @@
     }
   }
 
+  .tx-meta {
+    color: #8899a7;
+    font-size: 12px;
+    font-weight: 100;
+  }
+
   .tx-content {
-    color: $info;
-    width: 100%;
+    color: #8899a7;
     font-size: 14px;
 
+    > div {
+      width: 100%;
+    }
+
     a {
+      color: #8899a7;
       font-weight: 100;
     }
   }

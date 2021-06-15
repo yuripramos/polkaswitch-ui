@@ -11,6 +11,7 @@ export default {
 
   queuePendingTx: function(data, confirms) {
     var hash = data.tx.hash;
+    data.lastUpdated = Date.now();
     data.completed = false;
     data.success = false;
 
@@ -26,12 +27,14 @@ export default {
       this._queue[hash].receipt = txReceipt;
       this._queue[hash].success = true;
       this._queue[hash].completed = true;
+      this._queue[hash].lastUpdated = Date.now();
       EventManager.emitEvent('txQueueUpdated', hash);
       EventManager.emitEvent('txSuccess', hash);
     }.bind(this)).catch(function(err) {
       console.error(err);
       this._queue[hash].completed = true;
       this._queue[hash].success = false;
+      this._queue[hash].lastUpdated = Date.now();
       EventManager.emitEvent('txQueueUpdated', hash);
       EventManager.emitEvent('txFailed', hash);
     }.bind(this));

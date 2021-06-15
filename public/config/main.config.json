@@ -45,8 +45,8 @@
       "chainName": "Matic Mainnet"
     },
     "defaultPair": {
-      "to": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-      "from": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+      "to": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "topTokens": [
       "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
