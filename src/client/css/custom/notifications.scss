@@ -17,8 +17,10 @@
   }
 
   .icon {
+    color: white !important;
+
     &.clickable {
-      color: #ffffff66;
+      color: #ffffff66 !important;
       margin: 0 10px;
 
       &:hover {
@@ -27,6 +29,10 @@
         background: #ffffff30;
       }
     }
+  }
+
+  .tx-content {
+    color: white !important;
   }
 }
 
@@ -60,7 +66,26 @@
     }
   }
 
+  &.success {
+    .icon {
+      color: $success;
+    }
+  }
+
+  &.pending {
+    .button::after {
+      border-color: transparent transparent $info $info !important;
+    }
+  }
+
+  &.failed {
+    .icon {
+      color: $danger;
+    }
+  }
+
   .tx-content {
+    color: $info;
     width: 100%;
     font-size: 14px;
 

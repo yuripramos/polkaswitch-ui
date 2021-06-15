@@ -11,6 +11,8 @@ export default {
 
   queuePendingTx: function(data, confirms) {
     var hash = data.tx.hash;
+    data.completed = false;
+    data.success = false;
 
     // TODO serialize _queue into window.localStorage eventually, so not lost on refresh
     this._queue[hash] = data;
@@ -23,10 +25,12 @@ export default {
       console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
       this._queue[hash].receipt = txReceipt;
       this._queue[hash].success = true;
+      this._queue[hash].completed = true;
       EventManager.emitEvent('txQueueUpdated', hash);
       EventManager.emitEvent('txSuccess', hash);
     }.bind(this)).catch(function(err) {
       console.error(err);
+      this._queue[hash].completed = true;
       this._queue[hash].success = false;
       EventManager.emitEvent('txQueueUpdated', hash);
       EventManager.emitEvent('txFailed', hash);

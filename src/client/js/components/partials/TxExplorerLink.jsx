@@ -12,7 +12,11 @@ export default class TxExplorerLink extends Component {
   render() {
     var network = TokenListManager.getCurrentNetworkConfig();
     return (
-      <a href={`${network.explorerBaseUrl}${this.props.hash}`}>{this.props.children}</a>
+      <a
+        target="_blank"
+        href={`${network.explorerBaseUrl}${this.props.hash}`}>
+        {this.props.children}
+      </a>
     );
   }
 }
