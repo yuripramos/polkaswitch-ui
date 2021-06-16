@@ -58,9 +58,18 @@ export default class TokenSymbolBalance extends Component {
     var fullOutput;
     const Utils = window.ethers.utils;
 
+    var renderBalFn = function() {
+      return numeral(Utils.formatUnits(this.state.balance, this.props.token.decimals)).format('0.0000a');
+    };
+
     if (this.state.errored) {
-      balOutput = "N/A";
-      fullOutput = "";
+      if (Wallet.isConnected() && this.state.balance) {
+        balOutput = renderBalFn();
+        fullOutput = Utils.formatUnits(this.state.balance, this.props.token.decimals);
+      } else {
+        balOutput = "N/A";
+        fullOutput = "";
+      }
     } else if (this.state.balance.isZero()) {
       balOutput = "0.0";
       fullOutput = balOutput;
@@ -68,7 +77,7 @@ export default class TokenSymbolBalance extends Component {
       balOutput = "< 0.0001";
       fullOutput = Utils.formatUnits(this.state.balance, this.props.token.decimals);
     } else {
-      balOutput = numeral(Utils.formatUnits(this.state.balance, this.props.token.decimals)).format('0.0000a');
+      balOutput = renderBalFn();
       fullOutput = Utils.formatUnits(this.state.balance, this.props.token.decimals);
     }
 

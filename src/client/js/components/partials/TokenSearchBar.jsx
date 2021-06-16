@@ -225,11 +225,11 @@ export default class TokenSearchBar extends Component {
                 value={this.state.value} onChange={this.handleChange}
                 placeholder={this.props.placeholder || "Search by token name, symbol, or address ..."} />
               <span className="icon is-left">
-                <i className="fas fa-search fa-sm"></i>
+                <ion-icon name="search-outline"></ion-icon>
               </span>
               {this.props.handleClose && (
                 <span className="icon close-icon is-right" onClick={this.props.handleClose}>
-                  <i className="fas fa-times fa-sm"></i>
+                  <ion-icon name="close-outline"></ion-icon>
                 </span>
               )}
             </div>
