@@ -81,6 +81,7 @@ app.use(helmet.contentSecurityPolicy({
       "cdn.polyfill.io",
       "*.mxpnl.com",
       "*.mixpanel.com",
+      "feedback.fish",
       // mixpanel script
       "'sha256-Ek6kJj5tJB6qdv7Ix1leD6oYPx929aOB8lylPKsTDlE='"
     ],
@@ -90,6 +91,7 @@ app.use(helmet.contentSecurityPolicy({
       "ethgasstation.info",
       "*.quiknode.pro",
       "*.polkaswitch.com",
+      "feedback.fish",
       "gasstation-mainnet.matic.network"
     ]
   }

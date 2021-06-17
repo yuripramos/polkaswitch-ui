@@ -367,3 +367,14 @@ html, body {
     margin-bottom: 17px;
   }
 }
+
+.footer-feedback {
+  background-color: #EDF2F8 !important;
+  color: #BAB8B9 !important;
+  border: 0 !important;
+
+  &:hover {
+    background-color: white !important;
+    color: #BAB8B9 !important;
+  }
+}
