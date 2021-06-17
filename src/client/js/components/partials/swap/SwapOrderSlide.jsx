@@ -36,8 +36,18 @@ export default class SwapOrderSlide extends Component {
     }
   }
 
-  fetchSwapEstimate(origFromAmount) {
+  fetchSwapEstimate(origFromAmount, attempt) {
     var fromAmount = origFromAmount;
+
+    if (!attempt) {
+      attempt = 0;
+    } else if (attempt > 10) {
+      this.setState({
+        calculatingSwap: false
+      });
+      console.error("NETWORK DOWN ERROR");
+      return;
+    }
 
     this.props.onSwapEstimateComplete(
       origFromAmount,
@@ -93,8 +103,9 @@ export default class SwapOrderSlide extends Component {
             }.bind(this));
           }.bind(this));
         }.bind(this)).catch(function(e) {
+          console.error("Failed to get swap estimate: ", e);
           // try again
-          this.fetchSwapEstimate(origFromAmount);
+          this.fetchSwapEstimate(origFromAmount, attempt + 1);
         }.bind(this));
       }.bind(this), 500);
 
@@ -125,9 +136,14 @@ export default class SwapOrderSlide extends Component {
       this.props.availableBalance &&
       this.props.fromAmount && this.props.from) {
 
-      var balBN = ethers.utils.parseUnits(this.props.availableBalance, this.props.from.decimals);
-      var fromBN = ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
-      return fromBN.lte(balBN);
+      try {
+        var balBN = ethers.utils.parseUnits(this.props.availableBalance, this.props.from.decimals);
+        var fromBN = ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+        return fromBN.lte(balBN);
+      } catch (e) {
+        console.error("Failed to handle units", this.props.availableBalance, this.props.fromAmount);
+        return false;
+      }
     } else {
       return true;
     }
@@ -151,7 +167,7 @@ export default class SwapOrderSlide extends Component {
     }
   }
 
-  handleMax(e) {
+  handleMax() {
     if (Wallet.isConnected() && this.props.from.address) {
       Wallet.getBalance(this.props.from)
         .then(function(bal) {
@@ -163,7 +179,9 @@ export default class SwapOrderSlide extends Component {
           }.bind(this))
         }.bind(this))
         .catch(function(e) {
-          console.error(e);
+          console.error("Failed to get balance for MAX", e);
+          // try again
+          this.handleMax();
         }.bind(this));
     }
   }

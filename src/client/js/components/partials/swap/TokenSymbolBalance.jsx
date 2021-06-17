@@ -26,7 +26,17 @@ export default class TokenSymbolBalance extends Component {
     }
   }
 
-  fetchBalance() {
+  fetchBalance(attempt) {
+    if (!attempt) {
+      attempt = 0;
+    } else if (attempt > 10) {
+      this.setState({
+        errored: true
+      });
+      console.error("NETWORK DOWN ERROR");
+      return;
+    }
+
     if (Wallet.isConnected()) {
       Wallet.getBalance(this.props.token)
         .then(function(bal) {
@@ -39,9 +49,10 @@ export default class TokenSymbolBalance extends Component {
           }.bind(this))
         }.bind(this))
         .catch(function(e) {
-          console.error(e);
+          // try again
+          console.error("Failed to fetch balance", e);
           _.defer(function() {
-            this.setState({ errored: true });
+            this.fetchBalance(attempt + 1);
           }.bind(this))
         }.bind(this));
     } else {

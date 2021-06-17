@@ -41,9 +41,9 @@ export default class SwapTransactionDetails extends Component {
     this.updateValues();
   }
 
-  updateValues() {
+  async updateValues() {
     if (Wallet.isConnected()) {
-      SwapFn.calculateMinReturn(
+      await SwapFn.calculateMinReturn(
         this.props.from,
         this.props.to,
         Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
@@ -57,7 +57,7 @@ export default class SwapTransactionDetails extends Component {
         }.bind(this));
       }.bind(this));
 
-      SwapFn.calculatePriceImpact(
+      await SwapFn.calculatePriceImpact(
         this.props.from,
         this.props.to,
         Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
@@ -75,7 +75,7 @@ export default class SwapTransactionDetails extends Component {
         return window.ethers.utils.parseUnits("" + e, "wei");
       });
 
-      SwapFn.calculateEstimatedTransactionCost(
+      await SwapFn.calculateEstimatedTransactionCost(
         this.props.from,
         this.props.to,
         Utils.parseUnits(this.props.fromAmount, this.props.from.decimals),

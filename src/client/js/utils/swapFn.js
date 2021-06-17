@@ -98,7 +98,14 @@ window.SwapFn = {
     }.bind(this));
   },
 
+  _smallResultCache: {},
+
   _findSmallResult: function(fromToken, toToken, factor) {
+
+    if (this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`]) {
+      return Promise.resolve(this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`]);
+    }
+
     let smallAmount = Utils.parseUnits(
       "" + Math.ceil(10 ** (factor * 3)), 0
     );
@@ -107,6 +114,7 @@ window.SwapFn = {
       fromToken, toToken, smallAmount
     ).then(function(smallResult) {
       if (smallResult.returnAmount.gt(100)) {
+        this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`] = [smallResult, smallAmount];
         return [smallResult, smallAmount];
       }
       else {
