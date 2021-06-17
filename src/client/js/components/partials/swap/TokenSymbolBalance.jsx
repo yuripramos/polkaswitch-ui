@@ -60,7 +60,7 @@ export default class TokenSymbolBalance extends Component {
 
     var renderBalFn = function() {
       return numeral(Utils.formatUnits(this.state.balance, this.props.token.decimals)).format('0.0000a');
-    };
+    }.bind(this);
 
     if (this.state.errored) {
       if (Wallet.isConnected() && this.state.balance) {

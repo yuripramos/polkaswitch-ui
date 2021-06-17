@@ -40,13 +40,13 @@ export default class SwapFinalResultSlide extends Component {
               )}
             </div>
             <div className="title">
-              {this.props.transactionSuccess ? "Transaction Pending" : "Transaction Failed" }
+              {this.props.transactionSuccess ? "Transaction Submitted" : "Transaction Failed" }
             </div>
             <div className="details">
               <div>
                 { this.props.transactionSuccess && (
                   <div>
-                    <div>Check notifications drawer for updates</div>
+                    <div>Sent to the blockchain and pending confirmation.<br/>Check notifications drawer for more updates.</div>
                     <div className="txHash">{this.props.transactionHash}</div>
                   </div>
                 )}
