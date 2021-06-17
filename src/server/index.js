@@ -57,46 +57,6 @@ if (isProduction) {
   );
 }
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    ...defaultCsp,
-    "img-src": [
-      "'self'",
-      "https:"
-    ],
-    "font-src": [
-      "'self'",
-      "https:",
-      "data:",
-      "fonts.gstatic.com"
-    ],
-    "style-src": [
-      "'self'",
-      "https:",
-      "'unsafe-inline'",
-      "fonts.googleapis.com"
-    ],
-    "script-src": [
-      "'self'", "blob:",
-      "cdn.polyfill.io",
-      "*.mxpnl.com",
-      "*.mixpanel.com",
-      "feedback.fish",
-      // mixpanel script
-      "'sha256-Ek6kJj5tJB6qdv7Ix1leD6oYPx929aOB8lylPKsTDlE='"
-    ],
-    "default-src": [
-      "'self'",
-      "*.ingest.sentry.io",
-      "ethgasstation.info",
-      "*.quiknode.pro",
-      "*.polkaswitch.com",
-      "feedback.fish",
-      "gasstation-mainnet.matic.network"
-    ]
-  }
-}));
-
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],

@@ -84,7 +84,7 @@ export default class SwapNetworkToggle extends Component {
                       </span>
                     </span>
                     <span className="icon is-small">
-                      <i className="fas fa-angle-down" aria-hidden="true"></i>
+                      <ion-icon name="chevron-down"></ion-icon>
                     </span>
                   </button>
                 </div>

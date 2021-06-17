@@ -31,11 +31,11 @@ export default class TxStatusView extends Component {
       lang = "PENDING";
       clazz = "pending";
     } else if (this.props.data.success) {
-      icon = (<ion-icon name="checkmark-circle-outline"></ion-icon>);
+      icon = (<ion-icon name="checkmark-circle"></ion-icon>);
       lang = "SWAPPED";
       clazz = "success";
     } else {
-      icon = (<ion-icon name="alert-circle-outline"></ion-icon>);
+      icon = (<ion-icon name="alert-circle"></ion-icon>);
       lang = "FAILED";
       clazz = "failed";
     }

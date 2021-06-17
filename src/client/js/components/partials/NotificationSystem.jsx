@@ -55,8 +55,8 @@ export default class NotificationSystem extends Component {
         "is-hidden": this.state.closed || !data
       })}>
       <div className={classnames("notification", {
-        "is-success": data.success,
-        "is-danger": !data.success
+        "success": data.success,
+        "failure": !data.success
       })}>
         <div className="level is-mobile">
           <div className="level-item">
