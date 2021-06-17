@@ -49,6 +49,13 @@ window.WalletJS = {
     EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
   },
 
+  getReadOnlyProvider: function() {
+    var network = TokenListManager.getCurrentNetworkConfig();
+    const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+    const signer = provider.getSigner();
+    return provider;
+  },
+
   getProvider: function(strictCheck) {
     var condition = strictCheck ? this.isConnected() : this.isConnectedToAnyNetwork();
 
@@ -57,10 +64,7 @@ window.WalletJS = {
       const signer = provider.getSigner();
       return provider;
     } else {
-      var network = TokenListManager.getCurrentNetworkConfig();
-      const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
-      const signer = provider.getSigner();
-      return provider;
+      return this.getReadOnlyProvider();
     }
   },
 
