@@ -6,6 +6,7 @@ import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
+import TxExplorerLink from './../TxExplorerLink';
 
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
@@ -47,7 +48,11 @@ export default class SwapFinalResultSlide extends Component {
                 { this.props.transactionSuccess && (
                   <div>
                     <div>Sent to the blockchain and pending confirmation.<br/>Check notifications drawer for more updates.</div>
-                    <div className="txHash">{this.props.transactionHash}</div>
+
+                    <br/>
+                    <TxExplorerLink hash={this.props.transactionHash}>
+                      View on Explorer <ion-icon name="open-outline"></ion-icon>
+                    </TxExplorerLink>
                   </div>
                 )}
                 { !this.props.transactionSuccess && (
