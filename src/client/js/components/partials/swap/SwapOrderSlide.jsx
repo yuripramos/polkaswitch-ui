@@ -72,7 +72,7 @@ export default class SwapOrderSlide extends Component {
             return e.toNumber();
           });
 
-          Wallet.getBalance(this.props.from).then(function(bal) {
+          return Wallet.getBalance(this.props.from).then(function(bal) {
             this.props.onSwapEstimateComplete(
               origFromAmount,
               window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
@@ -93,9 +93,8 @@ export default class SwapOrderSlide extends Component {
             }.bind(this));
           }.bind(this));
         }.bind(this)).catch(function(e) {
-          this.setState({
-            calculatingSwap: false
-          });
+          // try again
+          this.fetchSwapEstimate(origFromAmount);
         }.bind(this));
       }.bind(this), 500);
 

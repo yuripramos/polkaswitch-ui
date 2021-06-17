@@ -101,6 +101,12 @@ export default class SwapOrderWidget extends Component {
   }
 
   onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN) {
+    if (this.state.fromAmount === fromAmount &&
+      this.state.availableBalance === availBalBN &&
+      this.state.toAmount === toAmount) {
+      return;
+    }
+
     this.box.current.style.height = "";
     this.setState({
       fromAmount: fromAmount,
