@@ -141,11 +141,11 @@ export default class ConnectWalletModal extends Component {
                 </div>
               </div>
             </div>
-            <div className="option coming-soon">
+            <div className="option">
               <div className="level is-mobile is-narrow">
                 <div className="level-left">
                   <div className="level-item">
-                    WalletConnect (Coming Soon)
+                    WalletConnect
                   </div>
                 </div>
                 <div className="level-right">

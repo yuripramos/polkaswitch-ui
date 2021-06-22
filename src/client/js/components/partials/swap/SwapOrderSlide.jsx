@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 import * as ethers from 'ethers';
+import BN from 'bignumber.js';
 
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
@@ -113,15 +114,19 @@ export default class SwapOrderSlide extends Component {
   }
 
   handleTokenAmountChange(e) {
-    var targetAmount = e.target.value;
+    var targetAmount = +e.target.value;
 
-    Metrics.track("swap-token-value", {
-      value: targetAmount,
-      from: this.props.from,
-      to: this.props.to
-    });
+    if(!isNaN(targetAmount)) {
+      targetAmount = SwapFn.validateEthValue(this.props.from, targetAmount);
 
-    this.fetchSwapEstimate(targetAmount);
+      Metrics.track("swap-token-value", {
+        value: targetAmount,
+        from: this.props.from,
+        to: this.props.to
+      });
+
+      this.fetchSwapEstimate(targetAmount);
+    }
   }
 
   validateOrderForm() {

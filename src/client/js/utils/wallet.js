@@ -10,30 +10,16 @@ const Contract = ethers.Contract;
 
 window.WalletJS = {
   currentNetworkId: -1,
+  currentProvider: undefined,
+
+  providerConfigs: {
+    'walletConnect': {
+    }
+  },
 
   initialize: async function() {
     if (window.ethereum) {
-      window.ethereum.on('accountsChanged', function (accounts) {
-        // Time to reload your interface with accounts[0]!
-        console.log(accounts);
-        EventManager.emitEvent('walletUpdated', 1);
-      });
-
-      window.ethereum.on('disconnect', function(providerRpcError) {
-        console.log(providerRpcError);
-        EventManager.emitEvent('walletUpdated', 1);
-      });
-
-      window.ethereum.on('chainChanged', function(chainId) {
-        console.log(chainId);
-        if (this.isConnectedToAnyNetwork()) {
-
-          this._currentConnectedNetworkId().then(function(chainId) {
-            this.currentNetworkId = chainId;
-            EventManager.emitEvent('walletUpdated', 1);
-          }.bind(this));
-        }
-      }.bind(this));
+      this.initListeners(window.ethereum);
 
       if (window.ethereum.selectedAddress) {
         // cache value
@@ -49,6 +35,30 @@ window.WalletJS = {
     EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
   },
 
+  initListeners: function(provider) {
+    provider.on('accountsChanged', function (accounts) {
+      // Time to reload your interface with accounts[0]!
+      console.log(accounts);
+      EventManager.emitEvent('walletUpdated', 1);
+    });
+
+    provider.on('disconnect', function(providerRpcError) {
+      console.log(providerRpcError);
+      EventManager.emitEvent('walletUpdated', 1);
+    });
+
+    provider.on('chainChanged', function(chainId) {
+      console.log(chainId);
+      if (this.isConnectedToAnyNetwork()) {
+
+        this._currentConnectedNetworkId().then(function(chainId) {
+          this.currentNetworkId = chainId;
+          EventManager.emitEvent('walletUpdated', 1);
+        }.bind(this));
+      }
+    }.bind(this));
+  },
+
   getReadOnlyProvider: function() {
     var network = TokenListManager.getCurrentNetworkConfig();
     const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
@@ -60,7 +70,7 @@ window.WalletJS = {
     var condition = strictCheck ? this.isConnected() : this.isConnectedToAnyNetwork();
 
     if (condition) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(this.currentProvider);
       const signer = provider.getSigner();
       return provider;
     } else {
@@ -111,7 +121,7 @@ window.WalletJS = {
   },
 
   isConnected: function() {
-    return window.ethereum &&
+    return this.currentProvider &&
       window.ethereum.selectedAddress &&
       this.isMatchingConnectedNetwork();
   },

@@ -7,6 +7,9 @@ import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import BN from 'bignumber.js';
 
+// never exponent
+BN.config({ EXPONENTIAL_AT: 1e+9 });
+
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
 const Contract = ethers.Contract;
@@ -15,6 +18,22 @@ window.SwapFn = {
   settings: {
     gasPrice: -1, // auto,
     slippage: 0.5
+  },
+
+  validateEthValue: function(token, value) {
+    var targetAmount = +value;
+
+    if(!isNaN(targetAmount)) {
+      // floor to the minimum possible value
+      targetAmount = Math.max(10 ** (-token.decimals), targetAmount);
+
+      targetAmount = BN(
+        BN(targetAmount).toPrecision(token.decimals)
+      ).toString();
+      return targetAmount;
+    } else {
+      return undefined;
+    }
   },
 
   updateSettings: function(settings) {
