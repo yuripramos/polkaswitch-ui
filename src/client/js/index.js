@@ -5,6 +5,7 @@ import Wallet from './utils/wallet';
 import TokenListManager from './utils/tokenList';
 import _ from 'underscore';
 import { ethers } from 'ethers';
+import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
@@ -22,6 +23,8 @@ if (process.env.IS_PRODUCTION) {
 
 window.ethers = ethers;
 window._ = _;
+window.BN = BN;
+window.BigNumber = ethers.BigNumber;
 
 if (process.env.IS_MAIN_NETWORK) {
   console.log("Loading MAIN config...");
