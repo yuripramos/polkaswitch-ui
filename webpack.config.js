@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const outputDirectory = 'dist';
 
@@ -55,7 +56,20 @@ module.exports = (env) => {
       ]
     },
     resolve: {
-      extensions: ['*', '.js', '.jsx']
+      extensions: ['*', '.js', '.jsx'],
+      /*fallback: {
+        "fs": false,
+        "tls": false,
+        "net": false,
+        "path": false,
+        "zlib": false,
+        "http": false,
+        "https": false,
+        "stream": false,
+        "crypto": false,
+        "util": false,
+        "os": false
+      }*/
     },
     devServer: {
       port: 3000,
@@ -76,7 +90,8 @@ module.exports = (env) => {
       new webpack.EnvironmentPlugin({
         IS_PRODUCTION: !!isProduction,
         IS_MAIN_NETWORK: false
-      })
+      }),
+      new NodePolyfillPlugin()
     ],
     experiments: {
       topLevelAwait: true

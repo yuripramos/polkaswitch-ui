@@ -4,6 +4,8 @@ import EventManager from './events';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 
+import WalletConnectProvider from "@walletconnect/web3-provider";
+
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
 const Contract = ethers.Contract;
@@ -32,7 +34,7 @@ window.WalletJS = {
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
 
-    EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
+    EventManager.listenFor('initiateWalletConnect', this.connectWallet_WalletConnect.bind(this));
   },
 
   initListeners: function(provider) {
@@ -145,6 +147,20 @@ window.WalletJS = {
       method: 'wallet_addEthereumChain',
       params: [network.chain]
     });
+  },
+
+  connectWallet_WalletConnect: function() {
+    const provider = new WalletConnectProvider({
+      rpc: {
+        137: "https://rpc-mainnet.maticvigil.com"
+      },
+    });
+
+    return provider.enable().then(function(v) {
+      console.log(arguments);
+    }).catch(function(e) {
+      console.error(e);
+    });;
   },
 
   connectWallet: function() {
