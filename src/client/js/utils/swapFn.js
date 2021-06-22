@@ -24,11 +24,15 @@ window.SwapFn = {
     var targetAmount = +value;
 
     if(!isNaN(targetAmount)) {
+      if (targetAmount === 0) {
+        return value;
+      }
+
       // floor to the minimum possible value
       targetAmount = Math.max(10 ** (-token.decimals), targetAmount);
 
       targetAmount = BN(
-        BN(targetAmount).toPrecision(token.decimals)
+        BN(targetAmount).toFixed(token.decimals)
       ).toString();
       return targetAmount;
     } else {

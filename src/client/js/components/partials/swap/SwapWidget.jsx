@@ -121,22 +121,6 @@ export default class SwapOrderWidget extends Component {
     }.bind(this));
   }
 
-  filterFromValue(value) {
-    var targetAmount = +value;
-
-    if(!isNaN(targetAmount)) {
-      // floor to the minimum possible value
-      targetAmount = Math.max(10 ** this.props.from.decimals, targetAmount);
-
-      targetAmount = BN(
-        BN(targetAmount).toPrecision(this.props.from.decimals)
-      ).toString();
-      return targetAmount;
-    } else {
-      return undefined;
-    }
-  }
-
   onSwapTokens() {
     Metrics.track("swap-flipped-tokens");
     this.setState({

@@ -12,7 +12,6 @@ const Contract = ethers.Contract;
 
 window.WalletJS = {
   currentNetworkId: -1,
-  currentProvider: undefined,
 
   providerConfigs: {
     'walletConnect': {
@@ -34,7 +33,7 @@ window.WalletJS = {
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
 
-    EventManager.listenFor('initiateWalletConnect', this.connectWallet_WalletConnect.bind(this));
+    EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
   },
 
   initListeners: function(provider) {
@@ -72,7 +71,7 @@ window.WalletJS = {
     var condition = strictCheck ? this.isConnected() : this.isConnectedToAnyNetwork();
 
     if (condition) {
-      const provider = new ethers.providers.Web3Provider(this.currentProvider);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       return provider;
     } else {
@@ -123,7 +122,7 @@ window.WalletJS = {
   },
 
   isConnected: function() {
-    return this.currentProvider &&
+    return window.ethereum &&
       window.ethereum.selectedAddress &&
       this.isMatchingConnectedNetwork();
   },

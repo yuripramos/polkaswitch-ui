@@ -114,10 +114,8 @@ export default class SwapOrderSlide extends Component {
   }
 
   handleTokenAmountChange(e) {
-    var targetAmount = +e.target.value;
-
-    if(!isNaN(targetAmount)) {
-      targetAmount = SwapFn.validateEthValue(this.props.from, targetAmount);
+    if(!isNaN(+e.target.value)) {
+      var targetAmount = SwapFn.validateEthValue(this.props.from, e.target.value);
 
       Metrics.track("swap-token-value", {
         value: targetAmount,
