@@ -156,11 +156,17 @@ window.WalletJS = {
       },
     });
 
-    return provider.enable().then(function(v) {
+    provider.enable().then(function(v) {
       console.log(arguments);
+
+      const web3Provider = new providers.Web3Provider(provider);
+
+      window.PPP = web3Provider;
     }).catch(function(e) {
       console.error(e);
-    });;
+    });
+
+    this.initListeners(provider);
   },
 
   connectWallet: function() {
