@@ -212,7 +212,13 @@ export default class SwapOrderWidget extends Component {
       showSearch: false,
       refresh: Date.now()
     };
+
     _s[this.state.searchTarget] = token;
+
+    if (this.state.searchTarget == "from") {
+      _s["fromAmount"] = SwapFn.validateEthValue(token, this.state.fromAmount);
+    }
+
     this.setState(_s, function() {
       Metrics.track("swap-token-changed", {
         changed: this.state.searchTarget,
