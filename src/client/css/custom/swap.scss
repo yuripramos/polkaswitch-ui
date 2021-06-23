@@ -20,11 +20,12 @@
 
   .button {
     background-color: $light-blue !important;
+    color: #666 !important;
   }
 
   .option-title {
-    font-size: 14px;
-    color: #5d5d5d;
+    font-size: 16px;
+    color: #333;
     font-weight: bold;
   }
 
@@ -40,6 +41,10 @@
     .disabled {
       opacity: 0.4;
     }
+  }
+
+  .icon {
+    color: #666;
   }
 }
 
@@ -79,7 +84,7 @@
 }
 
 .token-dist-hint-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   padding-bottom: 6px;
   display: flex;
@@ -126,8 +131,7 @@
     border-radius: $radius;
     text-align: center;
     font-size: 12px;
-    color: $info;
-    font-weight: bold;
+    color: #666;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -172,7 +176,7 @@ $swap-widget-anim-timing: 300ms;
   }
 
   .button.is-primary.is-fullwidth {
-    font-size: 20px;
+    font-size: 16px;
     height: 50px;
   }
 
@@ -264,9 +268,13 @@ $swap-widget-anim-timing: 300ms;
 
   .page-view-order {
 
+    .text-gray-stylized {
+      font-size: 16px;
+    }
+
     .swap-icon-wrapper {
       position: relative;
-      margin-top: 10px;
+      margin: 17px 0 5px;
     }
 
     $swap-icon-width: 42px;
@@ -282,7 +290,7 @@ $swap-widget-anim-timing: 300ms;
       padding: 5px;
       background: white;
       border-radius: 40px;
-      border: 4px solid $info-light;
+      border: 1px solid #eee;
       cursor: pointer;
 
       i {
@@ -306,7 +314,7 @@ $swap-widget-anim-timing: 300ms;
       margin-top: - ($swap-icon-width / 2);
       background: white;
       border-radius: 40px;
-      border: 4px solid $light-blue;
+      border: 1px solid #eee;
       z-index: 10;
       cursor: pointer;
     }
@@ -329,8 +337,13 @@ $swap-widget-anim-timing: 300ms;
       font-size: 22px;
       line-height: 1rem;
       height: 50px;
-      color: $link;
+      color: #666;
       transition: transform 200ms;
+
+      &.is-to {
+        background-color: $light-blue;
+        border-color: $light-blue;
+      }
 
       &:hover, &:focus {
         transform: scale(1.05);
@@ -374,10 +387,8 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .notification {
-      padding: 15px;
-
-      .text-gray-stylized {
-      }
+      padding: 15px 5px;
+      border-radius: 0;
 
       .token-symbol-wrapper {
         width: 80px;
@@ -391,8 +402,8 @@ $swap-widget-anim-timing: 300ms;
         }
       }
 
-      &.is-info {
-        background-color: $light-blue !important;
+      &.bottom {
+        border-top: 1px solid #eee;
       }
     }
 

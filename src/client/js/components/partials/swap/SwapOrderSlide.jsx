@@ -225,7 +225,8 @@ export default class SwapOrderSlide extends Component {
                 min="0"
                 step="0.000000000000000001"
                 className={classnames("input is-medium", {
-                  "is-danger": isFrom && !this.hasSufficientBalance()
+                  "is-danger": isFrom && !this.hasSufficientBalance(),
+                  "is-to": !isFrom
                 })}
                 placeholder="0.0"
                 disabled={!isFrom}
@@ -283,7 +284,7 @@ export default class SwapOrderSlide extends Component {
             </div>
           </div>
 
-          <div className="notification is-info is-light">
+          <div className="notification is-white bottom">
             <div className="text-gray-stylized">
               <span>You Receive</span>
             </div>

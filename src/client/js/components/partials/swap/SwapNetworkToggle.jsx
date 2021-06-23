@@ -80,7 +80,7 @@ export default class SwapNetworkToggle extends Component {
                             size={30}
                             imgSrc={this.state.selected.logoURI} />
                         </span>
-                        <span className="level-item has-text-grey">{this.state.selected.name}</span>
+                        <span className="level-item">{this.state.selected.name}</span>
                       </span>
                     </span>
                     <span className="icon is-small">
