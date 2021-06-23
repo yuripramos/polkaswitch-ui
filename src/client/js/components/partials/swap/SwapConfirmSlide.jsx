@@ -96,6 +96,11 @@ export default class SwapConfirmSlide extends Component {
     }
   }
 
+  allowSwap() {
+    return !this.state.loading &&
+      this.hasSufficientBalance();
+  }
+
   render() {
     if (!this.props.toAmount || !this.props.fromAmount) {
       return (<div />)
@@ -208,7 +213,7 @@ export default class SwapConfirmSlide extends Component {
               className={classnames("button is-primary is-fullwidth is-medium", {
                 "is-loading": this.state.loading
               })}
-              disabled={this.state.loading || !this.hasSufficientBalance()}
+              disabled={!this.allowSwap()}
               onClick={this.handleSwapConfirm}>
               Swap
             </button>

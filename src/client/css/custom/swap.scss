@@ -71,6 +71,12 @@
     font-size: 14px;
     line-height: 15px;
     color: #2160c4;
+    text-align: right;
+
+    .icon {
+      vertical-align: middle;
+      height: auto;
+    }
   }
 
   .hint-icon {
@@ -80,6 +86,18 @@
     margin: 2px 4px;
     background: #9db0be;
     line-height: 15px;
+  }
+
+  .is-danger {
+    .hint-icon {
+      background-color: $danger;
+    }
+
+    .detail-title,
+    .detail-value {
+      color: $danger;
+      font-weight: bold;
+    }
   }
 }
 
@@ -404,6 +422,8 @@ $swap-widget-anim-timing: 300ms;
 
       &.bottom {
         border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
       }
     }
 

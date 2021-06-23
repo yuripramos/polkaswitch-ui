@@ -14,7 +14,8 @@ export default class SwapTransactionDetails extends Component {
     this.state = {
       minReturn: "--",
       priceImpact: "--",
-      transactionEstimate: "--"
+      transactionEstimate: "--",
+      highSlippage: false
     };
 
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
@@ -63,11 +64,17 @@ export default class SwapTransactionDetails extends Component {
         Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
       ).then(function(priceImpact) {
         _.defer(function(){
-          this.setState({ priceImpact: (priceImpact * 100.0).toFixed(5) });
+          this.setState({
+            highSlippage: ((priceImpact * 100.0) > SwapFn.settings.slippage),
+            priceImpact: (priceImpact * 100.0).toFixed(5)
+          });
         }.bind(this));
       }.bind(this)).catch(function(r) {
         _.defer(function(){
-          this.setState({ priceImpact: "--" });
+          this.setState({
+            priceImpact: "--",
+            highSlippage: false
+          });
         }.bind(this));
       }.bind(this));
 
@@ -117,7 +124,10 @@ export default class SwapTransactionDetails extends Component {
           </div>
         </div>
         <div
-          className="level is-mobile is-narrow detail hint--bottom hint--medium"
+          className={classnames(
+            "level is-mobile is-narrow detail hint--bottom hint--medium",
+            { "is-danger": this.state.highSlippage }
+          )}
           aria-label="Calculated based on the Slippage Tolerance. If the return amount is below this minimum threshold, the transaction is reverted"
         >
           <div className="level-left">
@@ -138,7 +148,10 @@ export default class SwapTransactionDetails extends Component {
           </div>
         </div>
         <div
-          className="level is-mobile is-narrow detail hint--bottom hint--medium"
+          className={classnames(
+            "level is-mobile is-narrow detail hint--bottom hint--medium",
+            { "is-danger": this.state.highSlippage }
+          )}
           aria-label="Expected slippage in price on swap. The difference between the current market price and the price you will actually pay when performing this swap"
         >
           <div className="level-left">
@@ -152,8 +165,21 @@ export default class SwapTransactionDetails extends Component {
 
           <div className="level-right">
             <div className="level-item">
-              <div className="detail-value">
-                + {this.state.priceImpact}%
+              <div>
+                <div className="detail-value">
+                  <span className={classnames("has-text-danger has-text-right", {
+                    "is-hidden": !this.state.highSlippage
+                  })}>
+                  (<span className="icon">
+                      <ion-icon name="warning-outline"></ion-icon>
+                    </span>
+                    <span>High Slippage)&nbsp;&nbsp;</span>
+                  </span>
+                  <span>
+                    + {this.state.priceImpact}%
+                  </span>
+                </div>
+
               </div>
             </div>
           </div>
