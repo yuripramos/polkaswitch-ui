@@ -30,13 +30,15 @@ export default class ConnectWalletModal extends Component {
     this.subConnectPrompt.unsubscribe();
   }
 
-  handleConnection(e) {
-    if (Wallet.isConnected() || !Wallet.isSupported()) {
-      return false;
-    }
+  handleConnection(target) {
+    return function(e) {
+      if (Wallet.isConnected() || !Wallet.isSupported()) {
+        return false;
+      }
 
-    Metrics.track("connect-wallet", { type: "metamask" });
-    EventManager.emitEvent('initiateWalletConnect', 1);
+      Metrics.track("connect-wallet", { type: target });
+      EventManager.emitEvent('initiateWalletConnect', target);
+    }.bind(this);
   }
 
   handleWalletChange() {
@@ -90,7 +92,7 @@ export default class ConnectWalletModal extends Component {
               className={classnames("option", {
                 "connected": Wallet.isConnected()
               })}
-              onClick={this.handleConnection}
+              onClick={this.handleConnection("metamask")}
             >
               <div className="level is-mobile is-narrow">
                 <div className="level-left">
@@ -141,7 +143,10 @@ export default class ConnectWalletModal extends Component {
                 </div>
               </div>
             </div>
-            <div className="option coming-soon">
+            <div
+              className="option coming-soon"
+              onClick={this.handleConnection("walletConnect")}
+            >
               <div className="level is-mobile is-narrow">
                 <div className="level-left">
                   <div className="level-item">

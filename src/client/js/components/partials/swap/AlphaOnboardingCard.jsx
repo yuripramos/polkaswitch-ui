@@ -34,7 +34,7 @@ export default class AlphaOnboardingCard extends Component {
 
   handleMint(e) {
     if (!Wallet.isConnected()) {
-      EventManager.emitEvent('initiateWalletConnect', 1);
+      EventManager.emitEvent('promptWalletConnect', 1);
     } else {
 
       this.setState({

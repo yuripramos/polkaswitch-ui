@@ -39,7 +39,9 @@ export default class NotificationButton extends Component {
     var isConnected = Wallet.isConnectedToAnyNetwork();
 
     return (
-      <div className="notification-button">
+      <div className={classnames("notification-button", {
+          "is-hidden": !isConnected
+        })}>
         <div className={classnames("bubble tag is-danger", {
           "is-hidden": (TxQueue.numOfPending() < 1)
         })}>
@@ -47,8 +49,7 @@ export default class NotificationButton extends Component {
         </div>
         <button
           className={classnames("button", {
-            "is-white is-medium connected": isConnected,
-            "is-hidden": !isConnected
+            "is-white is-medium connected": isConnected
           })}
           onClick={this.handleClick.bind(this)}>
 

@@ -33,7 +33,10 @@ window.WalletJS = {
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
 
-    EventManager.listenFor('initiateWalletConnect', this.connectWallet.bind(this));
+    EventManager.listenFor(
+      'initiateWalletConnect',
+      this._connectWalletHandler.bind(this)
+    );
   },
 
   initListeners: function(provider) {
@@ -148,7 +151,15 @@ window.WalletJS = {
     });
   },
 
-  connectWallet_WalletConnect: function() {
+  _connectWalletHandler: function(target) {
+    if (target === "metamask") {
+      this._connectProviderMetamask();
+    } else if (target === "walletConnect") {
+      this._connectProviderWalletConnect();
+    }
+  },
+
+  _connectProviderWalletConnect: function() {
     const provider = new WalletConnectProvider({
       rpc: {
         137: "https://rpc-mainnet.maticvigil.com"
@@ -158,7 +169,7 @@ window.WalletJS = {
     provider.enable().then(function(v) {
       console.log(arguments);
 
-      const web3Provider = new providers.Web3Provider(provider);
+      const web3Provider = new ethers.providers.Web3Provider(provider);
 
       window.PPP = web3Provider;
     }).catch(function(e) {
@@ -168,7 +179,7 @@ window.WalletJS = {
     this.initListeners(provider);
   },
 
-  connectWallet: function() {
+  _connectProviderMetamask: function() {
     return new Promise(function (resolve, reject) {
       let network = TokenListManager.getCurrentNetworkConfig();
 
