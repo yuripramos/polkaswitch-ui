@@ -125,8 +125,7 @@ export default class SwapTransactionDetails extends Component {
         </div>
         <div
           className={classnames(
-            "level is-mobile is-narrow detail hint--bottom hint--medium",
-            { "is-danger": this.state.highSlippage }
+            "level is-mobile is-narrow detail hint--bottom hint--medium"
           )}
           aria-label="Calculated based on the Slippage Tolerance. If the return amount is below this minimum threshold, the transaction is reverted"
         >
@@ -149,8 +148,7 @@ export default class SwapTransactionDetails extends Component {
         </div>
         <div
           className={classnames(
-            "level is-mobile is-narrow detail hint--bottom hint--medium",
-            { "is-danger": this.state.highSlippage }
+            "level is-mobile is-narrow detail hint--bottom hint--medium"
           )}
           aria-label="Expected slippage in price on swap. The difference between the current market price and the price you will actually pay when performing this swap"
         >
@@ -168,7 +166,7 @@ export default class SwapTransactionDetails extends Component {
               <div>
                 <div className="detail-value">
                   <span className={classnames("has-text-danger has-text-right", {
-                    "is-hidden": !this.state.highSlippage
+                    "is-hidden": true
                   })}>
                   (<span className="icon">
                       <ion-icon name="warning-outline"></ion-icon>

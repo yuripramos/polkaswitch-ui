@@ -42,20 +42,20 @@ export default class NotificationButton extends Component {
       <div className={classnames("notification-button", {
           "is-hidden": !isConnected
         })}>
-        <div className={classnames("bubble tag is-danger", {
-          "is-hidden": (TxQueue.numOfPending() < 1)
-        })}>
-        {TxQueue.numOfPending()}
-        </div>
         <button
           className={classnames("button", {
             "is-white is-medium connected": isConnected
           })}
           onClick={this.handleClick.bind(this)}>
-
           <span className="icon">
-            <ion-icon name="notifications-outline"></ion-icon>
+            <ion-icon name="file-tray-outline"></ion-icon>
           </span>
+
+          <div className={classnames("bubble tag is-light", {
+            "is-hidden": (TxQueue.numOfPending() < 1)
+          })}>
+            {TxQueue.numOfPending()}
+          </div>
         </button>
       </div>
     );
