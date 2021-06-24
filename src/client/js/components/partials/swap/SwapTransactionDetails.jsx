@@ -148,7 +148,8 @@ export default class SwapTransactionDetails extends Component {
         </div>
         <div
           className={classnames(
-            "level is-mobile is-narrow detail hint--bottom hint--medium"
+            "level is-mobile is-narrow detail hint--bottom hint--medium",
+            { "is-danger": this.state.highSlippage }
           )}
           aria-label="Expected slippage in price on swap. The difference between the current market price and the price you will actually pay when performing this swap"
         >

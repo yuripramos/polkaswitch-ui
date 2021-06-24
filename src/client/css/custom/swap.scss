@@ -89,11 +89,6 @@
   }
 
   .is-danger {
-    .hint-icon {
-      background-color: $danger;
-    }
-
-    .detail-title,
     .detail-value {
       color: $danger;
       font-weight: bold;
