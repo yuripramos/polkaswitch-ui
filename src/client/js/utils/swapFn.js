@@ -46,23 +46,15 @@ window.SwapFn = {
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {
-    return this._findSmallResult(
-      fromToken, toToken, 1
-    ).then(function(small) {
-      const [smallResult, smallAmount] = small;
+    return this.getExpectedReturn(
+      fromToken, toToken, amount
+    ).then(function(actualReturn) {
+      var y = 1.0 - (this.settings.slippage / 100.0);
+      var r = BN(actualReturn.returnAmount.toString()).times(y);
 
-      return this.getExpectedReturn(
-        fromToken, toToken, amount
-      ).then(function(actualReturn) {
-        var x = BN(smallResult.returnAmount.toString())
-          .div(BN(smallAmount.toString()));
-        var y = x.times(1.0 - (this.settings.slippage / 100.0));
-        var r = BN(amount.toString()).times(y);
+      var minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
 
-        var minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
-
-        return minReturn;
-      }.bind(this));
+      return minReturn;
     }.bind(this));
   },
 
