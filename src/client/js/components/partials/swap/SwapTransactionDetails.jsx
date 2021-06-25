@@ -175,7 +175,7 @@ export default class SwapTransactionDetails extends Component {
                     <span>High Slippage)&nbsp;&nbsp;</span>
                   </span>
                   <span>
-                    + {this.state.priceImpact}%
+                    - {this.state.priceImpact}%
                   </span>
                 </div>
 
