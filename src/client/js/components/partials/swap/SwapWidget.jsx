@@ -79,7 +79,8 @@ export default class SwapOrderWidget extends Component {
 
     this.setState({
       to: TokenListManager.findTokenById(network.defaultPair.to),
-      from: TokenListManager.findTokenById(network.defaultPair.from)
+      from: TokenListManager.findTokenById(network.defaultPair.from),
+      availableBalance: undefined
     });
   }
 
@@ -194,6 +195,7 @@ export default class SwapOrderWidget extends Component {
 
     var _s = {
       showSearch: false,
+      availableBalance: undefined,
       refresh: Date.now()
     };
 
