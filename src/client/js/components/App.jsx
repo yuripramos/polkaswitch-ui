@@ -59,6 +59,9 @@ export default class App extends Component {
             <Route path="/claim">
               <TokenClaimHome />
             </Route>
+            <Route>
+              <Redirect to="/swap" />
+            </Route>
           </Switch>
           <Footer />
         </div>
