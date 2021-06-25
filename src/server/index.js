@@ -105,6 +105,7 @@ app.post('/login', passport.authenticate('local', {
   failureFlash: 'Invalid access credentials'
 }));
 
+/*
 app.get('*', function(req, res, next) {
   if (req.user) {
     next();
@@ -120,6 +121,7 @@ app.use(function(req, res, next) {
     res.status(401).send({ error: "not authenticated" });
   }
 });
+*/
 
 app.use(express.static('dist'));
 app.use(express.static('public'));
