@@ -88,8 +88,8 @@ export default class SwapConfirmSlide extends Component {
 
   hasSufficientBalance() {
     if (this.props.availableBalance) {
-      var balBN = ethers.utils.parseUnits(this.props.availableBalance, this.props.from.decimals);
-      var fromBN = ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+      var balBN = BN(this.props.availableBalance);
+      var fromBN = BN(this.props.fromAmount);
       return fromBN.lte(balBN);
     } else {
       return false;

@@ -42,7 +42,12 @@
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
-      "chainName": "Matic Mainnet"
+      "chainName": "Matic Mainnet",
+      "nativeCurrency": {
+        "name": "Matic",
+        "symbol": "MATIC",
+        "decimals": 18
+      }
     },
     "defaultPair": {
       "to": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",

@@ -18,12 +18,15 @@ export default class SwapOrderSlide extends Component {
     super(props);
     this.state = {
       calculatingSwap: false,
-      calculatingSwapTimestamp: Date.now()
+      errored: false
     };
+
+    this.calculatingSwapTimestamp = Date.now();
 
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
+    this.debounced_fetchSwapEstimate = _.debounce(this.fetchSwapEstimate, 600, true);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
@@ -37,16 +40,17 @@ export default class SwapOrderSlide extends Component {
     }
   }
 
-  fetchSwapEstimate(origFromAmount, attempt) {
+  fetchSwapEstimate(origFromAmount, timeNow, attempt) {
     var fromAmount = origFromAmount;
 
     if (!attempt) {
       attempt = 0;
     } else if (attempt > 10) {
       this.setState({
-        calculatingSwap: false
+        calculatingSwap: false,
+        errored: true
       });
-      console.error("NETWORK DOWN ERROR");
+      console.error("Swap Failure: MAX RETRIES REACHED");
       return;
     }
 
@@ -58,24 +62,38 @@ export default class SwapOrderSlide extends Component {
 
     if (!fromAmount || fromAmount.length == 0) {
       fromAmount = '0';
+    } else {
+      fromAmount = SwapFn.validateEthValue(this.props.from, fromAmount);
     }
 
-    var timeNow = Date.now();
+    if (!timeNow) {
+      timeNow = Date.now();
+    }
+
+    this.calculatingSwapTimestamp = timeNow;
 
     this.setState({
-      calculatingSwap: true,
-      calculatingSwapTimestamp: timeNow
-    }, function() {
-      var fromAmountBN = window.ethers.utils.parseUnits(fromAmount, this.props.from.decimals);
+      errored: false,
+      calculatingSwap: true
+    }, function(_timeNow, _attempt) {
+
+      var fromAmountBN = window.ethers.utils.parseUnits(
+        fromAmount,
+        this.props.from.decimals
+      );
 
       // add delay to slow down UI snappiness
-      _.delay(function() {
+      _.delay(function(_timeNow2, _attempt2) {
+        if (this.calculatingSwapTimestamp != _timeNow2) {
+          return;
+        }
+
         SwapFn.getExpectedReturn(
           this.props.from,
           this.props.to,
           fromAmountBN
-        ).then(function(result) {
-          if (this.state.calculatingSwapTimestamp != timeNow) {
+        ).then(function(_timeNow3, result) {
+          if (this.calculatingSwapTimestamp != _timeNow3) {
             return;
           }
 
@@ -103,19 +121,33 @@ export default class SwapOrderSlide extends Component {
               });
             }.bind(this));
           }.bind(this));
-        }.bind(this)).catch(function(e) {
+        }.bind(this, _timeNow2)).catch(function(_timeNow3, _attempt3, e) {
           console.error("Failed to get swap estimate: ", e);
-          // try again
-          this.fetchSwapEstimate(origFromAmount, attempt + 1);
-        }.bind(this));
-      }.bind(this), 500);
 
-    }.bind(this));
+          if (this.calculatingSwapTimestamp != _timeNow3) {
+            return;
+          }
+
+          // try again
+          this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1);
+        }.bind(this, _timeNow2, _attempt2));
+      }.bind(this), 500, _timeNow, _attempt);
+
+    }.bind(this, timeNow, attempt));
   }
 
   handleTokenAmountChange(e) {
     if(!isNaN(+e.target.value)) {
-      var targetAmount = SwapFn.validateEthValue(this.props.from, e.target.value);
+      var targetAmount = e.target.value;
+
+      // if input is in exponential format, convert to decimal.
+      // we do this because all of our logic does not like the exponential format
+      // when converting to BigNumber.
+      // Otherwise we take the raw number as is, otherwise you get funky
+      // input behaviour (i.e disappearing trailing zeros in decimals)
+      if (targetAmount.toLowerCase().includes("e")) {
+        targetAmount = SwapFn.validateEthValue(this.props.from, targetAmount);
+      }
 
       Metrics.track("swap-token-value", {
         value: targetAmount,
@@ -139,14 +171,9 @@ export default class SwapOrderSlide extends Component {
       this.props.availableBalance &&
       this.props.fromAmount && this.props.from) {
 
-      try {
-        var balBN = ethers.utils.parseUnits(this.props.availableBalance, this.props.from.decimals);
-        var fromBN = ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
-        return fromBN.lte(balBN);
-      } catch (e) {
-        console.error("Failed to handle units", this.props.availableBalance, this.props.fromAmount);
-        return false;
-      }
+      var balBN = BN(this.props.availableBalance);
+      var fromBN = BN(this.props.fromAmount);
+      return fromBN.lte(balBN);
     } else {
       return true;
     }
@@ -220,13 +247,14 @@ export default class SwapOrderSlide extends Component {
             >
               <input
                 onChange={this.handleTokenAmountChange}
-                value={this.props[`${target}Amount`]}
+                value={!isFrom && this.state.errored ? "" : this.props[`${target}Amount`]}
                 type="number"
                 min="0"
                 step="0.000000000000000001"
                 className={classnames("input is-medium", {
                   "is-danger": isFrom && !this.hasSufficientBalance(),
-                  "is-to": !isFrom
+                  "is-to": !isFrom,
+                  "is-danger": !isFrom && this.state.errored
                 })}
                 placeholder="0.0"
                 disabled={!isFrom}
@@ -238,6 +266,11 @@ export default class SwapOrderSlide extends Component {
             {isFrom && !this.hasSufficientBalance() &&
                 (<div className="warning-funds">
                    Insufficient funds
+                </div>)}
+
+            {!isFrom && this.state.errored &&
+                (<div className="warning-funds">
+                  Estimate failed. Try again
                 </div>)}
             </div>
           </div>

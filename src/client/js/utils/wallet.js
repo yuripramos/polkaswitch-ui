@@ -3,6 +3,7 @@ import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
+import BN from 'bignumber.js';
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 

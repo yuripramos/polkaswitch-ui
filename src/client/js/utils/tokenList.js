@@ -2,6 +2,7 @@
 import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
+import BN from 'bignumber.js';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;

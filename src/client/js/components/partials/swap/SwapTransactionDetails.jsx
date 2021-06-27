@@ -44,10 +44,15 @@ export default class SwapTransactionDetails extends Component {
 
   async updateValues() {
     if (Wallet.isConnected()) {
+      var fromAmount = SwapFn.validateEthValue(
+        this.props.from,
+        this.props.fromAmount
+      );
+
       await SwapFn.calculateMinReturn(
         this.props.from,
         this.props.to,
-        Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
+        Utils.parseUnits(fromAmount, this.props.from.decimals)
       ).then(function(r) {
         _.defer(function(){
           this.setState({ minReturn: r });
@@ -61,7 +66,7 @@ export default class SwapTransactionDetails extends Component {
       await SwapFn.calculatePriceImpact(
         this.props.from,
         this.props.to,
-        Utils.parseUnits(this.props.fromAmount, this.props.from.decimals)
+        Utils.parseUnits(fromAmount, this.props.from.decimals)
       ).then(function(priceImpact) {
         _.defer(function(){
           this.setState({
@@ -85,7 +90,7 @@ export default class SwapTransactionDetails extends Component {
       await SwapFn.calculateEstimatedTransactionCost(
         this.props.from,
         this.props.to,
-        Utils.parseUnits(this.props.fromAmount, this.props.from.decimals),
+        Utils.parseUnits(fromAmount, this.props.from.decimals),
         distBN,
       ).then(function(v) {
         _.defer(function(){

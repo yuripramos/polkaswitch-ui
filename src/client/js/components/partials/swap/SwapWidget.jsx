@@ -3,6 +3,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
 import classnames from 'classnames';
 import * as ethers from 'ethers';
+import BN from 'bignumber.js';
 
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
