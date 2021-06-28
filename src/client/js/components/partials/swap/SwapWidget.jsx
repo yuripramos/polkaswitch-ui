@@ -127,10 +127,10 @@ export default class SwapOrderWidget extends Component {
     Metrics.track("swap-flipped-tokens");
     this.setState({
       to: this.state.from,
-      fromAmount: SwapFn.validateEthValue(this.state.to, this.state.toAmount),
+      fromAmount: this.state.toAmount ? SwapFn.validateEthValue(this.state.to, this.state.toAmount) : undefined,
       from: this.state.to,
       availableBalance: undefined,
-      toAmount: 0.0,
+      toAmount: undefined,
       refresh: Date.now(),
       // make it easy coming from token-selection
       showSearch: false
