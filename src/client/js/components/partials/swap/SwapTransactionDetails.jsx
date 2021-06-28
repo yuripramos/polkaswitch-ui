@@ -189,6 +189,34 @@ export default class SwapTransactionDetails extends Component {
           </div>
         </div>
         <div
+          className={classnames(
+            "level is-mobile is-narrow detail hint--bottom hint--medium"
+          )}
+          aria-label="Press back button and modify your slippage tolerance in the top-right settings on the main order form"
+        >
+          <div className="level-left">
+            <div className="level-item">
+              <div className="detail-title">
+                <span>Slippage Tolerance</span>
+                <span className="hint-icon">?</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="level-right">
+            <div className="level-item">
+              <div>
+                <div className="detail-value">
+                  <span>
+                    {SwapFn.settings.slippage}%
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
           className="level is-mobile is-narrow detail hint--bottom hint--medium"
           aria-label="Total transaction cost for this swap which includes Gas fees and Liquidity Provider Fees"
         >
