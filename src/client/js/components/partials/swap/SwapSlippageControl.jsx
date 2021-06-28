@@ -38,8 +38,13 @@ export default class SwapSlippageControl extends Component {
       customValue: e.target.value
     });
 
-    if (!isNaN(e.target.value)) {
+    if (!isNaN(e.target.value) && e.target.value.match(/^\d+(\.\d+)?$/)) {
       this.props.handleSlippage(+e.target.value);
+    } else {
+      this.setState({
+        current: 0.5,
+        custom: false
+      });
     }
   }
 
