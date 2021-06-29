@@ -1,30 +1,6 @@
 # polkaswitch-ui
 
-![alt text](https://github.com/polkaswitch/polkaswitch-ui/blob/main/images/example2.jpg?raw=true)
-
-# Features
-
-- Connect Wallet (Metamask etc)
-  - https://github.com/Web3Modal/web3modal
-- User Balance for Tokens They Own
-- Search box (by token address, uniswap pair address, token name, pair name)
-- Trading charts(volume, kline)
-- Order section
-  - Order type box (limit, market)
-  - Price input (limit)
-  - Order direction (buy, sell)
-  - Quantity
-  - Estimated gas fee (to charge from user)
-- Admin View:
-  - See ALL trade list (pending and complete on chain transactions) for this token pair
-- User Trade/Order History
-  - User trade list(pending and complete on chain transactions) for this user address
-  - Open order list for user(open limit orders)
-- Node <> Blockchain.js
-- Email Notifications
-
-
-# Developer Start Guide
+## Developer Start Guide
 
 - [Developer Start Guide](#developer-start-guide)
   - [Introduction](#introduction)
