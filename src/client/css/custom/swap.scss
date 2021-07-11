@@ -358,6 +358,10 @@ $swap-widget-anim-timing: 300ms;
         border-color: $light-blue;
       }
 
+      &.is-from {
+        padding-right: 60px;
+      }
+
       &:hover, &:focus {
         transform: scale(1.05);
         box-shadow: 0 0px 10px 0 #efefef;

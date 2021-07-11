@@ -256,13 +256,14 @@ export default class SwapOrderSlide extends Component {
                 className={classnames("input is-medium", {
                   "is-danger": isFrom && !this.hasSufficientBalance(),
                   "is-to": !isFrom,
+                  "is-from": isFrom,
                   "is-danger": !isFrom && this.state.errored
                 })}
                 placeholder="0.0"
                 disabled={!isFrom}
               />
 
-            {isFrom && !this.props[`${target}Amount`] &&
+            {isFrom &&
                 (<div className="max-btn" onClick={this.handleMax}>Max</div>)}
 
             {isFrom && !this.hasSufficientBalance() &&

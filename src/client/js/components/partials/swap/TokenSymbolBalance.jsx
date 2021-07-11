@@ -99,7 +99,7 @@ export default class TokenSymbolBalance extends Component {
       >
         <div className="symbol">{this.props.token.symbol}</div>
         <div className="balance">
-          Bal: {balOutput}
+          Bal &asymp; {balOutput}
         </div>
       </div>
     );

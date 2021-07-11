@@ -123,7 +123,7 @@ export default class SwapTransactionDetails extends Component {
           <div className="level-right">
             <div className="level-item">
               <div className="detail-value">
-                1 {this.props.from.symbol} ~= {numeral(this.props.toAmount / this.props.fromAmount).format("0.0[0000000000000]")} {this.props.to.symbol}
+                1 {this.props.from.symbol} &asymp; {numeral(this.props.toAmount / this.props.fromAmount).format("0.0[0000000000000]")} {this.props.to.symbol}
               </div>
             </div>
           </div>
