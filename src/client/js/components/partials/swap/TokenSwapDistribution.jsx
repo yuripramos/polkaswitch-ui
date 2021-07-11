@@ -10,9 +10,10 @@ export default class TokenSwapDistribution extends Component {
     super(props);
   }
 
-  renderPool(name, icon, poolWidth) {
+  renderPool(key, name, icon, poolWidth) {
     return (
       <div
+        key={key}
         className="token-dist-pool-wrapper"
         style={{ width: `${poolWidth * 100.0}%` }}>
         <div className="token-dist-pool">
@@ -101,8 +102,8 @@ export default class TokenSwapDistribution extends Component {
         className="token-dist-wrapper"
         aria-label="Routing distribution for the swap"
       >
-        {_.map(pools, function(v) {
-          return this.renderPool(v.name, v.icon, v.size);
+        {_.map(pools, function(v, i) {
+          return this.renderPool(i, v.name, v.icon, v.size);
         }.bind(this))}
       </div>
     );

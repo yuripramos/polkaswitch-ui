@@ -25,7 +25,7 @@ export default class ConnectWalletModal extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subWalletChange.unsubscribe();
     this.subConnectPrompt.unsubscribe();
   }

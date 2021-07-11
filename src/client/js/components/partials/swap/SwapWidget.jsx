@@ -68,7 +68,7 @@ export default class SwapOrderWidget extends Component {
     this.updateBoxHeight();
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.updateBoxHeight);
     this.subscribers.forEach(function(v) {
       EventManager.unsubscribe(v);

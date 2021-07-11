@@ -21,7 +21,6 @@ export default {
     data.completed = false;
     data.success = false;
 
-    // TODO serialize _queue into window.localStorage eventually, so not lost on refresh
     this._queue[hash] = data;
     if (this._signerAddress && (this._signerAddress.length > 0)) {
       store.set(this._signerAddress, this._queue)

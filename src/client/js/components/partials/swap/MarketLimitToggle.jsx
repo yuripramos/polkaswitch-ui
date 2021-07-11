@@ -24,7 +24,7 @@ export default class MarketLimitToggle extends Component {
           type="checkbox"
           checked={true || this.state.checked}
           onChange={this.handleChange} />
-        <label for="order-type-switcher"></label>
+        <label htmlFor="order-type-switcher"></label>
       </span>
     );
   }

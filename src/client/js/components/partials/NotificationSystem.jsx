@@ -28,7 +28,7 @@ export default class NotificationSystem extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.sub.unsubscribe();
     this.sub2.unsubscribe();
   }

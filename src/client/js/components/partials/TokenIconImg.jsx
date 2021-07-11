@@ -30,7 +30,7 @@ export default class TokenIconImg extends Component {
         className={classnames("token-icon-img-wrapper", { "errored": this.state.errored })}
         style={{ height: `${this.props.size || 40}px`, width: `${this.props.size || 40}px` }}>
         <img
-          { ... this.props }
+          { ... _.omit(this.props, 'imgSrc', 'token', 'size') }
           onLoad={this.onLoad}
           onError={this.onError}
           style={{

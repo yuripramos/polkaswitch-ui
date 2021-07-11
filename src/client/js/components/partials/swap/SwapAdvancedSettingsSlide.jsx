@@ -73,8 +73,8 @@ export default class SwapAdvancedSettingsSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div className="select">
-                  <select onChange={this.handleGasPrice}>
-                    <option selected value="-1">Auto (~{window.GAS_STATS.safeLow})</option>
+                  <select defaultValue={"-1"} onChange={this.handleGasPrice}>
+                    <option value="-1">Auto (~{window.GAS_STATS.safeLow})</option>
                     <option value={window.GAS_STATS.fast}>Fast (~{window.GAS_STATS.fast})</option>
                     <option value={window.GAS_STATS.fastest}>Fastest (~{window.GAS_STATS.fastest})</option>
                   </select>

@@ -28,7 +28,7 @@ export default class App extends Component {
     window.document.addEventListener('fullScreenOff', this.handleFullScreenOff);
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     window.document.removeEventListener('fullScreenOn', this.handleFullScreenOn);
     window.document.removeEventListener('fullScreenOff', this.handleFullScreenOff);
   }

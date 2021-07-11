@@ -23,7 +23,7 @@ export default class ConnectWalletButton extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subWalletChange.unsubscribe();
   }
 

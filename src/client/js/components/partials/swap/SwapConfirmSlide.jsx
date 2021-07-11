@@ -31,7 +31,7 @@ export default class SwapConfirmSlide extends Component {
     this.subWalletUpdated = EventManager.listenFor('walletUpdated', this.handleWalletChange);
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subWalletUpdated.unsubscribe();
   }
 

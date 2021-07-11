@@ -23,7 +23,7 @@ export default class NotificationButton extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subUpdates.unsubscribe();
   }
 

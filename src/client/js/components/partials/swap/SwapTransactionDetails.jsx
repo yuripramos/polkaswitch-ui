@@ -28,7 +28,7 @@ export default class SwapTransactionDetails extends Component {
     this.updateValues();
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subNetworkChange.unsubscribe();
   }
 

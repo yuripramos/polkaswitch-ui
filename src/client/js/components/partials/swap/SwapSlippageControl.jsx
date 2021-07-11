@@ -15,7 +15,7 @@ export default class SwapSlippageControl extends Component {
 
     this.state = {
       custom: false,
-      customValue: undefined,
+      customValue: '',
       current: 0.5
     };
   }
@@ -55,6 +55,7 @@ export default class SwapSlippageControl extends Component {
           ["0.1", "0.5", "1.0"].map(function(v) {
             return (
               <span
+                key={v}
                 onClick={this.handleClick(v)}
                 className={classnames("button", {
                   "is-info is-light is-outlined": !this.state.custom && +v === this.state.current,

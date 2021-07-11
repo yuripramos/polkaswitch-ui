@@ -23,7 +23,7 @@ export default class TokenSearchBar extends Component {
     this.onFocus = this.onFocus.bind(this)
 
     // init
-    this.handleNetworkChange();
+    this.updateTopTokens();
   }
 
   componentDidMount() {
@@ -32,7 +32,7 @@ export default class TokenSearchBar extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subNetworkUpdate.unsubscribe();
   }
 
@@ -55,11 +55,15 @@ export default class TokenSearchBar extends Component {
     }
   }
 
-  handleNetworkChange(e) {
+  updateTopTokens() {
     var network = TokenListManager.getCurrentNetworkConfig();
     this.TOP_TOKENS = _.map(network.topTokens, function(v) {
       return TokenListManager.findTokenById(v)
     });
+  }
+
+  handleNetworkChange(e) {
+    updateTopTokens();
     this.setState({
       refresh: Date.now()
     });
@@ -96,9 +100,10 @@ export default class TokenSearchBar extends Component {
     var top3 = _.first(this.TOP_TOKENS, 3);
     var rest = _.rest(this.TOP_TOKENS, 3);
 
-    var top3Content = _.map(top3, function(v) {
+    var top3Content = _.map(top3, function(v, i) {
       return (
         <a href="#"
+          key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("top-item level column is-mobile")}>
           <span className="level-left my-2">
@@ -114,7 +119,7 @@ export default class TokenSearchBar extends Component {
     }.bind(this));
 
     return (
-      <div class="token-top-list">
+      <div className="token-top-list">
         <div className="text-gray-stylized">
           <span>Popular</span>
         </div>
@@ -127,9 +132,10 @@ export default class TokenSearchBar extends Component {
   }
 
   renderDropList(filteredTokens) {
-    return _.map(filteredTokens, function(v) {
+    return _.map(filteredTokens, function(v, i) {
       return (
         <a href="#"
+          key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("dropdown-item level is-mobile")}>
           <span className="level-left my-2">

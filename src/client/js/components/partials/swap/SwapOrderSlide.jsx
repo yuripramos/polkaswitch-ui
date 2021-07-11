@@ -309,14 +309,14 @@ export default class SwapOrderSlide extends Component {
             {this.renderTokenInput("from", this.props.from)}
           </div>
 
-          <div class="swap-icon-wrapper">
-            <div class="swap-icon-v2 icon" onClick={this.handleTokenSwap}>
+          <div className="swap-icon-wrapper">
+            <div className="swap-icon-v2 icon" onClick={this.handleTokenSwap}>
               <ion-icon name="swap-vertical-outline"></ion-icon>
             </div>
 
-            <div class="swap-icon is-hidden" onClick={this.handleTokenSwap}>
-              <i class="fas fa-long-arrow-alt-up"></i>
-              <i class="fas fa-long-arrow-alt-down"></i>
+            <div className="swap-icon is-hidden" onClick={this.handleTokenSwap}>
+              <i className="fas fa-long-arrow-alt-up"></i>
+              <i className="fas fa-long-arrow-alt-down"></i>
             </div>
           </div>
 

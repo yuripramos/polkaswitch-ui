@@ -22,7 +22,7 @@ export default class AlphaOnboardingCard extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subNetworkChange.unsubscribe();
   }
 

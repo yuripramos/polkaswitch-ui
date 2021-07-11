@@ -14,7 +14,7 @@ export default class Footer extends Component {
 
         <button data-feedback-fish
           className="footer-feedback button is-medium">
-          <span class="icon">
+          <span className="icon">
             <ion-icon name="alert-circle"></ion-icon>
           </span>
           <span>Give Feedback</span>

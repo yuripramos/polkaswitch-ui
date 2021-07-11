@@ -157,7 +157,6 @@ window.WalletJS = {
       this._connectProviderMetamask();
     } else if (target === "walletConnect") {
       // TODO disable for now
-      return;
       this._connectProviderWalletConnect();
     }
   },

@@ -29,7 +29,7 @@ export default class TxHistoryModal extends Component {
     );
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.subUpdate.unsubscribe();
   }
 
@@ -86,9 +86,9 @@ export default class TxHistoryModal extends Component {
               </div>
             )}
 
-            {_.map(queue, function(item) {
+            {_.map(queue, function(item, i) {
               return (
-                <TxStatusView data={item} />
+                <TxStatusView key={i} data={item} />
               );
             })}
           </div>
