@@ -32,13 +32,17 @@ export default class ConnectWalletModal extends Component {
 
   handleConnection(target) {
     return function(e) {
-      if (Wallet.isConnected() || !Wallet.isSupported()) {
+      if (Wallet.isConnected()) {
         return false;
       }
 
       Metrics.track("connect-wallet", { type: target });
       EventManager.emitEvent('initiateWalletConnect', target);
     }.bind(this);
+  }
+
+  handleDisconnect(e) {
+    Wallet.disconnect();
   }
 
   handleWalletChange() {
@@ -90,7 +94,7 @@ export default class ConnectWalletModal extends Component {
 
             <div
               className={classnames("option", {
-                "connected": Wallet.isConnected()
+                "connected": Wallet.isConnected("metamask")
               })}
               onClick={this.handleConnection("metamask")}
             >
@@ -99,7 +103,7 @@ export default class ConnectWalletModal extends Component {
                   <div className="level-item">
                     <div>
                       <div>MetaMask</div>
-                      {Wallet.isConnected() && (
+                      {Wallet.isConnected("metamask") && (
                         <>
                           <div className="connected">Connected</div>
                           <div className="connected">
@@ -107,7 +111,7 @@ export default class ConnectWalletModal extends Component {
                           </div>
                         </>
                       )}
-                      {!Wallet.isSupported() && (
+                      {!Wallet.isMetamaskSupported() && (
                         <>
                           <div className="error">
                             Please install Metamask Plugin first!
@@ -124,7 +128,7 @@ export default class ConnectWalletModal extends Component {
                         </div>
                         </>
                       )}
-                      {Wallet.isSupported() &&
+                      {Wallet.isMetamaskSupported() &&
                           !Wallet.isConnectedToAnyNetwork() &&
                       (
                         <>
@@ -144,13 +148,25 @@ export default class ConnectWalletModal extends Component {
               </div>
             </div>
             <div
-              className="option coming-soon"
+              className={classnames("option", {
+                "connected": Wallet.isConnected("walletConnect")
+              })}
               onClick={this.handleConnection("walletConnect")}
             >
               <div className="level is-mobile is-narrow">
                 <div className="level-left">
                   <div className="level-item">
-                    WalletConnect (Coming Soon)
+                    <div>
+                      <div>WalletConnect</div>
+                      {Wallet.isConnected("walletConnect") && (
+                        <>
+                        <div className="connected">Connected</div>
+                        <div className="connected">
+                          {Wallet.currentAddress()}
+                        </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="level-right">
@@ -176,7 +192,20 @@ export default class ConnectWalletModal extends Component {
             </div>
 
             <div className="footnote">
-              New to <a target="_blank" href="https://ethereum.org/wallets/">Ethereum</a>, <a target="_blank" href="https://polygon.technology/technology/">Polygon</a>, or <a target="_blank" href="https://wiki.polkadot.network/docs/en/getting-started">Polkadot</a>?
+              <div>
+                New to <a target="_blank" href="https://ethereum.org/wallets/">Ethereum</a>, <a target="_blank" href="https://polygon.technology/technology/">Polygon</a>, or <a target="_blank" href="https://wiki.polkadot.network/docs/en/getting-started">Polkadot</a>?
+              </div>
+
+              <hr/>
+
+              <div className={classnames({
+                "is-hidden": !Wallet.isConnected()
+              })}>
+                <button
+                  className="button is-danger is-outlined"
+                  onClick={this.handleDisconnect}>Disconnect
+                </button>
+              </div>
             </div>
           </div>
         </div>

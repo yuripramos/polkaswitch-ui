@@ -12,7 +12,10 @@ const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.WalletJS = {
-  currentNetworkId: -1,
+  _cachedWeb3Provider: undefined,
+  _cachedCurrentAddress: undefined,
+  _cachedNetworkId: -1,
+  _cachedStrategy: undefined,
 
   providerConfigs: {
     'walletConnect': {
@@ -20,15 +23,18 @@ window.WalletJS = {
   },
 
   initialize: async function() {
+    // initialize MetaMask if already connected
     if (window.ethereum) {
       this.initListeners(window.ethereum);
 
       if (window.ethereum.selectedAddress) {
-        // cache value
-        this._currentConnectedNetworkId().then(function(chainId) {
-          this.currentNetworkId = chainId;
-        }.bind(this));
+        var web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+        await this._saveConnection(web3Provider, "metamask");
       }
+    }
+
+    else if (false) {
+      // TODO init WalletConnect
     }
 
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
@@ -44,22 +50,22 @@ window.WalletJS = {
     provider.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
       console.log(accounts);
-      EventManager.emitEvent('walletUpdated', 1);
-    });
+      if (accounts[0] != this.currentAddress()) {
+        this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
+      }
+    }.bind(this));
 
     provider.on('disconnect', function(providerRpcError) {
       console.log(providerRpcError);
+      this.disconnect();
       EventManager.emitEvent('walletUpdated', 1);
-    });
+    }.bind(this));
 
     provider.on('chainChanged', function(chainId) {
       console.log(chainId);
-      if (this.isConnectedToAnyNetwork()) {
 
-        this._currentConnectedNetworkId().then(function(chainId) {
-          this.currentNetworkId = chainId;
-          EventManager.emitEvent('walletUpdated', 1);
-        }.bind(this));
+      if (this.isConnectedToAnyNetwork()) {
+        this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
     }.bind(this));
   },
@@ -67,7 +73,6 @@ window.WalletJS = {
   getReadOnlyProvider: function() {
     var network = TokenListManager.getCurrentNetworkConfig();
     const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
-    const signer = provider.getSigner();
     return provider;
   },
 
@@ -75,9 +80,7 @@ window.WalletJS = {
     var condition = strictCheck ? this.isConnected() : this.isConnectedToAnyNetwork();
 
     if (condition) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      return provider;
+      return this._cachedWeb3Provider;
     } else {
       return this.getReadOnlyProvider();
     }
@@ -110,12 +113,12 @@ window.WalletJS = {
     return await contract.balanceOf(this.currentAddress());
   },
 
-  isSupported: function() {
+  isMetamaskSupported: function() {
     return (typeof window.ethereum !== 'undefined');
   },
 
   _currentConnectedNetworkId: async function() {
-    if (!(window.ethereum && window.ethereum.selectedAddress)) {
+    if (!this.isConnectedToAnyNetwork()) {
       return -1;
     }
 
@@ -125,56 +128,81 @@ window.WalletJS = {
     }
   },
 
-  isConnected: function() {
-    return window.ethereum &&
-      window.ethereum.selectedAddress &&
+  isConnected: function(strategy) {
+    var connected = this.isConnectedToAnyNetwork() &&
       this.isMatchingConnectedNetwork();
+
+    // scope to connection strategy if supplied
+    if (strategy) {
+      return (strategy == this._cachedStrategy) && connected;
+    } else {
+      return connected;
+    }
   },
 
   isConnectedToAnyNetwork: function() {
-    return window.ethereum &&
-      window.ethereum.selectedAddress;
+    return !!this._cachedWeb3Provider;
   },
 
   isMatchingConnectedNetwork: function() {
     var network = TokenListManager.getCurrentNetworkConfig();
-    return +network.chainId === +this.currentNetworkId;
+    return +network.chainId === +this._cachedNetworkId;
   },
 
   currentAddress: function() {
-    return this.isConnectedToAnyNetwork() ? window.ethereum.selectedAddress : undefined;
+    if (this.isConnectedToAnyNetwork()) {
+      return this._cachedCurrentAddress;
+    } else {
+      return undefined;
+    }
   },
 
-  _changeNetwork: function(network) {
-    return window.ethereum.request({
-      method: 'wallet_addEthereumChain',
-      params: [network.chain]
-    });
+  disconnect: function() {
+    this._cachedCurrentAddress = undefined;
+    this._cachedNetworkId = -1;
+    this._cachedStrategy = undefined;
+    this._cachedWeb3Provider = undefined;
+    EventManager.emitEvent('walletUpdated', 1);
   },
 
   _connectWalletHandler: function(target) {
     if (target === "metamask") {
       this._connectProviderMetamask();
     } else if (target === "walletConnect") {
-      // TODO disable for now
       this._connectProviderWalletConnect();
     }
   },
 
+  _saveConnection: async function(provider, strategy) {
+    let connectedNetwork = await provider.getNetwork();
+    let address = await provider.listAccounts();
+    let chainId = connectedNetwork.chainId;
+
+    this._cachedCurrentAddress = address[0];
+    this._cachedNetworkId = chainId;
+    this._cachedStrategy = strategy;
+    this._cachedWeb3Provider = provider;
+
+    EventManager.emitEvent('walletUpdated', 1);
+  },
+
   _connectProviderWalletConnect: function() {
+    let network = TokenListManager.getCurrentNetworkConfig();
+
     const provider = new WalletConnectProvider({
       rpc: {
         137: "https://rpc-mainnet.maticvigil.com"
       },
+      chainId: 137
     });
 
     provider.enable().then(function(v) {
       console.log(arguments);
 
-      const web3Provider = new ethers.providers.Web3Provider(provider);
+      var web3Provider = new ethers.providers.Web3Provider(provider);
 
-      window.PPP = web3Provider;
-    }).catch(function(e) {
+      return this._saveConnection(web3Provider, "walletConnect");
+    }.bind(this)).catch(function(e) {
       console.error(e);
     });
 
@@ -185,20 +213,20 @@ window.WalletJS = {
     return new Promise(function (resolve, reject) {
       let network = TokenListManager.getCurrentNetworkConfig();
 
-      this._changeNetwork(network).then(function() {
+      window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [network.chain]
+      }).then(function() {
         _.delay(function() {
           window.ethereum.request({ method: 'eth_requestAccounts' })
             .then(function(accounts) {
               // Metamask currently only ever provide a single account
               const account = accounts[0];
-              EventManager.emitEvent('walletUpdated', 1);
 
-              return this._currentConnectedNetworkId().then(function(chainId) {
-                this.currentNetworkId = chainId;
-                EventManager.emitEvent('walletUpdated', 1);
+              var web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+              return this._saveConnection(web3Provider, "metamask").then(function() {
                 resolve(account);
-              }.bind(this));
-
+              });
             }.bind(this))
             .catch(function(e) {
               console.error(e);

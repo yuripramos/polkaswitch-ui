@@ -43,7 +43,7 @@ window.SELECTED_NETWORK = _.findWhere(window.NETWORK_CONFIGS, { enabled: true })
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 
-if (Wallet.isSupported()) {
+if (Wallet.isMetamaskSupported()) {
   console.log('MetaMask is installed!');
 } else {
   console.error('Metamask not installed!');

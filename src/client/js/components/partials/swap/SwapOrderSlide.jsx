@@ -249,7 +249,11 @@ export default class SwapOrderSlide extends Component {
             >
               <input
                 onChange={this.handleTokenAmountChange}
-                value={!isFrom && this.state.errored ? "" : this.props[`${target}Amount`]}
+                value={
+                  (!isFrom && this.state.errored) ?
+                    "" :
+                    (this.props[`${target}Amount`] || "")
+                }
                 type="number"
                 min="0"
                 step="0.000000000000000001"
