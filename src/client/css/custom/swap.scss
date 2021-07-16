@@ -485,6 +485,16 @@ $swap-widget-anim-timing: 300ms;
       margin-bottom: 10px;
     }
 
+    .gas-price-control {
+      display: flex;
+      margin-top: 5px;
+      gap: 20px;
+
+      .disabled {
+        opacity: 0.5;
+      }
+    }
+
     .slippage-control {
       margin-top: 5px;
       display: flex;

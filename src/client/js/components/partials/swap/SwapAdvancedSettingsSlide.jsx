@@ -7,6 +7,7 @@ import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
 import SwapSlippageControl from './SwapSlippageControl';
+import GasPriceControl from './GasPriceControl';
 
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
@@ -25,9 +26,9 @@ export default class SwapAdvancedSettingsSlide extends Component {
     this.handleSlippage = this.handleSlippage.bind(this);
   }
 
-  handleGasPrice(e) {
+  handleGasPrice(v) {
     SwapFn.updateSettings({
-      gasPrice: +e.currentTarget.value
+      gasPrice: v
     });
   }
 
@@ -57,30 +58,18 @@ export default class SwapAdvancedSettingsSlide extends Component {
 
           <hr />
 
-          <div className="level is-mobile option">
-            <div className="level-left">
-              <div className="level-item">
-                <span>
-                  <b>Gas Price</b>
-                  <span
+          <div className="option">
+            <div>
+              <span>
+                <b>Gas Price</b>
+                <span
                     className="hint-icon hint--bottom hint--medium"
                     aria-label="You can expedite your transaction by paying more Gas Fees. You can choose between either faster transactions or cheaper fees (in GWei)"
                   >?</span>
-                </span>
-              </div>
+              </span>
             </div>
 
-            <div className="level-right">
-              <div className="level-item">
-                <div className="select">
-                  <select defaultValue={"-1"} onChange={this.handleGasPrice}>
-                    <option value="-1">Auto (~{window.GAS_STATS.safeLow})</option>
-                    <option value={window.GAS_STATS.fast}>Fast (~{window.GAS_STATS.fast})</option>
-                    <option value={window.GAS_STATS.fastest}>Fastest (~{window.GAS_STATS.fastest})</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <GasPriceControl handleGasPrice={this.handleGasPrice}/>
           </div>
 
           <div className="option">
