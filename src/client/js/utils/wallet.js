@@ -50,7 +50,7 @@ window.WalletJS = {
     provider.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
       console.log(accounts);
-      if (accounts[0] != this.currentAddress()) {
+      if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
         this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
     }.bind(this));
