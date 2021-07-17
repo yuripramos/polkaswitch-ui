@@ -209,6 +209,13 @@ html, body {
     padding-right: 3rem;
     margin-top: 0;
     margin-bottom: 0;
+
+    & .level-item-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
   }
 
   .close-icon {

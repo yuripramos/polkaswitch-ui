@@ -9,10 +9,13 @@ import EventManager from '../../utils/events';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 
+import * as ethers from 'ethers';
+const BigNumber = ethers.BigNumber;
+
 export default class TokenSearchBar extends Component {
   constructor(props) {
     super(props);
-    this.state = { focused: false, value: "", refresh: Date.now() };
+    this.state = { focused: false, value: "", refresh: Date.now(), tokenBalances: {} };
 
     this.input = React.createRef();
 
@@ -27,12 +30,21 @@ export default class TokenSearchBar extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true
     this.subNetworkUpdate = EventManager.listenFor(
       'networkUpdated', this.handleNetworkChange
     );
+    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token) => {
+      Wallet.getBalance(token)
+        .then((bal) => {
+          this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
+        })
+        .catch(error => console.log(error))
+    })
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     this.subNetworkUpdate.unsubscribe();
   }
 
@@ -133,20 +145,29 @@ export default class TokenSearchBar extends Component {
 
   renderDropList(filteredTokens) {
     return _.map(filteredTokens, function(v, i) {
+      const tokenBalance = this.state.tokenBalances[v.symbol];
+      let balanceNumber = null;
+      if (tokenBalance)
+        balanceNumber = window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)
+
       return (
         <a href="#"
           key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("dropdown-item level is-mobile")}>
-          <span className="level-left my-2">
-            <span className="level-item">
-              <TokenIconImg
-                size={35}
-                token={v} />
+          <div className="level-item-wrapper">
+            <span className="level-left my-2">
+              <span className="level-item">
+                <TokenIconImg
+                  size={35}
+                  token={v} />
+              </span>
+              <span className="level-item">{v.name}</span>
+              <span className="level-item has-text-grey">{v.symbol}</span>
             </span>
-            <span className="level-item">{v.name}</span>
-            <span className="level-item has-text-grey">{v.symbol}</span>
-          </span>
+            <span className="level-item has-text-grey is-narrow">{balanceNumber}</span>
+          </div>
+
         </a>
       )
     }.bind(this));
