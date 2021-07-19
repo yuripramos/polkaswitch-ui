@@ -40,6 +40,12 @@ window.TokenListManager = {
       return v;
     });
 
+    // Binance Smart Chain GasAPI has different fields
+    if (!gasStats.safeLow) {
+      gasStats.safeLow = gasStats.standard;
+      gasStats.fastest = gasStats.fast;
+    }
+
     window.GAS_STATS = _.pick(gasStats, [
       'fast', 'fastest', 'safeLow'
     ]);

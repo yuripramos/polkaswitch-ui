@@ -20,7 +20,7 @@ export default class NotificationSystem extends Component {
   }
 
   componentDidMount() {
-    this.sub2 = EventManager.listenFor(
+    this.sub = EventManager.listenFor(
       'txSuccess', this.handleUpdate
     );
     this.sub2 = EventManager.listenFor(

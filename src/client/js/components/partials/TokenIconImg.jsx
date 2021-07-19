@@ -22,7 +22,9 @@ export default class TokenIconImg extends Component {
     var imgSrc = this.props.imgSrc || this.props.token.logoURI;
 
     if (!imgSrc) {
-      imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${window.SELECTED_NETWORK.toLowerCase()}/assets/${this.props.token.address || this.props.token.symbol}/logo.png`;
+      var chainPart = window.SELECTED_NETWORK.toLowerCase().replace(/\s+/g, '');
+      var keyPart = this.props.token.address || this.props.token.symbol;
+      imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${keyPart}/logo.png`;
     }
 
     return (

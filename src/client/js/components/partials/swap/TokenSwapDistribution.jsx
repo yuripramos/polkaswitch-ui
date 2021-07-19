@@ -97,6 +97,41 @@ export default class TokenSwapDistribution extends Component {
       }];
     }
 
+    else if (network.name == "Smart Chain") {
+      totalParts = 3;
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0];
+
+      /*
+        This returns the destToken output amount and the optimized
+        list of distributions accross different liquidity pools.
+        There are 6 pools: pool 1 and 2 are Pancakeswap pools,
+        pool 3 and 4 are Sushiswap pools, and pool 5 - 6 are
+        Mdex exchange pools. For example, the distribution
+        [1, 0, 2, 0, 0, 0] means 1/3 of the swap amount will route
+        to Pancakeswap and 2/3 will route to Sushiswap.[1, 0, 0, 0, 3]
+        means 1/3 of amount will route to Pancakeswap and 2/3 will
+        route to Mdex.
+      */
+
+      sumOne = parts[0] + parts[1];
+      sumTwo = parts[2] + parts[3];
+      sumThree = parts[4] + parts[5] + (parts[6] || 0.0); // sometimes get 7th part
+
+      pools = [{
+        name: "Pancakeswap",
+        icon: TokenListManager.findTokenById("CAKE"),
+        size: sumOne / totalParts
+      }, {
+        name: "Sushiswap",
+        icon: TokenListManager.findTokenById("SUSHI"),
+        size: sumTwo / totalParts
+      }, {
+        name: "Mdex",
+        icon: TokenListManager.findTokenById("MDX"),
+        size: sumThree / totalParts
+      }];
+    }
+
     return (
       <div
         className="token-dist-wrapper"

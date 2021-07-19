@@ -63,7 +63,7 @@ export default class TokenSearchBar extends Component {
   }
 
   handleNetworkChange(e) {
-    updateTopTokens();
+    this.updateTopTokens();
     this.setState({
       refresh: Date.now()
     });
