@@ -232,6 +232,11 @@ html, body {
   }
 }
 
+.token-symbol-balance-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .swap-column {
   flex: none;
   width: 440px;

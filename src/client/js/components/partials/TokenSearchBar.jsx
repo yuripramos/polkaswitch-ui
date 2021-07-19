@@ -10,6 +10,8 @@ import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 
 import * as ethers from 'ethers';
+import wallet from '../../utils/wallet';
+import numeral from 'numeral';
 const BigNumber = ethers.BigNumber;
 
 export default class TokenSearchBar extends Component {
@@ -21,7 +23,9 @@ export default class TokenSearchBar extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
+    this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
+    this.fetchBalances = this.fetchBalances.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this)
 
@@ -30,22 +34,20 @@ export default class TokenSearchBar extends Component {
   }
 
   componentDidMount() {
-    this.mounted = true
+    this.mounted = true;
     this.subNetworkUpdate = EventManager.listenFor(
       'networkUpdated', this.handleNetworkChange
     );
-    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token) => {
-      Wallet.getBalance(token)
-        .then((bal) => {
-          this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
-        })
-        .catch(error => console.log(error))
-    })
+    this.subWalletUpdated = EventManager.listenFor(
+      'walletUpdated', this.handleWalletChange
+    );
+    this.fetchBalances();
   }
 
   componentWillUnmount() {
     this.mounted = false;
     this.subNetworkUpdate.unsubscribe();
+    this.subWalletUpdate.unsubscribe();
   }
 
   componentDidUpdate(prevProps) {
@@ -74,11 +76,28 @@ export default class TokenSearchBar extends Component {
     });
   }
 
+  fetchBalances() {
+    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token) => {
+      if (Wallet.isConnected()) {
+        Wallet.getBalance(token)
+        .then((bal) => {
+          this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
+        })
+        .catch(error => console.log(error))
+      }
+    })
+  }
+
   handleNetworkChange(e) {
     updateTopTokens();
     this.setState({
       refresh: Date.now()
     });
+  }
+
+  handleWalletChange(e) {
+    this.setState({tokenBalances: {}});
+    this.fetchBalances();
   }
 
   handleChange(event) {
@@ -113,6 +132,19 @@ export default class TokenSearchBar extends Component {
     var rest = _.rest(this.TOP_TOKENS, 3);
 
     var top3Content = _.map(top3, function(v, i) {
+
+      const tokenBalance = this.state.tokenBalances[v.symbol];
+      let balanceNumber = null;
+      if (tokenBalance) {
+        if (tokenBalance.balance.isZero()) {
+          balanceNumber = '0.0';
+        } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
+          balanceNumber = "< 0.0001";
+        } else {
+          balanceNumber = numeral(window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)).format('0.0000a');
+        }
+      }
+
       return (
         <a href="#"
           key={i}
@@ -124,7 +156,10 @@ export default class TokenSearchBar extends Component {
                 size={35}
                 token={v} />
             </span>
-            <span className="level-item has-text-grey">{v.symbol}</span>
+            <div className="token-symbol-balance-wrapper">
+              <span className="has-text-grey">{v.symbol}</span>
+              <span className="has-text-grey">{balanceNumber}</span>
+            </div>
           </span>
         </a>
       );
@@ -147,27 +182,34 @@ export default class TokenSearchBar extends Component {
     return _.map(filteredTokens, function(v, i) {
       const tokenBalance = this.state.tokenBalances[v.symbol];
       let balanceNumber = null;
-      if (tokenBalance)
-        balanceNumber = window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)
+      if (tokenBalance) {
+        if (tokenBalance.balance.isZero()) {
+          balanceNumber = '0.0';
+        } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
+          balanceNumber = "< 0.0001";
+        } else {
+          balanceNumber = numeral(window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)).format('0.0000a');
+        }
+      }
 
       return (
         <a href="#"
           key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("dropdown-item level is-mobile")}>
-          <div className="level-item-wrapper">
-            <span className="level-left my-2">
-              <span className="level-item">
-                <TokenIconImg
-                  size={35}
-                  token={v} />
-              </span>
-              <span className="level-item">{v.name}</span>
-              <span className="level-item has-text-grey">{v.symbol}</span>
+          <span className="level-left my-2">
+            <span className="level-item">
+              <TokenIconImg
+                size={35}
+                token={v} />
             </span>
-            <span className="level-item has-text-grey is-narrow">{balanceNumber}</span>
-          </div>
+            <span className="level-item">{v.name}</span>
+            <div className="token-symbol-balance-wrapper">
+              <span className="has-text-grey">{v.symbol}</span>
+              <span className="has-text-grey">{balanceNumber}</span>
+            </div>
 
+          </span>
         </a>
       )
     }.bind(this));
