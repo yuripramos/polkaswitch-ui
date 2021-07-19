@@ -1,29 +1,25 @@
 import React, { Component } from 'react';
-import _ from "underscore";
-import classnames from 'classnames';
-
-import TokenSearchBar from './../TokenSearchBar';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
-import TokenSwapDistribution from './TokenSwapDistribution';
-import MarketLimitToggle from './MarketLimitToggle';
 import SwapSlippageControl from './SwapSlippageControl';
 import GasPriceControl from './GasPriceControl';
-
-import Wallet from '../../../utils/wallet';
-import Metrics from '../../../utils/metrics';
-import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
 
 import * as ethers from 'ethers';
-const BigNumber = ethers.BigNumber;
-const Utils = ethers.utils;
 
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      slippage: 0.5,
+      GasPrice: -1 // auto,
+    }
 
     this.handleGasPrice = this.handleGasPrice.bind(this);
     this.handleSlippage = this.handleSlippage.bind(this);
+  }
+
+  componentDidMount(){
+    const settings = SwapFn.getSetting()
+    this.setState(settings);
   }
 
   handleGasPrice(v) {
@@ -39,6 +35,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
   }
 
   render() {
+    const { slippage, gasPrice } = this.state
     return (
       <div className="page page-stack page-view-settings">
         <div className="page-inner">
@@ -69,7 +66,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <GasPriceControl handleGasPrice={this.handleGasPrice}/>
+            <GasPriceControl handleGasPrice={this.handleGasPrice} defaultValue={gasPrice}/>
           </div>
 
           <div className="option">
@@ -83,7 +80,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <SwapSlippageControl handleSlippage={this.handleSlippage} />
+            <SwapSlippageControl handleSlippage={this.handleSlippage} defaultValue={slippage} />
           </div>
 
           <div className="level is-mobile option">

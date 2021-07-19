@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import _ from "underscore";
 import classnames from 'classnames';
 
-import * as ethers from 'ethers';
-const BigNumber = ethers.BigNumber;
-const Utils = ethers.utils;
+const tolerances = [0.1, 0.5, 1.0];
 
 export default class SwapSlippageControl extends Component {
   constructor(props) {
@@ -48,11 +45,22 @@ export default class SwapSlippageControl extends Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { defaultValue } = nextProps
+    if (defaultValue !== this.state.current) {
+      if (tolerances.indexOf(defaultValue) > -1) {
+        this.setState({custom: false, current: defaultValue})
+      } else {
+        this.setState({custom: true, customValue: defaultValue})
+      }
+    }
+  }
+
   render() {
     return (
       <div className="slippage-control">
         {
-          ["0.1", "0.5", "1.0"].map(function(v) {
+          tolerances.map(function(v) {
             return (
               <span
                 key={v}

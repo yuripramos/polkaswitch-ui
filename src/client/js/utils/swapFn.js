@@ -6,6 +6,7 @@ import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import BN from 'bignumber.js';
+let store = require('store')
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -41,8 +42,13 @@ window.SwapFn = {
   },
 
   updateSettings: function(settings) {
-    this.settings = _.extend(this.settings, settings);
+    this.settings = _.extend(this.getSetting(), settings);
+    store.set('settings', this.settings)
     EventManager.emitEvent('swapSettingsUpdated', 1);
+  },
+
+  getSetting: function () {
+    return store.get('settings') || this.settings;
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {
