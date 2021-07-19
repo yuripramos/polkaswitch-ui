@@ -26,6 +26,7 @@ export default class TokenSearchBar extends Component {
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.fetchBalances = this.fetchBalances.bind(this);
+    this.getBalanceNumber = this.getBalanceNumber.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this)
 
@@ -88,6 +89,21 @@ export default class TokenSearchBar extends Component {
     })
   }
 
+  getBalanceNumber(token) {
+    const tokenBalance = this.state.tokenBalances[token.symbol];
+    let balanceNumber = null;
+    if (tokenBalance) {
+      if (tokenBalance.balance.isZero()) {
+        balanceNumber = '0.0';
+      } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
+        balanceNumber = "< 0.0001";
+      } else {
+        balanceNumber = numeral(window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)).format('0.0000a');
+      }
+    }
+    return balanceNumber;
+  }
+
   handleNetworkChange(e) {
     updateTopTokens();
     this.setState({
@@ -127,23 +143,13 @@ export default class TokenSearchBar extends Component {
     }.bind(this);
   }
 
+
+
   renderTopList() {
     var top3 = _.first(this.TOP_TOKENS, 3);
     var rest = _.rest(this.TOP_TOKENS, 3);
 
     var top3Content = _.map(top3, function(v, i) {
-
-      const tokenBalance = this.state.tokenBalances[v.symbol];
-      let balanceNumber = null;
-      if (tokenBalance) {
-        if (tokenBalance.balance.isZero()) {
-          balanceNumber = '0.0';
-        } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
-          balanceNumber = "< 0.0001";
-        } else {
-          balanceNumber = numeral(window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)).format('0.0000a');
-        }
-      }
 
       return (
         <a href="#"
@@ -158,7 +164,7 @@ export default class TokenSearchBar extends Component {
             </span>
             <div className="token-symbol-balance-wrapper">
               <span className="has-text-grey">{v.symbol}</span>
-              <span className="has-text-grey">{balanceNumber}</span>
+              <span className="has-text-grey">{this.getBalanceNumber(v)}</span>
             </div>
           </span>
         </a>
@@ -180,17 +186,6 @@ export default class TokenSearchBar extends Component {
 
   renderDropList(filteredTokens) {
     return _.map(filteredTokens, function(v, i) {
-      const tokenBalance = this.state.tokenBalances[v.symbol];
-      let balanceNumber = null;
-      if (tokenBalance) {
-        if (tokenBalance.balance.isZero()) {
-          balanceNumber = '0.0';
-        } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
-          balanceNumber = "< 0.0001";
-        } else {
-          balanceNumber = numeral(window.ethers.utils.formatUnits(tokenBalance.balance, tokenBalance.token.decimals)).format('0.0000a');
-        }
-      }
 
       return (
         <a href="#"
@@ -206,7 +201,7 @@ export default class TokenSearchBar extends Component {
             <span className="level-item">{v.name}</span>
             <div className="token-symbol-balance-wrapper">
               <span className="has-text-grey">{v.symbol}</span>
-              <span className="has-text-grey">{balanceNumber}</span>
+              <span className="has-text-grey">{this.getBalanceNumber(v)}</span>
             </div>
 
           </span>
