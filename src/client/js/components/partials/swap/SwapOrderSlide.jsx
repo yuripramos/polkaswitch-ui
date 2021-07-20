@@ -30,6 +30,7 @@ export default class SwapOrderSlide extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
+
   }
 
   componentDidUpdate(prevProps) {
