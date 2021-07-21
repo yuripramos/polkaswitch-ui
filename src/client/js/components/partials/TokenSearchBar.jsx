@@ -8,6 +8,7 @@ import CustomScroll from 'react-custom-scroll';
 import EventManager from '../../utils/events';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
+import CustomTokenModal from "./CustomTokenModal";
 
 export default class TokenSearchBar extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class TokenSearchBar extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
+    this.handleCustomModal = this.handleCustomModal.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this)
 
@@ -79,6 +81,10 @@ export default class TokenSearchBar extends Component {
 
   onFocus(e) {
     this.setState({ focused: true });
+  }
+
+  handleCustomModal(e) {
+    EventManager.emitEvent('addCustomToken', 1);
   }
 
   handleDropdownClick(token) {
@@ -156,9 +162,15 @@ export default class TokenSearchBar extends Component {
     return (
       <div className="empty-state">
         <div>
-          <div className="empty-text has-text-info">Unrecognized Token</div>
-          <div className="icon has-text-info-light">
-            <ion-icon name="help-outline"></ion-icon>
+          <div className="empty-text has-text-info">Token could not be found</div>
+          <div className="empty-text has-text-info">Unable to locate the input token. Add a custom token below.</div>
+          <div>
+            <button
+                className="button is-primary is-fullwidth is-medium"
+                onClick={this.handleCustomModal.bind(this)}
+            >
+              Add Custom Token
+            </button>
           </div>
         </div>
       </div>
@@ -211,37 +223,40 @@ export default class TokenSearchBar extends Component {
     }
 
     return (
-      <div
-        className={classnames("token-search-bar", {
-          "is-active": showDropdown,
-          "dropdown": !this.props.inline
-        })}
-        style={{ width: this.props.width || "100%" }}>
+      <div>
         <div
-          className={classnames({
-            "dropdown-trigger": !this.props.inline
+          className={classnames("token-search-bar", {
+            "is-active": showDropdown,
+            "dropdown": !this.props.inline
           })}
-          style={{ width: "100%" }}>
-          <div className="field" style={{ width: "100%" }}>
-            <div className="control has-icons-left has-icons-right">
-              <input
-                ref={this.input}
-                className="input is-medium"
-                onFocus={this.onFocus} onBlur={this.onBlur}
-                value={this.state.value} onChange={this.handleChange}
-                placeholder={this.props.placeholder || "Search by token name, symbol, or address ..."} />
-              <span className="icon is-left">
-                <ion-icon name="search-outline"></ion-icon>
-              </span>
-              {this.props.handleClose && (
-                <span className="icon close-icon is-right" onClick={this.props.handleClose}>
-                  <ion-icon name="close-outline"></ion-icon>
+          style={{ width: this.props.width || "100%" }}>
+          <div
+            className={classnames({
+              "dropdown-trigger": !this.props.inline
+            })}
+            style={{ width: "100%" }}>
+            <div className="field" style={{ width: "100%" }}>
+              <div className="control has-icons-left has-icons-right">
+                <input
+                  ref={this.input}
+                  className="input is-medium"
+                  onFocus={this.onFocus} onBlur={this.onBlur}
+                  value={this.state.value} onChange={this.handleChange}
+                  placeholder={this.props.placeholder || "Search by token name, symbol, or address ..."} />
+                <span className="icon is-left">
+                  <ion-icon name="search-outline"></ion-icon>
                 </span>
-              )}
+                {this.props.handleClose && (
+                  <span className="icon close-icon is-right" onClick={this.props.handleClose}>
+                    <ion-icon name="close-outline"></ion-icon>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
+          {dropList}
         </div>
-        {dropList}
+        <CustomTokenModal/>
       </div>
     );
   }
