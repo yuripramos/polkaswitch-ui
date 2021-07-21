@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import SwapFn from "../../../utils/swapFn";
 
 const tolerances = [0.1, 0.5, 1.0];
 
@@ -15,6 +16,15 @@ export default class SwapSlippageControl extends Component {
       customValue: '',
       current: 0.5
     };
+  }
+
+  componentDidMount(){
+    const slippage = SwapFn.getSetting().slippage;
+    if (tolerances.indexOf(slippage) > -1) {
+      this.setState({custom: false, current: slippage});
+    } else {
+      this.setState({custom: true, customValue: slippage});
+    }
   }
 
   handleClick(v) {
@@ -42,17 +52,6 @@ export default class SwapSlippageControl extends Component {
         current: 0.5,
         custom: false
       });
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { defaultValue } = nextProps
-    if (defaultValue !== this.state.current) {
-      if (tolerances.indexOf(defaultValue) > -1) {
-        this.setState({custom: false, current: defaultValue})
-      } else {
-        this.setState({custom: true, customValue: defaultValue})
-      }
     }
   }
 

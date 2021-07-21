@@ -17,11 +17,6 @@ export default class SwapAdvancedSettingsSlide extends Component {
     this.handleSlippage = this.handleSlippage.bind(this);
   }
 
-  componentDidMount(){
-    const settings = SwapFn.getSetting()
-    this.setState(settings);
-  }
-
   handleGasPrice(v) {
     SwapFn.updateSettings({
       gasPrice: v
@@ -66,7 +61,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <GasPriceControl handleGasPrice={this.handleGasPrice} defaultValue={gasPrice}/>
+            <GasPriceControl handleGasPrice={this.handleGasPrice}/>
           </div>
 
           <div className="option">
@@ -80,7 +75,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <SwapSlippageControl handleSlippage={this.handleSlippage} defaultValue={slippage} />
+            <SwapSlippageControl handleSlippage={this.handleSlippage}/>
           </div>
 
           <div className="level is-mobile option">

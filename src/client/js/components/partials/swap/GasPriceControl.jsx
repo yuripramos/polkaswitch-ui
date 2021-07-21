@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import SwapFn from "../../../utils/swapFn";
 
-export default class SwapSlippageControl extends Component {
+export default class GasPriceControl extends Component {
   constructor(props) {
     super(props);
 
@@ -13,11 +14,17 @@ export default class SwapSlippageControl extends Component {
       customValue: '',
       current: -1
     };
-    this.gasStats = [-1, -1, -1]
+    this.gasStats = [-1, -1, -1];
   }
 
   componentDidMount(){
-    this.gasStats = [window.GAS_STATS.safeLow, window.GAS_STATS.fast, window.GAS_STATS.fastest]
+    this.gasStats = [window.GAS_STATS.safeLow, window.GAS_STATS.fast, window.GAS_STATS.fastest];
+    const gasPrice = SwapFn.getSetting().gasPrice;
+    if (this.gasStats.indexOf(gasPrice) > -1) {
+      this.setState({custom: false, current: gasPrice});
+    } else {
+      this.setState({custom: true, customValue: gasPrice});
+    }
   }
 
   handleClick(event) {
@@ -43,17 +50,6 @@ export default class SwapSlippageControl extends Component {
         current: -1,
         custom: false
       });
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { defaultValue } = nextProps
-    if (defaultValue !== this.state.current) {
-      if (this.gasStats.indexOf(defaultValue) > -1) {
-        this.setState({custom: false, current: defaultValue})
-      } else {
-        this.setState({custom: true, customValue: defaultValue})
-      }
     }
   }
 
