@@ -234,19 +234,35 @@ window.SwapFn = {
     )
   */
 
-  getExpectedReturn: function(fromToken, toToken, amount) {
+  _getExpectedReturnCache: {},
+
+  getExpectedReturn: async function(fromToken, toToken, amount) {
+    var key = [fromToken.address, toToken.address, amount.toString()].join('');
+    if (key in this._getExpectedReturnCache) {
+      var cacheValue = this._getExpectedReturnCache[key];
+      if ((Date.now()) - cacheValue._cacheTimestamp < 5000) { // 5 seconds cache
+        console.log('Using expectedReturn cache: ', key);
+        return this._getExpectedReturnCache[key];
+      }
+    }
+
     const contract = new Contract(
       TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
       window.oneSplitAbi,
       Wallet.getReadOnlyProvider(true)
     );
-    return contract.getExpectedReturn(
+    var result = await contract.getExpectedReturn(
       fromToken.address,
       toToken.address,
       amount, // uint256 in wei
       3, // desired parts of splits accross pools(3 is recommended)
       0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
     );
+
+    var result = _.extend({}, result);
+    result._cacheTimestamp = new Date()
+    this._getExpectedReturnCache[key] = result;
+    return result;
   },
 
   /*
