@@ -88,41 +88,40 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/*
-app.use(passport.initialize());
-app.use(passport.session());
+if (process.env.HTTP_PASSWORD) {
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-app.get("/debug", function(req, res) {
-    throw new Error("Test Error");
-});
+  app.get("/debug", function(req, res) {
+      throw new Error("Test Error");
+  });
 
-app.get('/login', function(req, res, next) {
-  res.render('pages/login', { messages: req.flash('error') });
-});
+  app.get('/login', function(req, res, next) {
+    res.render('pages/login', { messages: req.flash('error') });
+  });
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: 'Invalid access credentials'
-}));
+  app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: 'Invalid access credentials'
+  }));
 
-/*
-app.get('*', function(req, res, next) {
-  if (req.user) {
-    next();
-  } else {
-    res.redirect('/login');
-  }
-});
+  app.get('*', function(req, res, next) {
+    if (req.user) {
+      next();
+    } else {
+      res.redirect('/login');
+    }
+  });
 
-app.use(function(req, res, next) {
-  if (req.user) {
-    next();
-  } else {
-    res.status(401).send({ error: "not authenticated" });
-  }
-});
-*/
+  app.use(function(req, res, next) {
+    if (req.user) {
+      next();
+    } else {
+      res.status(401).send({ error: "not authenticated" });
+    }
+  });
+}
 
 app.use(express.static('dist'));
 app.use(express.static('public'));
