@@ -2,11 +2,8 @@
 import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
-import BN from 'bignumber.js';
-
-const BigNumber = ethers.BigNumber;
+let store = require('store');
 const Utils = ethers.utils;
-const Contract = ethers.Contract;
 
 window.TokenListManager = {
   initialize: async function() {
@@ -50,6 +47,7 @@ window.TokenListManager = {
       'fast', 'fastest', 'safeLow'
     ]);
     window.TOKEN_LIST = tokenList;
+    this.updateTokenListwithCustom(network);
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
   },
 
@@ -58,6 +56,16 @@ window.TokenListManager = {
       return v.address == tid || v.symbol == tid;
     });
   },
+
+  updateTokenListwithCustom: function (network) {
+    const customTokenAddresses = store.get('customTokenAddress');
+    if (customTokenAddresses) {
+      const addresses = customTokenAddresses[network.chainId] || [];
+      if (addresses.length > 0) {
+        window.TOKEN_LIST = window.TOKEN_LIST.concat(customTokenAddresses[network.chainId]);
+      }
+    }
+  }
 
 };
 

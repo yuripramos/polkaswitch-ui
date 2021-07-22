@@ -49,21 +49,17 @@ window.WalletJS = {
   initListeners: function(provider) {
     provider.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
-      console.log(accounts);
       if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
         this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
     }.bind(this));
 
     provider.on('disconnect', function(providerRpcError) {
-      console.log(providerRpcError);
       this.disconnect();
       EventManager.emitEvent('walletUpdated', 1);
     }.bind(this));
 
     provider.on('chainChanged', function(chainId) {
-      console.log(chainId);
-
       if (this.isConnectedToAnyNetwork()) {
         this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
@@ -111,6 +107,57 @@ window.WalletJS = {
       this.getProvider()
     );
     return await contract.balanceOf(this.currentAddress());
+  },
+
+  getName: function(tokenAddr) {
+    if (this.isConnected() && tokenAddr) {
+      return this.getERC20Name(tokenAddr);
+    } else {
+      return Promise.resolve('');
+    }
+  },
+
+  getERC20Name: async function(tokenContractAddress) {
+    const contract = new Contract(
+        tokenContractAddress,
+        window.erc20Abi,
+        this.getProvider()
+    );
+    return await contract.name();
+  },
+
+  getDecimals: function(tokenAddr) {
+    if (this.isConnected() && tokenAddr) {
+      return this.getERC20Decimals(tokenAddr);
+    } else {
+      return Promise.reject();
+    }
+  },
+
+  getERC20Decimals: async function(tokenContractAddress) {
+    const contract = new Contract(
+        tokenContractAddress,
+        window.erc20Abi,
+        this.getProvider()
+    );
+    return await contract.decimals();
+  },
+
+  getSymbol: function(tokenAddr) {
+    if (this.isConnected() && tokenAddr) {
+      return this.getERC20Symbol(tokenAddr);
+    } else {
+      return Promise.reject();
+    }
+  },
+
+  getERC20Symbol: async function(tokenContractAddress) {
+    const contract = new Contract(
+        tokenContractAddress,
+        window.erc20Abi,
+        this.getProvider()
+    );
+    return await contract.symbol();
   },
 
   isMetamaskSupported: function() {
@@ -197,8 +244,6 @@ window.WalletJS = {
     });
 
     provider.enable().then(function(v) {
-      console.log(arguments);
-
       var web3Provider = new ethers.providers.Web3Provider(provider);
 
       return this._saveConnection(web3Provider, "walletConnect");

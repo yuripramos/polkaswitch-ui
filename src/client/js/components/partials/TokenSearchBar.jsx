@@ -162,8 +162,8 @@ export default class TokenSearchBar extends Component {
     return (
       <div className="empty-state">
         <div>
-          <div className="empty-text has-text-info">Token could not be found</div>
-          <div className="empty-text has-text-info">Unable to locate the input token. Add a custom token below.</div>
+          <div className="empty-text-bold">Token could not be found</div>
+          <div className="empty-text">Unable to locate the input token. Add a custom token below.</div>
           <div>
             <button
                 className="button is-primary is-fullwidth is-medium"
@@ -256,7 +256,7 @@ export default class TokenSearchBar extends Component {
           </div>
           {dropList}
         </div>
-        <CustomTokenModal/>
+        <CustomTokenModal handleTokenChange={this.props.handleTokenChange}/>
       </div>
     );
   }
