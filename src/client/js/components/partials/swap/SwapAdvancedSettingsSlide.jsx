@@ -8,11 +8,6 @@ import * as ethers from 'ethers';
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      slippage: 0.5,
-      GasPrice: -1 // auto,
-    }
-
     this.handleGasPrice = this.handleGasPrice.bind(this);
     this.handleSlippage = this.handleSlippage.bind(this);
   }
@@ -30,7 +25,6 @@ export default class SwapAdvancedSettingsSlide extends Component {
   }
 
   render() {
-    const { slippage, gasPrice } = this.state
     return (
       <div className="page page-stack page-view-settings">
         <div className="page-inner">

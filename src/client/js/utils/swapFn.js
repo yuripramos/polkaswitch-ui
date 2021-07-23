@@ -21,6 +21,11 @@ window.SwapFn = {
     slippage: 0.5
   },
 
+  initalize: function() {
+    let cachedSettings = store.get('settings');
+    this.settings = _.extend(this.settings, cachedSettings);
+  },
+
   validateEthValue: function(token, value) {
     var targetAmount = +value;
 
@@ -48,7 +53,7 @@ window.SwapFn = {
   },
 
   getSetting: function () {
-    return store.get('settings') || this.settings;
+    return this.settings;
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {

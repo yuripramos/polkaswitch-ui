@@ -5,26 +5,24 @@ import SwapFn from "../../../utils/swapFn";
 export default class GasPriceControl extends Component {
   constructor(props) {
     super(props);
+    const gasStats = [window.GAS_STATS.safeLow, window.GAS_STATS.fast, window.GAS_STATS.fastest];
+    const gasPrice = SwapFn.getSetting().gasPrice;
+    if (gasStats.indexOf(gasPrice) > -1) {
+      this.state = {
+        custom: false,
+        customValue: '',
+        current: gasPrice
+      };
+    } else {
+      this.state = {
+        custom: false,
+        customValue: gasPrice,
+        current: -1
+      };
+    }
 
     this.handleClick = this.handleClick.bind(this);
     this.onCustomChange = this.onCustomChange.bind(this);
-
-    this.state = {
-      custom: false,
-      customValue: '',
-      current: -1
-    };
-    this.gasStats = [-1, -1, -1];
-  }
-
-  componentDidMount(){
-    this.gasStats = [window.GAS_STATS.safeLow, window.GAS_STATS.fast, window.GAS_STATS.fastest];
-    const gasPrice = SwapFn.getSetting().gasPrice;
-    if (this.gasStats.indexOf(gasPrice) > -1) {
-      this.setState({custom: false, current: gasPrice});
-    } else {
-      this.setState({custom: true, customValue: gasPrice});
-    }
   }
 
   handleClick(event) {
