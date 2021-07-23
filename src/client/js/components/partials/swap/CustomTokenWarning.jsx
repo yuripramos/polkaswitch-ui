@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-export default class WarningView extends Component {
+export default class CustomTokenWarning extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-      <div className="warning-view">
+      <div className="custom-token-warning">
         <div className="warning-box">
             <div className="warning-icon">
                 <img src="/images/warning-icon.jpg"/>

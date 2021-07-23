@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import _ from "underscore";
-import WarningView from "./swap/WarningView";
 import classnames from 'classnames';
 import EventManager from "../../utils/events";
-import GasPriceControl from "./swap/GasPriceControl";
 import * as ethers from "ethers";
 import Wallet from "../../utils/wallet";
 const Utils = ethers.utils;
 import TokenListManager from '../../utils/tokenList';
 import CustomTokenDetails from "./swap/CustomTokenDetails";
-let store = require('store')
+import CustomTokenWarning from "./swap/CustomTokenWarning";
 
 export default class CustomTokenModal extends Component {
   constructor(props) {
@@ -63,33 +61,18 @@ export default class CustomTokenModal extends Component {
   }
 
   handleCustomBtn = (e) => {
-    let network = TokenListManager.getCurrentNetworkConfig();
-    const chainId = network.chainId;
-    if (chainId > 0) {
-      const { symbol, name, decimals, customTokenAddr } = this.state
-      const customTokenAddresses = store.get('customTokenAddress') || {};
-      let addresses = [];
-      const customToken = {
-        symbol,
-        name,
-        decimals,
-        isCustomAddr: true,
-        address: customTokenAddr,
-        chainId: Number(chainId)
-      }
-
-      if (!_.isEmpty(customTokenAddresses) && (!_.isUndefined(customTokenAddresses[chainId]))) {
-        addresses = customTokenAddresses[chainId];
-      }
-      addresses.push(customToken);
-      store.set('customTokenAddress', {[chainId]: addresses});
-
-      TokenListManager.updateTokenListwithCustom(network);
-      this.addedToken = customToken;
-      this.handleClose();
-    } else {
-      // notify connect wallet.
+    const { symbol, name, decimals, customTokenAddr } = this.state
+    const customToken = {
+      symbol,
+      name,
+      decimals,
+      isCustomAddr: true,
+      address: customTokenAddr
     }
+
+    TokenListManager.addCustomToken(customToken);
+    this.addedToken = customToken;
+    this.handleClose();
   }
 
   onTokenAddrChange(e) {
@@ -240,7 +223,7 @@ export default class CustomTokenModal extends Component {
               </div>
             </div>
             <hr />
-            <WarningView/>
+            <CustomTokenWarning/>
             <div className="text-gray-stylized" style={{marginBottom: 10}}>
               <span>Token address</span>
             </div>

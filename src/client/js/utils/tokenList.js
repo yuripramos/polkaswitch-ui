@@ -53,17 +53,38 @@ window.TokenListManager = {
 
   findTokenById: function(tid) {
     return _.find(window.TOKEN_LIST, function(v) {
-      return v.address == tid || v.symbol == tid;
+      return v.address === tid || v.symbol === tid;
     });
   },
 
   updateTokenListwithCustom: function (network) {
     const customTokenAddresses = store.get('customTokenAddress');
+
     if (customTokenAddresses) {
       const addresses = customTokenAddresses[network.chainId] || [];
       if (addresses.length > 0) {
         window.TOKEN_LIST = window.TOKEN_LIST.concat(customTokenAddresses[network.chainId]);
       }
+    }
+  },
+
+  addCustomToken: function(token) {
+    const  network = this.getCurrentNetworkConfig();
+    const chainId = network.chainId;
+    let customToken = token;
+
+    if (chainId > 0) {
+      customToken.chainId = Number(chainId);
+      const customTokenAddresses = store.get('customTokenAddress') || {};
+      let addresses = [];
+
+      if (!_.isEmpty(customTokenAddresses) && (!_.isUndefined(customTokenAddresses[chainId]))) {
+        addresses = customTokenAddresses[chainId];
+      }
+
+      addresses.push(customToken);
+      store.set('customTokenAddress', {[chainId]: addresses});
+      this.updateTokenListwithCustom(network);
     }
   }
 

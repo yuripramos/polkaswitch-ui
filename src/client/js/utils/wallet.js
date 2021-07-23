@@ -49,6 +49,7 @@ window.WalletJS = {
   initListeners: function(provider) {
     provider.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
+      console.log(accounts);
       if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
         this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
@@ -109,55 +110,43 @@ window.WalletJS = {
     return await contract.balanceOf(this.currentAddress());
   },
 
-  getName: function(tokenAddr) {
+  getName: async function(tokenAddr) {
     if (this.isConnected() && tokenAddr) {
-      return this.getERC20Name(tokenAddr);
+      const contract = new Contract(
+          tokenAddr,
+          window.erc20Abi,
+          this.getProvider()
+      );
+      return await contract.name();
     } else {
       return Promise.resolve('');
     }
   },
 
-  getERC20Name: async function(tokenContractAddress) {
-    const contract = new Contract(
-        tokenContractAddress,
-        window.erc20Abi,
-        this.getProvider()
-    );
-    return await contract.name();
-  },
-
-  getDecimals: function(tokenAddr) {
+  getDecimals: async function(tokenAddr) {
     if (this.isConnected() && tokenAddr) {
-      return this.getERC20Decimals(tokenAddr);
+      const contract = new Contract(
+          tokenAddr,
+          window.erc20Abi,
+          this.getProvider()
+      );
+      return await contract.decimals();
     } else {
       return Promise.reject();
     }
   },
 
-  getERC20Decimals: async function(tokenContractAddress) {
-    const contract = new Contract(
-        tokenContractAddress,
-        window.erc20Abi,
-        this.getProvider()
-    );
-    return await contract.decimals();
-  },
-
-  getSymbol: function(tokenAddr) {
+  getSymbol: async function(tokenAddr) {
     if (this.isConnected() && tokenAddr) {
-      return this.getERC20Symbol(tokenAddr);
+      const contract = new Contract(
+          tokenAddr,
+          window.erc20Abi,
+          this.getProvider()
+      );
+      return await contract.symbol();
     } else {
       return Promise.reject();
     }
-  },
-
-  getERC20Symbol: async function(tokenContractAddress) {
-    const contract = new Contract(
-        tokenContractAddress,
-        window.erc20Abi,
-        this.getProvider()
-    );
-    return await contract.symbol();
   },
 
   isMetamaskSupported: function() {
