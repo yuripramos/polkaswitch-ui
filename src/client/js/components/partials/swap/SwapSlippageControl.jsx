@@ -27,15 +27,6 @@ export default class SwapSlippageControl extends Component {
     this.onCustomChange = this.onCustomChange.bind(this);
   }
 
-  initState() {
-    const slippage = SwapFn.getSetting().slippage;
-    if (tolerances.indexOf(slippage) > -1) {
-      this.setState({custom: false, current: slippage});
-    } else {
-      this.setState({custom: true, customValue: slippage});
-    }
-  }
-
   handleClick(v) {
     return function(e) {
       this.setState({
