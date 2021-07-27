@@ -55,7 +55,7 @@ window.TokenListManager = {
 
   findTokenById: function(tid) {
     return _.find(window.TOKEN_LIST, function(v) {
-      return v.address == tid || v.symbol == tid;
+      return v.address === tid || v.symbol === tid;
     });
   },
 

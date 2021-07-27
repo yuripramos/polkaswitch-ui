@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import _ from "underscore";
-import classnames from 'classnames';
-import * as ethers from 'ethers';
-import BN from 'bignumber.js';
-
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
 import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
-
-import Wallet from '../../../utils/wallet';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+import { ApprovalState } from "../../../constants/Status";
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {
@@ -32,7 +27,7 @@ export default class SwapOrderWidget extends Component {
       fromAmount: undefined,
       toAmount: undefined,
       availableBalance: undefined,
-
+      approveStatus: ApprovalState.UNKNOWN,
       searchTarget: "",
       showSettings: false,
       showConfirm: false,
@@ -58,6 +53,7 @@ export default class SwapOrderWidget extends Component {
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
+    this.onApproveComplete = this.onApproveComplete.bind(this);
   }
 
   componentDidMount() {
@@ -102,7 +98,7 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
-  onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN) {
+  onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN, approveStatus) {
     if (this.state.fromAmount === fromAmount &&
       this.state.availableBalance === availBalBN &&
       this.state.toAmount === toAmount) {
@@ -114,13 +110,23 @@ export default class SwapOrderWidget extends Component {
       fromAmount: fromAmount,
       toAmount: toAmount,
       swapDistribution: dist,
-      availableBalance: availBalBN
+      availableBalance: availBalBN,
+      approveStatus: approveStatus
     }, function() {
       _.delay(function() {
         // put back height after dist expand anim
         this.updateBoxHeight();
       }.bind(this), 301)
     }.bind(this));
+  }
+
+  onApproveComplete(approveStatus) {
+    if (this.state.approveStatus === approveStatus) {
+      return;
+    }
+    this.setState({
+      approveStatus: approveStatus
+    })
   }
 
   onSwapTokens() {
@@ -237,7 +243,7 @@ export default class SwapOrderWidget extends Component {
             from={this.state.from}
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
-            availableBalance={this.state.availableBalance}
+            approveStatus={this.state.approveStatus}
             refresh={this.state.refresh}
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
@@ -282,10 +288,11 @@ export default class SwapOrderWidget extends Component {
               fromAmount={this.state.fromAmount}
               toAmount={this.state.toAmount}
               availableBalance={this.state.availableBalance}
+              approveStatus={this.state.approveStatus}
               refresh={this.state.refresh}
               swapDistribution={this.state.swapDistribution}
               handleTransactionComplete={this.handleResults}
-              handleTransactionComplete={this.handleResults}
+              onApproveComplete={this.onApproveComplete}
               handleBackOnConfirm={this.handleBackOnConfirm}
             />
           </CSSTransition>
