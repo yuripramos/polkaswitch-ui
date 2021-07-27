@@ -11,7 +11,7 @@ passport.deserializeUser(function(user, done) {
 
 passport.use(
   new LocalStrategy(function(username, password, done) {
-    if (username == "alphabuild" && password == "access2021") {
+    if (username == process.env.HTTP_USER && password == process.env.HTTP_PASSWORD) {
       return done(null, 1)
     } else {
       return done(null, false);
