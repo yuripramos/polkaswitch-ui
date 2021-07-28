@@ -9,6 +9,7 @@ import {
 
 import ConnectWalletButton from './ConnectWalletButton';
 import NotificationButton from './NotificationButton';
+import BridgeButton from './BridgeButton';
 import TokenSearchBar from './TokenSearchBar';
 
 export default class Navbar extends Component {
@@ -30,6 +31,7 @@ export default class Navbar extends Component {
         </div>
 
         <div className="level-right">
+          <div className="level-item is-narrow"><BridgeButton /></div>
           <div className="level-item is-narrow"><NotificationButton /></div>
           <div className="level-item is-narrow"><ConnectWalletButton /></div>
         </div>

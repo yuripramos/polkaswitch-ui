@@ -18,12 +18,13 @@ export default class NotificationButton extends Component {
     this.subUpdates = EventManager.listenFor(
       'walletUpdated', this.handleUpdate
     );
-    this.subUpdates = EventManager.listenFor(
+    this.subTxUpdates = EventManager.listenFor(
       'txQueueUpdated', this.handleUpdate
     );
   }
 
   componentWillUnmount() {
+    this.subTxUpdates.unsubscribe();
     this.subUpdates.unsubscribe();
   }
 
