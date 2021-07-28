@@ -75,6 +75,7 @@ window.TokenListManager = {
 
     if (chainId > 0) {
       customToken.chainId = Number(chainId);
+      customToken.address = Utils.getAddress(customToken.address);
       const customTokenAddresses = store.get('customTokenAddress') || {};
       let addresses = [];
 
