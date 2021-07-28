@@ -1,23 +1,30 @@
 import React, { Component } from 'react';
-import _ from "underscore";
 import classnames from 'classnames';
+import SwapFn from "../../../utils/swapFn";
 
-import * as ethers from 'ethers';
-const BigNumber = ethers.BigNumber;
-const Utils = ethers.utils;
+const tolerances = [0.1, 0.5, 1.0];
+const defaultCurrentValue = 0.5;
 
 export default class SwapSlippageControl extends Component {
   constructor(props) {
     super(props);
+    const slippage = SwapFn.getSetting().slippage;
+    if (tolerances.indexOf(slippage) > -1) {
+      this.state = {
+        custom: false,
+        customValue: '',
+        current: slippage
+      };
+    } else {
+      this.state = {
+        custom: false,
+        customValue: slippage,
+        current: defaultCurrentValue
+      };
+    }
 
     this.handleClick = this.handleClick.bind(this);
     this.onCustomChange = this.onCustomChange.bind(this);
-
-    this.state = {
-      custom: false,
-      customValue: '',
-      current: 0.5
-    };
   }
 
   handleClick(v) {
@@ -42,7 +49,7 @@ export default class SwapSlippageControl extends Component {
       this.props.handleSlippage(+e.target.value);
     } else {
       this.setState({
-        current: 0.5,
+        current: defaultCurrentValue,
         custom: false
       });
     }
@@ -52,7 +59,7 @@ export default class SwapSlippageControl extends Component {
     return (
       <div className="slippage-control">
         {
-          ["0.1", "0.5", "1.0"].map(function(v) {
+          tolerances.map(function(v) {
             return (
               <span
                 key={v}
