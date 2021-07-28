@@ -187,10 +187,10 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleTokenChange(token) {
-    var alt = this.state.searchTarget == "from" ? "to" : "from";
+    var alt = this.state.searchTarget === "from" ? "to" : "from";
 
     // if you select the same token pair, do a swap instead
-    if (this.state[alt].address == token.address) {
+    if (this.state[alt].address === token.address) {
       return this.onSwapTokens();
     }
 
@@ -202,7 +202,7 @@ export default class SwapOrderWidget extends Component {
 
     _s[this.state.searchTarget] = token;
 
-    if (this.state.searchTarget == "from") {
+    if (this.state.searchTarget === "from") {
       _s["fromAmount"] = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
