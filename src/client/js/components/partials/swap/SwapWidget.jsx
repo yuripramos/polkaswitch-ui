@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import _ from "underscore";
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
@@ -193,10 +193,10 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleTokenChange(token) {
-    var alt = this.state.searchTarget == "from" ? "to" : "from";
+    var alt = this.state.searchTarget === "from" ? "to" : "from";
 
     // if you select the same token pair, do a swap instead
-    if (this.state[alt].address == token.address) {
+    if (this.state[alt].address === token.address) {
       return this.onSwapTokens();
     }
 
@@ -208,7 +208,7 @@ export default class SwapOrderWidget extends Component {
 
     _s[this.state.searchTarget] = token;
 
-    if (this.state.searchTarget == "from") {
+    if (this.state.searchTarget === "from") {
       _s["fromAmount"] = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
@@ -243,6 +243,7 @@ export default class SwapOrderWidget extends Component {
             from={this.state.from}
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
+            availableBalance={this.state.availableBalance}
             approveStatus={this.state.approveStatus}
             refresh={this.state.refresh}
             handleSearchToggle={this.handleSearchToggle}

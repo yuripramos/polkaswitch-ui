@@ -7,6 +7,8 @@ import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import BN from 'bignumber.js';
 import { ApprovalState } from "../constants/Status";
+let store = require('store');
+
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
 
@@ -18,6 +20,11 @@ window.SwapFn = {
   settings: {
     gasPrice: -1, // auto,
     slippage: 0.5
+  },
+
+  initalize: function() {
+    let cachedSettings = store.get('settings');
+    this.settings = _.extend(this.settings, cachedSettings);
   },
 
   validateEthValue: function(token, value) {
@@ -41,8 +48,13 @@ window.SwapFn = {
   },
 
   updateSettings: function(settings) {
-    this.settings = _.extend(this.settings, settings);
+    this.settings = _.extend(this.getSetting(), settings);
+    store.set('settings', this.settings)
     EventManager.emitEvent('swapSettingsUpdated', 1);
+  },
+
+  getSetting: function () {
+    return this.settings;
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {

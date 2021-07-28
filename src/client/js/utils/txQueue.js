@@ -2,7 +2,7 @@ import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
 import Wallet from "./wallet";
-let store = require('store')
+let store = require('store');
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
 const Contract = ethers.Contract;

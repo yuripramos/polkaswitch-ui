@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
-import _ from "underscore";
-import classnames from 'classnames';
-
-import TokenSearchBar from './../TokenSearchBar';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
-import TokenSwapDistribution from './TokenSwapDistribution';
-import MarketLimitToggle from './MarketLimitToggle';
 import SwapSlippageControl from './SwapSlippageControl';
 import GasPriceControl from './GasPriceControl';
-
-import Wallet from '../../../utils/wallet';
-import Metrics from '../../../utils/metrics';
-import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
 
 import * as ethers from 'ethers';
-const BigNumber = ethers.BigNumber;
-const Utils = ethers.utils;
 
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
-
     this.handleGasPrice = this.handleGasPrice.bind(this);
     this.handleSlippage = this.handleSlippage.bind(this);
   }
@@ -83,7 +69,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <SwapSlippageControl handleSlippage={this.handleSlippage} />
+            <SwapSlippageControl handleSlippage={this.handleSlippage}/>
           </div>
 
           <div className="level is-mobile option">
