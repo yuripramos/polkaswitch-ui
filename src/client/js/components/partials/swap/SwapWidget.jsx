@@ -285,7 +285,6 @@ export default class SwapOrderWidget extends Component {
               refresh={this.state.refresh}
               swapDistribution={this.state.swapDistribution}
               handleTransactionComplete={this.handleResults}
-              handleTransactionComplete={this.handleResults}
               handleBackOnConfirm={this.handleBackOnConfirm}
             />
           </CSSTransition>
