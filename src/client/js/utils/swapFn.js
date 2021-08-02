@@ -18,7 +18,8 @@ const Contract = ethers.Contract;
 
 window.SwapFn = {
   settings: {
-    gasPrice: -1, // auto,
+    gasPrice: 0, // auto,
+    isCustomGasPrice: false,
     slippage: 0.5
   },
 

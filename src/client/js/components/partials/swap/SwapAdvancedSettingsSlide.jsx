@@ -12,9 +12,10 @@ export default class SwapAdvancedSettingsSlide extends Component {
     this.handleSlippage = this.handleSlippage.bind(this);
   }
 
-  handleGasPrice(v) {
+  handleGasPrice(v, isCustomGasPrice) {
     SwapFn.updateSettings({
-      gasPrice: v
+      gasPrice: v,
+      isCustomGasPrice
     });
   }
 
