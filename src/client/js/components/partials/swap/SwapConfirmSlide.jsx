@@ -1,29 +1,21 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import numeral from 'numeral';
 import BN from 'bignumber.js';
-import * as ethers from 'ethers';
-
-import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import SwapTransactionDetails from './SwapTransactionDetails';
-import MarketLimitToggle from './MarketLimitToggle';
-
-import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
-
-const BigNumber = ethers.BigNumber;
+import { ApprovalState } from "../../../constants/Status";
 
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: false }
 
-    this.handleSwapConfirm = this.handleSwapConfirm.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
     this.handleBack = this.handleBack.bind(this);
   }
 
@@ -41,45 +33,67 @@ export default class SwapConfirmSlide extends Component {
     }
   }
 
-  handleSwapConfirm() {
+  handleConfirm() {
     this.setState({
       loading: true,
     }, function() {
-      var fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
-
-      var distBN = _.map(this.props.swapDistribution, function(e) {
-        return window.ethers.utils.parseUnits("" + e, "wei");
-      });
-
-      SwapFn.performSwap(
-        this.props.from,
-        this.props.to,
-        fromAmountBN,
-        distBN
-      ).then(function(nonce) {
-        console.log(nonce);
-
-        this.props.handleTransactionComplete(true, nonce);
-
-        Metrics.track("swap-complete", {
-          from: this.props.from,
-          to: this.props.to,
-          fromAmont: this.props.fromAmount
+      const fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+      if (this.props.approveStatus === ApprovalState.APPROVED) {
+        var distBN = _.map(this.props.swapDistribution, function (e) {
+          return window.ethers.utils.parseUnits("" + e, "wei");
         });
 
-        this.setState({
-          loading: false
-        });
-      }.bind(this)).catch(function(e) {
-        console.error(e);
+        SwapFn.performSwap(
+            this.props.from,
+            this.props.to,
+            fromAmountBN,
+            distBN
+        ).then(function (nonce) {
+          console.log(nonce);
 
-        this.props.handleTransactionComplete(false, undefined);
+          this.props.handleTransactionComplete(true, nonce);
 
-        this.setState({
-          loading: false
-        });
-      }.bind(this));
+          Metrics.track("swap-complete", {
+            from: this.props.from,
+            to: this.props.to,
+            fromAmont: this.props.fromAmount
+          });
+
+          this.setState({
+            loading: false
+          });
+        }.bind(this)).catch(function (e) {
+          console.error(e);
+
+          this.props.handleTransactionComplete(false, undefined);
+
+          this.setState({
+            loading: false
+          });
+        }.bind(this));
+      } else {
+        SwapFn.performApprove(
+            this.props.from,
+            fromAmountBN,
+        ).then(function (confirmedTransaction) {
+          Metrics.track("approve-complete", {
+            from: this.props.from,
+            fromAmount: this.props.fromAmount
+          });
+
+          this.setState({
+            loading: false
+          });
+          this.props.onApproveComplete(ApprovalState.APPROVED);
+        }.bind(this)).catch(function (e) {
+          console.error(e);
+          this.setState({
+            loading: false
+          });
+        }.bind(this));
+      }
     }.bind(this));
+
   }
 
   displayValue(token, amount) {
@@ -207,15 +221,14 @@ export default class SwapConfirmSlide extends Component {
             <TokenSwapDistribution
               parts={this.props.swapDistribution}/>
           </div>
-
           <div>
             <button
               className={classnames("button is-primary is-fullwidth is-medium", {
-                "is-loading": this.state.loading
+                "is-loading": this.state.loading,
               })}
               disabled={!this.allowSwap()}
-              onClick={this.handleSwapConfirm}>
-              Swap
+              onClick={this.handleConfirm}>
+              {this.props.approveStatus === ApprovalState.APPROVED ? "Swap" : "Approve"}
             </button>
           </div>
         </div>

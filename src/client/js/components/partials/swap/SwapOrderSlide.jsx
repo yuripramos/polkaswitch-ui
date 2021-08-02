@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import * as ethers from 'ethers';
 import BN from 'bignumber.js';
 
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
@@ -30,12 +29,11 @@ export default class SwapOrderSlide extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
-
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.from.address != prevProps.from.address ||
-      this.props.to.address != prevProps.to.address ||
+    if (this.props.from.address !== prevProps.from.address ||
+      this.props.to.address !== prevProps.to.address ||
       this.props.fromAmount !== prevProps.fromAmount) {
       if (this.props.fromAmount) {
         this.fetchSwapEstimate(this.props.fromAmount);
@@ -63,7 +61,7 @@ export default class SwapOrderSlide extends Component {
       this.props.swapDistribution
     )
 
-    if (!fromAmount || fromAmount.length == 0) {
+    if (!fromAmount || fromAmount.length === 0) {
       fromAmount = '0';
     } else {
       fromAmount = SwapFn.validateEthValue(this.props.from, fromAmount);
@@ -87,7 +85,7 @@ export default class SwapOrderSlide extends Component {
 
       // add delay to slow down UI snappiness
       _.delay(function(_timeNow2, _attempt2) {
-        if (this.calculatingSwapTimestamp != _timeNow2) {
+        if (this.calculatingSwapTimestamp !== _timeNow2) {
           return;
         }
 
@@ -96,7 +94,7 @@ export default class SwapOrderSlide extends Component {
           this.props.to,
           fromAmountBN
         ).then(function(_timeNow3, result) {
-          if (this.calculatingSwapTimestamp != _timeNow3) {
+          if (this.calculatingSwapTimestamp !== _timeNow3) {
             return;
           }
 
@@ -104,30 +102,36 @@ export default class SwapOrderSlide extends Component {
             return e.toNumber();
           });
 
-          return Wallet.getBalance(this.props.from).then(function(bal) {
-            this.props.onSwapEstimateComplete(
-              origFromAmount,
-              window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
-              dist,
-              window.ethers.utils.formatUnits(bal, this.props.from.decimals)
-            )
+          Wallet.getBalance(this.props.from).then(function(bal) {
+            return SwapFn.getApproveStatus(this.props.from, fromAmountBN).then(function(status) {
+              console.log('status', status)
+              this.props.onSwapEstimateComplete(
+                origFromAmount,
+                window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
+                dist,
+                window.ethers.utils.formatUnits(bal, this.props.from.decimals),
+                status
+              )
 
-            this.setState({
-              calculatingSwap: false
-            }, function() {
-              Metrics.track("swap-estimate-result", {
-                from: this.props.from,
-                to: this.props.to,
-                fromAmont: fromAmount,
-                toAmount: this.props.toAmount,
-                swapDistribution: this.props.swapDistribution
-              });
+              this.setState({
+                calculatingSwap: false
+              }, function() {
+                Metrics.track("swap-estimate-result", {
+                  from: this.props.from,
+                  to: this.props.to,
+                  fromAmont: fromAmount,
+                  toAmount: this.props.toAmount,
+                  swapDistribution: this.props.swapDistribution
+                });
+              }.bind(this));
             }.bind(this));
+          }.bind(this)).catch(function(e) {
+            console.error("Failed to get swap estimate: ", e);
           }.bind(this));
         }.bind(this, _timeNow2)).catch(function(_timeNow3, _attempt3, e) {
           console.error("Failed to get swap estimate: ", e);
 
-          if (this.calculatingSwapTimestamp != _timeNow3) {
+          if (this.calculatingSwapTimestamp !== _timeNow3) {
             return;
           }
 
