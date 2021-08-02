@@ -22,21 +22,28 @@ export default {
           if (item["completed"] === false) {
             const provider = Wallet.getReadOnlyProvider();
             const hash = item.tx.hash;
-
-            try {
-              let receipt = await provider.getTransactionReceipt(hash);
-              console.log('#### receipt #####', receipt);
-
-              if (receipt && receipt.confirmations > 3 && receipt.status === 1) {
-                this.successTx(hash, receipt);
-              } else if (receipt && receipt.status === 0) {
-                this.failedTx(hash);
-              }
-            } catch (e) {
-              this.failedTx(hash);
-            }
+            await this.getTransactionReceipt(provider, hash);
           }
         }
+      }
+    }
+  },
+
+  getTransactionReceipt: async function(provider, hash) {
+    if (provider) {
+      try {
+        let receipt = await provider.getTransactionReceipt(hash);
+        if (receipt && receipt.confirmations > 3 && receipt.status === 1) {
+          this.successTx(hash, receipt);
+        } else if (receipt && receipt.status === 0) {
+          this.failedTx(hash);
+        } else {
+          setTimeout(async () => {
+            await this.getTransactionReceipt(provider, hash);
+          }, 10 * 1000)
+        }
+      } catch (e) {
+        this.failedTx(hash, e);
       }
     }
   },
@@ -49,24 +56,22 @@ export default {
     data.success = false;
 
     this._queue[hash] = data;
-    console.log('### tx hash ###', this._queue[hash])
     if (this._signerAddress && (this._signerAddress.length > 0)) {
       store.set(this._signerAddress, this._queue);
       EventManager.emitEvent('txQueueUpdated', hash);
     }
 
     data.tx.wait(confirms || 1).then(function (txReceipt) {
-      console.log(txReceipt);
-      console.log(`Transaction Hash: ${txReceipt.transactionHash}`);
-      console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
       this.successTx(hash, txReceipt);
     }.bind(this)).catch(function (err) {
-      console.error(err);
-      this.failedTx(hash);
+      this.failedTx(hash, err);
     }.bind(this));
   },
 
   successTx: function(hash, txReceipt) {
+    console.log(txReceipt);
+    console.log(`Transaction Hash: ${txReceipt.transactionHash}`);
+    console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
     this._queue[hash].receipt = txReceipt;
     this._queue[hash].success = true;
     this._queue[hash].completed = true;
@@ -76,7 +81,11 @@ export default {
     EventManager.emitEvent('txSuccess', hash);
   },
 
-  failedTx: function(hash) {
+  failedTx: function(hash, error) {
+    if (error) {
+      console.error(error);
+    }
+
     this._queue[hash].completed = true;
     this._queue[hash].success = false;
     this._queue[hash].lastUpdated = Date.now();
