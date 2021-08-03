@@ -1,52 +1,97 @@
 import _ from "underscore";
 import EventManager from './events';
-import * as ethers from 'ethers';
 import Wallet from "./wallet";
+
 let store = require('store');
-const BigNumber = ethers.BigNumber;
-const Utils = ethers.utils;
-const Contract = ethers.Contract;
 
 export default {
   _signerAddress: '',
   _queue: {},
 
-  queuePendingTx: function(data, confirms) {
-    const queue = this.getQueue()
-    if (queue) {
-      this._queue = queue;
+  initalize: async function() {
+    this._queue = this.getQueue();
+    const keys = _.keys(this._queue);
+    const length = keys.length;
+    console.log('### length ####', length);
+
+    if (this._signerAddress && (this._signerAddress.length > 0)) {
+      if (length > 0) {
+        for (let i = 0; i < length; i++) {
+          const item = this._queue[keys[i]];
+
+          if (item["completed"] === false) {
+            const provider = Wallet.getReadOnlyProvider();
+            const hash = item.tx.hash;
+            await this.getTransactionReceipt(provider, hash);
+          }
+        }
+      }
     }
-    var hash = data.tx.hash;
+  },
+
+  getTransactionReceipt: async function(provider, hash) {
+    if (provider) {
+      try {
+        let receipt = await provider.getTransactionReceipt(hash);
+        if (receipt && receipt.confirmations > 3 && receipt.status === 1) {
+          this.successTx(hash, receipt);
+        } else if (receipt && receipt.status === 0) {
+          this.failedTx(hash);
+        } else {
+          setTimeout(async () => {
+            await this.getTransactionReceipt(provider, hash);
+          }, 10 * 1000)
+        }
+      } catch (e) {
+        this.failedTx(hash, e);
+      }
+    }
+  },
+
+  queuePendingTx: function(data, confirms) {
+    this._queue = this.getQueue();
+    let hash = data.tx.hash;
     data.lastUpdated = Date.now();
     data.completed = false;
     data.success = false;
 
     this._queue[hash] = data;
     if (this._signerAddress && (this._signerAddress.length > 0)) {
-      store.set(this._signerAddress, this._queue)
+      store.set(this._signerAddress, this._queue);
       EventManager.emitEvent('txQueueUpdated', hash);
     }
 
     data.tx.wait(confirms || 1).then(function (txReceipt) {
-      console.log(txReceipt);
-      console.log(`Transaction Hash: ${txReceipt.transactionHash}`);
-      console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
-      this._queue[hash].receipt = txReceipt;
-      this._queue[hash].success = true;
-      this._queue[hash].completed = true;
-      this._queue[hash].lastUpdated = Date.now();
-      store.set(this._signerAddress, this._queue)
-      EventManager.emitEvent('txQueueUpdated', hash);
-      EventManager.emitEvent('txSuccess', hash);
+      this.successTx(hash, txReceipt);
     }.bind(this)).catch(function (err) {
-      console.error(err);
-      this._queue[hash].completed = true;
-      this._queue[hash].success = false;
-      this._queue[hash].lastUpdated = Date.now();
-      store.set(this._signerAddress, this._queue)
-      EventManager.emitEvent('txQueueUpdated', hash);
-      EventManager.emitEvent('txFailed', hash);
+      this.failedTx(hash, err);
     }.bind(this));
+  },
+
+  successTx: function(hash, txReceipt) {
+    console.log(txReceipt);
+    console.log(`Transaction Hash: ${txReceipt.transactionHash}`);
+    console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
+    this._queue[hash].receipt = txReceipt;
+    this._queue[hash].success = true;
+    this._queue[hash].completed = true;
+    this._queue[hash].lastUpdated = Date.now();
+    store.set(this._signerAddress, this._queue)
+    EventManager.emitEvent('txQueueUpdated', hash);
+    EventManager.emitEvent('txSuccess', hash);
+  },
+
+  failedTx: function(hash, error) {
+    if (error) {
+      console.error(error);
+    }
+
+    this._queue[hash].completed = true;
+    this._queue[hash].success = false;
+    this._queue[hash].lastUpdated = Date.now();
+    store.set(this._signerAddress, this._queue)
+    EventManager.emitEvent('txQueueUpdated', hash);
+    EventManager.emitEvent('txFailed', hash);
   },
 
   getQueue: function() {
@@ -61,6 +106,6 @@ export default {
 
   getTx: function(nonce) {
     return this.getQueue()[nonce];
-  }
+  },
 };
 

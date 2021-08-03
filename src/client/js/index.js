@@ -4,6 +4,7 @@ import App from './components/App';
 import Wallet from './utils/wallet';
 import TokenListManager from './utils/tokenList';
 import SwapFn from './utils/swapFn';
+import TxQueue from './utils/txQueue';
 import _ from 'underscore';
 import { ethers } from 'ethers';
 import BN from 'bignumber.js';
@@ -44,6 +45,7 @@ window.SELECTED_NETWORK = _.findWhere(window.NETWORK_CONFIGS, { enabled: true })
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 await SwapFn.initalize();
+TxQueue.initalize();
 
 if (Wallet.isMetamaskSupported()) {
   console.log('MetaMask is installed!');
