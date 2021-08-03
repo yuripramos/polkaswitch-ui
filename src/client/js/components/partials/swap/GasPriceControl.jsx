@@ -6,23 +6,33 @@ export default class GasPriceControl extends Component {
   constructor(props) {
     super(props);
     const gasStats = [window.GAS_STATS.safeLow, window.GAS_STATS.fast, window.GAS_STATS.fastest];
-    const gasPrice = SwapFn.getSetting().gasPrice;
-    if (gasStats.indexOf(gasPrice) > -1) {
+    let gasPrice = SwapFn.getSetting().gasPrice;
+    let isCustomGasPrice = SwapFn.getSetting().isCustomGasPrice;
+
+    if (isCustomGasPrice) {
       this.state = {
-        custom: false,
-        customValue: '',
-        current: gasPrice
+        custom: true,
+        customValue: gasPrice,
+        current: 0
       };
     } else {
       this.state = {
         custom: false,
-        customValue: gasPrice,
-        current: -1
+        customValue: '',
+        current: gasStats[0]
       };
     }
 
     this.handleClick = this.handleClick.bind(this);
     this.onCustomChange = this.onCustomChange.bind(this);
+    this.initGasPrice = this.initGasPrice.bind(this);
+    this.initGasPrice(gasStats[0], isCustomGasPrice);
+  }
+
+  initGasPrice(gasPrice, isCustomGasPrice) {
+    if (!isCustomGasPrice) {
+      this.props.handleGasPrice(gasPrice, false);
+    }
   }
 
   handleClick(event) {
@@ -32,7 +42,7 @@ export default class GasPriceControl extends Component {
       customValue: ''
     });
 
-    this.props.handleGasPrice(+event.target.value);
+    this.props.handleGasPrice(+event.target.value, false);
   }
 
   onCustomChange(e) {
@@ -42,7 +52,7 @@ export default class GasPriceControl extends Component {
     });
 
     if (!isNaN(e.target.value) && e.target.value.match(/^\d+(\.\d+)?$/)) {
-      this.props.handleGasPrice(+e.target.value);
+      this.props.handleGasPrice(+e.target.value, true);
     } else {
       this.setState({
         current: -1,

@@ -17,7 +17,7 @@ export default class SwapSlippageControl extends Component {
       };
     } else {
       this.state = {
-        custom: false,
+        custom: true,
         customValue: slippage,
         current: defaultCurrentValue
       };
