@@ -97,5 +97,39 @@
       "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
       "0x4BD17003473389A42DAF6a0a729f6Fdb328BbBd7"
     ]
+  },
+  {
+    "enabled": false,
+    "name": "Avalanche",
+    "aggregatorAddress": "0xC92F4B74A434e456918738D8FfC8388779d9592c",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
+    "bridgeURI": "https://app.nerve.fi/bridge",
+    "tokenList": "/tokens/56.list.json",
+    "chainId": "56",
+    "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
+    "explorerBaseUrl": "https://explorer.avax.network/tx/",
+    "gasApi": "https://bscgas.info/gas",
+    "chain": {
+      "chainId": "0x38",
+      "rpcUrls": ["https://bsc-dataseed.binance.org/"],
+      "chainName": "Smart Chain Mainnet",
+      "nativeCurrency": {
+        "name": "AVAX",
+        "symbol": "AVAX",
+        "decimals": 18
+      }
+    },
+    "defaultPair": {
+      "to": "0x55d398326f99059fF775485246999027B3197955",
+      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    "topTokens": [
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "0x55d398326f99059fF775485246999027B3197955",
+      "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+      "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
+      "0x4BD17003473389A42DAF6a0a729f6Fdb328BbBd7"
+    ]
   }
 ]
