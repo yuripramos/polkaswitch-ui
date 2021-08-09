@@ -19,6 +19,7 @@ export default class TokenSearchBar extends Component {
     this.input = React.createRef();
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
@@ -112,6 +113,13 @@ export default class TokenSearchBar extends Component {
   handleWalletChange(e) {
     this.setState({tokenBalances: {}});
     this.fetchBalances();
+  }
+
+  handleClose(e) {
+    this.props.handleClose();
+    this.setState({
+      value: ''
+    });
   }
 
   handleChange(event) {
@@ -299,7 +307,7 @@ export default class TokenSearchBar extends Component {
                   <ion-icon name="search-outline"></ion-icon>
                 </span>
                 {this.props.handleClose && (
-                  <span className="icon close-icon is-right" onClick={this.props.handleClose}>
+                  <span className="icon close-icon is-right" onClick={this.handleClose}>
                     <ion-icon name="close-outline"></ion-icon>
                   </span>
                 )}
