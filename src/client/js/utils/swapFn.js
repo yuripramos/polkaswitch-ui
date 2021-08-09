@@ -6,7 +6,8 @@ import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import BN from 'bignumber.js';
-let store = require('store')
+import { ApprovalState } from "../constants/Status";
+let store = require('store');
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -17,7 +18,8 @@ const Contract = ethers.Contract;
 
 window.SwapFn = {
   settings: {
-    gasPrice: -1, // auto,
+    gasPrice: 0, // auto,
+    isCustomGasPrice: false,
     slippage: 0.5
   },
 
@@ -174,21 +176,24 @@ window.SwapFn = {
   },
 
   performSwap: function(fromToken, toToken, amountBN, distribution) {
-    return this._getAllowance(fromToken).then(function(allowanceBN) {
-      if (allowanceBN) {
-        console.log(`Got Allowance of ${allowanceBN.toString()}`);
-      }
+    return this._swap(fromToken, toToken, amountBN, distribution);
+  },
 
-      if (fromToken.native || allowanceBN.gte(amountBN)) {
-        return this._swap(fromToken, toToken, amountBN, distribution);
+  performApprove: function(fromToken, amountBN) {
+    return this._approve(
+      fromToken.address,
+      // approve arbitrarily large number
+      amountBN.add(BigNumber.from(Utils.parseUnits("100000000")))
+    );
+  },
+
+  getApproveStatus: function(token, amountBN) {
+    return this._getAllowance(token).then(function(allowanceBN) {
+      console.log('allowanceBN', allowanceBN);
+      if (token.native || allowanceBN.gte(amountBN)) {
+        return Promise.resolve(ApprovalState.APPROVED);
       } else {
-        return this._approve(
-          fromToken.address,
-          // approve arbitrarily large number
-          amountBN.add(BigNumber.from(Utils.parseUnits("100000000")))
-        ).then(function(confirmedTransaction) {
-          return this._swap(fromToken, toToken, amountBN, distribution);
-        }.bind(this));
+        return Promise.resolve(ApprovalState.NOT_APPROVED);
       }
     }.bind(this));
   },
