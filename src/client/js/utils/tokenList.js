@@ -6,7 +6,9 @@ let store = require('store');
 const Utils = ethers.utils;
 
 window.TokenListManager = {
-  initialize: async function() {
+  swap: {
+    from:{},
+    to:{}
   },
 
   getCurrentNetworkConfig: function() {
@@ -49,6 +51,22 @@ window.TokenListManager = {
     window.TOKEN_LIST = tokenList;
     this.updateTokenListwithCustom(network);
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
+    // update swap token configuration
+    const swap = {
+      from: this.findTokenById(network.defaultPair.from),
+      to: this.findTokenById(network.defaultPair.to),
+    }
+    this.updateSwapConfig(swap);
+  },
+
+  updateSwapConfig: function(swap) {
+    this.swap = _.extend(this.getSwapConfig(), swap);
+    store.set('swap', this.swap);
+    EventManager.emitEvent('swapConfigUpdated', 1);
+  },
+
+  getSwapConfig: function () {
+    return this.swap;
   },
 
   findTokenById: function(tid) {

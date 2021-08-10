@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 import Navbar from '../partials/Navbar';
-import PairOverviewChart from '../partials/swap/PairOverviewChart';
+import TokenPairChartOverview from '../partials/swap/TokenPairChartOverview';
 import SwapWidget from '../partials/swap/SwapWidget';
 import AlphaOnboardingCard from '../partials/swap/AlphaOnboardingCard';
 import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
@@ -22,15 +22,11 @@ export default class Home extends Component {
         <TxHistoryModal />
 
         <div className="columns">
-          { /*
           <div className="column is-three-fifths">
             <div className="box">
-              <PairOverviewChart />
+              <TokenPairChartOverview />
             </div>
           </div>
-          */
-          }
-
           <div className="column swap-column" style={{ margin: "0 auto" }}>
             <SwapNetworkToggle />
 

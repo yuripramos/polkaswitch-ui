@@ -24,8 +24,10 @@ window.SwapFn = {
   },
 
   initalize: function() {
-    let cachedSettings = store.get('settings');
+    const cachedSettings = store.get('settings');
+    const cachedSwap = store.get('swap');
     this.settings = _.extend(this.settings, cachedSettings);
+    this.swap = _.extend(this.swap, cachedSwap);
   },
 
   validateEthValue: function(token, value) {
@@ -56,6 +58,16 @@ window.SwapFn = {
 
   getSetting: function () {
     return this.settings;
+  },
+
+  updateSwapConfig: function(swap) {
+    this.swap = _.extend(this.getSwapConfig(), swap);
+    store.set('swap', this.swap)
+    EventManager.emitEvent('swapConfigUpdated', 1);
+  },
+
+  getSwapConfig: function () {
+    return this.swap;
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {
