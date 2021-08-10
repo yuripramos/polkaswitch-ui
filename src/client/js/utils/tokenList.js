@@ -14,12 +14,15 @@ window.TokenListManager = {
     return network;
   },
 
-  updateNetwork: function(network) {
+  updateNetwork: function(network, connectStrategy) {
     window.SELECTED_NETWORK = network.name;
 
     this.updateTokenList().then(function() {
       EventManager.emitEvent('networkUpdated', 1);
       EventManager.emitEvent('walletUpdated', 1);
+      if (connectStrategy) {
+        EventManager.emitEvent('initiateWalletConnect', connectStrategy);
+      }
     });
   },
 
@@ -43,9 +46,12 @@ window.TokenListManager = {
       gasStats.fastest = gasStats.fast;
     }
 
-    window.GAS_STATS = _.pick(gasStats, [
+    window.GAS_STATS = _.mapObject(_.pick(gasStats, [
       'fast', 'fastest', 'safeLow'
-    ]);
+    ]), function(v, k) {
+      return v + 1;
+    });
+
     window.TOKEN_LIST = tokenList;
     this.updateTokenListwithCustom(network);
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });

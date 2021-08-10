@@ -27,7 +27,9 @@ export default class SwapNetworkToggle extends Component {
         this.setState({
           selected: network
         });
-        TokenListManager.updateNetwork(network);
+        let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+          Wallet.getConnectionStrategy();
+        TokenListManager.updateNetwork(network, connectStrategy);
       }
     }.bind(this);
   }
