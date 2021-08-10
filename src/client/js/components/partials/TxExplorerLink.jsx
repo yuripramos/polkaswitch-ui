@@ -10,7 +10,8 @@ export default class TxExplorerLink extends Component {
   }
 
   render() {
-    var network = TokenListManager.getCurrentNetworkConfig();
+    var network = TokenListManager.getNetworkById(this.props.chainId) ||
+      TokenListManager.getCurrentNetworkConfig();
     return (
       <a
         target="_blank"

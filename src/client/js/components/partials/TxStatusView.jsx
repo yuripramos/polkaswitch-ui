@@ -51,7 +51,9 @@ export default class TxStatusView extends Component {
           <div>
             <div>{lang} {output} {this.props.data.from.symbol} for {this.props.data.to.symbol}</div>
             <div>
-              <TxExplorerLink hash={this.props.data.tx.hash}>
+              <TxExplorerLink
+                chainId={this.props.data.chainId}
+                hash={this.props.data.tx.hash}>
                 View on Explorer <ion-icon name="open-outline"></ion-icon>
               </TxExplorerLink>
             </div>

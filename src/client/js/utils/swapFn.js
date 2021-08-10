@@ -328,14 +328,19 @@ window.SwapFn = {
         }
       ).then(function(transaction) {
         console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
+
+        const network = TokenListManager.getCurrentNetworkConfig();
+        const chainId = network.chainId;
+
         TxQueue.queuePendingTx({
+          chainId: chainId,
           from: fromToken,
           to: toToken,
           amount: amountBN,
           tx: transaction
         });
         return transaction.hash;
-      });
+      }.bind(this));
 
     }.bind(this));
 

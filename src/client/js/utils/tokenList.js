@@ -14,6 +14,11 @@ window.TokenListManager = {
     return network;
   },
 
+  getNetworkById: function(chainId) {
+    var network = _.findWhere(window.NETWORK_CONFIGS, { chainId: ("" + chainId) });
+    return network;
+  },
+
   updateNetwork: function(network, connectStrategy) {
     window.SELECTED_NETWORK = network.name;
 
