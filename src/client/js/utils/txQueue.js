@@ -7,11 +7,14 @@ let store = require('store');
 export default {
   _signerAddress: '',
   _queue: {},
+  compareTime: 3 * 60 * 60 * 24 * 1000,
 
   initalize: async function() {
     this._queue = this.getQueue();
     const keys = _.keys(this._queue);
     const length = keys.length;
+    const now = Date.now();
+    let delCount = 0;
 
     if (this._signerAddress && (this._signerAddress.length > 0)) {
       if (length > 0) {
@@ -22,7 +25,35 @@ export default {
             const provider = Wallet.getReadOnlyProvider();
             const hash = item.tx.hash;
             await this.getTransactionReceipt(provider, hash);
+          } else if (item["completed"] === true && ((now - item.lastUpdated) > this.compareTime)) {
+            delete this._queue[keys[i]];
+            delCount ++;
           }
+        }
+        if (delCount > 0) {
+          store.set(this._signerAddress, this._queue);
+        }
+      }
+    }
+  },
+
+  removeOldTx: function() {
+    this._queue = this.getQueue();
+    const keys = _.keys(this._queue);
+    const length = keys.length;
+    const now = Date.now();
+    let delCount = 0;
+    if (this._signerAddress && (this._signerAddress.length > 0)) {
+      if (length > 0) {
+        for (let i = 0; i < length; i++) {
+          const item = this._queue[keys[i]];
+          if (item["completed"] === true && ((now - item.lastUpdated) > this.compareTime)) {
+            delete this._queue[keys[i]];
+            delCount ++;
+          }
+        }
+        if (delCount > 0) {
+          store.set(this._signerAddress, this._queue);
         }
       }
     }
@@ -68,6 +99,8 @@ export default {
   },
 
   successTx: function(hash, txReceipt) {
+    // Remove old Tx
+    this.removeOldTx();
     console.log(txReceipt);
     console.log(`Transaction Hash: ${txReceipt.transactionHash}`);
     console.log(`Gas Used: ${txReceipt.gasUsed.toString()}`);
@@ -81,6 +114,9 @@ export default {
   },
 
   failedTx: function(hash, error) {
+    // Remove old Tx
+    this.removeOldTx();
+
     if (error) {
       console.error(error);
     }

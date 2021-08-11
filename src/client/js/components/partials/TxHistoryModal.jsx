@@ -91,6 +91,9 @@ export default class TxHistoryModal extends Component {
                 <TxStatusView key={i} data={item} />
               );
             })}
+            {_.keys(queue).length > 0 && (
+              <div className="footer-note">Only showing transactions in the last 72 hours.</div>
+            )}
           </div>
         </div>
       </div>
