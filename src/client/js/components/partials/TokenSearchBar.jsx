@@ -26,6 +26,7 @@ export default class TokenSearchBar extends Component {
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleCustomModal = this.handleCustomModal.bind(this);
+    this.handleTokenChange = this.handleTokenChange.bind(this);
     this.fetchBalances = this.fetchBalances.bind(this);
     this.getBalanceNumber = this.getBalanceNumber.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -117,6 +118,13 @@ export default class TokenSearchBar extends Component {
 
   handleClose(e) {
     this.props.handleClose();
+    this.setState({
+      value: ''
+    });
+  }
+
+  handleTokenChange(token) {
+    this.props.handleTokenChange(token);
     this.setState({
       value: ''
     });
@@ -247,7 +255,8 @@ export default class TokenSearchBar extends Component {
       filteredTokens = _.first(_.filter(window.TOKEN_LIST, function(t) {
         return (t.symbol) && (
           (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
-          (t.name && t.name.toLowerCase().includes(_query))
+          (t.name && t.name.toLowerCase().includes(_query)) ||
+          (t.address && t.address.toLowerCase().includes(_query))
         );
       }), 10);
 
@@ -316,7 +325,7 @@ export default class TokenSearchBar extends Component {
           </div>
           {dropList}
         </div>
-        <CustomTokenModal handleTokenChange={this.props.handleTokenChange}/>
+        <CustomTokenModal handleTokenChange={this.handleTokenChange}/>
       </div>
     );
   }
