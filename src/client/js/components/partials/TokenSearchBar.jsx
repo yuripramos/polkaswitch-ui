@@ -1,29 +1,32 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
 import classnames from 'classnames';
-
 import TokenIconImg from './TokenIconImg';
 import CustomScroll from 'react-custom-scroll';
-
 import EventManager from '../../utils/events';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 import CustomTokenModal from "./CustomTokenModal";
-
 import numeral from 'numeral';
 
 export default class TokenSearchBar extends Component {
   constructor(props) {
     super(props);
-    this.state = { focused: false, value: "", refresh: Date.now(), tokenBalances: {} };
+    this.state = {
+      focused: false,
+      value: "",
+      refresh: Date.now(),
+      tokenBalances: {}
+    };
     this.input = React.createRef();
-
+    this.subscribers = [];
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleCustomModal = this.handleCustomModal.bind(this);
+    this.handleTokenChange = this.handleTokenChange.bind(this);
     this.fetchBalances = this.fetchBalances.bind(this);
     this.getBalanceNumber = this.getBalanceNumber.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -35,19 +38,17 @@ export default class TokenSearchBar extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.subNetworkUpdate = EventManager.listenFor(
-      'networkUpdated', this.handleNetworkChange
-    );
-    this.subWalletUpdated = EventManager.listenFor(
-      'walletUpdated', this.handleWalletChange
-    );
+    this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
+    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
+    this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
     this.fetchBalances();
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    this.subNetworkUpdate.unsubscribe();
-    this.subWalletUpdate.unsubscribe();
+    this.subscribers.forEach(function(v) {
+      EventManager.unsubscribe(v);
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -117,6 +118,13 @@ export default class TokenSearchBar extends Component {
 
   handleClose(e) {
     this.props.handleClose();
+    this.setState({
+      value: ''
+    });
+  }
+
+  handleTokenChange(token) {
+    this.props.handleTokenChange(token);
     this.setState({
       value: ''
     });
@@ -247,7 +255,8 @@ export default class TokenSearchBar extends Component {
       filteredTokens = _.first(_.filter(window.TOKEN_LIST, function(t) {
         return (t.symbol) && (
           (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
-          (t.name && t.name.toLowerCase().includes(_query))
+          (t.name && t.name.toLowerCase().includes(_query)) ||
+          (t.address && t.address.toLowerCase().includes(_query))
         );
       }), 10);
 
@@ -316,7 +325,7 @@ export default class TokenSearchBar extends Component {
           </div>
           {dropList}
         </div>
-        <CustomTokenModal handleTokenChange={this.props.handleTokenChange}/>
+        <CustomTokenModal handleTokenChange={this.handleTokenChange}/>
       </div>
     );
   }
