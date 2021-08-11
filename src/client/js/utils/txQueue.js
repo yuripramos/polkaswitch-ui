@@ -12,7 +12,6 @@ export default {
     this._queue = this.getQueue();
     const keys = _.keys(this._queue);
     const length = keys.length;
-    console.log('### length ####', length);
 
     if (this._signerAddress && (this._signerAddress.length > 0)) {
       if (length > 0) {
