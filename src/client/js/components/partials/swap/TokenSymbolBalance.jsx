@@ -26,8 +26,8 @@ export default class TokenSymbolBalance extends Component {
   }
 
   fetchBalance(attempt) {
+    attempt = 0;
     if (!attempt) {
-      attempt = 0;
     } else if (attempt > 10) {
       this.setState({
         errored: true
