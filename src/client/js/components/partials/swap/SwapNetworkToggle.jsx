@@ -17,8 +17,29 @@ export default class SwapNetworkToggle extends Component {
     this.NETWORKS = window.NETWORK_CONFIGS;
     this.state = {
       selected: TokenListManager.getCurrentNetworkConfig(),
-      active: false
+      active: false,
+      hoverable: true,
     };
+    this.subscribers = [];
+    this.handleNetworkHoverable = this.handleNetworkHoverable.bind(this);
+  }
+
+  componentDidMount() {
+    this.subscribers.push(EventManager.listenFor('networkHoverableUpdated', this.handleNetworkHoverable));
+  }
+
+  componentWillUnmount() {
+    this.subscribers.forEach(function(v) {
+      EventManager.unsubscribe(v);
+    });
+  }
+
+  handleNetworkHoverable(event) {
+    if (event && (event.hoverable !== this.state.hoverable)) {
+      this.setState({
+        hoverable: event.hoverable
+      });
+    }
   }
 
   handleDropdownClick(network) {
@@ -73,7 +94,9 @@ export default class SwapNetworkToggle extends Component {
 
           <div className="level-right">
             <div className="level-item">
-              <div className={classnames("dropdown is-right is-hoverable")}>
+              <div className={classnames("dropdown is-right ", {
+                  "is-hoverable": this.state.hoverable
+              })}>
                 <div className="dropdown-trigger">
                   <button className="button is-info is-light" aria-haspopup="true" aria-controls="dropdown-menu">
                     <span className="level">
@@ -91,7 +114,10 @@ export default class SwapNetworkToggle extends Component {
                     </span>
                   </button>
                 </div>
-                <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                <div
+                    className="dropdown-menu"
+                    id="dropdown-menu"
+                    role="menu">
                   <div className="dropdown-content">
                     {networkList}
                   </div>

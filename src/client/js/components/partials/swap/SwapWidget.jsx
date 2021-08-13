@@ -168,6 +168,7 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleResults(success, hash) {
+    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
     this.setState({
       transactionHash: hash,
       showConfirm: false,
@@ -178,10 +179,12 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleBackOnConfirm(e) {
+    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
     this.setState({ showConfirm: false });
   }
 
   handleBackOnResults(e) {
+    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
     this.setState({
       showConfirm: false,
       showResults: false,

@@ -193,6 +193,7 @@ export default class SwapOrderSlide extends Component {
 
     else {
       if (this.validateOrderForm()) {
+        EventManager.emitEvent('networkHoverableUpdated', {hoverable: false});
         this.props.handleSubmit();
       }
     }
