@@ -118,7 +118,7 @@ export default {
     this.removeOldTx();
 
     if (error) {
-      console.error(error);
+      console.error('### swap failed error ###', error);
     }
 
     this._queue[hash].completed = true;

@@ -304,7 +304,7 @@ window.SwapFn = {
     return this.calculateMinReturn(
       fromToken, toToken, amountBN
     ).then(function(minReturn) {
-
+      console.log(`Waiting calculated min value`, minReturn);
       /*
         returns(
           uint256 returnAmount
@@ -340,8 +340,12 @@ window.SwapFn = {
           tx: transaction
         });
         return transaction.hash;
+      }.bind(this)).catch(function (e) {
+        console.error('## swap error from contract catch ###', e);
       }.bind(this));
 
+    }.bind(this)).catch(function (e) {
+      console.error('## calculateMin error from catch ###', e);
     }.bind(this));
 
   },
