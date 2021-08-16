@@ -13,7 +13,9 @@ import { Integrations } from "@sentry/tracing";
 
 if (process.env.IS_PRODUCTION) {
   Sentry.init({
-    dsn: "https://841e0be7a1c74056b0cc8a763291be6c@o577869.ingest.sentry.io/5733634",
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.IS_MAIN_NETWORK === "true" ?
+      'production' : 'development',
     integrations: [new Integrations.BrowserTracing()],
 
     // Set tracesSampleRate to 1.0 to capture 100%

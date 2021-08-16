@@ -20,6 +20,8 @@ const app = express();
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
+  environment: process.env.IS_MAIN_NETWORK === "true" ?
+    'production' : 'development',
   integrations: [
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),

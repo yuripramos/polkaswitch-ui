@@ -89,7 +89,8 @@ module.exports = (env) => {
       }),
       new webpack.EnvironmentPlugin({
         IS_PRODUCTION: !!isProduction,
-        IS_MAIN_NETWORK: false
+        IS_MAIN_NETWORK: false,
+        SENTRY_DSN: false
       }),
       new NodePolyfillPlugin()
     ],
