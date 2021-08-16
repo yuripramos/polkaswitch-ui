@@ -11,11 +11,12 @@ import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
+const IS_MAIN_NETWORK = (process.env.IS_MAIN_NETWORK === "true");
+
 if (process.env.IS_PRODUCTION) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    environment: process.env.IS_MAIN_NETWORK === "true" ?
-      'production' : 'development',
+    environment: IS_MAIN_NETWORK ? 'production' : 'development',
     integrations: [new Integrations.BrowserTracing()],
 
     // Set tracesSampleRate to 1.0 to capture 100%
@@ -30,14 +31,16 @@ window._ = _;
 window.BN = BN;
 window.BigNumber = ethers.BigNumber;
 
-if (process.env.IS_MAIN_NETWORK) {
+if (IS_MAIN_NETWORK) {
   console.log("Loading MAIN config...");
 } else {
   console.log("Loading TEST config...");
 }
 
 var config  = await fetch(
-  process.env.IS_MAIN_NETWORK ? '/config/main.config.json' : '/config/test.config.json'
+  IS_MAIN_NETWORK ?
+    '/config/main.config.json' :
+    '/config/test.config.json'
 );
 window.NETWORK_CONFIGS = await config.json();
 // Default to the ETH network
