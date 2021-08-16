@@ -1175,28 +1175,29 @@ export default function TradingViewChart(){
     candleSeries.setData(priceData);
   }, [selectedViewMode]);
 
-  const fetchPriceData = (baseUrl, contract, currency, fromTimestamp, toTimestamp, attempt) => {
+  const fetchPriceData = async(baseUrl, contract, currency, fromTimestamp, toTimestamp, attempt) => {
     let result = [];
     if (!attempt) {
       attempt = 0;
     } else if (attempt > 2) {
-      return Promise.resolve(result);
+      console.log("attempt aboved", result);
+      return result;
     }
+    try {
+      const response = await fetch(`${baseUrl}/contract/${contract}/market_chart/range?vs_currency=${currency}&from=${fromTimestamp}&to=${toTimestamp}`)
+      if (!response.ok) {
+        throw new Error()
+      }
+      const data = await response.json();
+      if (data) {
+        result = data.prices
+      }
 
-    fetch(`${baseUrl}/contract/${contract}/market_chart/range?vs_currency=${currency}&from=${fromTimestamp}&to=${toTimestamp}`)
-        .then(response => response.json())
-        .then(data => {
-          result = data.prices
-          console.log('### result ###', result);
-          return Promise.resolve(result);
-        })
-        .catch(function(e) {
-          // try again
-          console.error("Failed to fetch price data", e);
-          _.defer(function() {
-            fetchPriceData(baseUrl, contract, currency, fromTimestamp, toTimestamp, attempt + 1);
-          })
-        })
+      return result;
+    } catch (err) {
+      console.error("Failed to fetch price data", err);
+      await fetchPriceData(baseUrl, contract, currency, fromTimestamp, toTimestamp, attempt + 1);
+    }
   }
 
   const mergePrice = (fromTokenPrices, toTokenPrices) => {
