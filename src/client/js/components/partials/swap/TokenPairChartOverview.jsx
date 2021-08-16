@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { createChart, CrosshairMode } from "lightweight-charts";
+import React from 'react';
 import TradingViewChart from "./TradingViewChart";
 import Routing from "./Routing";
 import Dashboard from "./Dashboard";

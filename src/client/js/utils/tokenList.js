@@ -8,7 +8,8 @@ const Utils = ethers.utils;
 window.TokenListManager = {
   swap: {
     from:{},
-    to:{}
+    to:{},
+    network: 'Ethereum'
   },
 
   getCurrentNetworkConfig: function() {
@@ -18,7 +19,6 @@ window.TokenListManager = {
 
   updateNetwork: function(network) {
     window.SELECTED_NETWORK = network.name;
-
     this.updateTokenList().then(function() {
       EventManager.emitEvent('networkUpdated', 1);
       EventManager.emitEvent('walletUpdated', 1);
@@ -55,6 +55,7 @@ window.TokenListManager = {
     const swap = {
       from: this.findTokenById(network.defaultPair.from),
       to: this.findTokenById(network.defaultPair.to),
+      network: network.name
     }
     this.updateSwapConfig(swap);
   },
