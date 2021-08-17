@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import _ from "underscore";
+import classnames from 'classnames';
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
@@ -34,6 +35,8 @@ export default class SwapOrderWidget extends Component {
       showSearch: false,
       showResults: false,
 
+      loading: false,
+
       transactionHash: "",
 
       refresh: Date.now()
@@ -52,6 +55,7 @@ export default class SwapOrderWidget extends Component {
     this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
+    this.handleNetworkPreUpdate = this.handleNetworkPreUpdate.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
     this.onApproveComplete = this.onApproveComplete.bind(this);
   }
@@ -59,6 +63,7 @@ export default class SwapOrderWidget extends Component {
   componentDidMount() {
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
     this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
+    this.subscribers.push(EventManager.listenFor('networkPendingUpdate', this.handleNetworkPreUpdate));
     this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
@@ -71,10 +76,17 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
+  handleNetworkPreUpdate(e) {
+    this.setState({
+      loading: true
+    });
+  }
+
   handleNetworkChange(e) {
     var network = TokenListManager.getCurrentNetworkConfig();
 
     this.setState({
+      loading: false,
       to: TokenListManager.findTokenById(network.defaultPair.to),
       from: TokenListManager.findTokenById(network.defaultPair.from),
       availableBalance: undefined
@@ -232,6 +244,10 @@ export default class SwapOrderWidget extends Component {
 
     return (
       <div ref={this.box} className="box swap-widget">
+        <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
+          <div className="loader is-loading"></div>
+        </div>
+
         <CSSTransition
           in={isStack}
           timeout={animTiming}
