@@ -190,7 +190,7 @@ window.SwapFn = {
   getApproveStatus: function(token, amountBN) {
     return this._getAllowance(token).then(function(allowanceBN) {
       console.log('allowanceBN', allowanceBN);
-      if (token.native || allowanceBN.gte(amountBN)) {
+      if (token.native || (allowanceBN && allowanceBN.gte(amountBN))) {
         return Promise.resolve(ApprovalState.APPROVED);
       } else {
         return Promise.resolve(ApprovalState.NOT_APPROVED);
@@ -220,6 +220,9 @@ window.SwapFn = {
   },
 
   _getAllowance: function(token) {
+    if (!Wallet.isConnected()) {
+      return Promise.resolve(false);
+    }
     if (token.native) {
       console.log(`Not calling ALLOWANCE() on native token ${token.symbol}`);
       return Promise.resolve(false);

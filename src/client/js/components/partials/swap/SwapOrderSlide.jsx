@@ -104,7 +104,7 @@ export default class SwapOrderSlide extends Component {
 
           Wallet.getBalance(this.props.from).then(function(bal) {
             return SwapFn.getApproveStatus(this.props.from, fromAmountBN).then(function(status) {
-              console.log('status', status)
+              console.log('Approval Status', status)
               this.props.onSwapEstimateComplete(
                 origFromAmount,
                 window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
