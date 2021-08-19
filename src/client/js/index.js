@@ -15,7 +15,7 @@ const IS_MAIN_NETWORK = (process.env.IS_MAIN_NETWORK === "true");
 
 if (process.env.IS_PRODUCTION) {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN,
+    dsn: process.env.SENTRY_JS_DSN,
     environment: IS_MAIN_NETWORK ? 'production' : 'development',
     integrations: [new Integrations.BrowserTracing()],
 
