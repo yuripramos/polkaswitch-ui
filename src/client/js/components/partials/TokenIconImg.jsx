@@ -18,6 +18,14 @@ export default class TokenIconImg extends Component {
     this.setState({ errored: false });
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.errored) {
+      this.setState({
+        errored: false
+      });
+    }
+  }
+
   render() {
     var errored = this.state.errored;
     var imgSrc;
