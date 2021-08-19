@@ -102,7 +102,7 @@
     "enabled": false,
     "name": "Avalanche",
     "aggregatorAddress": "0xC92F4B74A434e456918738D8FfC8388779d9592c",
-    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
+    "logoURI": "https://assets.coingecko.com/coins/images/12559/large/coin-round-red.png",
     "bridgeURI": "https://app.nerve.fi/bridge",
     "tokenList": "/tokens/56.list.json",
     "chainId": "56",
