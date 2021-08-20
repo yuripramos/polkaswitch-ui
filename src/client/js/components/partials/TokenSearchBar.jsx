@@ -78,13 +78,23 @@ export default class TokenSearchBar extends Component {
   }
 
   fetchBalances() {
-    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token) => {
+    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token, index) => {
       if (Wallet.isConnected()) {
-        Wallet.getBalance(token)
-        .then((bal) => {
-          this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
-        })
-        .catch(error => console.log(error))
+        _.delay(() => {
+          Wallet.getBalance(token)
+            .then((bal) => {
+              this.mounted && this.setState({
+                tokenBalances: {
+                  ...this.state.tokenBalances,
+                  [token.symbol]: {
+                    balance: bal,
+                    token: token
+                  }
+                }
+              });
+            })
+            .catch(error => console.log(error));
+        }, index * 200);
       }
     })
   }
