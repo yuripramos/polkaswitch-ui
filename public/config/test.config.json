@@ -110,7 +110,7 @@
     "explorerBaseUrl": "https://explorer.avax.network/tx/",
     "gasApi": "https://bscgas.info/gas",
     "chain": {
-      "chainId": "0x38",
+      "chainId": "0xA86A",
       "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],
       "chainName": "Avalanche Mainnet",
       "nativeCurrency": {
