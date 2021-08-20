@@ -69,7 +69,7 @@ window.TokenListManager = {
       return v.address === tid || v.symbol === tid;
     });
     if (!foundToken) {
-      console.error("Unable to find token ID", tid);
+      console.log("WARNING: Unable to find token ID", tid);
     }
     return foundToken;
   },
