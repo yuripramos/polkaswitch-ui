@@ -30,7 +30,8 @@
       "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07"
     ],
     "tradeView": {
-      "baseUrl": "https://api.coingecko.com/api/v3/coins/ethereum"
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/ethereum",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     }
   },
   {
@@ -67,7 +68,8 @@
       "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
     ],
     "tradeView": {
-      "baseUrl": "https://api.coingecko.com/api/v3/coins/polygon-pos"
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/polygon-pos",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     }
   },
   {
@@ -104,7 +106,8 @@
       "0x4BD17003473389A42DAF6a0a729f6Fdb328BbBd7"
     ],
     "tradeView": {
-      "baseUrl": "https://api.coingecko.com/api/v3/coins/inance-smart-chain"
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/inance-smart-chain",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     }
   }
 ]

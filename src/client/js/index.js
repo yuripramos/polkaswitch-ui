@@ -42,6 +42,7 @@ window.NETWORK_CONFIGS = await config.json();
 window.SELECTED_NETWORK = _.findWhere(window.NETWORK_CONFIGS, { enabled: true }).name;
 
 // initialize TokenList
+window.COINGECKO_TOKEN_LIST = await(await fetch('/tokens/coingecko.list.json')).json();
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 await SwapFn.initalize();

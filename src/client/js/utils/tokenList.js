@@ -76,6 +76,12 @@ window.TokenListManager = {
     });
   },
 
+  findTokenBySymbolFromCoinGecko: function(symbol) {
+    return _.find(window.COINGECKO_TOKEN_LIST, function(v) {
+      return v.symbol === symbol;
+    });
+  },
+
   updateTokenListwithCustom: function (network) {
     const customTokenAddresses = store.get('customTokenAddress');
 
