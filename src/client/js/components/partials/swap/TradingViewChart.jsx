@@ -40,7 +40,7 @@ export default function TradingViewChart(){
   const [tokenPairs, setTokenPairs] = useState(initTokenPair);
   const [selectedPair, setSelectedPair] = useState(initTokenPair[0]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRangeList[0]);
-  const [selectedViewMode, setSelectedViewMode] = useState(viewModes[1]);
+  const [selectedViewMode, setSelectedViewMode] = useState(viewModes[0]);
   const [priceDetails, setPriceDetails] = useState({price:0, percent: 0, from: timeRangeList[0].from})
   const [priceData, setPriceData] = useState([]);
 
@@ -51,9 +51,9 @@ export default function TradingViewChart(){
 
     return () => {
       subSwapConfigChange.unsubscribe();
-      if (chart !== null) {
-        chart.remove();
-      }
+      // if (chart !== null) {
+      //   chart.remove();
+      // }
     }
   }, []);
 
@@ -291,13 +291,13 @@ export default function TradingViewChart(){
   return (
       <div className="trading-view-wrapper">
         <div className="trading-view-header">
-          <TokenPairSelector tokenPairs={tokenPairs} selectedPair={selectedPair} handleTokenPairChange={handleTokenPairChange}/>
-          <ChartPriceDetails priceDetails={priceDetails}/>
+          {/*<TokenPairSelector tokenPairs={tokenPairs} selectedPair={selectedPair} handleTokenPairChange={handleTokenPairChange}/>*/}
+          {/*<ChartPriceDetails priceDetails={priceDetails}/>*/}
         </div>
         <div className="trading-view-body">
-          <ChartViewOption selectedViewMode={selectedViewMode} handleViewModeChange={handleViewModeChange}/>
+          {/*<ChartViewOption selectedViewMode={selectedViewMode} handleViewModeChange={handleViewModeChange}/>*/}
           <div className="chart"  ref={chartContainerRef}/>
-          <ChartRangeSelector timeRangeList={timeRangeList} handleRangeChange={handleRangeChange}/>
+          {/*<ChartRangeSelector timeRangeList={timeRangeList} handleRangeChange={handleRangeChange}/>*/}
         </div>
       </div>
     );
