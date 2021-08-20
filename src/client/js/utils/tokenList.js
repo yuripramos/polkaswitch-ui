@@ -65,9 +65,13 @@ window.TokenListManager = {
   },
 
   findTokenById: function(tid) {
-    return _.find(window.TOKEN_LIST, function(v) {
+    var foundToken = _.find(window.TOKEN_LIST, function(v) {
       return v.address === tid || v.symbol === tid;
     });
+    if (!foundToken) {
+      console.error("Unable to find token ID", tid);
+    }
+    return foundToken;
   },
 
   updateTokenListwithCustom: function (network) {
