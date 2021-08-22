@@ -92,7 +92,8 @@ module.exports = (env) => {
       new webpack.EnvironmentPlugin({
         IS_PRODUCTION: !!isProduction,
         IS_MAIN_NETWORK: false,
-        SENTRY_JS_DSN: false
+        SENTRY_JS_DSN: false,
+        HEROKU_RELEASE_VERSION: false
       }),
       new NodePolyfillPlugin(),
       new SentryWebpackPlugin({

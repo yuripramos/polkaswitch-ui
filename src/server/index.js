@@ -28,6 +28,7 @@ Sentry.init({
     // enable Express.js middleware tracing
     new Tracing.Integrations.Express({ app }),
   ],
+  release: process.env.HEROKU_RELEASE_VERSION,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
