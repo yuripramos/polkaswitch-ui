@@ -35,6 +35,7 @@
     "@babel/preset-react": "7.12.13",
     "@sentry/react": "^6.3.1",
     "@sentry/tracing": "^6.3.1",
+    "@sentry/webpack-plugin": "^1.17.1",
     "@walletconnect/web3-provider": "^1.4.1",
     "babel-loader": "8.2.2",
     "babel-polyfill": "6.26.0",

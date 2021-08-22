@@ -1,9 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
+const moment = require('moment');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
 const outputDirectory = 'dist';
 
@@ -92,7 +94,17 @@ module.exports = (env) => {
         IS_MAIN_NETWORK: false,
         SENTRY_JS_DSN: false
       }),
-      new NodePolyfillPlugin()
+      new NodePolyfillPlugin(),
+      new SentryWebpackPlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "polkaswitch",
+        project: "frontend",
+        release: process.env.HEROKU_RELEASE_VERSION,
+
+        // webpack-specific configuration
+        include: ".",
+        ignore: ["node_modules", "webpack.config.js"]
+      }),
     ],
     experiments: {
       topLevelAwait: true
