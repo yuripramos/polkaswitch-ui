@@ -104,6 +104,9 @@ module.exports = (env) => {
         org: "polkaswitch",
         project: "frontend",
         release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
+        deploy: {
+          env: isProduction ? 'production' : 'development'
+        },
 
         // webpack-specific configuration
         include: "./dist"
