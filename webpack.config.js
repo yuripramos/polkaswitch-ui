@@ -23,7 +23,7 @@ module.exports = (env) => {
     entry: ['babel-polyfill', './src/client/js/index.js'],
     output: {
       path: path.join(__dirname, outputDirectory),
-      filename: 'bundle.js'
+      filename: 'bundle.[contenthash].js'
     },
     module: {
       rules: [
@@ -84,10 +84,12 @@ module.exports = (env) => {
     devtool : isProduction ? 'source-map' : 'inline-source-map',
     plugins: [
       new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin(),
+      new MiniCssExtractPlugin({
+        filename: '[name].[contenthash].css'
+      }),
       new HtmlWebpackPlugin({
         template: './src/client/index.html',
-        hash: true
+        hash: false
       }),
       new webpack.EnvironmentPlugin({
         IS_PRODUCTION: !!isProduction,
