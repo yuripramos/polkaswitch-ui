@@ -12,6 +12,7 @@ const outputDirectory = 'dist';
 module.exports = (env) => {
   console.log(env);
   const isProduction = !!env.production;
+  const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
@@ -93,7 +94,7 @@ module.exports = (env) => {
       }),
       new webpack.EnvironmentPlugin({
         IS_PRODUCTION: !!isProduction,
-        IS_MAIN_NETWORK: false,
+        IS_MAIN_NETWORK: isMainNetwork,
         SENTRY_JS_DSN: false,
         HEROKU_RELEASE_VERSION: false,
         HEROKU_APP_NAME: false
@@ -105,7 +106,7 @@ module.exports = (env) => {
         project: "frontend",
         release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
         deploy: {
-          env: isProduction ? 'production' : 'development'
+          env: isMainNetwork ? 'production' : 'development'
         },
 
         // webpack-specific configuration
