@@ -18,12 +18,12 @@ if (process.env.IS_PRODUCTION) {
     dsn: process.env.SENTRY_JS_DSN,
     environment: IS_MAIN_NETWORK ? 'production' : 'development',
     integrations: [new Integrations.BrowserTracing()],
-    release: process.env.HEROKU_RELEASE_VERSION,
+    release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
-    tracesSampleRate: 0.5,
+    tracesSampleRate: 1.0,
   });
 }
 

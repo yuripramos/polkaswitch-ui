@@ -95,18 +95,18 @@ module.exports = (env) => {
         IS_PRODUCTION: !!isProduction,
         IS_MAIN_NETWORK: false,
         SENTRY_JS_DSN: false,
-        HEROKU_RELEASE_VERSION: false
+        HEROKU_RELEASE_VERSION: false,
+        HEROKU_APP_NAME: false
       }),
       new NodePolyfillPlugin(),
       new SentryWebpackPlugin({
         authToken: process.env.SENTRY_AUTH_TOKEN,
         org: "polkaswitch",
         project: "frontend",
-        release: process.env.HEROKU_RELEASE_VERSION,
+        release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
 
         // webpack-specific configuration
-        include: ".",
-        ignore: ["node_modules", "webpack.config.js"]
+        include: "./dist"
       }),
     ],
     experiments: {
