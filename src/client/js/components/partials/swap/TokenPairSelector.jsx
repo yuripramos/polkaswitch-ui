@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import TokenIconBalanceGroupView from "./TokenIconBalanceGroupView";
 import TokenIconImg from "../TokenIconImg";
 import classnames from "classnames";
 import _ from "underscore";
-import TokenListManager from "../../../utils/tokenList";
 
 export default function TokenPairSelector(props){
   const renderTokenPairs = () => {

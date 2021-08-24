@@ -3,14 +3,13 @@ import { createChart, CrosshairMode } from "lightweight-charts";
 import classnames from "classnames";
 export default function ChartViewOption(props) {
   const handleViewOptionChange = (event) => {
-    console.log('## event.target.checked ###', event.target.checked)
     let viewOption = 'candlestick'
     if (event.target.checked) {
       viewOption = 'candlestick'
     } else {
       viewOption = 'line'
     }
-    console.log('## view option ###', viewOption)
+
     props.handleViewModeChange(viewOption);
   }
 

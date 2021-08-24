@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { createChart, CrosshairMode } from "lightweight-charts";
 import TokenPairSelector from "./TokenPairSelector";
 import ChartPriceDetails from "./ChartPriceDetails";
@@ -11,9 +11,9 @@ import _ from "underscore";
 export default function TradingViewChart(){
 
   const timeRangeList = [
-    {name: "1D", value: 0, from: 'Past 1 Day'},
-    {name: "3D", value: 0, from: 'Past 3 Days'},
-    {name: "1W", value: 0, from: 'Past Week'},
+    {name: "1D", value: 1, from: 'Past 1 Day'},
+    {name: "3D", value: 3, from: 'Past 3 Days'},
+    {name: "1W", value: 7, from: 'Past Week'},
     {name: "1M", value: 0, from: 'Past Month'},
     {name: "1Y", value: 0, from: 'Past Year'}
   ];
@@ -34,15 +34,18 @@ export default function TradingViewChart(){
     list.push({name: toSymbol, fromSymbol: toSymbol, fromAddress: toAddress});
     return list;
   }
+  let candleSeries = useRef(null);
+  let lineSeries = useRef(null);
 
   // init states
   const initTokenPair = createTokenPairList();
   const [tokenPairs, setTokenPairs] = useState(initTokenPair);
   const [selectedPair, setSelectedPair] = useState(initTokenPair[0]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRangeList[0]);
-  const [selectedViewMode, setSelectedViewMode] = useState(viewModes[0]);
+  const [selectedViewMode, setSelectedViewMode] = useState(viewModes[1]);
   const [priceDetails, setPriceDetails] = useState({price:0, percent: 0, from: timeRangeList[0].from})
-  const [priceData, setPriceData] = useState([]);
+  const [linePriceData, setLinePriceData] = useState([]);
+  const [candlePriceData, setCandlePriceData] = useState([]);
 
   useEffect(()=>{
     let subSwapConfigChange = EventManager.listenFor(
@@ -51,9 +54,7 @@ export default function TradingViewChart(){
 
     return () => {
       subSwapConfigChange.unsubscribe();
-      // if (chart !== null) {
-      //   chart.remove();
-      // }
+      chart.current.remove();
     }
   }, []);
 
@@ -77,46 +78,6 @@ export default function TradingViewChart(){
     fetchData(selectedPair, selectedTimeRange, selectedViewMode);
   }, [selectedPair, selectedTimeRange, selectedViewMode])
 
-  const fetchData = async (selectedPair, timeRange, viewMode) => {
-    let fromTokenPrices = [];
-    let toTokenPrices = [];
-    let tokenPrices = [];
-    const fromTimeStamp = 1628796813;
-    const toTimeStamp = 1629056013
-
-    if (viewMode === 'line') {
-      const url = TokenListManager.getCurrentNetworkConfig().tradeView.lineUrl;
-      if (selectedPair.fromSymbol && selectedPair.toSymbol) {
-        fromTokenPrices = await fetchLinePrices(url, selectedPair.fromAddress, 'usd', fromTimeStamp, toTimeStamp);
-        toTokenPrices = await fetchLinePrices(url, selectedPair.toAddress, 'usd', fromTimeStamp, toTimeStamp) || [];
-        tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
-      } else {
-        fromTokenPrices = await fetchLinePrices(url, selectedPair.fromAddress, 'usd', fromTimeStamp, toTimeStamp);
-        tokenPrices = mergeLinePrices(fromTokenPrices, null);
-      }
-    } else {
-      const url = TokenListManager.getCurrentNetworkConfig().tradeView.candleStickUrl;
-      if (selectedPair.fromSymbol && selectedPair.toSymbol) {
-        const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
-        const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.toSymbol.toLowerCase());
-        if (fromCoin && toCoin) {
-          fromTokenPrices = await fetchCandleStickPrices(url, fromCoin.id, 'usd', 365);
-          toTokenPrices = await fetchCandleStickPrices(url, toCoin.id, 'usd', 365) || [];
-        }
-
-        tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
-      } else {
-        const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
-        if (coinId) {
-          fromTokenPrices = await fetchCandleStickPrices(url, coinId.id, 'usd', 365);
-        }
-
-        tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
-      }
-    }
-    setPriceData(tokenPrices)
-  };
-
   useEffect(() => {
     if (!chart.current) {
       chart.current = createChart(chartContainerRef.current, {
@@ -139,16 +100,24 @@ export default function TradingViewChart(){
         },
         priceScale: {
           borderColor: '#485c7b',
-          autoScale: false,
         },
         timeScale: {
-
+          borderColor: '#485c7b',
         },
       });
     }
 
+    if (candleSeries.current) {
+      chart.current.removeSeries(candleSeries.current);
+      candleSeries.current = null;
+    }
+    if (lineSeries.current) {
+      chart.current.removeSeries(lineSeries.current);
+      lineSeries.current = null;
+    }
+
     if (selectedViewMode === viewModes[0]) {
-      const candleSeries = chart.current.addCandlestickSeries({
+      candleSeries.current = chart.current.addCandlestickSeries({
         upColor: '#4bffb5',
         downColor: '#ff4976',
         borderDownColor: '#ff4976',
@@ -157,18 +126,61 @@ export default function TradingViewChart(){
         wickUpColor: '#838ca1',
       });
 
-      candleSeries.setData(priceData);
+      candleSeries.current.setData(candlePriceData);
     } else {
-      const lineSeries = chart.current.addAreaSeries({
+      lineSeries.current = chart.current.addAreaSeries({
         topColor: "rgba(38,198,218, 0.56)",
         bottomColor: "rgba(38,198,218, 0.04)",
         lineColor: "rgba(38,198,218, 1)",
         lineWidth: 2
       });
 
-      lineSeries.setData(priceData);
+      lineSeries.current.setData(linePriceData);
     }
-  }, [priceData, selectedViewMode]);
+  }, [linePriceData, candlePriceData, selectedViewMode]);
+
+  const fetchData = async (selectedPair, timeRange, viewMode) => {
+    let fromTokenPrices = [];
+    let toTokenPrices = [];
+    let tokenPrices = [];
+    const fromTimeStamp = 1628796813;
+    const toTimeStamp = 1629056013
+
+    if (viewMode === 'line') {
+      const url = TokenListManager.getCurrentNetworkConfig().tradeView.lineUrl;
+      if (selectedPair.fromSymbol && selectedPair.toSymbol) {
+        fromTokenPrices = await fetchLinePrices(url, selectedPair.fromAddress, 'usd', fromTimeStamp, toTimeStamp);
+        toTokenPrices = await fetchLinePrices(url, selectedPair.toAddress, 'usd', fromTimeStamp, toTimeStamp) || [];
+        tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
+      } else {
+        fromTokenPrices = await fetchLinePrices(url, selectedPair.fromAddress, 'usd', fromTimeStamp, toTimeStamp);
+        tokenPrices = mergeLinePrices(fromTokenPrices, null);
+      }
+
+      setLinePriceData(tokenPrices)
+    } else {
+      const url = TokenListManager.getCurrentNetworkConfig().tradeView.candleStickUrl;
+      if (selectedPair.fromSymbol && selectedPair.toSymbol) {
+        const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
+        const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.toSymbol.toLowerCase());
+        if (fromCoin && toCoin) {
+          fromTokenPrices = await fetchCandleStickPrices(url, fromCoin.id, 'usd', 365);
+          toTokenPrices = await fetchCandleStickPrices(url, toCoin.id, 'usd', 365) || [];
+        }
+
+        tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
+      } else {
+        const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
+        if (coinId) {
+          fromTokenPrices = await fetchCandleStickPrices(url, coinId.id, 'usd', 365);
+        }
+        tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
+      }
+
+      setCandlePriceData(tokenPrices)
+    }
+
+  };
 
   const fetchLinePrices = async(baseUrl, contract, currency, fromTimestamp, toTimestamp, attempt) => {
     let result = [];
@@ -218,7 +230,7 @@ export default function TradingViewChart(){
 
   const mergeLinePrices = (fromTokenPrices, toTokenPrices) => {
     const prices = [];
-    if ((fromTokenPrices.length > 0) && (toTokenPrices.length > 0) && (fromTokenPrices.length === toTokenPrices.length)) {
+    if (fromTokenPrices && toTokenPrices && (fromTokenPrices.length > 0) && (toTokenPrices.length > 0)) {
       for (let i = 0; i < fromTokenPrices.length; i++) {
         prices.push({time: fromTokenPrices[i][0], value: BN(fromTokenPrices[i][1]).div(toTokenPrices[i][1]).toNumber()})
       }
@@ -291,13 +303,13 @@ export default function TradingViewChart(){
   return (
       <div className="trading-view-wrapper">
         <div className="trading-view-header">
-          {/*<TokenPairSelector tokenPairs={tokenPairs} selectedPair={selectedPair} handleTokenPairChange={handleTokenPairChange}/>*/}
-          {/*<ChartPriceDetails priceDetails={priceDetails}/>*/}
+          <TokenPairSelector tokenPairs={tokenPairs} selectedPair={selectedPair} handleTokenPairChange={handleTokenPairChange}/>
+          <ChartPriceDetails priceDetails={priceDetails}/>
         </div>
         <div className="trading-view-body">
-          {/*<ChartViewOption selectedViewMode={selectedViewMode} handleViewModeChange={handleViewModeChange}/>*/}
+          <ChartViewOption selectedViewMode={selectedViewMode} handleViewModeChange={handleViewModeChange}/>
           <div className="chart"  ref={chartContainerRef}/>
-          {/*<ChartRangeSelector timeRangeList={timeRangeList} handleRangeChange={handleRangeChange}/>*/}
+          <ChartRangeSelector timeRangeList={timeRangeList} handleTimeRangeChange={handleRangeChange}/>
         </div>
       </div>
     );
