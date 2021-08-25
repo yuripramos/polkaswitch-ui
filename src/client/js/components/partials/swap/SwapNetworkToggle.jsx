@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
+import * as Sentry from "@sentry/react";
 
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';

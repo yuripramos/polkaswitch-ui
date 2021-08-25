@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import _ from "underscore";
 import classnames from 'classnames';
+import * as Sentry from "@sentry/react";
+
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
