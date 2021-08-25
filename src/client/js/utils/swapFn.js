@@ -91,7 +91,7 @@ window.SwapFn = {
         // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
         value: fromToken.native ? amountBN : undefined,
         gasPrice: this.settings.gasPrice > 0
-        ? Utils.parseUnits("" + this.settings.gasPrice, "gwei")
+        ? Utils.parseUnits("" + Math.floor(this.settings.gasPrice), "gwei")
         : undefined
       }
     ).then(function(gasUnitsEstimated) {
@@ -326,7 +326,7 @@ window.SwapFn = {
           // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
           value: fromToken.native ? amountBN : undefined,
           gasPrice: this.settings.gasPrice > 0
-          ? Utils.parseUnits("" + this.settings.gasPrice, "gwei")
+          ? Utils.parseUnits("" + Math.floor(this.settings.gasPrice), "gwei")
           : undefined
         }
       ).then(function(transaction) {

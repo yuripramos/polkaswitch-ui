@@ -108,6 +108,7 @@ module.exports = (env) => {
         deploy: {
           env: isMainNetwork ? 'production' : 'development'
         },
+        dryRun: !isProduction,
 
         // webpack-specific configuration
         include: "./dist"
