@@ -24,6 +24,9 @@ export default class SwapNetworkToggle extends Component {
   handleDropdownClick(network) {
     return function handleClick(e) {
       if (network.enabled) {
+        Sentry.addBreadcrumb({
+          message: "Action: Network Changed: " + network.name
+        });
         this.setState({
           selected: network
         });

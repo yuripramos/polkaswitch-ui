@@ -142,6 +142,9 @@ export default class SwapOrderWidget extends Component {
   }
 
   onSwapTokens() {
+    Sentry.addBreadcrumb({
+      message: "Action: Swap Tokens"
+    });
     Metrics.track("swap-flipped-tokens");
     this.setState({
       to: this.state.from,
@@ -157,6 +160,10 @@ export default class SwapOrderWidget extends Component {
 
   handleSearchToggle(target) {
     return function(e) {
+      Sentry.addBreadcrumb({
+        message: "Page: Search Token: " + target,
+      });
+
       Metrics.track("swap-search-view", { closing: this.state.showSearch });
       this.setState({
         searchTarget: target,
@@ -166,6 +173,10 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleSettingsToggle(e) {
+    Sentry.addBreadcrumb({
+      message: "Page: Settings",
+    });
+
     Metrics.track("swap-settings-view", { closing: this.state.showSettings });
     this.setState({
       showSettings: !this.state.showSettings
@@ -173,6 +184,16 @@ export default class SwapOrderWidget extends Component {
   }
 
   handleConfirm(e) {
+    Sentry.addBreadcrumb({
+      message: "Page: Review",
+      data: {
+        to: this.state.to,
+        from: this.state.from,
+        fromAmount: this.state.fromAmount,
+        toAmount: this.state.toAmount
+      }
+    });
+
     Metrics.track("swap-review-step", { closing: this.state.showConfirm });
     this.setState({
       showConfirm: true

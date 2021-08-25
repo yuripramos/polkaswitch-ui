@@ -38,6 +38,7 @@ export default class SwapConfirmSlide extends Component {
       loading: true,
     }, function() {
       const fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+
       if (this.props.approveStatus === ApprovalState.APPROVED) {
         var distBN = _.map(this.props.swapDistribution, function (e) {
           return window.ethers.utils.parseUnits("" + e, "wei");
