@@ -11,8 +11,8 @@ const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 const DEFAULT_SWAP_SETTINGS = Object.freeze({
-  gasPrice: 0, // auto,
   gasSpeedSetting: 'safeLow',
+  customGasPrice: 0,
   isCustomGasPrice: false,
   slippage: 0.5
 });
@@ -22,7 +22,24 @@ window.Storage = {
 
   initialize: function() {
     let cachedSettings = store.get('settings');
-    this.swapSettings = _.extend(this.swapSettings, cachedSettings);
+    if (_.has(cachedSettings, 'gasSpeedSetting')) {
+      this.swapSettings = _.extend(
+        this.swapSettings,
+        _.pick(cachedSettings, _.keys(DEFAULT_SWAP_SETTINGS))
+      );
+    }
+  },
+
+  isGasAutomatic: function() {
+    return !this.swapSettings.isCustomGasPrice && (this.swapSettings.gasSpeedSetting === "safeLow");
+  },
+
+  getGasPrice: function() {
+    if (this.swapSettings.isCustomGasPrice) {
+      return Math.floor(+this.swapSettings.customGasPrice);
+    } else {
+      return Math.floor(+window.GAS_STATS[this.swapSettings.gasSpeedSetting]);
+    }
   },
 
   clearSettings: function() {

@@ -20,36 +20,29 @@ export default class GasPriceControl extends Component {
   }
 
   getStateFromStorage() {
-    let gasPrice = SwapFn.getSetting().gasPrice;
     let gasSpeedSetting = SwapFn.getSetting().gasSpeedSetting;
     let isCustomGasPrice = SwapFn.getSetting().isCustomGasPrice;
+    let customGasPrice = SwapFn.getSetting().customGasPrice;
 
-    if (isCustomGasPrice) {
-      return {
-        custom: true,
-        customValue: gasPrice,
-        gasSpeed: gasSpeedSetting,
-        current: 0
-      };
-    } else {
-      return {
-        custom: false,
-        customValue: '',
-        gasSpeed: gasSpeedSetting,
-        current: gasSpeedSetting == "safeLow" ? 0 : window.GAS_STATS[gasSpeedSetting]
-      };
-    }
+    return {
+      custom: isCustomGasPrice,
+      customValue: isCustomGasPrice ? customGasPrice : '',
+      gasSpeed: gasSpeedSetting
+    };
   }
 
   handleClick(event) {
     this.setState({
       gasSpeed: event.target.value,
-      current: window.GAS_STATS[event.target.value],
       custom: false,
       customValue: ''
     });
 
-    this.props.handleGasPrice(window.GAS_STATS[event.target.value], event.target.value, false);
+    SwapFn.updateSettings({
+      gasSpeedSetting: event.target.value,
+      customGasPrice: '',
+      isCustomGasPrice: false
+    });
   }
 
   onCustomChange(e) {
@@ -59,10 +52,12 @@ export default class GasPriceControl extends Component {
     });
 
     if (!isNaN(e.target.value) && e.target.value.match(/^\d+(\.\d+)?$/)) {
-      this.props.handleGasPrice(+e.target.value, this.state.gasSpeed, true);
+      SwapFn.updateSettings({
+        customGasPrice: +e.target.value,
+        isCustomGasPrice: true
+      });
     } else {
       this.setState({
-        current: -1,
         custom: false
       });
     }

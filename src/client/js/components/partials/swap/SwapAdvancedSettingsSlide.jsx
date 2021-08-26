@@ -11,7 +11,6 @@ export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
     this.state = { refresh: Date.now() };
-    this.handleGasPrice = this.handleGasPrice.bind(this);
     this.handleSlippage = this.handleSlippage.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
 
@@ -28,16 +27,6 @@ export default class SwapAdvancedSettingsSlide extends Component {
   handleSettingsChange(e) {
     this.setState({
       refresh: Date.now()
-    });
-  }
-
-  handleGasPrice(gasValue, gasSpeed, isCustomGasPrice) {
-    _.defer(function() {
-      SwapFn.updateSettings({
-        gasPrice: gasValue,
-        gasSpeedSetting: gasSpeed,
-        isCustomGasPrice
-      });
     });
   }
 
@@ -78,7 +67,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <GasPriceControl refresh={this.state.refresh} handleGasPrice={this.handleGasPrice}/>
+            <GasPriceControl refresh={this.state.refresh}/>
           </div>
 
           <div className="option">

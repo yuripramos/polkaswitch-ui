@@ -80,19 +80,16 @@ window.SwapFn = {
         // gasPrice: // the price to pay per gas
         // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
         value: fromToken.native ? amountBN : undefined,
-        gasPrice: Storage.swapSettings.gasPrice > 0
-        ? Utils.parseUnits("" + Math.floor(Storage.swapSettings.gasPrice), "gwei")
+        gasPrice: !Storage.isGasAutomatic()
+        ? Utils.parseUnits("" + Storage.getGasPrice(), "gwei")
         : undefined
       }
     ).then(function(gasUnitsEstimated) {
       // Returns the estimate units of gas that would be
       // required to execute the METHOD_NAME with args and overrides.
-      return Utils.formatUnits(Utils.parseUnits("" +
-        Math.floor((Storage.swapSettings.gasPrice > 0 ?
-          Storage.swapSettings.gasPrice :
-          window.GAS_STATS.safeLow) * gasUnitsEstimated.toString()),
-        "gwei"
-      ));
+      return Utils.formatUnits(
+        Utils.parseUnits("" + (Storage.getGasPrice() * gasUnitsEstimated.toString()), "gwei")
+      );
     }.bind(this));
 
   },
@@ -315,8 +312,8 @@ window.SwapFn = {
           // gasPrice: // the price to pay per gas
           // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
           value: fromToken.native ? amountBN : undefined,
-          gasPrice: Storage.swapSettings.gasPrice > 0
-          ? Utils.parseUnits("" + Math.floor(Storage.swapSettings.gasPrice), "gwei")
+          gasPrice: !Storage.isGasAutomatic()
+          ? Utils.parseUnits("" + Storage.getGasPrice(), "gwei")
           : undefined
         }
       ).then(function(transaction) {

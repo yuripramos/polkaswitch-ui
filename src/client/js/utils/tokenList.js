@@ -61,7 +61,7 @@ window.TokenListManager = {
     window.GAS_STATS = _.mapObject(_.pick(gasStats, [
       'fast', 'fastest', 'safeLow'
     ]), function(v, k) {
-      return Math.ceil(v * 1.20);
+      return Math.ceil(v * 1.10);
     });
 
     window.TOKEN_LIST = tokenList;
