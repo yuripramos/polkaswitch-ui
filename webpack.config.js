@@ -40,7 +40,7 @@ module.exports = (env) => {
   ];
 
   if (isProduction) {
-    plugins.append(
+    plugins.push(
       new SentryWebpackPlugin({
         authToken: process.env.SENTRY_AUTH_TOKEN,
         org: "polkaswitch",
