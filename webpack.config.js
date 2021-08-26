@@ -20,6 +20,43 @@ module.exports = (env) => {
     console.log('Using DEVELOPMENT config');
   }
 
+  let plugins = [
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/client/index.html',
+      hash: false
+    }),
+    new webpack.EnvironmentPlugin({
+      IS_PRODUCTION: !!isProduction,
+      IS_MAIN_NETWORK: isMainNetwork,
+      SENTRY_JS_DSN: false,
+      HEROKU_RELEASE_VERSION: false,
+      HEROKU_APP_NAME: false
+    }),
+    new NodePolyfillPlugin()
+  ];
+
+  if (isProduction) {
+    plugins.append(
+      new SentryWebpackPlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "polkaswitch",
+        project: "frontend",
+        release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
+        deploy: {
+          env: isMainNetwork ? 'production' : 'development'
+        },
+        dryRun: !isProduction,
+
+        // webpack-specific configuration
+        include: "./dist"
+      })
+    );
+  }
+
   return {
     entry: ['babel-polyfill', './src/client/js/index.js'],
     output: {
@@ -83,37 +120,7 @@ module.exports = (env) => {
       }
     },
     devtool : isProduction ? 'source-map' : 'inline-source-map',
-    plugins: [
-      new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({
-        filename: '[name].[contenthash].css'
-      }),
-      new HtmlWebpackPlugin({
-        template: './src/client/index.html',
-        hash: false
-      }),
-      new webpack.EnvironmentPlugin({
-        IS_PRODUCTION: !!isProduction,
-        IS_MAIN_NETWORK: isMainNetwork,
-        SENTRY_JS_DSN: false,
-        HEROKU_RELEASE_VERSION: false,
-        HEROKU_APP_NAME: false
-      }),
-      new NodePolyfillPlugin(),
-      new SentryWebpackPlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: "polkaswitch",
-        project: "frontend",
-        release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
-        deploy: {
-          env: isMainNetwork ? 'production' : 'development'
-        },
-        dryRun: !isProduction,
-
-        // webpack-specific configuration
-        include: "./dist"
-      }),
-    ],
+    plugins: plugins,
     experiments: {
       topLevelAwait: true
     }
