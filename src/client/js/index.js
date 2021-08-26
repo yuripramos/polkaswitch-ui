@@ -5,6 +5,7 @@ import Wallet from './utils/wallet';
 import TokenListManager from './utils/tokenList';
 import SwapFn from './utils/swapFn';
 import TxQueue from './utils/txQueue';
+import Storage from './utils/storage';
 import _ from 'underscore';
 import { ethers } from 'ethers';
 import BN from 'bignumber.js';
@@ -48,9 +49,10 @@ window.NETWORK_CONFIGS = await config.json();
 window.SELECTED_NETWORK = _.findWhere(window.NETWORK_CONFIGS, { enabled: true }).name;
 
 // initialize TokenList
+await Storage.initialize();
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
-await SwapFn.initalize();
+await SwapFn.initialize();
 TxQueue.initalize();
 
 if (Wallet.isMetamaskSupported()) {

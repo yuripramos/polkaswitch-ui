@@ -5,9 +5,9 @@ import TxQueue from './txQueue';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
+import Storage from './storage';
 import BN from 'bignumber.js';
 import { ApprovalState } from "../constants/Status";
-let store = require('store');
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -17,15 +17,7 @@ const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.SwapFn = {
-  settings: {
-    gasPrice: 0, // auto,
-    isCustomGasPrice: false,
-    slippage: 0.5
-  },
-
-  initalize: function() {
-    let cachedSettings = store.get('settings');
-    this.settings = _.extend(this.settings, cachedSettings);
+  initialize: function() {
   },
 
   validateEthValue: function(token, value) {
@@ -49,20 +41,18 @@ window.SwapFn = {
   },
 
   updateSettings: function(settings) {
-    this.settings = _.extend(this.getSetting(), settings);
-    store.set('settings', this.settings)
-    EventManager.emitEvent('swapSettingsUpdated', 1);
+    Storage.updateSettings(settings);
   },
 
   getSetting: function () {
-    return this.settings;
+    return Storage.swapSettings;
   },
 
   calculateMinReturn: function(fromToken, toToken, amount) {
     return this.getExpectedReturn(
       fromToken, toToken, amount
     ).then(function(actualReturn) {
-      var y = 1.0 - (this.settings.slippage / 100.0);
+      var y = 1.0 - (Storage.swapSettings.slippage / 100.0);
       var r = BN(actualReturn.returnAmount.toString()).times(y);
 
       var minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
@@ -90,16 +80,16 @@ window.SwapFn = {
         // gasPrice: // the price to pay per gas
         // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
         value: fromToken.native ? amountBN : undefined,
-        gasPrice: this.settings.gasPrice > 0
-        ? Utils.parseUnits("" + Math.floor(this.settings.gasPrice), "gwei")
+        gasPrice: Storage.swapSettings.gasPrice > 0
+        ? Utils.parseUnits("" + Math.floor(Storage.swapSettings.gasPrice), "gwei")
         : undefined
       }
     ).then(function(gasUnitsEstimated) {
       // Returns the estimate units of gas that would be
       // required to execute the METHOD_NAME with args and overrides.
       return Utils.formatUnits(Utils.parseUnits("" +
-        Math.floor((this.settings.gasPrice > 0 ?
-          this.settings.gasPrice :
+        Math.floor((Storage.swapSettings.gasPrice > 0 ?
+          Storage.swapSettings.gasPrice :
           window.GAS_STATS.safeLow) * gasUnitsEstimated.toString()),
         "gwei"
       ));
@@ -325,8 +315,8 @@ window.SwapFn = {
           // gasPrice: // the price to pay per gas
           // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
           value: fromToken.native ? amountBN : undefined,
-          gasPrice: this.settings.gasPrice > 0
-          ? Utils.parseUnits("" + Math.floor(this.settings.gasPrice), "gwei")
+          gasPrice: Storage.swapSettings.gasPrice > 0
+          ? Utils.parseUnits("" + Math.floor(Storage.swapSettings.gasPrice), "gwei")
           : undefined
         }
       ).then(function(transaction) {

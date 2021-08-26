@@ -2,6 +2,8 @@
 import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
+import Storage from './storage';
+
 let store = require('store');
 const Utils = ethers.utils;
 
@@ -25,6 +27,9 @@ window.TokenListManager = {
     window.SELECTED_NETWORK = network.name;
 
     this.updateTokenList().then(function() {
+      // reset default settings because gas values are updated per network
+      Storage.clearSettings();
+
       EventManager.emitEvent('networkUpdated', 1);
       EventManager.emitEvent('walletUpdated', 1);
       if (connectStrategy) {
@@ -56,7 +61,7 @@ window.TokenListManager = {
     window.GAS_STATS = _.mapObject(_.pick(gasStats, [
       'fast', 'fastest', 'safeLow'
     ]), function(v, k) {
-      return Math.ceil(v * 1.25);
+      return Math.ceil(v * 1.20);
     });
 
     window.TOKEN_LIST = tokenList;
