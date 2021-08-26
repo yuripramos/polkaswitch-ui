@@ -30,18 +30,6 @@ window.Storage = {
     }
   },
 
-  isGasAutomatic: function() {
-    return !this.swapSettings.isCustomGasPrice && (this.swapSettings.gasSpeedSetting === "safeLow");
-  },
-
-  getGasPrice: function() {
-    if (this.swapSettings.isCustomGasPrice) {
-      return Math.floor(+this.swapSettings.customGasPrice);
-    } else {
-      return Math.floor(+window.GAS_STATS[this.swapSettings.gasSpeedSetting]);
-    }
-  },
-
   clearSettings: function() {
     this.swapSettings = _.extend({}, DEFAULT_SWAP_SETTINGS);
     store.set('settings', this.swapSettings);

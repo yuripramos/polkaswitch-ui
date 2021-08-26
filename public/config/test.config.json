@@ -109,7 +109,7 @@
     "nodeProvider": "https://api.avax.network/ext/bc/C/rpc",
     "nodeProvider2": "https://avalanche--mainnet--rpc.datahub.figment.io/apikey/b56dcd7987f05a43637a94ad98d546be/ext/bc/C/rpc",
     "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
-    "gasApi": "https://bscgas.info/gas",
+    "gasApi": false,
     "chain": {
       "chainId": "0xA86A",
       "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],

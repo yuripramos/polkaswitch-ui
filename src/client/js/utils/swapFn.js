@@ -48,6 +48,26 @@ window.SwapFn = {
     return Storage.swapSettings;
   },
 
+  isNetworkGasDynamic: function() {
+    var network = TokenListManager.getCurrentNetworkConfig();
+    // if no gasAPI supplied, always default to auto;
+    return !network.gasApi;
+  },
+
+  isGasAutomatic: function() {
+    return this.isNetworkGasDynamic() ||
+      (!Storage.swapSettings.isCustomGasPrice &&
+        (Storage.swapSettings.gasSpeedSetting === "safeLow"));
+  },
+
+  getGasPrice: function() {
+    if (Storage.swapSettings.isCustomGasPrice) {
+      return Math.floor(+Storage.swapSettings.customGasPrice);
+    } else {
+      return Math.floor(+window.GAS_STATS[Storage.swapSettings.gasSpeedSetting]);
+    }
+  },
+
   calculateMinReturn: function(fromToken, toToken, amount) {
     return this.getExpectedReturn(
       fromToken, toToken, amount
@@ -80,15 +100,25 @@ window.SwapFn = {
         // gasPrice: // the price to pay per gas
         // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
         value: fromToken.native ? amountBN : undefined,
-        gasPrice: !Storage.isGasAutomatic()
-        ? Utils.parseUnits("" + Storage.getGasPrice(), "gwei")
+        gasPrice: !this.isGasAutomatic()
+        ? Utils.parseUnits("" + this.getGasPrice(), "gwei")
         : undefined
       }
-    ).then(function(gasUnitsEstimated) {
+    ).then(async function(gasUnitsEstimated) {
       // Returns the estimate units of gas that would be
       // required to execute the METHOD_NAME with args and overrides.
+
+      let gasPrice;
+
+      if (this.isGasAutomatic()) {
+        gasPrice = await Wallet.getReadOnlyProvider().getGasPrice();
+        gasPrice = Math.ceil(Utils.formatUnits(gasPrice, "gwei"));
+      } else {
+        gasPrice = this.getGasPrice();
+      }
+
       return Utils.formatUnits(
-        Utils.parseUnits("" + (Storage.getGasPrice() * gasUnitsEstimated.toString()), "gwei")
+        Utils.parseUnits("" + (gasPrice * gasUnitsEstimated.toString()), "gwei")
       );
     }.bind(this));
 
@@ -312,8 +342,8 @@ window.SwapFn = {
           // gasPrice: // the price to pay per gas
           // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
           value: fromToken.native ? amountBN : undefined,
-          gasPrice: !Storage.isGasAutomatic()
-          ? Utils.parseUnits("" + Storage.getGasPrice(), "gwei")
+          gasPrice: !this.isGasAutomatic()
+          ? Utils.parseUnits("" + this.getGasPrice(), "gwei")
           : undefined
         }
       ).then(function(transaction) {

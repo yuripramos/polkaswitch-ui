@@ -41,7 +41,13 @@ window.TokenListManager = {
   updateTokenList: async function() {
     var network = this.getCurrentNetworkConfig();
     var tokenList = await(await fetch(network.tokenList)).json();
-    var gasStats = await(await fetch(network.gasApi)).json();
+    var gasStats;
+
+    if (network.gasApi) {
+      gasStats = await(await fetch(network.gasApi)).json();
+    } else {
+      gasStats = { safeLow: 0, fast: 0, fastest: 0 };
+    }
 
     tokenList = _.map(_.filter(tokenList, function(v) {
       return (v.native) || (v.symbol && Utils.isAddress(v.address));
@@ -53,7 +59,7 @@ window.TokenListManager = {
     });
 
     // Binance Smart Chain GasAPI has different fields
-    if (!gasStats.safeLow) {
+    if (!_.has(gasStats, 'safeLow')) {
       gasStats.safeLow = gasStats.standard;
       gasStats.fastest = gasStats.fast;
     }
