@@ -106,7 +106,7 @@
       "0x4BD17003473389A42DAF6a0a729f6Fdb328BbBd7"
     ],
     "tradeView": {
-      "lineUrl": "https://api.coingecko.com/api/v3/coins/inance-smart-chain",
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/binance-smart-chain",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     }
   }

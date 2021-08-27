@@ -33,20 +33,34 @@ export default function TokenPairSelector(props){
       <div className="level-item level-left">
         <div className={classnames("dropdown is-right is-hoverable")}>
           <div className="dropdown-trigger">
-            <button className="button is-info is-light" aria-haspopup="true" aria-controls="dropdown-menu">
-                <span className="level">
-                  <span className="level-left my-2">
-                    <span className="level-item">
-                      <TokenIconImg
-                          size={30}
-                          imgSrc="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png" />
-                    </span>
-                    <span className="level-item">{props.selectedPair.name}</span>
-                  </span>
+            <button className="button is-info is-light" style={{padding: 8}} aria-haspopup="true" aria-controls="dropdown-menu">
+              {
+                props.selectedPair.fromSymbol && props.selectedPair.toSymbol &&
+                <span className="level-left">
+                  <TokenIconImg
+                    size={30}
+                    imgSrc={props.selectedPair.fromTokenLogo}/>
+                  <TokenIconImg
+                    size={30}
+                    marginLeft={-10}
+                    marginRight={10}
+                    imgSrc={props.selectedPair.toTokenLogo}/>
+                  <span className="level-item">{props.selectedPair.name}</span>
                 </span>
+              }
+              {
+                props.selectedPair.fromSymbol && !props.selectedPair.toSymbol &&
+                <span className="level-left">
+                  <TokenIconImg
+                    size={30}
+                    marginRight={10}
+                    imgSrc={props.selectedPair.fromTokenLogo}/>
+                  <span className="level-item">{props.selectedPair.name}</span>
+                </span>
+              }
               <span className="icon is-small">
-                  <ion-icon name="chevron-down"/>
-                </span>
+                <ion-icon name="chevron-down"/>
+              </span>
             </button>
           </div>
           <div className="dropdown-menu" id="dropdown-menu" role="menu">

@@ -5,11 +5,11 @@ export default function ChartPriceDetails() {
   }, []);
 
   return (
-      <div className="level-item level-left">
-          <div className="token-symbol-wrapper hint--bottom" aria-label="Bal: ">
-              <div className="symbol">$513</div>
-              <div className="balance">33.57%</div>
-              <div className="balance">Past Month</div>
+      <div className="price-details" aria-label="Bal: ">
+          <div className="price">$513</div>
+          <div className="wrapper">
+            <div className="percent">33.57%</div>
+            <div className="period">Past Month</div>
           </div>
       </div>
     );

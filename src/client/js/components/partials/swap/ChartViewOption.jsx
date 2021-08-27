@@ -16,14 +16,14 @@ export default function ChartViewOption(props) {
   return (
       <div className="chart-view-option">
         <span
-            className="switcher hint--bottom hint--medium"
+            className="trading-view-switcher hint--bottom hint--medium"
         >
           <input
-              id="order-type-switcher"
+              id="trading-view-switcher"
               type="checkbox"
               checked={props.selectedViewMode !== 'line'}
               onChange={handleViewOptionChange} />
-          <label htmlFor="order-type-switcher"/>
+          <label htmlFor="trading-view-switcher"/>
         </span>
       </div>
   );

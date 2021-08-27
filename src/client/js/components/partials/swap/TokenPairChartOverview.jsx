@@ -7,8 +7,8 @@ export default function TokenPairChartOverview(){
   return (
       <div>
         <TradingViewChart/>
-        <Dashboard/>
-        <Routing/>
+        {/*<Dashboard/>*/}
+        {/*<Routing/>*/}
       </div>
     );
 }

@@ -4,6 +4,36 @@
   .trading-view-header {
     display: flex;
     justify-content: space-between;
+    margin-top: 12px;
+
+    .price-details {
+
+      .price {
+        line-height: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: end;
+      }
+
+      .wrapper {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+        align-items: flex-end;
+        margin-top: 6px;
+
+        .percent {
+          color: #58B57E;
+          font-size: 18px;
+        }
+
+        .period {
+          margin-left: 6px;
+          font-size: 16px;
+        }
+      }
+    }
   }
 
   .trading-view-body {
@@ -15,6 +45,8 @@
       flex-wrap: wrap;
       box-sizing: border-box;
       justify-content: flex-end;
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
 
     .chart {
@@ -28,16 +60,32 @@
       box-sizing: border-box;
       align-items: center;
       justify-content: flex-end;
+      margin-top: 10px;
 
-      .time-range {
+      .time-range-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 39px;
         cursor: pointer;
         height: 24px;
         padding: 3px 6px;
-        background: rgb(9, 22, 46);
+        background: rgb(255, 255, 255);;
         box-sizing: border-box;
         margin-left: 15px;
         border-radius: 4px;
+
+        &:hover {
+          color: #333;
+          border-radius: 4px;
+          background: #eee;
+        }
+      }
+
+      .active {
+        font-weight: bold;
+        border-radius: 4px;
+        background: #eee;
       }
     }
   }

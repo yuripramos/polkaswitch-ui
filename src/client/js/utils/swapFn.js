@@ -60,12 +60,6 @@ window.SwapFn = {
     return this.settings;
   },
 
-  updateSwapConfig: function(swap) {
-    this.swap = _.extend(this.getSwapConfig(), swap);
-    store.set('swap', this.swap)
-    EventManager.emitEvent('swapConfigUpdated', 1);
-  },
-
   getSwapConfig: function () {
     return this.swap;
   },
