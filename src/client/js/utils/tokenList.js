@@ -46,7 +46,10 @@ window.TokenListManager = {
     if (network.gasApi) {
       gasStats = await(await fetch(network.gasApi)).json();
     } else {
-      gasStats = { safeLow: 0, fast: 0, fastest: 0 };
+      const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+      let defaultGasPrice = Math.ceil(Utils.formatUnits((await provider.getGasPrice()), "gwei"));
+
+      gasStats = { safeLow: defaultGasPrice, fast: defaultGasPrice, fastest: defaultGasPrice };
     }
 
     tokenList = _.map(_.filter(tokenList, function(v) {

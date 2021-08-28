@@ -74,7 +74,7 @@
     "chainId": "56",
     "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
     "explorerBaseUrl": "https://bscscan.com/tx/",
-    "gasApi": "https://bscgas.info/gas",
+    "gasApi": false,
     "chain": {
       "chainId": "0x38",
       "rpcUrls": ["https://bsc-dataseed.binance.org/"],
