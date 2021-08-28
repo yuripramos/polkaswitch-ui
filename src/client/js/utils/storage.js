@@ -20,6 +20,8 @@ const DEFAULT_SWAP_SETTINGS = Object.freeze({
 window.Storage = {
   swapSettings: _.extend({}, DEFAULT_SWAP_SETTINGS),
 
+  selectedNetwork: false,
+
   initialize: function() {
     let cachedSettings = store.get('settings');
     if (_.has(cachedSettings, 'gasSpeedSetting')) {
@@ -28,6 +30,23 @@ window.Storage = {
         _.pick(cachedSettings, _.keys(DEFAULT_SWAP_SETTINGS))
       );
     }
+
+    // initialize the Network
+    var defaultNetwork = _.findWhere(window.NETWORK_CONFIGS, { enabled: true }).name;
+    var storedNetwork = _.findWhere(window.NETWORK_CONFIGS, {
+      name: store.get('selectedNetwork'),
+      enabled: true
+    });
+    this.selectedNetwork = (storedNetwork && storedNetwork.name) || defaultNetwork;
+  },
+
+  updateNetwork: function(network) {
+    this.selectedNetwork = network.name;
+    store.set('selectedNetwork', this.selectedNetwork);
+  },
+
+  getNetwork: function() {
+    return this.selectedNetwork;
   },
 
   clearSettings: function() {

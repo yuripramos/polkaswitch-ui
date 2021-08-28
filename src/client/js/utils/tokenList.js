@@ -12,7 +12,7 @@ window.TokenListManager = {
   },
 
   getCurrentNetworkConfig: function() {
-    var network = _.findWhere(window.NETWORK_CONFIGS, { name: window.SELECTED_NETWORK });
+    var network = _.findWhere(window.NETWORK_CONFIGS, { name: Storage.getNetwork() });
     return network;
   },
 
@@ -24,7 +24,7 @@ window.TokenListManager = {
   updateNetwork: function(network, connectStrategy) {
     EventManager.emitEvent('networkPendingUpdate', 1);
 
-    window.SELECTED_NETWORK = network.name;
+    Storage.updateNetwork(network);
 
     this.updateTokenList().then(function() {
       // reset default settings because gas values are updated per network
