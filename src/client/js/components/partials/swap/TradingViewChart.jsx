@@ -59,7 +59,8 @@ export default function TradingViewChart(){
   const [selectedPair, setSelectedPair] = useState(initTokenPair[0]);
   const [selectedViewMode, setSelectedViewMode] = useState(viewModes[1]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRangeList['line'][0]);
-  const [priceDetails, setPriceDetails] = useState({price:0, percent: 0, from: timeRangeList['line'][0].from})
+  const [isPair, setIsPair] = useState(true);
+  const [priceDetails, setPriceDetails] = useState({ price:0, percent: 0, from: timeRangeList['line'][0].from })
   const [linePriceData, setLinePriceData] = useState([]);
   const [candlePriceData, setCandlePriceData] = useState([]);
 
@@ -172,18 +173,13 @@ export default function TradingViewChart(){
         const toAddress = getContractAddress( selectedPair.toAddress, selectedPair.toSymbol, platform);
 
         fromTokenPrices = await fetchLinePrices(url, fromAddress, 'usd', fromTimestamp, toTimestamp);
-        console.log('fromTokenPrices ::', fromTokenPrices);
         toTokenPrices = await fetchLinePrices(url, toAddress, 'usd', fromTimestamp, toTimestamp) || [];
-        console.log('toTokenPrices ::', toTokenPrices);
         tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
-        console.log('line token Price ::', tokenPrices)
       } else {
         const fromAddress = getContractAddress( selectedPair.fromAddress, selectedPair.fromSymbol, platform);
 
         fromTokenPrices = await fetchLinePrices(url, fromAddress, 'usd', fromTimestamp, toTimestamp);
-        console.log('fromTokenPrices ::', fromTokenPrices);
         tokenPrices = mergeLinePrices(fromTokenPrices, null);
-        console.log('line token Price ::', tokenPrices)
       }
 
       setLinePriceData(tokenPrices);
@@ -200,7 +196,6 @@ export default function TradingViewChart(){
         }
 
         tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
-        console.log('CandleStick token Price ::', tokenPrices)
       } else {
         const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
 
@@ -209,23 +204,44 @@ export default function TradingViewChart(){
         }
 
         tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
-        console.log('CandleStick token Price ::', tokenPrices)
       }
 
       setCandlePriceData(tokenPrices)
     }
 
+    if (tokenPrices.length >  0) {
+      const { price, percent } = getPriceDetails(tokenPrices, selectedViewMode)
+      setPriceDetails({ price, percent, from: selectedTimeRange.from })
+    } else {
+      setPriceDetails({ price: 0, percent: 0, from: selectedTimeRange.from })
+    }
   };
 
+  const getPriceDetails = (prices, viewMode) => {
+    let length = prices.length
+    let price =  0;
+    let percent = 0;
+    const firstItem = prices[0]
+    const lastItem = prices[length - 1]
+
+    if (viewMode === 'line') {
+      percent = new BN(lastItem.value).div(new BN(firstItem.value)).times(100).minus(100).toFixed(2) ;
+      price = lastItem.value;
+    } else {
+      percent = new BN(lastItem.open).div(new BN(firstItem.open)).times(100).minus(100).toFixed(2);
+      console.log(percent)
+      price = lastItem.open;
+    }
+
+    return { price,  percent }
+  }
+
   const getContractAddress = (contract, symbol, platform) => {
-    console.log('platform ::', platform)
     if (wrapTokens.hasOwnProperty(symbol)) {
       return wrapTokens[symbol];
     } else {
       const coin = TokenListManager.findTokenBySymbolFromCoinGecko(symbol.toLowerCase());
-      console.log('coin ::', coin)
       if (coin && coin['platforms'].hasOwnProperty(platform)) {
-        console.log('contract ::', coin['platforms'][platform]);
         return coin['platforms'][platform];
       }
       return contract;
@@ -375,7 +391,6 @@ export default function TradingViewChart(){
     let fromTimestamp = Date.now();
     const toTimestamp = Math.ceil(Date.now() / 1000);
     let currentDate = new Date();
-    console.log('time range :::', timeRange.name)
     switch (timeRange.name) {
       case "1D":
         currentDate.setDate(currentDate.getDate() - 1);
@@ -405,7 +420,11 @@ export default function TradingViewChart(){
   }
 
   const handleTokenPairChange = (pair) => {
-    console.log('### pair ###', pair)
+    if (pair && pair.fromSymbol && pair.toSymbol) {
+      setIsPair(true);
+    } else {
+      setIsPair(false);
+    }
     setSelectedPair(pair);
   }
 
@@ -426,7 +445,7 @@ export default function TradingViewChart(){
               selectedPair={selectedPair}
               handleTokenPairChange={handleTokenPairChange}
           />
-          <ChartPriceDetails priceDetails={priceDetails}/>
+          <ChartPriceDetails priceDetails={priceDetails} isPair={isPair}/>
         </div>
         <div className="trading-view-body">
           <ChartViewOption
