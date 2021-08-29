@@ -146,6 +146,7 @@ export default function TradingViewChart(){
       });
 
       candleSeries.current.setData(candlePriceData);
+      chart.current.timeScale().fitContent();
     } else {
       lineSeries.current = chart.current.addAreaSeries({
         topColor: "rgba(38,198,218, 0.56)",
@@ -155,7 +156,9 @@ export default function TradingViewChart(){
       });
 
       lineSeries.current.setData(linePriceData);
+      chart.current.timeScale().fitContent();
     }
+
   }, [linePriceData, candlePriceData]);
 
   const fetchData = async (selectedPair, timeRange, viewMode) => {
@@ -445,7 +448,7 @@ export default function TradingViewChart(){
               selectedPair={selectedPair}
               handleTokenPairChange={handleTokenPairChange}
           />
-          <ChartPriceDetails priceDetails={priceDetails} isPair={isPair}/>
+          <ChartPriceDetails priceDetails={priceDetails}/>
         </div>
         <div className="trading-view-body">
           <ChartViewOption

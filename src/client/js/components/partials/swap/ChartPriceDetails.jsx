@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { createChart, CrosshairMode } from "lightweight-charts";
+import React from 'react';
 export default function ChartPriceDetails(props) {
   const priceDetails = props.priceDetails
   const renderPrice = (price, isPair) => {
