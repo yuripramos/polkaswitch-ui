@@ -420,6 +420,7 @@ export default function TradingViewChart(){
     const updatedTokenPairList = createTokenPairList();
     setTokenPairs(updatedTokenPairList);
     setSelectedPair(updatedTokenPairList[0]);
+    setIsPair(true);
   }
 
   const handleTokenPairChange = (pair) => {
@@ -448,7 +449,7 @@ export default function TradingViewChart(){
               selectedPair={selectedPair}
               handleTokenPairChange={handleTokenPairChange}
           />
-          <ChartPriceDetails priceDetails={priceDetails}/>
+          <ChartPriceDetails priceDetails={priceDetails} isPair={isPair}/>
         </div>
         <div className="trading-view-body">
           <ChartViewOption
