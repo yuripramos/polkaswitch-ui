@@ -110,7 +110,7 @@ window.TokenListManager = {
 
   findTokenBySymbolFromCoinGecko: function(symbol) {
     return _.find(window.COINGECKO_TOKEN_LIST, function(v) {
-      return v.symbol === symbol;
+      return v.symbol.toLowerCase() === symbol;
     });
   },
 

@@ -6,7 +6,6 @@ import ChartViewOption from "./ChartViewOption";
 import ChartRangeSelector from "./ChartRangeSelector";
 import EventManager from "../../../utils/events";
 import BN from 'bignumber.js';
-import _ from "underscore";
 
 export default function TradingViewChart(){
 
@@ -27,7 +26,8 @@ export default function TradingViewChart(){
   };
 
   const wrapTokens = {
-    "BNB": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
+    "BNB": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "AVAX": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
   }
 
   const viewModes = ["candlestick", "line"];
@@ -158,17 +158,18 @@ export default function TradingViewChart(){
   }, [linePriceData, candlePriceData]);
 
   const fetchData = async (selectedPair, timeRange, viewMode) => {
+    const config = TokenListManager.getCurrentNetworkConfig();
     let fromTokenPrices = [];
     let toTokenPrices = [];
     let tokenPrices = [];
     if (viewMode === 'line') {
       const { fromTimestamp, toTimestamp } = getTimestamps(timeRange);
-      const url = TokenListManager.getCurrentNetworkConfig().tradeView.lineUrl;
-
+      const url = config.tradeView.lineUrl;
+      const platform = config.tradeView.platform;
 
       if (selectedPair.fromSymbol && selectedPair.toSymbol) {
-        const fromAddress = wrapTokens.hasOwnProperty(selectedPair.fromSymbol) ? wrapTokens[selectedPair.fromSymbol] : selectedPair.fromAddress;
-        const toAddress = wrapTokens.hasOwnProperty(selectedPair.toSymbol) ? wrapTokens[selectedPair.toSymbol] : selectedPair.toAddress;
+        const fromAddress = getContractAddress( selectedPair.fromAddress, selectedPair.fromSymbol, platform);
+        const toAddress = getContractAddress( selectedPair.toAddress, selectedPair.toSymbol, platform);
 
         fromTokenPrices = await fetchLinePrices(url, fromAddress, 'usd', fromTimestamp, toTimestamp);
         console.log('fromTokenPrices ::', fromTokenPrices);
@@ -177,7 +178,7 @@ export default function TradingViewChart(){
         tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
         console.log('line token Price ::', tokenPrices)
       } else {
-        const fromAddress = wrapTokens.hasOwnProperty(selectedPair.fromSymbol) ? wrapTokens[selectedPair.fromSymbol] : selectedPair.fromAddress;
+        const fromAddress = getContractAddress( selectedPair.fromAddress, selectedPair.fromSymbol, platform);
 
         fromTokenPrices = await fetchLinePrices(url, fromAddress, 'usd', fromTimestamp, toTimestamp);
         console.log('fromTokenPrices ::', fromTokenPrices);
@@ -187,13 +188,14 @@ export default function TradingViewChart(){
 
       setLinePriceData(tokenPrices);
     } else {
-      const url = TokenListManager.getCurrentNetworkConfig().tradeView.candleStickUrl;
+      const url = config.tradeView.candleStickUrl;
+
       if (selectedPair.fromSymbol && selectedPair.toSymbol) {
         const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
         const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.toSymbol.toLowerCase());
 
         if (fromCoin && toCoin) {
-          fromTokenPrices = await fetchCandleStickPrices(url, fromCoin.id, 'usd', timeRange.value);
+          fromTokenPrices = await fetchCandleStickPrices(url, fromCoin.id, 'usd', timeRange.value) || [];
           toTokenPrices = await fetchCandleStickPrices(url, toCoin.id, 'usd', timeRange.value) || [];
         }
 
@@ -214,6 +216,21 @@ export default function TradingViewChart(){
     }
 
   };
+
+  const getContractAddress = (contract, symbol, platform) => {
+    console.log('platform ::', platform)
+    if (wrapTokens.hasOwnProperty(symbol)) {
+      return wrapTokens[symbol];
+    } else {
+      const coin = TokenListManager.findTokenBySymbolFromCoinGecko(symbol.toLowerCase());
+      console.log('coin ::', coin)
+      if (coin && coin['platforms'].hasOwnProperty(platform)) {
+        console.log('contract ::', coin['platforms'][platform]);
+        return coin['platforms'][platform];
+      }
+      return contract;
+    }
+  }
 
   const fetchLinePrices = async(baseUrl, contract, currency, fromTimestamp, toTimestamp, attempt) => {
     let result = [];
@@ -388,6 +405,7 @@ export default function TradingViewChart(){
   }
 
   const handleTokenPairChange = (pair) => {
+    console.log('### pair ###', pair)
     setSelectedPair(pair);
   }
 
