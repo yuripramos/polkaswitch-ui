@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
+import * as Sentry from "@sentry/react";
 
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
@@ -24,10 +25,15 @@ export default class SwapNetworkToggle extends Component {
   handleDropdownClick(network) {
     return function handleClick(e) {
       if (network.enabled) {
+        Sentry.addBreadcrumb({
+          message: "Action: Network Changed: " + network.name
+        });
         this.setState({
           selected: network
         });
-        TokenListManager.updateNetwork(network);
+        let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+          Wallet.getConnectionStrategy();
+        TokenListManager.updateNetwork(network, connectStrategy);
       }
     }.bind(this);
   }

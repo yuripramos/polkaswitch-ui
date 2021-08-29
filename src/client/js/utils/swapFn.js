@@ -5,9 +5,9 @@ import TxQueue from './txQueue';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
+import Storage from './storage';
 import BN from 'bignumber.js';
 import { ApprovalState } from "../constants/Status";
-let store = require('store');
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -17,17 +17,7 @@ const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.SwapFn = {
-  settings: {
-    gasPrice: 0, // auto,
-    isCustomGasPrice: false,
-    slippage: 0.5
-  },
-
-  initalize: function() {
-    const cachedSettings = store.get('settings');
-    const cachedSwap = store.get('swap');
-    this.settings = _.extend(this.settings, cachedSettings);
-    this.swap = _.extend(this.swap, cachedSwap);
+  initialize: function() {
   },
 
   validateEthValue: function(token, value) {
@@ -51,13 +41,31 @@ window.SwapFn = {
   },
 
   updateSettings: function(settings) {
-    this.settings = _.extend(this.getSetting(), settings);
-    store.set('settings', this.settings)
-    EventManager.emitEvent('swapSettingsUpdated', 1);
+    Storage.updateSettings(settings);
   },
 
   getSetting: function () {
-    return this.settings;
+    return Storage.swapSettings;
+  },
+
+  isNetworkGasDynamic: function() {
+    var network = TokenListManager.getCurrentNetworkConfig();
+    // if no gasAPI supplied, always default to auto;
+    return !network.gasApi;
+  },
+
+  isGasAutomatic: function() {
+    return this.isNetworkGasDynamic() ||
+      (!Storage.swapSettings.isCustomGasPrice &&
+        (Storage.swapSettings.gasSpeedSetting === "safeLow"));
+  },
+
+  getGasPrice: function() {
+    if (Storage.swapSettings.isCustomGasPrice) {
+      return Math.floor(+Storage.swapSettings.customGasPrice);
+    } else {
+      return Math.floor(+window.GAS_STATS[Storage.swapSettings.gasSpeedSetting]);
+    }
   },
 
   getSwapConfig: function () {
@@ -68,7 +76,7 @@ window.SwapFn = {
     return this.getExpectedReturn(
       fromToken, toToken, amount
     ).then(function(actualReturn) {
-      var y = 1.0 - (this.settings.slippage / 100.0);
+      var y = 1.0 - (Storage.swapSettings.slippage / 100.0);
       var r = BN(actualReturn.returnAmount.toString()).times(y);
 
       var minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
@@ -96,19 +104,26 @@ window.SwapFn = {
         // gasPrice: // the price to pay per gas
         // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
         value: fromToken.native ? amountBN : undefined,
-        gasPrice: this.settings.gasPrice > 0
-        ? Utils.parseUnits("" + this.settings.gasPrice, "gwei")
+        gasPrice: !this.isGasAutomatic()
+        ? Utils.parseUnits("" + this.getGasPrice(), "gwei")
         : undefined
       }
-    ).then(function(gasUnitsEstimated) {
+    ).then(async function(gasUnitsEstimated) {
       // Returns the estimate units of gas that would be
       // required to execute the METHOD_NAME with args and overrides.
-      return Utils.formatUnits(Utils.parseUnits("" +
-        Math.floor((this.settings.gasPrice > 0 ?
-          this.settings.gasPrice :
-          window.GAS_STATS.safeLow) * gasUnitsEstimated.toString()),
-        "gwei"
-      ));
+
+      let gasPrice;
+
+      if (this.isGasAutomatic()) {
+        gasPrice = await Wallet.getReadOnlyProvider().getGasPrice();
+        gasPrice = Math.ceil(Utils.formatUnits(gasPrice, "gwei"));
+      } else {
+        gasPrice = this.getGasPrice();
+      }
+
+      return Utils.formatUnits(
+        Utils.parseUnits("" + (gasPrice * gasUnitsEstimated.toString()), "gwei")
+      );
     }.bind(this));
 
   },
@@ -196,7 +211,7 @@ window.SwapFn = {
   getApproveStatus: function(token, amountBN) {
     return this._getAllowance(token).then(function(allowanceBN) {
       console.log('allowanceBN', allowanceBN);
-      if (token.native || allowanceBN.gte(amountBN)) {
+      if (token.native || (allowanceBN && allowanceBN.gte(amountBN))) {
         return Promise.resolve(ApprovalState.APPROVED);
       } else {
         return Promise.resolve(ApprovalState.NOT_APPROVED);
@@ -226,6 +241,9 @@ window.SwapFn = {
   },
 
   _getAllowance: function(token) {
+    if (!Wallet.isConnected()) {
+      return Promise.resolve(false);
+    }
     if (token.native) {
       console.log(`Not calling ALLOWANCE() on native token ${token.symbol}`);
       return Promise.resolve(false);
@@ -328,20 +346,25 @@ window.SwapFn = {
           // gasPrice: // the price to pay per gas
           // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice,
           value: fromToken.native ? amountBN : undefined,
-          gasPrice: this.settings.gasPrice > 0
-          ? Utils.parseUnits("" + this.settings.gasPrice, "gwei")
+          gasPrice: !this.isGasAutomatic()
+          ? Utils.parseUnits("" + this.getGasPrice(), "gwei")
           : undefined
         }
       ).then(function(transaction) {
         console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
+
+        const network = TokenListManager.getCurrentNetworkConfig();
+        const chainId = network.chainId;
+
         TxQueue.queuePendingTx({
+          chainId: chainId,
           from: fromToken,
           to: toToken,
           amount: amountBN,
           tx: transaction
         });
         return transaction.hash;
-      });
+      }.bind(this));
 
     }.bind(this));
 

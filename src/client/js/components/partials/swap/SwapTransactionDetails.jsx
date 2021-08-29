@@ -70,7 +70,7 @@ export default class SwapTransactionDetails extends Component {
       ).then(function(priceImpact) {
         _.defer(function(){
           this.setState({
-            highSlippage: ((priceImpact * 100.0) > SwapFn.settings.slippage),
+            highSlippage: ((priceImpact * 100.0) > SwapFn.getSetting().slippage),
             priceImpact: (priceImpact * 100.0).toFixed(5)
           });
         }.bind(this));
@@ -208,7 +208,7 @@ export default class SwapTransactionDetails extends Component {
               <div>
                 <div className="detail-value">
                   <span>
-                    {SwapFn.settings.slippage}%
+                    {SwapFn.getSetting().slippage}%
                   </span>
                 </div>
 

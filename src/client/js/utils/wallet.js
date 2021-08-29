@@ -57,9 +57,14 @@ window.WalletJS = {
     }.bind(this));
 
     provider.on('chainChanged', function(chainId) {
-      if (this.isConnectedToAnyNetwork()) {
-        this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
+      // if chain changes due to manual user change, not via connect change:
+      // just wipe clean, too hard to manage otherwise
+      this._cachedNetworkId = chainId;
+      if (!this.isMatchingConnectedNetwork()) {
+        this.disconnect();
       }
+
+      EventManager.emitEvent('walletUpdated', 1);
     }.bind(this));
   },
 
@@ -158,6 +163,10 @@ window.WalletJS = {
       let connectedNetwork = await this.getProvider().getNetwork();
       return connectedNetwork.chainId;
     }
+  },
+
+  getConnectionStrategy: function() {
+    return this._cachedStrategy;
   },
 
   isConnected: function(strategy) {

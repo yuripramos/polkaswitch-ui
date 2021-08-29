@@ -20,12 +20,15 @@ const app = express();
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
+  environment: process.env.IS_MAIN_NETWORK === "true" ?
+    'production' : 'development',
   integrations: [
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
     // enable Express.js middleware tracing
     new Tracing.Integrations.Express({ app }),
   ],
+  release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
+import * as Sentry from "@sentry/react";
 
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
@@ -104,7 +105,7 @@ export default class SwapOrderSlide extends Component {
 
           Wallet.getBalance(this.props.from).then(function(bal) {
             return SwapFn.getApproveStatus(this.props.from, fromAmountBN).then(function(status) {
-              console.log('status', status)
+              console.log('Approval Status', status)
               this.props.onSwapEstimateComplete(
                 origFromAmount,
                 window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),

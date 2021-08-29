@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
+import Storage from "../../utils/storage";
 
 export default class TokenIconImg extends Component {
   constructor(props) {
@@ -18,18 +19,35 @@ export default class TokenIconImg extends Component {
     this.setState({ errored: false });
   }
 
-  render() {
-    var imgSrc = this.props.imgSrc || this.props.token.logoURI;
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.errored) {
+      this.setState({
+        errored: false
+      });
+    }
+  }
 
-    if (!imgSrc) {
-      var chainPart = window.SELECTED_NETWORK.toLowerCase().replace(/\s+/g, '');
-      var keyPart = this.props.token.address || this.props.token.symbol;
-      imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${keyPart}/logo.png`;
+  render() {
+    var errored = this.state.errored;
+    var imgSrc;
+
+    if (!errored) {
+      imgSrc = this.props.imgSrc || (this.props.token && this.props.token.logoURI);
+
+      if (!imgSrc) {
+        if (this.props.token) {
+          var chainPart = Storage.getNetwork().toLowerCase().replace(/\s+/g, '');
+          var keyPart = this.props.token.address || this.props.token.symbol;
+          imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${keyPart}/logo.png`;
+        } else {
+          errored = true;
+        }
+      }
     }
 
     return (
       <span
-        className={classnames("token-icon-img-wrapper", { "errored": this.state.errored })}
+        className={classnames("token-icon-img-wrapper", { "errored": errored })}
         style={{
           height: `${this.props.size || 40}px`,
           width: `${this.props.size || 40}px`,

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import _ from "underscore";
-import classnames from 'classnames';
 import Wallet from '../../../utils/wallet';
 import numeral from 'numeral';
 

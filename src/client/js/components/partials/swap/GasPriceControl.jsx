@@ -1,48 +1,48 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import SwapFn from "../../../utils/swapFn";
+import _ from "underscore";
 
 export default class GasPriceControl extends Component {
   constructor(props) {
     super(props);
-    const gasStats = [window.GAS_STATS.safeLow, window.GAS_STATS.fast, window.GAS_STATS.fastest];
-    let gasPrice = SwapFn.getSetting().gasPrice;
-    let isCustomGasPrice = SwapFn.getSetting().isCustomGasPrice;
-
-    if (isCustomGasPrice) {
-      this.state = {
-        custom: true,
-        customValue: gasPrice,
-        current: 0
-      };
-    } else {
-      this.state = {
-        custom: false,
-        customValue: '',
-        current: gasStats[0]
-      };
-    }
 
     this.handleClick = this.handleClick.bind(this);
     this.onCustomChange = this.onCustomChange.bind(this);
-    this.initGasPrice = this.initGasPrice.bind(this);
-    this.initGasPrice(gasStats[0], isCustomGasPrice);
+
+    this.state = this.getStateFromStorage();
   }
 
-  initGasPrice(gasPrice, isCustomGasPrice) {
-    if (!isCustomGasPrice) {
-      this.props.handleGasPrice(gasPrice, false);
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.refresh != this.props.refresh) {
+      this.setState(this.getStateFromStorage());
     }
+  }
+
+  getStateFromStorage() {
+    let gasSpeedSetting = SwapFn.getSetting().gasSpeedSetting;
+    let isCustomGasPrice = SwapFn.getSetting().isCustomGasPrice;
+    let customGasPrice = SwapFn.getSetting().customGasPrice;
+
+    return {
+      custom: isCustomGasPrice,
+      customValue: isCustomGasPrice ? customGasPrice : '',
+      gasSpeed: gasSpeedSetting
+    };
   }
 
   handleClick(event) {
     this.setState({
-      current: +event.target.value,
+      gasSpeed: event.target.value,
       custom: false,
       customValue: ''
     });
 
-    this.props.handleGasPrice(+event.target.value, false);
+    SwapFn.updateSettings({
+      gasSpeedSetting: event.target.value,
+      customGasPrice: '',
+      isCustomGasPrice: false
+    });
   }
 
   onCustomChange(e) {
@@ -52,24 +52,26 @@ export default class GasPriceControl extends Component {
     });
 
     if (!isNaN(e.target.value) && e.target.value.match(/^\d+(\.\d+)?$/)) {
-      this.props.handleGasPrice(+e.target.value, true);
+      SwapFn.updateSettings({
+        customGasPrice: +e.target.value,
+        isCustomGasPrice: true
+      });
     } else {
       this.setState({
-        current: -1,
         custom: false
       });
     }
   }
 
   render() {
-    const { current } = this.state
+    const { gasSpeed } = this.state
     return (
       <div className="gas-price-control">
         <div className={classnames("select", { "disabled": this.state.custom})}>
-          <select value={current} onChange={this.handleClick}>
-            <option value={window.GAS_STATS.safeLow}>Auto (~{window.GAS_STATS.safeLow})</option>
-            <option value={window.GAS_STATS.fast}>Fast (~{window.GAS_STATS.fast})</option>
-            <option value={window.GAS_STATS.fastest}>Fastest (~{window.GAS_STATS.fastest})</option>
+          <select value={gasSpeed} onChange={this.handleClick}>
+            <option value="safeLow">Auto (~{window.GAS_STATS.safeLow})</option>
+            <option value="fast">Fast (~{window.GAS_STATS.fast})</option>
+            <option value="fastest">Fastest (~{window.GAS_STATS.fastest})</option>
           </select>
         </div>
         <div className="control has-icons-right">
