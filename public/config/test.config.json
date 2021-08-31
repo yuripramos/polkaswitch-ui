@@ -74,7 +74,7 @@
     "chainId": "56",
     "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
     "explorerBaseUrl": "https://bscscan.com/tx/",
-    "gasApi": "https://bscgas.info/gas",
+    "gasApi": false,
     "chain": {
       "chainId": "0x38",
       "rpcUrls": ["https://bsc-dataseed.binance.org/"],
@@ -99,20 +99,21 @@
     ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Avalanche",
-    "aggregatorAddress": "0xC92F4B74A434e456918738D8FfC8388779d9592c",
-    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
-    "bridgeURI": "https://app.nerve.fi/bridge",
-    "tokenList": "/tokens/56.list.json",
-    "chainId": "56",
-    "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
-    "explorerBaseUrl": "https://explorer.avax.network/tx/",
-    "gasApi": "https://bscgas.info/gas",
+    "aggregatorAddress": "0xCB18f49410349419c1b3E43C3d011cE96c720eDE",
+    "logoURI": "https://assets.coingecko.com/coins/images/12559/large/coin-round-red.png",
+    "bridgeURI": "https://bridge.avax.network/",
+    "tokenList": "/tokens/43114.list.json",
+    "chainId": "43114",
+    "nodeProvider": "https://api.avax.network/ext/bc/C/rpc",
+    "nodeProvider2": "https://avalanche--mainnet--rpc.datahub.figment.io/apikey/b56dcd7987f05a43637a94ad98d546be/ext/bc/C/rpc",
+    "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
+    "gasApi": false,
     "chain": {
-      "chainId": "0x38",
-      "rpcUrls": ["https://bsc-dataseed.binance.org/"],
-      "chainName": "Smart Chain Mainnet",
+      "chainId": "0xA86A",
+      "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],
+      "chainName": "Avalanche Mainnet",
       "nativeCurrency": {
         "name": "AVAX",
         "symbol": "AVAX",
@@ -120,16 +121,17 @@
       }
     },
     "defaultPair": {
-      "to": "0x55d398326f99059fF775485246999027B3197955",
+      "to": "0xde3A24028580884448a5397872046a019649b084",
       "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "topTokens": [
       "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-      "0x55d398326f99059fF775485246999027B3197955",
-      "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
-      "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
-      "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
-      "0x4BD17003473389A42DAF6a0a729f6Fdb328BbBd7"
+      "0xde3A24028580884448a5397872046a019649b084",
+      "0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15",
+      "0x408D4cD0ADb7ceBd1F1A1C33A0Ba2098E1295bAB",
+      "0x8cE2Dee54bB9921a2AE0A63dBb2DF8eD88B91dD9",
+      "0x60781C2586D68229fde47564546784ab3fACA982",
+      "0xaEb044650278731Ef3DC244692AB9F64C78FfaEA"
     ]
   }
 ]

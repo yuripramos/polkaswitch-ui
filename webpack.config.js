@@ -1,15 +1,18 @@
 const path = require('path');
 const webpack = require('webpack');
+const moment = require('moment');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
 const outputDirectory = 'dist';
 
 module.exports = (env) => {
   console.log(env);
   const isProduction = !!env.production;
+  const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
@@ -17,11 +20,48 @@ module.exports = (env) => {
     console.log('Using DEVELOPMENT config');
   }
 
+  let plugins = [
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/client/index.html',
+      hash: false
+    }),
+    new webpack.EnvironmentPlugin({
+      IS_PRODUCTION: !!isProduction,
+      IS_MAIN_NETWORK: isMainNetwork,
+      SENTRY_JS_DSN: false,
+      HEROKU_RELEASE_VERSION: false,
+      HEROKU_APP_NAME: false
+    }),
+    new NodePolyfillPlugin()
+  ];
+
+  if (isProduction) {
+    plugins.push(
+      new SentryWebpackPlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "polkaswitch",
+        project: "frontend",
+        release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
+        deploy: {
+          env: isMainNetwork ? 'production' : 'development'
+        },
+        dryRun: !isProduction,
+
+        // webpack-specific configuration
+        include: "./dist"
+      })
+    );
+  }
+
   return {
     entry: ['babel-polyfill', './src/client/js/index.js'],
     output: {
       path: path.join(__dirname, outputDirectory),
-      filename: 'bundle.js'
+      filename: 'bundle.[contenthash].js'
     },
     module: {
       rules: [
@@ -80,19 +120,7 @@ module.exports = (env) => {
       }
     },
     devtool : isProduction ? 'source-map' : 'inline-source-map',
-    plugins: [
-      new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin(),
-      new HtmlWebpackPlugin({
-        template: './src/client/index.html',
-        hash: true
-      }),
-      new webpack.EnvironmentPlugin({
-        IS_PRODUCTION: !!isProduction,
-        IS_MAIN_NETWORK: false
-      }),
-      new NodePolyfillPlugin()
-    ],
+    plugins: plugins,
     experiments: {
       topLevelAwait: true
     }

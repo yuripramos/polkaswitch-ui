@@ -38,6 +38,7 @@ export default class SwapConfirmSlide extends Component {
       loading: true,
     }, function() {
       const fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+
       if (this.props.approveStatus === ApprovalState.APPROVED) {
         var distBN = _.map(this.props.swapDistribution, function (e) {
           return window.ethers.utils.parseUnits("" + e, "wei");
@@ -63,7 +64,7 @@ export default class SwapConfirmSlide extends Component {
             loading: false
           });
         }.bind(this)).catch(function (e) {
-          console.error(e);
+          console.error('#### swap failed from catch ####', e);
 
           this.props.handleTransactionComplete(false, undefined);
 
@@ -86,6 +87,7 @@ export default class SwapConfirmSlide extends Component {
           });
           this.props.onApproveComplete(ApprovalState.APPROVED);
         }.bind(this)).catch(function (e) {
+          console.error('#### approve failed from catch ####', e);
           console.error(e);
           this.setState({
             loading: false

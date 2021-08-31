@@ -19,7 +19,7 @@ export default class Navbar extends Component {
         <div className="level-left is-flex-grow-1">
           <div className="level-item is-narrow">
             <span className="logo-icon icon is-left is-hidden-mobile">
-              <img src="/images/logo_alpha.svg" />
+              <img src="/images/logo_dark.svg" />
             </span>
             <span className="logo-icon icon is-left is-hidden-tablet">
               <img src="/images/logo_only.svg" />

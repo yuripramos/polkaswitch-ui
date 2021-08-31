@@ -1,21 +1,32 @@
+import _ from "underscore";
 import React, { Component } from 'react';
 import SwapSlippageControl from './SwapSlippageControl';
 import GasPriceControl from './GasPriceControl';
 import SwapFn from '../../../utils/swapFn';
+import EventManager from '../../../utils/events';
 
 import * as ethers from 'ethers';
 
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
-    this.handleGasPrice = this.handleGasPrice.bind(this);
+    this.state = { refresh: Date.now() };
     this.handleSlippage = this.handleSlippage.bind(this);
+    this.handleSettingsChange = this.handleSettingsChange.bind(this);
+
+    this.subscribers = [];
+    this.subscribers.push(EventManager.listenFor('swapSettingsUpdated', this.handleSettingsChange));
   }
 
-  handleGasPrice(v, isCustomGasPrice) {
-    SwapFn.updateSettings({
-      gasPrice: v,
-      isCustomGasPrice
+  componentWillUnmount() {
+    this.subscribers.forEach(function(v) {
+      EventManager.unsubscribe(v);
+    });
+  }
+
+  handleSettingsChange(e) {
+    this.setState({
+      refresh: Date.now()
     });
   }
 
@@ -56,7 +67,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
               </span>
             </div>
 
-            <GasPriceControl handleGasPrice={this.handleGasPrice}/>
+            <GasPriceControl refresh={this.state.refresh}/>
           </div>
 
           <div className="option">

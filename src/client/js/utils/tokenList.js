@@ -2,6 +2,8 @@
 import _ from "underscore";
 import EventManager from './events';
 import * as ethers from 'ethers';
+import Storage from './storage';
+
 let store = require('store');
 const Utils = ethers.utils;
 
@@ -10,7 +12,7 @@ window.TokenListManager = {
   },
 
   getCurrentNetworkConfig: function() {
-    var network = _.findWhere(window.NETWORK_CONFIGS, { name: window.SELECTED_NETWORK });
+    var network = _.findWhere(window.NETWORK_CONFIGS, { name: Storage.getNetwork() });
     return network;
   },
 
@@ -20,9 +22,14 @@ window.TokenListManager = {
   },
 
   updateNetwork: function(network, connectStrategy) {
-    window.SELECTED_NETWORK = network.name;
+    EventManager.emitEvent('networkPendingUpdate', 1);
+
+    Storage.updateNetwork(network);
 
     this.updateTokenList().then(function() {
+      // reset default settings because gas values are updated per network
+      Storage.clearSettings();
+
       EventManager.emitEvent('networkUpdated', 1);
       EventManager.emitEvent('walletUpdated', 1);
       if (connectStrategy) {
@@ -34,7 +41,16 @@ window.TokenListManager = {
   updateTokenList: async function() {
     var network = this.getCurrentNetworkConfig();
     var tokenList = await(await fetch(network.tokenList)).json();
-    var gasStats = await(await fetch(network.gasApi)).json();
+    var gasStats;
+
+    if (network.gasApi) {
+      gasStats = await(await fetch(network.gasApi)).json();
+    } else {
+      const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+      let defaultGasPrice = Math.ceil(Utils.formatUnits((await provider.getGasPrice()), "gwei"));
+
+      gasStats = { safeLow: defaultGasPrice, fast: defaultGasPrice, fastest: defaultGasPrice };
+    }
 
     tokenList = _.map(_.filter(tokenList, function(v) {
       return (v.native) || (v.symbol && Utils.isAddress(v.address));
@@ -46,7 +62,7 @@ window.TokenListManager = {
     });
 
     // Binance Smart Chain GasAPI has different fields
-    if (!gasStats.safeLow) {
+    if (!_.has(gasStats, 'safeLow')) {
       gasStats.safeLow = gasStats.standard;
       gasStats.fastest = gasStats.fast;
     }
@@ -54,7 +70,7 @@ window.TokenListManager = {
     window.GAS_STATS = _.mapObject(_.pick(gasStats, [
       'fast', 'fastest', 'safeLow'
     ]), function(v, k) {
-      return v + 1;
+      return Math.ceil(v * 1.10);
     });
 
     window.TOKEN_LIST = tokenList;
@@ -63,9 +79,13 @@ window.TokenListManager = {
   },
 
   findTokenById: function(tid) {
-    return _.find(window.TOKEN_LIST, function(v) {
+    var foundToken = _.find(window.TOKEN_LIST, function(v) {
       return v.address === tid || v.symbol === tid;
     });
+    if (!foundToken) {
+      console.log("WARNING: Unable to find token ID", tid);
+    }
+    return foundToken;
   },
 
   updateTokenListwithCustom: function (network) {
