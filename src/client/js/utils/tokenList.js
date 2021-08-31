@@ -14,6 +14,9 @@ window.TokenListManager = {
     network: 'Ethereum'
   },
 
+  initialize: async function() {
+  },
+
   getCurrentNetworkConfig: function() {
     var network = _.findWhere(window.NETWORK_CONFIGS, { name: Storage.getNetwork() });
     return network;

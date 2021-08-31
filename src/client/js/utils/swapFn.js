@@ -68,10 +68,6 @@ window.SwapFn = {
     }
   },
 
-  getSwapConfig: function () {
-    return this.swap;
-  },
-
   calculateMinReturn: function(fromToken, toToken, amount) {
     return this.getExpectedReturn(
       fromToken, toToken, amount
