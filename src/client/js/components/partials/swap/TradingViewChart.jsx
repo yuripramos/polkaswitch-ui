@@ -232,7 +232,6 @@ export default function TradingViewChart(){
       price = lastItem.value;
     } else {
       percent = new BN(lastItem.open).div(new BN(firstItem.open)).times(100).minus(100).toFixed(2);
-      console.log(percent)
       price = lastItem.open;
     }
 

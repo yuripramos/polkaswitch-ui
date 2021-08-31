@@ -51,8 +51,8 @@ export default class TokenIconImg extends Component {
         style={{
           height: `${this.props.size || 40}px`,
           width: `${this.props.size || 40}px`,
-          marginLeft: this.props.marginLeft || 0,
-          marginRight: this.props.marginRight || 0,
+          marginLeft: `${this.props.ml || 0}px`,
+          marginRight: `${this.props.mr || 0}px`
         }}>
         <img
           { ... _.omit(this.props, 'imgSrc', 'token', 'size') }

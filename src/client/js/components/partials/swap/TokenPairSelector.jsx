@@ -42,8 +42,8 @@ export default function TokenPairSelector(props){
                     imgSrc={props.selectedPair.fromTokenLogo}/>
                   <TokenIconImg
                     size={30}
-                    marginLeft={-10}
-                    marginRight={10}
+                    ml={-10}
+                    mr={10}
                     imgSrc={props.selectedPair.toTokenLogo}/>
                   <span className="level-item">{props.selectedPair.name}</span>
                 </span>
@@ -53,7 +53,7 @@ export default function TokenPairSelector(props){
                 <span className="level-left">
                   <TokenIconImg
                     size={30}
-                    marginRight={10}
+                    mr={10}
                     imgSrc={props.selectedPair.fromTokenLogo}/>
                   <span className="level-item">{props.selectedPair.name}</span>
                 </span>

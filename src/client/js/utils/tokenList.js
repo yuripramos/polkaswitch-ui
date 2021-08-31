@@ -25,7 +25,6 @@ window.TokenListManager = {
   },
 
   updateNetwork: function(network, connectStrategy) {
-    window.SELECTED_NETWORK = network.name;
     EventManager.emitEvent('networkPendingUpdate', 1);
     Storage.updateNetwork(network);
 

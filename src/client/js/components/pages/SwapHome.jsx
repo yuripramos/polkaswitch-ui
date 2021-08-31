@@ -22,7 +22,7 @@ export default class Home extends Component {
         <TxHistoryModal />
 
         <div className="columns">
-          <div className="column is-three-fifths">
+          <div className="column">
             <div className="box">
               <TokenPairChartOverview />
             </div>
