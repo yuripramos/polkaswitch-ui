@@ -328,13 +328,11 @@ window.SwapFn = {
     return this.calculateMinReturn(
       fromToken, toToken, amountBN
     ).then(function(minReturn) {
-
       /*
         returns(
           uint256 returnAmount
         )
       */
-
       return contract.swap(
         fromToken.address,
         toToken.address,
@@ -365,9 +363,7 @@ window.SwapFn = {
         });
         return transaction.hash;
       }.bind(this));
-
     }.bind(this));
-
   },
 };
 
