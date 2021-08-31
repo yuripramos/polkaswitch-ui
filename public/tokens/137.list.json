@@ -1,7 +1,7 @@
 [
   {
     "symbol": "MATIC",
-    "address": "0x0000000000000000000000000000000000001010",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png",
     "native": true,
     "decimals": 18,
