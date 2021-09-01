@@ -64,7 +64,7 @@ export default class SwapConfirmSlide extends Component {
             loading: false
           });
         }.bind(this)).catch(function (e) {
-          console.error(e);
+          console.error('#### swap failed from catch ####', e);
 
           this.props.handleTransactionComplete(false, undefined);
 
@@ -87,6 +87,7 @@ export default class SwapConfirmSlide extends Component {
           });
           this.props.onApproveComplete(ApprovalState.APPROVED);
         }.bind(this)).catch(function (e) {
+          console.error('#### approve failed from catch ####', e);
           console.error(e);
           this.setState({
             loading: false

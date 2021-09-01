@@ -53,7 +53,7 @@ await Storage.initialize();
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 await SwapFn.initialize();
-TxQueue.initalize();
+TxQueue.initialize();
 
 if (Wallet.isMetamaskSupported()) {
   console.log('MetaMask is installed!');

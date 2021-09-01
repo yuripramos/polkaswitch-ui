@@ -14,6 +14,9 @@ window.TokenListManager = {
     network: 'Ethereum'
   },
 
+  initialize: async function() {
+  },
+
   getCurrentNetworkConfig: function() {
     var network = _.findWhere(window.NETWORK_CONFIGS, { name: Storage.getNetwork() });
     return network;
@@ -25,7 +28,6 @@ window.TokenListManager = {
   },
 
   updateNetwork: function(network, connectStrategy) {
-    window.SELECTED_NETWORK = network.name;
     EventManager.emitEvent('networkPendingUpdate', 1);
     Storage.updateNetwork(network);
 
