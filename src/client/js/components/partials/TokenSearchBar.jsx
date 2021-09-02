@@ -24,9 +24,11 @@ export default class TokenSearchBar extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
+    this.handleTxQueueChange = this.handleTxQueueChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleCustomModal = this.handleCustomModal.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
+    this.fetchBalance = this.fetchBalance.bind(this);
     this.fetchBalances = this.fetchBalances.bind(this);
     this.getBalanceNumber = this.getBalanceNumber.bind(this);
     this.onBlur = this.onBlur.bind(this);
@@ -39,7 +41,7 @@ export default class TokenSearchBar extends Component {
   componentDidMount() {
     this.mounted = true;
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
-    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
+    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleTxQueueChange));
     this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
     this.fetchBalances();
   }
@@ -75,6 +77,26 @@ export default class TokenSearchBar extends Component {
     this.TOP_TOKENS = _.map(network.topTokens, function(v) {
       return TokenListManager.findTokenById(v)
     });
+  }
+
+  fetchBalance(token, attempt) {
+    attempt = 0;
+    if (!attempt) {
+    } else if (attempt > 2) {
+      this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: 0, token: token}}});
+      return;
+    }
+    Wallet.getBalance(token)
+      .then(function(bal) {
+        this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
+      }.bind(this))
+      .catch(function(e) {
+        // try again
+        console.error("Failed to fetch balance", e);
+        _.defer(function() {
+          this.fetchBalance(token, attempt + 1);
+        }.bind(this))
+      }.bind(this));
   }
 
   fetchBalances() {
@@ -121,9 +143,16 @@ export default class TokenSearchBar extends Component {
     });
   }
 
-  handleWalletChange(e) {
+  handleWalletChange() {
     this.setState({tokenBalances: {}});
     this.fetchBalances();
+  }
+
+  handleTxQueueChange(e) {
+    if (e.data && Wallet.isConnected()) {
+      this.fetchBalance(e.data.from);
+      this.fetchBalance(e.data.to);
+    }
   }
 
   handleClose(e) {

@@ -64,16 +64,16 @@ export default {
       try {
         let receipt = await provider.getTransactionReceipt(hash);
         if (receipt && receipt.confirmations > 3 && receipt.status === 1) {
-          this.successTx(hash, receipt);
+          this.successTx(hash, receipt, null);
         } else if (receipt && receipt.status === 0) {
-          this.failedTx(hash);
+          this.failedTx(hash, null, null);
         } else {
           setTimeout(async () => {
             await this.getTransactionReceipt(provider, hash);
           }, 10 * 1000)
         }
       } catch (e) {
-        this.failedTx(hash, e);
+        this.failedTx(hash, null,  e);
       }
     }
   },
@@ -88,17 +88,17 @@ export default {
     this._queue[hash] = data;
     if (this._signerAddress && (this._signerAddress.length > 0)) {
       store.set(this._signerAddress, this._queue);
-      EventManager.emitEvent('txQueueUpdated', hash);
+      EventManager.emitEvent('txQueueUpdated', { hash, data });
     }
 
     data.tx.wait(confirms || 1).then(function (txReceipt) {
-      this.successTx(hash, txReceipt);
+      this.successTx(hash, txReceipt, data);
     }.bind(this)).catch(function (err) {
-      this.failedTx(hash, err);
+      this.failedTx(hash, data, err);
     }.bind(this));
   },
 
-  successTx: function(hash, txReceipt) {
+  successTx: function(hash, txReceipt, data) {
     // Remove old Tx
     this.removeOldTx();
     console.log(txReceipt);
@@ -109,11 +109,11 @@ export default {
     this._queue[hash].completed = true;
     this._queue[hash].lastUpdated = Date.now();
     store.set(this._signerAddress, this._queue)
-    EventManager.emitEvent('txQueueUpdated', hash);
+    EventManager.emitEvent('txQueueUpdated', { hash, data });
     EventManager.emitEvent('txSuccess', hash);
   },
 
-  failedTx: function(hash, error) {
+  failedTx: function(hash, data, error) {
     // Remove old Tx
     this.removeOldTx();
 
@@ -125,7 +125,7 @@ export default {
     this._queue[hash].success = false;
     this._queue[hash].lastUpdated = Date.now();
     store.set(this._signerAddress, this._queue)
-    EventManager.emitEvent('txQueueUpdated', hash);
+    EventManager.emitEvent('txQueueUpdated', { hash, data });
     EventManager.emitEvent('txFailed', hash);
   },
 
