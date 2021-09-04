@@ -68,6 +68,25 @@
     .chart {
       width: 100%;
       height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      img {
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .empty-primary-text {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .empty-sub-text {
+        margin-top: 10px;
+        font-size: 14px;
+      }
     }
 
     .chart-range-selector {
