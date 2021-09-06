@@ -4,6 +4,7 @@ import EventManager from './events';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import BN from 'bignumber.js';
+import * as Sentry from "@sentry/react";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -207,6 +208,7 @@ window.WalletJS = {
     this._cachedNetworkId = -1;
     this._cachedStrategy = undefined;
     this._cachedWeb3Provider = undefined;
+    Sentry.configureScope(scope => scope.setUser(null));
     EventManager.emitEvent('walletUpdated', 1);
   },
 
@@ -227,6 +229,8 @@ window.WalletJS = {
     this._cachedNetworkId = chainId;
     this._cachedStrategy = strategy;
     this._cachedWeb3Provider = provider;
+
+    Sentry.setUser({ id: address });
 
     EventManager.emitEvent('walletUpdated', 1);
   },
