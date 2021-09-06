@@ -37,6 +37,8 @@ export default class SwapConfirmSlide extends Component {
     this.setState({
       loading: true,
     }, function() {
+      console.log("Debug Crash: ", this.props.fromAmount, this.props.from);
+
       const fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
 
       if (this.props.approveStatus === ApprovalState.APPROVED) {
