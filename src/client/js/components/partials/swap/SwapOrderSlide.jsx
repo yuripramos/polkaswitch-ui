@@ -263,6 +263,7 @@ export default class SwapOrderSlide extends Component {
                 }
                 type="number"
                 min="0"
+                lang="en"
                 step="0.000000000000000001"
                 className={classnames("input is-medium", {
                   "is-danger": isFrom && !this.hasSufficientBalance(),
