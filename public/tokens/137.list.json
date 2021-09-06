@@ -15,12 +15,6 @@
     "chainId": 137
   },
   {
-    "symbol": "BIFI",
-    "address": "0xfbdd194376de19a88118e84e279b977f165d01b8",
-    "decimals": 18,
-    "chainId": 137
-  },
-  {
     "symbol": "MUST",
     "address": "0x9c78ee466d6cb57a4d01fd887d2b5dfb2d46288f",
     "decimals": 18,
@@ -31,7 +25,7 @@
     "symbol": "UNI",
     "address": "0xb33eaad8d922b1083446dc23f610c2567fb5180f",
     "decimals": 18,
-    "logoURI": "https://raw.githubusercontent.com/sameepsi/quickswap-interface/master/public/favicon1.png",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0xb33EaAd8d922B1083446DC23f610c2567fB5180f/logo.png",
     "chainId": 137
   },
   {
@@ -101,7 +95,6 @@
     "symbol": "QUICK",
     "address": "0x831753dd7087cac61ab5644b308642cc1c33dc13",
     "decimals": 18,
-    "logoURI": "https://raw.githubusercontent.com/sameepsi/quickswap-interface/master/public/favicon.jpeg",
     "chainId": 137
   },
   {
