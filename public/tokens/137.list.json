@@ -93,8 +93,9 @@
   },
   {
     "symbol": "QUICK",
-    "address": "0x831753dd7087cac61ab5644b308642cc1c33dc13",
+    "address": "0x831753DD7087CaC61aB5644b308642cc1c33Dc13",
     "decimals": 18,
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/assets/0x831753DD7087CaC61aB5644b308642cc1c33Dc13/logo.png",
     "chainId": 137
   },
   {
