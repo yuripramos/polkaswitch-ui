@@ -38,6 +38,11 @@ window.TokenListManager = {
     });
   },
 
+  toggleCrossChain: function(enabled) {
+    Storage.toggleCrossChain(enabled);
+    EventManager.emitEvent('networkUpdated', 1);
+  },
+
   updateTokenList: async function() {
     var network = this.getCurrentNetworkConfig();
     var tokenList = await(await fetch(network.tokenList)).json();

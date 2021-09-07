@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/react";
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
+import NetworkDropdown from './NetworkDropdown';
 
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
@@ -252,6 +253,9 @@ export default class SwapOrderSlide extends Component {
 
     return (
       <div className="level is-mobile">
+        <div className="level is-mobile is-narrow my-0 mr-2">
+          <NetworkDropdown compact={true} />
+        </div>
         <div className="level is-mobile is-narrow my-0 token-dropdown"
           onClick={this.props.handleSearchToggle(target)}>
           <TokenIconBalanceGroupView
@@ -318,7 +322,6 @@ export default class SwapOrderSlide extends Component {
         <div className="page-inner">
           <div className="level is-mobile">
             <div className="level-left is-flex-grow-1">
-              <MarketLimitToggle />
             </div>
 
             <div className="level-right">
