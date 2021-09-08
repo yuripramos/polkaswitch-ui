@@ -10,6 +10,7 @@
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
+    "crossChainSupported": false,
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -41,6 +42,7 @@
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
+    "crossChainSupported": true,
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
@@ -75,6 +77,7 @@
     "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
     "explorerBaseUrl": "https://bscscan.com/tx/",
     "gasApi": false,
+    "crossChainSupported": true,
     "chain": {
       "chainId": "0x38",
       "rpcUrls": ["https://bsc-dataseed.binance.org/"],
@@ -110,6 +113,7 @@
     "nodeProvider2": "https://avalanche--mainnet--rpc.datahub.figment.io/apikey/b56dcd7987f05a43637a94ad98d546be/ext/bc/C/rpc",
     "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
     "gasApi": false,
+    "crossChainSupported": false,
     "chain": {
       "chainId": "0xA86A",
       "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],

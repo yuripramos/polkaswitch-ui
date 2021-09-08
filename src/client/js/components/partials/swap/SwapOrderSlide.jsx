@@ -13,6 +13,7 @@ import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
+import TokenListManager from '../../../utils/tokenList';
 
 export default class SwapOrderSlide extends Component {
   constructor(props) {
@@ -253,8 +254,13 @@ export default class SwapOrderSlide extends Component {
 
     return (
       <div className="level is-mobile">
-        <div className="level is-mobile is-narrow my-0 mr-2">
-          <NetworkDropdown compact={true} />
+        <div className={classnames("level is-mobile is-narrow my-0 mr-2", {
+          "is-hidden": !TokenListManager.isCrossChainEnabled()
+        })}>
+          <NetworkDropdown
+            crossChain={true}
+            className={classnames({ "is-up": !isFrom })}
+            compact={true} />
         </div>
         <div className="level is-mobile is-narrow my-0 token-dropdown"
           onClick={this.props.handleSearchToggle(target)}>
@@ -269,7 +275,7 @@ export default class SwapOrderSlide extends Component {
           </div>
         </div>
         <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
-          <div className="field" style={{ width: "100%", maxWidth: "200px" }}>
+          <div className="field" style={{ width: "100%", maxWidth: "250px" }}>
             <div
               className={classnames("control", {
                 "is-loading": !isFrom && this.state.calculatingSwap

@@ -38,6 +38,10 @@ window.TokenListManager = {
     });
   },
 
+  isCrossChainEnabled: function() {
+    return Storage.isCrossChainEnabled();
+  },
+
   toggleCrossChain: function(enabled) {
     Storage.toggleCrossChain(enabled);
     EventManager.emitEvent('networkUpdated', 1);

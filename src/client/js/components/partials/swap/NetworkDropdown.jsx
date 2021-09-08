@@ -27,7 +27,13 @@ export default class NetworkDropdown extends Component {
   render() {
     var selected = this.props.selected || TokenListManager.getCurrentNetworkConfig();
 
-    var networkList = _.map(this.NETWORKS, function(v, i) {
+    var filteredNetworks = _.filter(this.NETWORKS, (v) => { return v.enabled });
+
+    if (this.props.crossChain) {
+      filteredNetworks = _.filter(filteredNetworks, (v) => { return v.crossChainSupported });
+    }
+
+    var networkList = _.map(filteredNetworks, function(v, i) {
       return (
         <a href="#"
           key={i}

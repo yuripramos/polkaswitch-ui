@@ -107,10 +107,10 @@ $switcher-radius: 10px;
 .cross-chain-toggle.switcher {
   input {
     &:before {
-      content: 'Single Chain';
+      content: 'Swap';
     }
     &:after {
-      content: 'Cross Chain';
+      content: 'Bridge';
     }
   }
 }

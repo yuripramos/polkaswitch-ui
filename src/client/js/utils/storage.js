@@ -53,6 +53,10 @@ window.Storage = {
     store.set('crossChainEnabled', this.crossChainEnabled);
   },
 
+  isCrossChainEnabled: function() {
+    return this.crossChainEnabled;
+  },
+
   getNetwork: function() {
     return this.selectedNetwork;
   },
