@@ -259,6 +259,7 @@ export default class SwapOrderSlide extends Component {
         })}>
           <NetworkDropdown
             crossChain={true}
+            selected={isFrom ? this.props.fromChain : this.props.toChain}
             className={classnames({ "is-up": !isFrom })}
             compact={true} />
         </div>

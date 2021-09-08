@@ -24,6 +24,9 @@ export default class SwapOrderWidget extends Component {
     var network = TokenListManager.getCurrentNetworkConfig();
 
     this.state = {
+      toChain: TokenListManager.getNetworkById(137),
+      fromChain: TokenListManager.getNetworkById(56),
+
       to: TokenListManager.findTokenById(network.defaultPair.to),
       from: TokenListManager.findTokenById(network.defaultPair.from),
 
@@ -281,6 +284,8 @@ export default class SwapOrderWidget extends Component {
           classNames="fade">
           <SwapOrderSlide
             ref={this.orderPage}
+            toChain={this.state.toChain}
+            fromChain={this.state.fromChain}
             to={this.state.to}
             from={this.state.from}
             fromAmount={this.state.fromAmount}
