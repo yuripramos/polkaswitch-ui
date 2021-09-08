@@ -7,6 +7,7 @@ import EventManager from '../../utils/events';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 import CustomTokenModal from "./CustomTokenModal";
+import TokenSearchItem from "./swap/TokenSearchItem";
 import numeral from 'numeral';
 
 export default class TokenSearchBar extends Component {
@@ -24,7 +25,6 @@ export default class TokenSearchBar extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
-    this.handleTxQueueChange = this.handleTxQueueChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleCustomModal = this.handleCustomModal.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
@@ -40,10 +40,9 @@ export default class TokenSearchBar extends Component {
 
   componentDidMount() {
     this.mounted = true;
+    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
-    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleTxQueueChange));
     this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
-    this.fetchBalances();
   }
 
   componentWillUnmount() {
@@ -77,6 +76,8 @@ export default class TokenSearchBar extends Component {
     this.TOP_TOKENS = _.map(network.topTokens, function(v) {
       return TokenListManager.findTokenById(v)
     });
+
+    this.fetchBalances(_.first(this.TOP_TOKENS, 3))
   }
 
   fetchBalance(token, attempt) {
@@ -99,10 +100,11 @@ export default class TokenSearchBar extends Component {
       }.bind(this));
   }
 
-  fetchBalances() {
-    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token, index) => {
-      if (Wallet.isConnected()) {
+  fetchBalances(tokenList) {
+    if (Wallet.isConnected()) {
+      tokenList.forEach((token, index) => {
         _.delay(() => {
+          console.log('called fetch balances', token.symbol)
           Wallet.getBalance(token)
             .then((bal) => {
               this.mounted && this.setState({
@@ -116,9 +118,9 @@ export default class TokenSearchBar extends Component {
               });
             })
             .catch(error => console.log(error));
-        }, index * 200);
-      }
-    })
+        }, index * 1000);
+      })
+    }
   }
 
   getBalanceNumber(token) {
@@ -137,22 +139,17 @@ export default class TokenSearchBar extends Component {
   }
 
   handleNetworkChange(e) {
+    this.mounted && this.setState({tokenBalances: {}});
     this.updateTopTokens();
     this.setState({
       refresh: Date.now()
     });
   }
 
-  handleWalletChange() {
-    this.setState({tokenBalances: {}});
-    this.fetchBalances();
-  }
-
-  handleTxQueueChange(e) {
-    if (e.data && Wallet.isConnected()) {
-      this.fetchBalance(e.data.from);
-      this.fetchBalance(e.data.to);
-    }
+  handleWalletChange(e) {
+    console.log('### wallet changed ###')
+    this.mounted && this.setState({tokenBalances: {}});
+    this.fetchBalances(_.first(this.TOP_TOKENS, 3))
   }
 
   handleClose(e) {
@@ -201,6 +198,8 @@ export default class TokenSearchBar extends Component {
   }
 
   renderTopList() {
+    // fetch balances of top tokens
+
     var top3 = _.first(this.TOP_TOKENS, 3);
     var rest = _.rest(this.TOP_TOKENS, 3);
 
@@ -241,25 +240,12 @@ export default class TokenSearchBar extends Component {
 
   renderDropList(filteredTokens) {
     return _.map(filteredTokens, function(v, i) {
-
       return (
         <a href="#"
           key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("dropdown-item level is-mobile")}>
-          <span className="level-left my-2">
-            <span className="level-item">
-              <TokenIconImg
-                size={35}
-                token={v} />
-            </span>
-            <span className="level-item">{v.name}</span>
-            <div className="token-symbol-balance-wrapper">
-              <span className="has-text-grey">{v.symbol}</span>
-              <span className="has-text-grey">{this.getBalanceNumber(v)}</span>
-            </div>
-
-          </span>
+          <TokenSearchItem token={v}/>
         </a>
       )
     }.bind(this));
