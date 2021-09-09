@@ -9,6 +9,7 @@ import TokenListManager from '../../utils/tokenList';
 import CustomTokenModal from "./CustomTokenModal";
 import TokenSearchItem from "./swap/TokenSearchItem";
 import numeral from 'numeral';
+import {filterCircle} from "ionicons/icons";
 
 export default class TokenSearchBar extends Component {
   constructor(props) {
@@ -17,7 +18,8 @@ export default class TokenSearchBar extends Component {
       focused: false,
       value: "",
       refresh: Date.now(),
-      tokenBalances: {}
+      tokenBalances: {},
+      filteredTokens: []
     };
     this.input = React.createRef();
     this.subscribers = [];
@@ -87,13 +89,6 @@ export default class TokenSearchBar extends Component {
   }
 
   fetchBalance(token, attempt) {
-    if (!attempt) {
-      attempt = 0;
-    } else if (attempt > 2) {
-      console.log('attemped 2')
-      this.updateTokenBalances(token, 0, false);
-      return;
-    }
     Wallet.getBalance(token)
       .then(function(bal) {
         this.updateTokenBalances(token, bal, false);
@@ -101,9 +96,7 @@ export default class TokenSearchBar extends Component {
       .catch(function(e) {
         // try again
         console.error("Failed to fetch balance", e);
-        _.defer(function() {
-          this.fetchBalance(token, attempt + 1);
-        }.bind(this))
+        this.updateTokenBalances(token, 0, false);
       }.bind(this));
   }
 
@@ -120,8 +113,8 @@ export default class TokenSearchBar extends Component {
   getBalanceNumber(token) {
     const tokenBalance = this.state.tokenBalances[token.symbol];
     let balanceNumber = null;
-    if (tokenBalance) {
-      if (tokenBalance.balance && tokenBalance.balance.isZero()) {
+    if (tokenBalance && tokenBalance.balance) {
+      if (tokenBalance.balance.isZero()) {
         balanceNumber = '0.0';
       } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
         balanceNumber = "< 0.0001";
@@ -146,7 +139,6 @@ export default class TokenSearchBar extends Component {
   }
 
   handleQueueChange(e) {
-    console.log('e.data', e.data);
     if (e.data && Wallet.isConnected()) {
       this.fetchBalance(e.data.from);
       this.fetchBalance(e.data.to);
@@ -169,6 +161,17 @@ export default class TokenSearchBar extends Component {
 
   handleChange(event) {
     this.setState({value: event.target.value});
+    const _query = event.target.value.toLowerCase().trim();
+    if (_query.length > 0) {
+      let filteredTokens = _.first(_.filter(window.TOKEN_LIST, function (t) {
+        return (t.symbol) && (
+            (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
+            (t.name && t.name.toLowerCase().includes(_query)) ||
+            (t.address && t.address.toLowerCase().includes(_query))
+        );
+      }), 10);
+      this.setState({filteredTokens: filteredTokens});
+    }
   }
 
   onBlur(e) {
@@ -239,7 +242,6 @@ export default class TokenSearchBar extends Component {
   }
 
   renderDropList(filteredTokens) {
-    console.log('filteredTokens', filteredTokens)
     return _.map(filteredTokens, function(v, i) {
       return (
         <a href="#"
@@ -251,6 +253,7 @@ export default class TokenSearchBar extends Component {
             balances={this.state.tokenBalances}
             getBalanceNumber={this.getBalanceNumber}
             fetchBalance={this.fetchBalance}
+            refresh={Date.now()}
           />
         </a>
       )
@@ -277,21 +280,12 @@ export default class TokenSearchBar extends Component {
   }
 
   render() {
-    const { value, focused } = this.state
-    var filteredTokens = [];
+    const { value, focused, filteredTokens } = this.state
     var _query = value.toLowerCase().trim();
     var showDropdown = _query.length > 0 && focused;
     var dropContent;
 
     if (_query.length > 0) {
-      filteredTokens = _.first(_.filter(window.TOKEN_LIST, function(t) {
-        return (t.symbol) && (
-          (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
-          (t.name && t.name.toLowerCase().includes(_query)) ||
-          (t.address && t.address.toLowerCase().includes(_query))
-        );
-      }), 10);
-
       if (filteredTokens.length > 0) {
         dropContent = this.renderDropList(filteredTokens);
       } else {

@@ -3,13 +3,13 @@ import _ from "underscore"
 import TokenIconImg from "../TokenIconImg";
 
 export default function TokenSearchItem(props) {
-  const { token, balances } = props;
+  const { token, balances, refresh } = props;
 
   useEffect(()=>{
     if (!balances[token.symbol] || (balances[token.symbol] && balances[token.symbol].refresh)) {
       props.fetchBalance(token);
     }
-  }, []);
+  }, [refresh]);
 
   return (
     <span className="level-left my-2">
