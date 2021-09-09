@@ -25,12 +25,14 @@ export default class TokenSearchBar extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
+    this.handleQueueChange = this.handleQueueChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleCustomModal = this.handleCustomModal.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.fetchBalance = this.fetchBalance.bind(this);
     this.fetchBalances = this.fetchBalances.bind(this);
     this.getBalanceNumber = this.getBalanceNumber.bind(this);
+    this.updateTokenBalances = this.updateTokenBalances.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this)
 
@@ -40,7 +42,7 @@ export default class TokenSearchBar extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
+    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleQueueChange));
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
     this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
   }
@@ -80,16 +82,20 @@ export default class TokenSearchBar extends Component {
     this.fetchBalances(_.first(this.TOP_TOKENS, 3))
   }
 
+  updateTokenBalances (token, bal, refresh) {
+    this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token, refresh: refresh}}});
+  }
+
   fetchBalance(token, attempt) {
     attempt = 0;
     if (!attempt) {
     } else if (attempt > 2) {
-      this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: 0, token: token}}});
+      this.updateTokenBalances(token, 0, false);
       return;
     }
     Wallet.getBalance(token)
       .then(function(bal) {
-        this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
+        this.updateTokenBalances(token, bal, false);
       }.bind(this))
       .catch(function(e) {
         // try again
@@ -107,18 +113,10 @@ export default class TokenSearchBar extends Component {
           console.log('called fetch balances', token.symbol)
           Wallet.getBalance(token)
             .then((bal) => {
-              this.mounted && this.setState({
-                tokenBalances: {
-                  ...this.state.tokenBalances,
-                  [token.symbol]: {
-                    balance: bal,
-                    token: token
-                  }
-                }
-              });
+              this.updateTokenBalances(token, bal, false);
             })
             .catch(error => console.log(error));
-        }, index * 1000);
+        }, index * 200);
       })
     }
   }
@@ -147,9 +145,15 @@ export default class TokenSearchBar extends Component {
   }
 
   handleWalletChange(e) {
-    console.log('### wallet changed ###')
-    this.mounted && this.setState({tokenBalances: {}});
-    this.fetchBalances(_.first(this.TOP_TOKENS, 3))
+
+  }
+
+  handleQueueChange(e) {
+    console.log('e.data', e.data);
+    if (e.data && Wallet.isConnected()) {
+      this.fetchBalance(e.data.from);
+      this.fetchBalance(e.data.to);
+    }
   }
 
   handleClose(e) {
@@ -204,7 +208,6 @@ export default class TokenSearchBar extends Component {
     var rest = _.rest(this.TOP_TOKENS, 3);
 
     var top3Content = _.map(top3, function(v, i) {
-
       return (
         <a href="#"
           key={i}
@@ -245,7 +248,12 @@ export default class TokenSearchBar extends Component {
           key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("dropdown-item level is-mobile")}>
-          <TokenSearchItem token={v}/>
+          <TokenSearchItem
+            token={v}
+            balances={this.state.tokenBalances}
+            getBalanceNumber={this.getBalanceNumber}
+            fetchBalance={this.fetchBalance}
+          />
         </a>
       )
     }.bind(this));
@@ -271,9 +279,10 @@ export default class TokenSearchBar extends Component {
   }
 
   render() {
+    const { value, focused } = this.state
     var filteredTokens = [];
-    var _query = this.state.value.toLowerCase().trim();
-    var showDropdown = _query.length > 0 && this.state.focused;
+    var _query = value.toLowerCase().trim();
+    var showDropdown = _query.length > 0 && focused;
     var dropContent;
 
     if (_query.length > 0) {
