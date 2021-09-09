@@ -79,7 +79,7 @@ export default class TokenSearchBar extends Component {
       return TokenListManager.findTokenById(v)
     });
 
-    this.fetchBalances(_.first(this.TOP_TOKENS, 3))
+    this.fetchBalances(this.TOP_TOKENS)
   }
 
   updateTokenBalances (token, bal, refresh) {
@@ -87,9 +87,10 @@ export default class TokenSearchBar extends Component {
   }
 
   fetchBalance(token, attempt) {
-    attempt = 0;
     if (!attempt) {
+      attempt = 0;
     } else if (attempt > 2) {
+      console.log('attemped 2')
       this.updateTokenBalances(token, 0, false);
       return;
     }
@@ -110,13 +111,8 @@ export default class TokenSearchBar extends Component {
     if (Wallet.isConnected()) {
       tokenList.forEach((token, index) => {
         _.delay(() => {
-          console.log('called fetch balances', token.symbol)
-          Wallet.getBalance(token)
-            .then((bal) => {
-              this.updateTokenBalances(token, bal, false);
-            })
-            .catch(error => console.log(error));
-        }, index * 200);
+          this.fetchBalance(token)
+        }, 200);
       })
     }
   }
@@ -125,7 +121,7 @@ export default class TokenSearchBar extends Component {
     const tokenBalance = this.state.tokenBalances[token.symbol];
     let balanceNumber = null;
     if (tokenBalance) {
-      if (tokenBalance.balance.isZero()) {
+      if (tokenBalance.balance && tokenBalance.balance.isZero()) {
         balanceNumber = '0.0';
       } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
         balanceNumber = "< 0.0001";
@@ -145,7 +141,8 @@ export default class TokenSearchBar extends Component {
   }
 
   handleWalletChange(e) {
-
+    this.mounted && this.setState({tokenBalances: {}});
+    this.fetchBalances(this.TOP_TOKENS);
   }
 
   handleQueueChange(e) {
@@ -242,6 +239,7 @@ export default class TokenSearchBar extends Component {
   }
 
   renderDropList(filteredTokens) {
+    console.log('filteredTokens', filteredTokens)
     return _.map(filteredTokens, function(v, i) {
       return (
         <a href="#"
