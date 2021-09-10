@@ -19,25 +19,17 @@ export default class TokenIconImg extends Component {
     this.setState({ errored: false });
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.errored) {
-      this.setState({
-        errored: false
-      });
-    }
-  }
-
   render() {
-    var errored = this.state.errored;
-    var imgSrc;
+    let errored = this.state.errored;
+    let imgSrc;
 
     if (!errored) {
       imgSrc = this.props.imgSrc || (this.props.token && this.props.token.logoURI);
 
       if (!imgSrc) {
         if (this.props.token) {
-          var chainPart = Storage.getNetwork().toLowerCase().replace(/\s+/g, '');
-          var keyPart = this.props.token.address || this.props.token.symbol;
+          const chainPart = Storage.getNetwork().toLowerCase().replace(/\s+/g, '');
+          const keyPart = this.props.token.address || this.props.token.symbol;
           imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${keyPart}/logo.png`;
         } else {
           errored = true;
