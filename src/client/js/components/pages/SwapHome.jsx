@@ -9,6 +9,7 @@ import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
+import BridgeModal from '../partials/BridgeModal';
 
 export default class Home extends Component {
   render() {
@@ -35,6 +36,8 @@ export default class Home extends Component {
             <SwapNetworkToggle />
 
             <SwapWidget />
+
+            <BridgeModal />
 
             <AlphaOnboardingCard />
 
