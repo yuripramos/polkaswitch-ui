@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 
-import Wallet from '../../utils/wallet';
-import Metrics from '../../utils/metrics';
 import EventManager from '../../utils/events';
-import TxQueue from '../../utils/txQueue';
 
 import { ConnextModal } from '@connext/vector-modal';
 
