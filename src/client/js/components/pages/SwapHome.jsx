@@ -10,6 +10,7 @@ import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import BridgeModal from '../partials/BridgeModal';
+import ConnextNxtpModal from '../partials/ConnextNxtpModal';
 
 export default class Home extends Component {
   render() {
@@ -36,8 +37,6 @@ export default class Home extends Component {
             <SwapNetworkToggle />
 
             <SwapWidget />
-
-            <BridgeModal />
 
             <AlphaOnboardingCard />
 
@@ -79,6 +78,8 @@ export default class Home extends Component {
             </div>
           </div>
         </div>
+
+        <ConnextNxtpModal />
       </div>
     );
   }

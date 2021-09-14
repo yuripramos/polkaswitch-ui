@@ -26,21 +26,16 @@ export default class BridgeModal extends Component {
     );
   }
 
-  componentDidUpdate() {
-    console.count("bridge-updated");
-  }
-
   componentWillUnmount() {
     this.subWalletChange.unsubscribe();
   }
 
   handleWalletChange() {
-    window.ethereum.autoRefreshOnNetworkChange = false;
     this.setState({ refresh: Date.now() });
   }
 
-  handleOpen(e) {
-    window.ethereum.enable();
+  async handleOpen(e) {
+    await window.ethereum.request({ method: "eth_requestAccounts"});
     this.setState({
       opened: true
     });
@@ -53,8 +48,9 @@ export default class BridgeModal extends Component {
   }
 
   render() {
+    console.log("Date: ", Date.now(), this.state.opened + "");
+    console.count("bridge-updated");
 
-    window.ethereum.autoRefreshOnNetworkChange = false;
     return (
       <div>
         <button className="button" onClick={this.handleOpen}>Bridge Swap (Beta)</button>
@@ -69,6 +65,8 @@ export default class BridgeModal extends Component {
             withdrawAssetId={"0xc2132D05D31c914a87C6611C10748AEb04B58e8F"}
             withdrawChainId={137}
             withdrawalAddress={window.ethereum.selectedAddress}
+            onReady={params => console.log("MODAL IS READY =======>", params)}
+            onFinished={params => console.log("On finish ==>", params)}
             onClose={this.handleClose}
             depositChainProvider={"https://rpc-mainnet.maticvigil.com"}
             withdrawChainProvider={"https://bsc-dataseed1.ninicoin.io"}
