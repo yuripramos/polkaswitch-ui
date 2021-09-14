@@ -69,7 +69,7 @@ export default class BridgeModal extends Component {
             withdrawAssetId={"0xc2132D05D31c914a87C6611C10748AEb04B58e8F"}
             withdrawChainId={137}
             withdrawalAddress={window.ethereum.selectedAddress}
-            //onClose={() => setShowModal(false)}
+            onClose={this.handleClose}
             depositChainProvider={"https://rpc-mainnet.maticvigil.com"}
             withdrawChainProvider={"https://bsc-dataseed1.ninicoin.io"}
             injectedProvider={window.ethereum}
