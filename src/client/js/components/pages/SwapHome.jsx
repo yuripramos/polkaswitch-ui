@@ -9,8 +9,7 @@ import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
-import BridgeModal from '../partials/BridgeModal';
-import ConnextNxtpModal from '../partials/ConnextNxtpModal';
+import ConnextNxtpModal from '../partials/connext/ConnextNxtpModal';
 
 export default class Home extends Component {
   render() {

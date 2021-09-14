@@ -13,9 +13,9 @@ import {
   TransactionPreparedEvent,
 } from "@connext/nxtp-utils";
 
-import { chainConfig, swapConfig } from "../ConnextNxtpModal";
+import { chainConfig, swapConfig } from "./ConnextNxtpModal";
 import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./utils";
-import { chainProviders } from "../ConnextNxtpModal";
+import { chainProviders } from "./ConnextNxtpModal";
 
 const findAssetInSwap = (crosschainTx) =>
   swapConfig.find((sc) =>

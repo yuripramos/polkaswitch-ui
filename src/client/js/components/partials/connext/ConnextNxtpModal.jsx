@@ -2,15 +2,13 @@ import _ from "underscore";
 import React, { Component } from 'react';
 import classnames from 'classnames';
 
-import EventManager from '../../utils/events';
-
 import { ReactElement, useEffect, useState } from "react";
 import { Button, Col, Row, Tabs, Typography } from "antd";
 import { providers, Signer, utils } from "ethers";
 import { ChainData } from "@connext/nxtp-utils";
 
-import { Router } from "./connext/Router";
-import { Swap } from "./connext/Swap";
+import { Router } from "./Router";
+import { Swap } from "./Swap";
 
 
 const REACT_APP_CHAIN_CONFIG = {
