@@ -35,6 +35,39 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
 
   const [form] = Form.useForm();
 
+  const updateActiveTransactionsWith = (transactionId, status, event, crosschainTx) => {
+    setActiveTransferTableColumns((activeTransactions) => {
+      // update existing?
+      let updated = false
+      const updatedTransactions = activeTransactions.map((item) => {
+	if (item.crosschainTx.invariant.transactionId === transactionId) {
+	  if (crosschainTx) {
+	    item.crosschainTx = Object.assign({}, item.crosschainTx, crosschainTx)
+	  }
+	  item.status = status
+	  item.event = event
+	  updated = true
+	}
+	return item
+      })
+
+      if (updated) {
+	return updatedTransactions
+      } else {
+	return [
+	  ...activeTransactions,
+	  { crosschainTx: crosschainTx, status, event },
+	]
+      }
+    })
+  }
+
+  const removeActiveTransaction = (transactionId) => {
+    setActiveTransferTableColumns((activeTransactions) => {
+      return activeTransactions.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId)
+    })
+  }
+
   useEffect(() => {
     const init = async () => {
       console.log("signer: ", signer);
@@ -101,6 +134,7 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
             (t) => t.crosschainTx.invariant.transactionId !== data.txData.transactionId,
           ),
         );
+        // TODO update Historic TXes
       });
 
       _sdk.attach(NxtpSdkEvents.SenderTransactionCancelled, (data) => {
@@ -110,6 +144,7 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
             (t) => t.crosschainTx.invariant.transactionId !== data.txData.transactionId,
           ),
         );
+        // TODO update Historic TXes
       });
 
       _sdk.attach(NxtpSdkEvents.ReceiverTransactionPrepared, (data) => {
@@ -152,11 +187,8 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
 
       _sdk.attach(NxtpSdkEvents.ReceiverTransactionFulfilled, async (data) => {
         console.log("ReceiverTransactionFulfilled:", data);
-        setActiveTransferTableColumns(
-          activeTransferTableColumns.filter(
-            (t) => t.crosschainTx.invariant.transactionId !== data.txData.transactionId,
-          ),
-        );
+        updateActiveTransactionsWith(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionFulfilled, data, { invariant: data.txData, receiving: data.txData })
+        removeActiveTransaction(data.txData.transactionId)
 
         const historicalTxs = await _sdk.getHistoricalTransactions();
         setHistoricalTransferTableColumns(historicalTxs);
@@ -165,11 +197,9 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
 
       _sdk.attach(NxtpSdkEvents.ReceiverTransactionCancelled, (data) => {
         console.log("ReceiverTransactionCancelled:", data);
-        setActiveTransferTableColumns(
-          activeTransferTableColumns.filter(
-            (t) => t.crosschainTx.invariant.transactionId !== data.txData.transactionId,
-          ),
-        );
+        updateActiveTransactionsWith(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionCancelled, data, { invariant: data.txData, receiving: data.txData })
+        removeActiveTransaction(data.txData.transactionId)
+        // TODO update Historic TXes
       });
 
       _sdk.attach(NxtpSdkEvents.SenderTokenApprovalMined, (data) => {
