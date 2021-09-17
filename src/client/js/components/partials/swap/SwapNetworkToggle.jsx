@@ -21,7 +21,7 @@ export default class SwapNetworkToggle extends Component {
     this.state = {
       selected: TokenListManager.getCurrentNetworkConfig(),
       active: false,
-      singleChain: true,
+      singleChain: !TokenListManager.isCrossChainEnabled(),
       hoverable: true,
     };
     this.subscribers = [];

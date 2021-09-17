@@ -47,6 +47,7 @@ var config  = await fetch(
 window.NETWORK_CONFIGS = await config.json();
 
 await Storage.initialize();
+await TokenListManager.initialize();
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 await SwapFn.initialize();

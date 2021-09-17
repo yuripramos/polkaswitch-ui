@@ -255,7 +255,7 @@ export default class SwapOrderSlide extends Component {
     return (
       <div className="level is-mobile">
         <div className={classnames("level is-mobile is-narrow my-0 mr-2", {
-          "is-hidden": !TokenListManager.isCrossChainEnabled()
+          "is-hidden": !this.props.crossChainEnabled
         })}>
           <NetworkDropdown
             crossChain={true}

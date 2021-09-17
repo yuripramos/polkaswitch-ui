@@ -23,13 +23,36 @@ export default class SwapOrderWidget extends Component {
 
     var network = TokenListManager.getCurrentNetworkConfig();
 
-    this.state = {
-      toChain: TokenListManager.getNetworkById(137),
-      fromChain: TokenListManager.getNetworkById(56),
+    var mergeState = {};
 
-      to: TokenListManager.findTokenById(network.defaultPair.to),
-      from: TokenListManager.findTokenById(network.defaultPair.from),
+    // TODO hardcode chains for now
+    var toChain = TokenListManager.getNetworkById(137);
+    var fromChain = TokenListManager.getNetworkById(56);
 
+    if (TokenListManager.isCrossChainEnabled()) {
+      mergeState = _.extend(mergeState, {
+        crossChainEnabled: true,
+        toChain: toChain,
+        fromChain: fromChain,
+        to: TokenListManager.findTokenById(
+          toChain.supportedCrossChainTokens[0],
+          toChain
+        ),
+        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0])
+      });
+    }
+
+    else {
+      mergeState = _.extend(mergeState, {
+        crossChainEnabled: false,
+        toChain: toChain,
+        fromChain: fromChain,
+        to: TokenListManager.findTokenById(network.defaultPair.to),
+        from: TokenListManager.findTokenById(network.defaultPair.from),
+      });
+    }
+
+    this.state = _.extend(mergeState, {
       fromAmount: undefined,
       toAmount: undefined,
       availableBalance: undefined,
@@ -45,7 +68,7 @@ export default class SwapOrderWidget extends Component {
       transactionHash: "",
 
       refresh: Date.now()
-    };
+    });
 
     this.subscribers = [];
     this.onSwapTokens = this.onSwapTokens.bind(this);
@@ -63,6 +86,8 @@ export default class SwapOrderWidget extends Component {
     this.handleNetworkPreUpdate = this.handleNetworkPreUpdate.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
     this.onApproveComplete = this.onApproveComplete.bind(this);
+
+    this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
   }
 
   componentDidMount() {
@@ -90,12 +115,26 @@ export default class SwapOrderWidget extends Component {
   handleNetworkChange(e) {
     var network = TokenListManager.getCurrentNetworkConfig();
 
-    this.setState({
-      loading: false,
-      to: TokenListManager.findTokenById(network.defaultPair.to),
-      from: TokenListManager.findTokenById(network.defaultPair.from),
-      availableBalance: undefined
-    });
+    if (TokenListManager.isCrossChainEnabled()) {
+      this.setState({
+        loading: false,
+        crossChainEnabled: true,
+        to: TokenListManager.findTokenById(
+          this.state.toChain.supportedCrossChainTokens[0],
+          this.state.toChain
+        ),
+        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+        availableBalance: undefined
+      });
+    } else {
+      this.setState({
+        loading: false,
+        crossChainEnabled: false,
+        to: TokenListManager.findTokenById(network.defaultPair.to),
+        from: TokenListManager.findTokenById(network.defaultPair.from),
+        availableBalance: undefined
+      });
+    }
   }
 
   handleWalletChange(e) {
@@ -147,6 +186,8 @@ export default class SwapOrderWidget extends Component {
   }
 
   onSwapTokens() {
+    // TODO handle cross-chain swap
+
     Sentry.addBreadcrumb({
       message: "Action: Swap Tokens"
     });
@@ -163,7 +204,14 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
+  handleCrossChainChange() {
+    // TODO
+    // swap chains if same
+  }
+
   handleSearchToggle(target) {
+    // TODO handle cross-chain swap
+
     return function(e) {
       Sentry.addBreadcrumb({
         message: "Page: Search Token: " + target,
@@ -284,6 +332,7 @@ export default class SwapOrderWidget extends Component {
           classNames="fade">
           <SwapOrderSlide
             ref={this.orderPage}
+            crossChainEnabled={this.state.crossChainEnabled}
             toChain={this.state.toChain}
             fromChain={this.state.fromChain}
             to={this.state.to}
@@ -293,6 +342,7 @@ export default class SwapOrderWidget extends Component {
             availableBalance={this.state.availableBalance}
             approveStatus={this.state.approveStatus}
             refresh={this.state.refresh}
+            handleCrossChainChange={this.handleCrossChainChange}
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
             swapDistribution={this.state.swapDistribution}

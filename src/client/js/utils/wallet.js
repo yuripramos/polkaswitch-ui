@@ -190,9 +190,13 @@ window.WalletJS = {
     return !!this._cachedWeb3Provider;
   },
 
-  isMatchingConnectedNetwork: function() {
+  isMatchingConnectedNetwork: function(optionalNetwork) {
     var network = TokenListManager.getCurrentNetworkConfig();
-    return +network.chainId === +this._cachedNetworkId;
+    if (optionalNetwork) {
+      return +optionalNetwork.chainId === +this._cachedNetworkId;
+    } else {
+      return +network.chainId === +this._cachedNetworkId;
+    }
   },
 
   currentAddress: function() {
