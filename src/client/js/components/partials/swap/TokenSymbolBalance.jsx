@@ -9,7 +9,8 @@ export default class TokenSymbolBalance extends Component {
     this.state = {
       balance: false,
       errored: false,
-      loading: true
+      loading: true,
+      timestamp: Date.now()
     };
 
     this.fetchBalance = this.fetchBalance.bind(this);
@@ -23,6 +24,7 @@ export default class TokenSymbolBalance extends Component {
     if (this.props.token.symbol !== prevProps.token.symbol ||
       this.props.refresh !== prevProps.refresh) {
       this.setState({
+        timestamp: Date.now(),
         loading: true,
         balance: false,
         errored: false
@@ -38,11 +40,12 @@ export default class TokenSymbolBalance extends Component {
         errored: true,
         loading: false
       });
-      console.error("NETWORK DOWN ERROR");
+      console.error("TokenSymbolBalance: Network Failure");
       return;
     }
 
     if (this.props.network && !Wallet.isMatchingConnectedNetwork(this.props.network)) {
+      console.error("TokenSymbolBalance: Wrong network");
       this.setState({
         errored: true,
         loading: false
@@ -52,30 +55,33 @@ export default class TokenSymbolBalance extends Component {
 
     if (Wallet.isConnected()) {
       Wallet.getBalance(this.props.token)
-        .then(function(bal) {
-          _.defer(function() {
-            // balance is in WEI and is a BigNumber
-            this.setState({
-              balance: bal,
-              errored: false,
-              loading: false
-            });
-          }.bind(this))
-        }.bind(this))
-        .catch(function(e) {
+        .then(function(_ts, bal) {
+          if (this.state.timestamp != _ts) {
+            return;
+          }
+
+          // balance is in WEI and is a BigNumber
+          this.setState({
+            balance: bal,
+            errored: false,
+            loading: false
+          });
+        }.bind(this, this.state.timestamp))
+        .catch(function(_ts, e) {
           // try again
-          console.error("Failed to fetch balance", e);
-          _.defer(function() {
-            this.fetchBalance(attempt + 1);
-          }.bind(this))
-        }.bind(this));
+          console.error("TokenSymbolBalance: Failed to fetch balance", e);
+          if (this.state.timestamp != _ts) {
+            return;
+          }
+
+          this.fetchBalance(attempt + 1);
+        }.bind(this, this.state.timestamp));
     } else {
-      _.defer(function() {
-        this.setState({
-          errored: true,
-          loading: false
-        });
-      }.bind(this))
+      console.error("TokenSymbolBalance: Wallet not connected");
+      this.setState({
+        errored: true,
+        loading: false
+      });
     }
   }
 
