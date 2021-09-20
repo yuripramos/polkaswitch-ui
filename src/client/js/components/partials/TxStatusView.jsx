@@ -11,6 +11,7 @@ const Utils = ethers.utils;
 import TokenListManager from '../../utils/tokenList';
 
 import TxExplorerLink from './TxExplorerLink';
+import TokenIconImg from "./TokenIconImg";
 
 export default class TxStatusView extends Component {
   constructor(props) {
@@ -41,28 +42,32 @@ export default class TxStatusView extends Component {
     }
 
     return (
-      <div className={classnames("level is-mobile tx-item", clazz)}>
-        <div className="level-item tx-icon">
-          <div className="icon">
-            {icon}
+        <div className={classnames("level is-mobile tx-item", clazz)}>
+          <div className="token-pair">
+            <TokenIconImg
+                size={30}
+            />
+            <TokenIconImg
+                size={30}
+            />
+          </div>
+          <div className="column">
+            <div className="item-1">Trade</div>
+            <div className="item-2">View on explorer</div>
+          </div>
+          <div className="column">
+            <div className="item-1">ETH</div>
+            <div className="item-2">12.92873211</div>
+          </div>
+          <div className="column">
+            <div className="item-1">-> DAI</div>
+            <div className="item-2">12.92873211</div>
+          </div>
+          <div className="column">
+            <div className="item-1">Completed</div>
+            <div className="item-2">10/10/21 3:49PM</div>
           </div>
         </div>
-        <div className="level-item tx-content">
-          <div>
-            <div>{lang} {output} {this.props.data.from.symbol} for {this.props.data.to.symbol}</div>
-            <div>
-              <TxExplorerLink
-                chainId={this.props.data.chainId}
-                hash={this.props.data.tx.hash}>
-                View on Explorer <ion-icon name="open-outline"></ion-icon>
-              </TxExplorerLink>
-            </div>
-          </div>
-        </div>
-        <div className="level-item tx-meta">
-          {moment(this.props.data.lastUpdated).format("LT")}
-        </div>
-      </div>
     );
   }
 }

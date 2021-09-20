@@ -50,59 +50,96 @@
 }
 
 .tx-history-modal {
-  max-width: 420px;
+  max-width: 468px;
   margin: 0 auto;
-  border-radius: 20px;
+  border-radius: 16px;
+
+  .header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+  }
 }
 
+//.tx-item {
+//  width: 100%;
+//
+//  .tx-icon {
+//    flex-grow: 0 !important;
+//
+//    .icon {
+//      width: 50px;
+//      height: 40px;
+//      font-size: 30px;
+//    }
+//  }
+//
+//  &.success {
+//    .icon {
+//      color: $success;
+//    }
+//  }
+//
+//  &.pending {
+//    .button::after {
+//      border-color: transparent transparent $info $info !important;
+//    }
+//  }
+//
+//  &.failed {
+//    .icon {
+//      color: $danger;
+//    }
+//  }
+//
+//  .tx-meta {
+//    color: #8899a7;
+//    font-size: 12px;
+//    font-weight: 100;
+//  }
+//
+//  .tx-content {
+//    color: #666;
+//    font-size: 14px;
+//
+//    > div {
+//      width: 100%;
+//    }
+//
+//    a {
+//      color: #8899a7;
+//      font-weight: 100;
+//    }
+//  }
+//}
+
 .tx-item {
-  width: 100%;
+  display: grid;
+  gap: 1em;
+  -webkit-box-align: center;
+  align-items: center;
+  grid-template-columns: 20px 3.5fr repeat(3, 1fr);
 
-  .tx-icon {
-    flex-grow: 0 !important;
-
-    .icon {
-      width: 50px;
-      height: 40px;
-      font-size: 30px;
-    }
+  .token-pair {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding: 0px;
   }
 
-  &.success {
-    .icon {
-      color: $success;
-    }
-  }
+  .column {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0px;
 
-  &.pending {
-    .button::after {
-      border-color: transparent transparent $info $info !important;
-    }
-  }
+      .item-1 {
+        font-weight: 700;
+        font-size: 14px
+      }
 
-  &.failed {
-    .icon {
-      color: $danger;
-    }
-  }
-
-  .tx-meta {
-    color: #8899a7;
-    font-size: 12px;
-    font-weight: 100;
-  }
-
-  .tx-content {
-    color: #666;
-    font-size: 14px;
-
-    > div {
-      width: 100%;
-    }
-
-    a {
-      color: #8899a7;
-      font-weight: 100;
-    }
+      .item-2 {
+        font-weight: 400;
+        font-size: 12px
+      }
   }
 }
