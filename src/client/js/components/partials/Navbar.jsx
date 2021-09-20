@@ -15,7 +15,7 @@ import TokenSearchBar from './TokenSearchBar';
 export default class Navbar extends Component {
   render() {
     return (
-      <nav id="nav" className="level is-mobile" style={{ display: "flex" }}>
+      <nav id="nav" className="level is-mobile">
         <div className="level-left is-flex-grow-1">
           <div className="level-item is-narrow">
             <span className="logo-icon icon is-left is-hidden-mobile">
@@ -34,6 +34,13 @@ export default class Navbar extends Component {
           <div className="level-item is-narrow"><BridgeButton /></div>
           <div className="level-item is-narrow"><NotificationButton /></div>
           <div className="level-item is-narrow"><ConnectWalletButton /></div>
+          <div className="level-item">
+            <span
+              className="icon clickable settings-icon"
+              >
+              <ion-icon name="settings-outline"></ion-icon>
+            </span>
+          </div>
         </div>
       </nav>
     );

@@ -37,6 +37,8 @@
 
 .notification-button {
   position: relative;
+  cursor: pointer;
+  margin-right: 20px;
 
   .button {
     padding: 0 16px;
@@ -44,11 +46,6 @@
 
   .bubble {
     margin-left: 10px;
-  }
-
-  .icon {
-    margin: 0 !important;
-    width: 20px;
   }
 }
 

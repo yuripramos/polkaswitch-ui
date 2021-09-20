@@ -66,34 +66,83 @@ html, body {
 
 
 #nav {
-  margin: 25px auto;
+  display: flex;
+  height: 67px;
+  /* dark mode */
+  background-color: $primary-dark-background;
+  border-bottom: 1px solid #FFFFFF;
+  /* dark mode */
+
   transition: margin-top 300ms;
+  padding-left: 24px;
+  padding-right: 24px;
 
   .logo-icon {
     width: auto;
     height: auto;
 
     img {
-      height: 37px;
+      margin-left: 10px;
+      height: 36px;
     }
+  }
+
+  .level:not(:last-child),
+  .level-item:not(:last-child) {
+    margin-right: 4px;
   }
 
   .button {
     box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
-    border-radius: 15px;
+    border-radius: 12px;
+    width: 164px;
+    height: 42px;
   }
 
   .bridge-button {
-    span {
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+    border-radius: 12px;
+    width: 166px;
+    height: 42px;
+    background-color: $secondary-dark-background;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $primary-dark-background;
+    }
+
+    img {
+      width: 22px;
+      height: 16px;
+      margin-right: 13px;
+    }
+
+    a {
       font-size: 16px;
+      color: #FFFFFF;
+    }
+  }
+
+  .settings-icon {
+    font-size: 24px;
+    height: 34px;
+    width: 34px;
+    line-height: 34px;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      color: #333;
+      border-radius: 40px;
+      background: #eee;
     }
   }
 }
 
 @media screen and (min-width: 769px) {
   #nav {
-    margin: 50px auto;
-
     .logo-title {
       font-size: 24px;
     }
@@ -167,15 +216,20 @@ html, body {
 }
 
 .wallet-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 14px;
+  border-right: 1px solid #ccc;
+  height: 30px;
 
   .wallet-address {
     font-weight: bold;
-    color: #333;
-    font-size: 14px;
+    font-size: 12px;
+    color: #FFFFFF;
     display: block;
     padding-right: 10px;
-    margin-right: 5px;
-    border-right: 1px solid #ccc;
   }
 
   .button .icon:last-child:not(:first-child) {
@@ -194,7 +248,7 @@ html, body {
 
   .image-icon {
     height: 19px;
-    margin-right: 11px;
+    margin-right: 8px;
   }
 
   .icon-person {
