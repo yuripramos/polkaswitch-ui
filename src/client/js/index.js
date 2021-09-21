@@ -4,6 +4,7 @@ import App from './components/App';
 import Wallet from './utils/wallet';
 import TokenListManager from './utils/tokenList';
 import SwapFn from './utils/swapFn';
+import Nxtp from './utils/nxtp';
 import TxQueue from './utils/txQueue';
 import Storage from './utils/storage';
 import _ from 'underscore';
@@ -46,11 +47,14 @@ var config  = await fetch(
 );
 window.NETWORK_CONFIGS = await config.json();
 
+window.MAX_RETRIES = process.env.IS_PRODUCTION ? 3 : 1;
+
 await Storage.initialize();
 await TokenListManager.initialize();
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 await SwapFn.initialize();
+await Nxtp.initalize();
 TxQueue.initalize();
 
 if (Wallet.isMetamaskSupported()) {

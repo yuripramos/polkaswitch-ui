@@ -35,7 +35,7 @@ export default class TokenSymbolBalance extends Component {
   fetchBalance(attempt) {
     if (!attempt) {
       attempt = 0;
-    } else if (attempt > 10) {
+    } else if (attempt > window.MAX_RETRIES) {
       this.setState({
         errored: true,
         loading: false

@@ -23,11 +23,28 @@ import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintToke
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
 
-const BigNumber = ethers.BigNumber;
-const Utils = ethers.utils;
-const Contract = ethers.Contract;
-
 let store = require('store');
+
+const REACT_APP_CHAIN_CONFIG = {
+  "56":{
+    "provider": ["https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"]
+  },
+  "137":{
+    "provider":["https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"]
+  }
+};
+
+export const chainProviders = {};
+
+Object.entries(REACT_APP_CHAIN_CONFIG).forEach(([chainId, { provider, subgraph, transactionManagerAddress }]) => {
+  chainProviders[parseInt(chainId)] = {
+    provider: new providers.FallbackProvider(
+      provider.map((p) => new providers.StaticJsonRpcProvider(p, parseInt(chainId))),
+    ),
+    subgraph,
+    transactionManagerAddress,
+  };
+});
 
 export default {
   _queue: {},
@@ -41,6 +58,7 @@ export default {
   },
 
   initalize: async function() {
+    // TODO need to refresh when wallet connects/disconnects
     const signer = Wallet.getProvider().getSigner();
 
     this._sdk = new NxtpSdk(
@@ -50,17 +68,19 @@ export default {
       process.env.REACT_APP_NETWORK || "mainnet",
     );
 
-    this.updateActiveTxs();
-    this.updateHistoricalTxs();
+    // TODO figure out historical later,
+    // need to refresh when wallet connects/disconnects
+    // await this.fetchActiveTxs();
+    // await this.fetchHistoricalTxs();
     this.attachNxtpSdkListeners(this._sdk);
   },
 
-  updateActiveTx: () => {
+  fetchActiveTxs: async function() {
     this._activeTxs = await this._sdk.getActiveTransactions();
     console.log("activeTxs: ", this._activeTxs);
   },
 
-  updateHistoricalTxs: () => {
+  fetchHistoricalTxs: async function() {
     this._historicalTxs = await this._sdk.getHistoricalTransactions();
     console.log("historicalTxs: ", this._historicalTxs);
   },
@@ -88,13 +108,13 @@ export default {
     _sdk.attach(NxtpSdkEvents.SenderTransactionFulfilled, (data) => {
       console.log("SenderTransactionFulfilled:", data);
       this.removeActiveTx(data.txData.transactionId)
-      this.updateHistoricalTxs();
+      this.fetchHistoricalTxs();
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTransactionCancelled, (data) => {
       console.log("SenderTransactionCancelled:", data);
       this.removeActiveTx(data.txData.transactionId)
-      this.updateHistoricalTxs();
+      this.fetchHistoricalTxs();
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionPrepared, (data) => {
@@ -139,14 +159,14 @@ export default {
       console.log("ReceiverTransactionFulfilled:", data);
       this.updateActiveTx(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionFulfilled, data, { invariant: data.txData, receiving: data.txData })
       this.removeActiveTx(data.txData.transactionId)
-      this.updateHistoricalTxs();
+      this.fetchHistoricalTxs();
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionCancelled, (data) => {
       console.log("ReceiverTransactionCancelled:", data);
       this.updateActiveTx(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionCancelled, data, { invariant: data.txData, receiving: data.txData })
       this.removeActiveTx(data.txData.transactionId);
-      this.updateHistoricalTxs();
+      this.fetchHistoricalTxs();
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTokenApprovalMined, (data) => {
@@ -158,7 +178,7 @@ export default {
     });
   },
 
-  updateActiveTx: (transactionId, status, event, crosschainTx) => {
+  updateActiveTx: function(transactionId, status, event, crosschainTx) {
     let updated = false;
     this._activeTxs = this._activeTxs.map(item => {
       if (item.crosschainTx.invariant.transactionId === transactionId) {
@@ -178,19 +198,19 @@ export default {
     // send event
   },
 
-  removeActiveTx: (transactionId) => {
+  removeActiveTx: function(transactionId) {
     this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
     // send event
   },
 
-  getTransferQuote: async (
+  getTransferQuote: async function (
     sendingChainId,
     sendingAssetId,
     receivingChainId,
     receivingAssetId,
     amount,
     receivingAddress
-  ) => {
+  ) {
     // Create txid
     const transactionId = getRandomBytes32();
 
@@ -207,7 +227,7 @@ export default {
     return response;
   },
 
-  transferStepOne: async (sendingChainIdtransferQuote) => {
+  transferStepOne: async function (sendingChainIdtransferQuote) {
     if (!transferQuote) {
       throw new Error("Please request quote first");
     }
@@ -224,12 +244,12 @@ export default {
     return transfer;
   },
 
-  transferStepTwo: async ({
+  transferStepTwo: async function({
     bidSignature,
     encodedBid,
     encryptedCallData,
     txData,
-  }) => {
+  }) {
     const finish = await this._sdk.fulfillTransfer({ bidSignature, encodedBid, encryptedCallData, txData });
     console.log("finish: ", finish);
     if (finish.metaTxResponse?.transactionHash || finish.metaTxResponse?.transactionHash === "") {

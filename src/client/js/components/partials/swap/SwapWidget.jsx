@@ -25,11 +25,11 @@ export default class SwapOrderWidget extends Component {
 
     var mergeState = {};
 
-    // TODO hardcode chains for now
-    var toChain = TokenListManager.getNetworkById(137);
-    var fromChain = TokenListManager.getNetworkById(56);
-
     if (TokenListManager.isCrossChainEnabled()) {
+      // TODO hardcode chains for now
+      var toChain = TokenListManager.getNetworkById(137);
+      var fromChain = TokenListManager.getNetworkById(56);
+
       mergeState = _.extend(mergeState, {
         crossChainEnabled: true,
         toChain: toChain,
@@ -45,8 +45,8 @@ export default class SwapOrderWidget extends Component {
     else {
       mergeState = _.extend(mergeState, {
         crossChainEnabled: false,
-        toChain: toChain,
-        fromChain: fromChain,
+        toChain: network,
+        fromChain: network,
         to: TokenListManager.findTokenById(network.defaultPair.to),
         from: TokenListManager.findTokenById(network.defaultPair.from),
       });

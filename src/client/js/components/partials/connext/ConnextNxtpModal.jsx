@@ -10,7 +10,6 @@ import { ChainData } from "@connext/nxtp-utils";
 import { Router } from "./Router";
 import { Swap } from "./Swap";
 
-
 const REACT_APP_CHAIN_CONFIG = {
   "56":{"provider":["https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"]},
   "137":{"provider":["https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"]}
