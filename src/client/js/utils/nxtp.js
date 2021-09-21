@@ -224,10 +224,15 @@ export default {
       transactionId,
       expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
     });
-    return response;
+
+    this._queue[transactionId] = {
+      quote: response
+    }
+
+    return { quote: response, id: transactionId };
   },
 
-  transferStepOne: async function (sendingChainIdtransferQuote) {
+  transferStepOne: async function (transferQuote) {
     if (!transferQuote) {
       throw new Error("Please request quote first");
     }

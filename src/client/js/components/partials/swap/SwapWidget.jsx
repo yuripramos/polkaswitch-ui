@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/react";
 import SwapOrderSlide from './SwapOrderSlide';
 import SwapTokenSearchSlide from './SwapTokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
+import CrossSwapProcessSlide from './CrossSwapProcessSlide';
 import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
@@ -380,19 +381,35 @@ export default class SwapOrderWidget extends Component {
             in={!this.state.showResults}
             timeout={animTiming}
             classNames="fade">
-            <SwapConfirmSlide
-              to={this.state.to}
-              from={this.state.from}
-              fromAmount={this.state.fromAmount}
-              toAmount={this.state.toAmount}
-              availableBalance={this.state.availableBalance}
-              approveStatus={this.state.approveStatus}
-              refresh={this.state.refresh}
-              swapDistribution={this.state.swapDistribution}
-              handleTransactionComplete={this.handleResults}
-              onApproveComplete={this.onApproveComplete}
-              handleBackOnConfirm={this.handleBackOnConfirm}
-            />
+            {!this.state.crossChainEnabled ? (
+              <SwapConfirmSlide
+                to={this.state.to}
+                from={this.state.from}
+                fromAmount={this.state.fromAmount}
+                toAmount={this.state.toAmount}
+                availableBalance={this.state.availableBalance}
+                approveStatus={this.state.approveStatus}
+                refresh={this.state.refresh}
+                swapDistribution={this.state.swapDistribution}
+                handleTransactionComplete={this.handleResults}
+                onApproveComplete={this.onApproveComplete}
+                handleBackOnConfirm={this.handleBackOnConfirm}
+              />
+            ) : (
+              <CrossSwapProcessSlide
+                to={this.state.to}
+                from={this.state.from}
+                fromChain={this.state.fromChain}
+                toChain={this.state.toChain}
+                fromAmount={this.state.fromAmount}
+                toAmount={this.state.toAmount}
+                availableBalance={this.state.availableBalance}
+                approveStatus={this.state.approveStatus}
+                refresh={this.state.refresh}
+                handleTransactionComplete={this.handleResults}
+                handleBackOnConfirm={this.handleBackOnConfirm}
+              />
+            )}
           </CSSTransition>
         </CSSTransition>
         <CSSTransition

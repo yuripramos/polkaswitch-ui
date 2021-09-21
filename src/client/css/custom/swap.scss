@@ -596,6 +596,12 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .page-view-cross-process {
+    .level-item.chain-icon {
+      margin-right: -7px;
+    }
+  }
+
   .page-view-results {
     .view {
       text-align: center;
