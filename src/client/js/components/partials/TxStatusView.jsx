@@ -19,25 +19,23 @@ export default class TxStatusView extends Component {
   }
 
   render() {
-    if (!this.props.data.from) {
+    const { data } = this.props;
+    if (!data.from) {
       return (<div />);
     }
 
-    var output = numeral(Utils.formatUnits(this.props.data.amount, this.props.data.from.decimals)).format('0.0000a');
+    var output = numeral(Utils.formatUnits(data.amount, this.props.data.from.decimals)).format('0.0000a');
 
-    var icon, lang, clazz;
+    let lang, clazz;
 
-    if (!this.props.data.completed) {
-      icon = (<button className="button is-white is-loading">&nbsp;</button>);
-      lang = "PENDING";
+    if (!data.completed) {
+      lang = "Pending";
       clazz = "pending";
-    } else if (this.props.data.success) {
-      icon = (<ion-icon name="checkmark-circle"></ion-icon>);
-      lang = "SWAPPED";
+    } else if (data.success) {
+      lang = "Completed";
       clazz = "success";
     } else {
-      icon = (<ion-icon name="alert-circle"></ion-icon>);
-      lang = "FAILED";
+      lang = "Failed";
       clazz = "failed";
     }
 
@@ -46,26 +44,41 @@ export default class TxStatusView extends Component {
           <div className="token-pair">
             <TokenIconImg
                 size={30}
+                mr={-10}
+                z_index={10}
+                token={data.from}
             />
             <TokenIconImg
                 size={30}
+                token={data.to}
             />
           </div>
           <div className="column">
             <div className="item-1">Trade</div>
-            <div className="item-2">View on explorer</div>
+            <div className="item-2">
+              <TxExplorerLink
+                chainId={data.chainId}
+                hash={data.hash}>
+                View on explorer
+              </TxExplorerLink>
+            </div>
           </div>
           <div className="column">
-            <div className="item-1">ETH</div>
-            <div className="item-2">12.92873211</div>
+            <div className="item-1">{data.from.symbol}</div>
+            <div className="item-2">{output}</div>
           </div>
           <div className="column">
-            <div className="item-1">-> DAI</div>
-            <div className="item-2">12.92873211</div>
+            <div className="item-1">
+              <span className="icon is-left" width={11} height={11}>
+                  <ion-icon name="arrow-forward"></ion-icon>
+              </span>
+              {data.to.symbol}
+            </div>
+            <div className="item-2">&nbsp;</div>
           </div>
           <div className="column">
-            <div className="item-1">Completed</div>
-            <div className="item-2">10/10/21 3:49PM</div>
+            <div className="item-1"><span>{lang}</span></div>
+            <div className="item-2">{moment(data.lastUpdated).format("MM/DD/YYYY h:mm A")}</div>
           </div>
         </div>
     );
