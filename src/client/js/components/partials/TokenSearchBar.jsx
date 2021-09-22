@@ -7,7 +7,9 @@ import EventManager from '../../utils/events';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 import CustomTokenModal from "./CustomTokenModal";
+import TokenSearchItem from "./swap/TokenSearchItem";
 import numeral from 'numeral';
+import {filterCircle} from "ionicons/icons";
 
 export default class TokenSearchBar extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ export default class TokenSearchBar extends Component {
       focused: false,
       value: "",
       refresh: Date.now(),
-      tokenBalances: {}
+      tokenBalances: {},
+      filteredTokens: []
     };
     this.input = React.createRef();
     this.subscribers = [];
@@ -24,13 +27,14 @@ export default class TokenSearchBar extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
-    this.handleTxQueueChange = this.handleTxQueueChange.bind(this);
+    this.handleQueueChange = this.handleQueueChange.bind(this);
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
     this.handleCustomModal = this.handleCustomModal.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.fetchBalance = this.fetchBalance.bind(this);
     this.fetchBalances = this.fetchBalances.bind(this);
     this.getBalanceNumber = this.getBalanceNumber.bind(this);
+    this.updateTokenBalances = this.updateTokenBalances.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this)
 
@@ -40,10 +44,9 @@ export default class TokenSearchBar extends Component {
 
   componentDidMount() {
     this.mounted = true;
+    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleQueueChange));
     this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
-    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleTxQueueChange));
     this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
-    this.fetchBalances();
   }
 
   componentWillUnmount() {
@@ -77,54 +80,40 @@ export default class TokenSearchBar extends Component {
     this.TOP_TOKENS = _.map(network.topTokens, function(v) {
       return TokenListManager.findTokenById(v)
     });
+
+    this.fetchBalances(this.TOP_TOKENS)
+  }
+
+  updateTokenBalances (token, bal, refresh) {
+    this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token, refresh: refresh}}});
   }
 
   fetchBalance(token, attempt) {
-    attempt = 0;
-    if (!attempt) {
-    } else if (attempt > 2) {
-      this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: 0, token: token}}});
-      return;
-    }
     Wallet.getBalance(token)
       .then(function(bal) {
-        this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token}}});
+        this.updateTokenBalances(token, bal, false);
       }.bind(this))
       .catch(function(e) {
         // try again
         console.error("Failed to fetch balance", e);
-        _.defer(function() {
-          this.fetchBalance(token, attempt + 1);
-        }.bind(this))
+        this.updateTokenBalances(token, 0, false);
       }.bind(this));
   }
 
-  fetchBalances() {
-    [...this.TOP_TOKENS, ...window.TOKEN_LIST].forEach((token, index) => {
-      if (Wallet.isConnected()) {
+  fetchBalances(tokenList) {
+    if (Wallet.isConnected()) {
+      tokenList.forEach((token, index) => {
         _.delay(() => {
-          Wallet.getBalance(token)
-            .then((bal) => {
-              this.mounted && this.setState({
-                tokenBalances: {
-                  ...this.state.tokenBalances,
-                  [token.symbol]: {
-                    balance: bal,
-                    token: token
-                  }
-                }
-              });
-            })
-            .catch(error => console.log(error));
-        }, index * 200);
-      }
-    })
+          this.fetchBalance(token)
+        }, 200);
+      })
+    }
   }
 
   getBalanceNumber(token) {
     const tokenBalance = this.state.tokenBalances[token.symbol];
     let balanceNumber = null;
-    if (tokenBalance) {
+    if (tokenBalance && tokenBalance.balance) {
       if (tokenBalance.balance.isZero()) {
         balanceNumber = '0.0';
       } else if (tokenBalance.balance.lt(window.ethers.utils.parseUnits("0.0001", tokenBalance.token.decimals))) {
@@ -137,18 +126,19 @@ export default class TokenSearchBar extends Component {
   }
 
   handleNetworkChange(e) {
+    this.mounted && this.setState({tokenBalances: {}});
     this.updateTopTokens();
     this.setState({
       refresh: Date.now()
     });
   }
 
-  handleWalletChange() {
-    this.setState({tokenBalances: {}});
-    this.fetchBalances();
+  handleWalletChange(e) {
+    this.mounted && this.setState({tokenBalances: {}});
+    this.fetchBalances(this.TOP_TOKENS);
   }
 
-  handleTxQueueChange(e) {
+  handleQueueChange(e) {
     if (e.data && Wallet.isConnected()) {
       this.fetchBalance(e.data.from);
       this.fetchBalance(e.data.to);
@@ -171,6 +161,17 @@ export default class TokenSearchBar extends Component {
 
   handleChange(event) {
     this.setState({value: event.target.value});
+    const _query = event.target.value.toLowerCase().trim();
+    if (_query.length > 0) {
+      let filteredTokens = _.first(_.filter(window.TOKEN_LIST, function (t) {
+        return (t.symbol) && (
+            (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
+            (t.name && t.name.toLowerCase().includes(_query)) ||
+            (t.address && t.address.toLowerCase().includes(_query))
+        );
+      }), 10);
+      this.setState({filteredTokens: filteredTokens});
+    }
   }
 
   onBlur(e) {
@@ -201,11 +202,12 @@ export default class TokenSearchBar extends Component {
   }
 
   renderTopList() {
+    // fetch balances of top tokens
+
     var top3 = _.first(this.TOP_TOKENS, 3);
     var rest = _.rest(this.TOP_TOKENS, 3);
 
     var top3Content = _.map(top3, function(v, i) {
-
       return (
         <a href="#"
           key={i}
@@ -241,25 +243,18 @@ export default class TokenSearchBar extends Component {
 
   renderDropList(filteredTokens) {
     return _.map(filteredTokens, function(v, i) {
-
       return (
         <a href="#"
           key={i}
           onClick={this.handleDropdownClick(v)}
           className={classnames("dropdown-item level is-mobile")}>
-          <span className="level-left my-2">
-            <span className="level-item">
-              <TokenIconImg
-                size={35}
-                token={v} />
-            </span>
-            <span className="level-item">{v.name}</span>
-            <div className="token-symbol-balance-wrapper">
-              <span className="has-text-grey">{v.symbol}</span>
-              <span className="has-text-grey">{this.getBalanceNumber(v)}</span>
-            </div>
-
-          </span>
+          <TokenSearchItem
+            token={v}
+            balances={this.state.tokenBalances}
+            getBalanceNumber={this.getBalanceNumber}
+            fetchBalance={this.fetchBalance}
+            refresh={Date.now()}
+          />
         </a>
       )
     }.bind(this));
@@ -285,20 +280,12 @@ export default class TokenSearchBar extends Component {
   }
 
   render() {
-    var filteredTokens = [];
-    var _query = this.state.value.toLowerCase().trim();
-    var showDropdown = _query.length > 0 && this.state.focused;
+    const { value, focused, filteredTokens } = this.state
+    var _query = value.toLowerCase().trim();
+    var showDropdown = _query.length > 0 && focused;
     var dropContent;
 
     if (_query.length > 0) {
-      filteredTokens = _.first(_.filter(window.TOKEN_LIST, function(t) {
-        return (t.symbol) && (
-          (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
-          (t.name && t.name.toLowerCase().includes(_query)) ||
-          (t.address && t.address.toLowerCase().includes(_query))
-        );
-      }), 10);
-
       if (filteredTokens.length > 0) {
         dropContent = this.renderDropList(filteredTokens);
       } else {

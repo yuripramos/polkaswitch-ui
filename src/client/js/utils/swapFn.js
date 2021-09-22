@@ -40,6 +40,16 @@ window.SwapFn = {
     }
   },
 
+  isValidParseValue: function(token, rawValue) {
+    try {
+      var parsed = ethers.utils.parseUnits(rawValue, token.decimals);
+      return true;
+    } catch(e) {
+      console.log("Failed to parse: ", token.symbol, token.decimals, rawValue);
+      return false;
+    }
+  },
+
   updateSettings: function(settings) {
     Storage.updateSettings(settings);
   },
