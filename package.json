@@ -5,6 +5,7 @@
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production --env production --env main",
+    "ci-build": "webpack --mode production --env development",
     "watch": "webpack --watch --mode development --env development",
     "start": "node src/server/index.js",
     "server": "nodemon -r dotenv/config src/server/index.js"
