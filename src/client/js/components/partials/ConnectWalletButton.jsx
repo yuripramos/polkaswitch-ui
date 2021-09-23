@@ -65,16 +65,11 @@ export default class ConnectWalletButton extends Component {
     var isConnected = Wallet.isConnectedToAnyNetwork();
 
     return (
-        <div className="wallet-status">
-          <button
-            className={classnames("button", {
-            "is-white is-medium connected": isConnected,
-            "is-primary": !isConnected
-            })}
-            onClick={this.handleConnection.bind(this)}
-            aria-haspopup="true" aria-controls="dropdown-menu6">
-            {this.renderButtonContent()}
-          </button>
+      <div className={classnames("wallet-status", {
+        "button is-primary": !isConnected
+        })}
+        onClick={this.handleConnection.bind(this)}>
+        {this.renderButtonContent()}
       </div>
     );
   }

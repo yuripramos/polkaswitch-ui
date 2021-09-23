@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-
-import ConnectWalletButton from './ConnectWalletButton';
-import NotificationButton from './NotificationButton';
-import BridgeButton from './BridgeButton';
-import TokenSearchBar from './TokenSearchBar';
-import Settings from "./Settings";
+import NavMenu from './NavMenu'
+import ConnectWalletButton from '../ConnectWalletButton';
+import NotificationButton from '../NotificationButton';
+import BridgeButton from '../BridgeButton';
+import Settings from "../Settings";
 
 export default class Navbar extends Component {
   render() {
@@ -30,7 +22,7 @@ export default class Navbar extends Component {
             { /* <TokenSearchBar width={"75%"} /> */ }
           </div>
         </div>
-
+        <NavMenu/>
         <div className="level-right">
           <div className="level-item is-narrow"><BridgeButton /></div>
           <div className="level-item is-narrow"><NotificationButton /></div>
