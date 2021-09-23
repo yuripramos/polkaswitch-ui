@@ -11,6 +11,7 @@ import ConnectWalletButton from './ConnectWalletButton';
 import NotificationButton from './NotificationButton';
 import BridgeButton from './BridgeButton';
 import TokenSearchBar from './TokenSearchBar';
+import Settings from "./Settings";
 
 export default class Navbar extends Component {
   render() {
@@ -34,13 +35,7 @@ export default class Navbar extends Component {
           <div className="level-item is-narrow"><BridgeButton /></div>
           <div className="level-item is-narrow"><NotificationButton /></div>
           <div className="level-item is-narrow"><ConnectWalletButton /></div>
-          <div className="level-item">
-            <span
-              className="icon clickable settings-icon"
-              >
-              <ion-icon name="settings-outline"></ion-icon>
-            </span>
-          </div>
+          <div className="level-item"><Settings /></div>
         </div>
       </nav>
     );

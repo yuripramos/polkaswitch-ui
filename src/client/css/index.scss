@@ -8,6 +8,9 @@ $radius: 8px;
 $radius-large: 10px;
 
 $primary: #58B57E;
+$primary-white-background: #f2f7f9;
+$secondary-white-background: #ffffff;
+$third-white: #eee;
 $primary-dark-background: #201923;
 $secondary-dark-background: #29212D;
 $light-blue: #f2f7f9;
@@ -16,6 +19,7 @@ $family-sans-serif: "Gilroy", BlinkMacSystemFont, -apple-system, "Segoe UI", "Ro
 
 @import "~bulma/bulma";
 @import 'custom/form-toggle';
+@import 'custom/item-toggle';
 @import 'custom/tooltip';
 @import 'custom/scroll';
 @import 'custom/layout';
