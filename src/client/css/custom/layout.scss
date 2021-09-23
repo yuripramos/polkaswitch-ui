@@ -68,10 +68,8 @@ html, body {
 #nav {
   display: flex;
   height: 67px;
-  /* dark mode */
-  background-color: $primary-dark-background;
-  border-bottom: 1px solid #FFFFFF;
-  /* dark mode */
+  background-color: $secondary-white-background;
+  border-bottom: 1px solid $third-white;
 
   transition: margin-top 300ms;
   padding-left: 24px;
@@ -100,18 +98,18 @@ html, body {
   }
 
   .bridge-button {
-    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+    border: 1px solid #ddd;
     border-radius: 12px;
     width: 166px;
     height: 42px;
-    background-color: $secondary-dark-background;
+    background-color: $secondary-white-background;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
 
     &:hover {
-      background-color: $primary-dark-background;
+      background-color: $third-white;
     }
 
     img {
@@ -122,7 +120,7 @@ html, body {
 
     a {
       font-size: 16px;
-      color: #FFFFFF;
+      color: #4a4a4a;
     }
   }
 

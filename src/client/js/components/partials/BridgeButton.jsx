@@ -38,7 +38,7 @@ export default class BridgeButton extends Component {
       <div className={classnames("bridge-button", {
         "is-hidden": isConnected
       })}>
-        <img src="/images/bridge_dark.png" />
+        <img src="/images/bridge-white.png" />
         <a
           href={network.bridgeURI}
           className="is-white is-medium connected">
