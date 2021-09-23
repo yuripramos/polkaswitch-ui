@@ -9,22 +9,38 @@ import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
 import Nxtp from '../../../utils/nxtp';
 import { ApprovalState } from "../../../constants/Status";
+import { NxtpSdkEvents } from "@connext/nxtp-sdk";
 
 export default class CrossSwapProcessSlide extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: false }
+    this.state = {
+      loading: false,
+      errored: false,
+      finishable: false
+    }
 
     this.handleTransfer = this.handleTransfer.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
     this.handleBack = this.handleBack.bind(this);
   }
 
   componentDidMount() {
-    this.subWalletUpdated = EventManager.listenFor('walletUpdated', this.handleWalletChange);
+    this.subNxtpUpdated = EventManager.listenFor('nxtpEventUpdated', this.handleNxtpEvent.bind(this));
   }
 
   componentWillUnmount() {
-    this.subWalletUpdated.unsubscribe();
+    this.subNxtpUpdated.unsubscribe();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.crossChainTransactionId != this.props.crossChainTransactionId) {
+      this.setState({
+        loading: false,
+        errored: false,
+        finishable: false
+      });
+    }
   }
 
   handleBack(e) {
@@ -33,21 +49,64 @@ export default class CrossSwapProcessSlide extends Component {
     }
   }
 
+  handleNxtpEvent(status) {
+    console.log('evented');
+
+    if (status !== NxtpSdkEvents.ReceiverTransactionPrepared) {
+      console.log('returned');
+      return;
+    }
+
+    console.log(this.state.finishable);
+    console.log(this.props.crossChainTransactionId);
+
+    if (!this.state.finishable && Nxtp.isActiveTxFinishable(this.props.crossChainTransactionId)) {
+      console.log('state');
+      this.setState({
+        loading: false,
+        finishable: true
+      });
+    }
+
+  }
+
   handleTransfer() {
     this.setState({
       loading: true,
     }, function() {
-      console.log("Debug Crash: ", this.props.fromAmount, this.props.from);
+      Nxtp.transferStepOne(this.props.crossChainTransactionId).then(function (transfer) {
+        Metrics.track("cross-swap-started", {
+          toChain: this.props.toChain,
+          fromChain: this.props.fromChain,
+          from: this.props.from,
+          to: this.props.to,
+          fromAmont: this.props.fromAmount
+        });
 
-      const fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+        // Waiting for events to indicate ready for Step2
+      }.bind(this)).catch(function (e) {
+        console.error('#### swap failed from catch ####', e);
 
-      // TODO track trnasaction ID as a prop
-      Nxtp.transferStepOne(this.props.transferQuote).then(function (nonce) {
-        console.log(nonce);
+        // this.props.handleTransactionComplete(false, undefined);
 
-        this.props.handleTransactionComplete(true, nonce);
+        this.setState({
+          loading: false,
+          errored: true
+        });
+      }.bind(this));
+    }.bind(this));
+  }
 
-        Metrics.track("swap-complete", {
+  handleFinish() {
+    this.setState({
+      loading: true,
+    }, function() {
+      Nxtp.transferStepTwo(this.props.crossChainTransactionId).then(function () {
+        // this.props.handleTransactionComplete(true, nonce);
+
+        Metrics.track("cross-swap-complete", {
+          toChain: this.props.toChain,
+          fromChain: this.props.fromChain,
           from: this.props.from,
           to: this.props.to,
           fromAmont: this.props.fromAmount
@@ -62,11 +121,11 @@ export default class CrossSwapProcessSlide extends Component {
         this.props.handleTransactionComplete(false, undefined);
 
         this.setState({
-          loading: false
+          loading: false,
+          errored: true
         });
       }.bind(this));
     }.bind(this));
-
   }
 
   displayValue(token, amount) {
@@ -88,9 +147,89 @@ export default class CrossSwapProcessSlide extends Component {
       this.hasSufficientBalance();
   }
 
+  renderReview() {
+    return (
+      <div>
+        <div className="text-gray-stylized">
+          <span>You Pay</span>
+        </div>
+
+        <div className="level is-mobile">
+          <div className="level-left">
+            <div className="level-item chain-icon">
+              <TokenIconImg
+                size={"35"}
+                imgSrc={this.props.fromChain.logoURI} />
+            </div>
+            <TokenIconBalanceGroupView
+              token={this.props.from}
+              refresh={this.props.refresh}
+            />
+          </div>
+
+          <div className="level-right">
+            <div className="level-item">
+              <div>
+                <div className="currency-text">
+                  {this.displayValue(this.props.from, this.props.fromAmount)}
+                </div>
+                <div className={classnames("fund-warning has-text-danger has-text-right", {
+                  "is-hidden": this.hasSufficientBalance()
+                })}>
+                <span className="icon">
+                  <ion-icon name="warning-outline"></ion-icon>
+                </span>
+                <span>Insufficient funds</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div className="text-gray-stylized">
+        <span>You Recieve</span>
+      </div>
+
+      <div className="level is-mobile">
+        <div className="level-left">
+          <div className="level-item chain-icon">
+            <TokenIconImg
+              size={"35"}
+              imgSrc={this.props.toChain.logoURI} />
+          </div>
+          <TokenIconBalanceGroupView
+            token={this.props.to}
+            refresh={this.props.refresh}
+          />
+        </div>
+
+        <div className="level-right">
+          <div className="level-item">
+            <div className="currency-text">
+              {this.displayValue(this.props.to, this.props.toAmount)}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+    </div>
+    )
+  }
+
   render() {
     if (!this.props.toAmount || !this.props.fromAmount) {
       return (<div />)
+    }
+
+    var bodyContent;
+
+    if (this.state.loading) {
+      bodyContent = (<div>Loading</div>);
+    } else {
+      bodyContent = this.renderReview();
     }
 
     return (
@@ -116,71 +255,7 @@ export default class CrossSwapProcessSlide extends Component {
 
           <hr />
 
-          <div className="text-gray-stylized">
-            <span>You Pay</span>
-          </div>
-
-          <div className="level is-mobile">
-            <div className="level-left">
-              <div className="level-item chain-icon">
-                <TokenIconImg
-                  size={"35"}
-                  imgSrc={this.props.fromChain.logoURI} />
-              </div>
-              <TokenIconBalanceGroupView
-                token={this.props.from}
-                refresh={this.props.refresh}
-              />
-            </div>
-
-            <div className="level-right">
-              <div className="level-item">
-                <div>
-                  <div className="currency-text">
-                    {this.displayValue(this.props.from, this.props.fromAmount)}
-                  </div>
-                  <div className={classnames("fund-warning has-text-danger has-text-right", {
-                    "is-hidden": this.hasSufficientBalance()
-                  })}>
-                    <span className="icon">
-                      <ion-icon name="warning-outline"></ion-icon>
-                    </span>
-                    <span>Insufficient funds</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="text-gray-stylized">
-            <span>You Recieve</span>
-          </div>
-
-          <div className="level is-mobile">
-            <div className="level-left">
-              <div className="level-item chain-icon">
-                <TokenIconImg
-                  size={"35"}
-                  imgSrc={this.props.toChain.logoURI} />
-              </div>
-              <TokenIconBalanceGroupView
-                token={this.props.to}
-                refresh={this.props.refresh}
-              />
-            </div>
-
-            <div className="level-right">
-              <div className="level-item">
-                <div className="currency-text">
-                  {this.displayValue(this.props.to, this.props.toAmount)}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <hr />
+          {bodyContent}
 
           <div>
             <button
@@ -188,8 +263,8 @@ export default class CrossSwapProcessSlide extends Component {
                 "is-loading": this.state.loading,
               })}
               disabled={!this.allowSwap()}
-              onClick={this.handleTransfer}>
-              Start Transfer
+              onClick={this.state.finishable ? this.handleFinish : this.handleTransfer}>
+              {this.state.finishable ? "Finish Transfer" : "Start Transfer"}
             </button>
           </div>
         </div>

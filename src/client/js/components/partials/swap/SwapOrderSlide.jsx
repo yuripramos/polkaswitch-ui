@@ -179,11 +179,13 @@ export default class SwapOrderSlide extends Component {
       Wallet.getBalance(this.props.from).then((bal) => {
         this.props.onSwapEstimateComplete(
           origFromAmount,
-          window.ethers.utils.formatUnits(response?.bid.amountReceived ?? constants.Zero, this.props.to.decimals),
+          window.ethers.utils.formatUnits(response?.quote.bid.amountReceived ?? constants.Zero, this.props.to.decimals),
           false,
           window.ethers.utils.formatUnits(bal, this.props.from.decimals),
           status
         )
+
+        this.props.onCrossChainEstimateComplete(response.id);
 
         this.setState({
           calculatingSwap: false

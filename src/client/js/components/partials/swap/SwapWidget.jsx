@@ -67,6 +67,7 @@ export default class SwapOrderWidget extends Component {
       loading: false,
 
       transactionHash: "",
+      crossChainTransactionId: false,
 
       refresh: Date.now()
     });
@@ -85,6 +86,7 @@ export default class SwapOrderWidget extends Component {
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleNetworkPreUpdate = this.handleNetworkPreUpdate.bind(this);
+    this.onCrossChainEstimateComplete = this.onCrossChainEstimateComplete.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
     this.onApproveComplete = this.onApproveComplete.bind(this);
 
@@ -153,6 +155,12 @@ export default class SwapOrderWidget extends Component {
 
   triggerHeightResize(node, isAppearing) {
     this.box.current.style.height = `${node.offsetHeight}px`;
+  }
+
+  onCrossChainEstimateComplete(transactionId) {
+    this.setState({
+      crossChainTransactionId: transactionId
+    });
   }
 
   onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN, approveStatus) {
@@ -347,6 +355,7 @@ export default class SwapOrderWidget extends Component {
             handleSearchToggle={this.handleSearchToggle}
             handleSettingsToggle={this.handleSettingsToggle}
             swapDistribution={this.state.swapDistribution}
+            onCrossChainEstimateComplete={this.onCrossChainEstimateComplete}
             onSwapEstimateComplete={this.onSwapEstimateComplete}
             onSwapTokens={this.onSwapTokens}
             handleSubmit={this.handleConfirm}
@@ -403,6 +412,7 @@ export default class SwapOrderWidget extends Component {
                 toChain={this.state.toChain}
                 fromAmount={this.state.fromAmount}
                 toAmount={this.state.toAmount}
+                crossChainTransactionId={this.state.crossChainTransactionId}
                 availableBalance={this.state.availableBalance}
                 approveStatus={this.state.approveStatus}
                 refresh={this.state.refresh}

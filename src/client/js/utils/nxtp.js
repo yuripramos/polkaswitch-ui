@@ -46,7 +46,7 @@ Object.entries(REACT_APP_CHAIN_CONFIG).forEach(([chainId, { provider, subgraph, 
   };
 });
 
-export default {
+window.NxtpUtils = {
   _queue: {},
   _sdk: false,
 
@@ -89,9 +89,8 @@ export default {
     _sdk.attach(NxtpSdkEvents.SenderTransactionPrepared, (data) => {
       console.log("SenderTransactionPrepared:", data);
       const { amount, expiry, preparedBlockNumber, ...invariant } = data.txData;
-      const table = [...activeTransferTableColumns];
 
-      table.push({
+      this._activeTxs.push({
         crosschainTx: {
           invariant,
           sending: { amount, expiry, preparedBlockNumber },
@@ -102,33 +101,34 @@ export default {
         encryptedCallData: data.encryptedCallData,
         status: NxtpSdkEvents.SenderTransactionPrepared,
       });
-      setActiveTransferTableColumns(table);
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionPrepared);
     });
 
-    _sdk.attach(NxtpSdkEvents.SenderTransactionFulfilled, (data) => {
+    _sdk.attach(NxtpSdkEvents.SenderTransactionFulfilled, async (data) => {
       console.log("SenderTransactionFulfilled:", data);
       this.removeActiveTx(data.txData.transactionId)
-      this.fetchHistoricalTxs();
+      await this.fetchHistoricalTxs();
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionFulfilled);
     });
 
-    _sdk.attach(NxtpSdkEvents.SenderTransactionCancelled, (data) => {
+    _sdk.attach(NxtpSdkEvents.SenderTransactionCancelled, async (data) => {
       console.log("SenderTransactionCancelled:", data);
       this.removeActiveTx(data.txData.transactionId)
-      this.fetchHistoricalTxs();
+      await this.fetchHistoricalTxs();
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionCancelled);
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionPrepared, (data) => {
       console.log("ReceiverTransactionPrepared:", data);
       const { amount, expiry, preparedBlockNumber, ...invariant } = data.txData;
-      const index = activeTransferTableColumns.findIndex(
+      const index = this._activeTxs.findIndex(
         (col) => col.crosschainTx.invariant.transactionId === invariant.transactionId,
       );
 
-      const table = [...activeTransferTableColumns];
       if (index === -1) {
         // TODO: is there a better way to
         // get the info here?
-        table.push({
+        this._activeTxs.push({
           preparedTimestamp: Math.floor(Date.now() / 1000),
           crosschainTx: {
             invariant,
@@ -140,10 +140,9 @@ export default {
           encryptedCallData: data.encryptedCallData,
           status: NxtpSdkEvents.ReceiverTransactionPrepared,
         });
-        setActiveTransferTableColumns(table);
       } else {
-        const item = { ...table[index] };
-        table[index] = {
+        const item = { ...this._activeTxs[index] };
+        this._activeTxs[index] = {
           ...item,
           status: NxtpSdkEvents.ReceiverTransactionPrepared,
           crosschainTx: {
@@ -151,22 +150,25 @@ export default {
             receiving: { amount, expiry, preparedBlockNumber },
           },
         };
-        setActiveTransferTableColumns(table);
       }
+
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionPrepared);
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionFulfilled, async (data) => {
       console.log("ReceiverTransactionFulfilled:", data);
       this.updateActiveTx(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionFulfilled, data, { invariant: data.txData, receiving: data.txData })
       this.removeActiveTx(data.txData.transactionId)
-      this.fetchHistoricalTxs();
+      await this.fetchHistoricalTxs();
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionFulfilled);
     });
 
-    _sdk.attach(NxtpSdkEvents.ReceiverTransactionCancelled, (data) => {
+    _sdk.attach(NxtpSdkEvents.ReceiverTransactionCancelled, async (data) => {
       console.log("ReceiverTransactionCancelled:", data);
       this.updateActiveTx(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionCancelled, data, { invariant: data.txData, receiving: data.txData })
       this.removeActiveTx(data.txData.transactionId);
-      this.fetchHistoricalTxs();
+      await this.fetchHistoricalTxs();
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionCancelled);
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTokenApprovalMined, (data) => {
@@ -176,6 +178,25 @@ export default {
     _sdk.attach(NxtpSdkEvents.SenderTransactionPrepareSubmitted, (data) => {
       console.log("SenderTransactionPrepareSubmitted:", data);
     });
+  },
+
+  isActiveTxFinishable: function(transactionId) {
+    var tx = this.getActiveTx(transactionId);
+
+    console.log("isActiveTxFinished: ", tx);
+
+    if (!tx) {
+      return false;
+    } else {
+      return tx.status === NxtpSdkEvents.ReceiverTransactionPrepared;
+    }
+  },
+
+  isActiveTxFinished: function(transactionId) {
+  },
+
+  getActiveTx: function(transactionId) {
+    return this._activeTxs.find((t) => t.crosschainTx.invariant.transactionId === transactionId);
   },
 
   updateActiveTx: function(transactionId, status, event, crosschainTx) {
@@ -193,14 +214,12 @@ export default {
     })
 
     if (!updated) {
-      this._activeTxs.append({ crosschainTx: crosschainTx, status, event });
+      this._activeTxs.push({ crosschainTx: crosschainTx, status, event });
     }
-    // send event
   },
 
   removeActiveTx: function(transactionId) {
     this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
-    // send event
   },
 
   getTransferQuote: async function (
@@ -214,7 +233,7 @@ export default {
     // Create txid
     const transactionId = getRandomBytes32();
 
-    const response = await this._sdk.getTransferQuote({
+    const quote = await this._sdk.getTransferQuote({
       sendingAssetId,
       sendingChainId,
       receivingChainId,
@@ -226,13 +245,15 @@ export default {
     });
 
     this._queue[transactionId] = {
-      quote: response
+      quote: quote
     }
 
-    return { quote: response, id: transactionId };
+    return { quote: quote, id: transactionId };
   },
 
-  transferStepOne: async function (transferQuote) {
+  transferStepOne: async function (transactionId) {
+    const transferQuote = this._queue[transactionId]?.quote;
+
     if (!transferQuote) {
       throw new Error("Please request quote first");
     }
@@ -249,16 +270,33 @@ export default {
     return transfer;
   },
 
-  transferStepTwo: async function({
-    bidSignature,
-    encodedBid,
-    encryptedCallData,
-    txData,
-  }) {
-    const finish = await this._sdk.fulfillTransfer({ bidSignature, encodedBid, encryptedCallData, txData });
+  transferStepTwo: async function(transactionId) {
+    const tx = this.getActiveTx(transactionId);
+
+    const { bidSignature, encodedBid, encryptedCallData } = tx;
+    const { receiving, sending, invariant } = tx.crosschainTx;
+    const variant = receiving ?? sending;
+    const sendingTxData = {
+      ...invariant,
+      ...sending,
+    };
+
+    const receivingTxData =
+      typeof receiving === "object"
+      ? {
+        ...invariant,
+        ...receiving,
+      }
+      : undefined;
+
+    const finish = await this._sdk.fulfillTransfer({
+      bidSignature, encodedBid, encryptedCallData, txData: receivingTxData
+    });
+
     console.log("finish: ", finish);
+
     if (finish.metaTxResponse?.transactionHash || finish.metaTxResponse?.transactionHash === "") {
-      this.removeActiveTx(txData.transactionId)
+      this.removeActiveTx(receivingTxData.transactionId)
     }
   },
 
@@ -266,13 +304,6 @@ export default {
     const queue = store.get(this._storeKey()) || {};
     return queue;
   },
-
-  numOfPending: function() {
-    return _.keys(this.getQueue()).length;
-  },
-
-  getTx: function(nonce) {
-    return this.getQueue()[nonce];
-  },
 };
 
+export default window.NxtpUtils;
