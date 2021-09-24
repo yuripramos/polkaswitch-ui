@@ -58,16 +58,16 @@ export default class TxStatusView extends Component {
             <div className="item-2">
               <TxExplorerLink
                 chainId={data.chainId}
-                hash={data.hash}>
+                hash={data.tx.hash}>
                 View on explorer
               </TxExplorerLink>
             </div>
           </div>
-          <div className="column">
+          <div className="column is-mobile">
             <div className="item-1">{data.from.symbol}</div>
             <div className="item-2">{output}</div>
           </div>
-          <div className="column">
+          <div className="column is-mobile">
             <div className="item-1">
               <span className="icon is-left" width={11} height={11}>
                   <ion-icon name="arrow-forward"></ion-icon>

@@ -33,6 +33,12 @@
   .tx-meta {
     display: none;
   }
+
+  @media screen and (max-width: 768px) {
+    .tx-item .column .is-mobile {
+      display: none;
+    }
+  }
 }
 
 .notification-button {
@@ -59,58 +65,6 @@
     padding-bottom: 5px;
   }
 }
-
-//.tx-item {
-//  width: 100%;
-//
-//  .tx-icon {
-//    flex-grow: 0 !important;
-//
-//    .icon {
-//      width: 50px;
-//      height: 40px;
-//      font-size: 30px;
-//    }
-//  }
-//
-//  &.success {
-//    .icon {
-//      color: $success;
-//    }
-//  }
-//
-//  &.pending {
-//    .button::after {
-//      border-color: transparent transparent $info $info !important;
-//    }
-//  }
-//
-//  &.failed {
-//    .icon {
-//      color: $danger;
-//    }
-//  }
-//
-//  .tx-meta {
-//    color: #8899a7;
-//    font-size: 12px;
-//    font-weight: 100;
-//  }
-//
-//  .tx-content {
-//    color: #666;
-//    font-size: 14px;
-//
-//    > div {
-//      width: 100%;
-//    }
-//
-//    a {
-//      color: #8899a7;
-//      font-weight: 100;
-//    }
-//  }
-//}
 
 .tx-item {
   display: grid;
