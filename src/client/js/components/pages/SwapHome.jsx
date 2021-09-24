@@ -9,12 +9,14 @@ import SwapNetworkToggle from '../partials/swap/SwapNetworkToggle';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
+import MobileMenu from "../partials/navbar/MobileMenu";
 
 export default class Home extends Component {
   render() {
     return (
       <div className="container">
         <Navbar />
+        <MobileMenu />
         <NotificationSystem />
         <ConnectWalletModal />
         <TxHistoryModal />
