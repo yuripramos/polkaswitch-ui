@@ -17,7 +17,8 @@ export default class CrossSwapProcessSlide extends Component {
     this.state = {
       loading: false,
       errored: false,
-      finishable: false
+      finishable: false,
+      complete: false
     }
 
     this.handleTransfer = this.handleTransfer.bind(this);
@@ -38,7 +39,8 @@ export default class CrossSwapProcessSlide extends Component {
       this.setState({
         loading: false,
         errored: false,
-        finishable: false
+        finishable: false,
+        complete: false
       });
     }
   }
@@ -50,18 +52,26 @@ export default class CrossSwapProcessSlide extends Component {
   }
 
   handleNxtpEvent(status) {
-    console.log('evented');
-
-    if (status !== NxtpSdkEvents.ReceiverTransactionPrepared) {
-      console.log('returned');
+    if (this.state.complete) {
       return;
     }
 
-    console.log(this.state.finishable);
-    console.log(this.props.crossChainTransactionId);
+    if (status !== NxtpSdkEvents.ReceiverTransactionPrepared &&
+      status !== NxtpSdkEvents.ReceiverTransactionFulfilled) {
+      return;
+    }
 
-    if (!this.state.finishable && Nxtp.isActiveTxFinishable(this.props.crossChainTransactionId)) {
-      console.log('state');
+    if (this.state.finishable && Nxtp.isActiveTxFinished(this.props.crossChainTransactionId)) {
+      this.setState({
+        complete: true
+      });
+      this.props.handleTransactionComplete(
+        true,
+        Nxtp.getHistoricalTx(this.props.crossChainTransactionId).fulfilledTxHash
+      );
+    }
+
+    else if (!this.state.finishable && Nxtp.isActiveTxFinishable(this.props.crossChainTransactionId)) {
       this.setState({
         loading: false,
         finishable: true

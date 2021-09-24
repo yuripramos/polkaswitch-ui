@@ -62,9 +62,8 @@ window.NxtpUtils = {
     const signer = Wallet.getProvider().getSigner();
 
     this._sdk = new NxtpSdk(
-      chainProviders, // TODO
-      signer,
-      new Logger({ level: "info" }),
+      { chainConfig: chainProviders, signer: signer },
+      new Logger({ name: "NxtpSdk", level: "info" }),
       process.env.REACT_APP_NETWORK || "mainnet",
     );
 
@@ -180,10 +179,12 @@ window.NxtpUtils = {
     });
   },
 
+  getHistoricalTx: function(transactionId) {
+    return this._historicalTxs.find((t) => t.crosschainTx.invariant.transactionId === transactionId);
+  },
+
   isActiveTxFinishable: function(transactionId) {
     var tx = this.getActiveTx(transactionId);
-
-    console.log("isActiveTxFinished: ", tx);
 
     if (!tx) {
       return false;
@@ -193,6 +194,9 @@ window.NxtpUtils = {
   },
 
   isActiveTxFinished: function(transactionId) {
+    var tx = this.getHistoricalTx(transactionId);
+    console.log("isActiveTxFinished: ", tx);
+    return !!tx;
   },
 
   getActiveTx: function(transactionId) {
