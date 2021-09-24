@@ -97,7 +97,7 @@ export default class CrossSwapProcessSlide extends Component {
       }.bind(this)).catch(function (e) {
         console.error('#### swap failed from catch ####', e);
 
-        // this.props.handleTransactionComplete(false, undefined);
+        this.props.handleTransactionComplete(false, undefined);
 
         this.setState({
           loading: false,
@@ -112,8 +112,6 @@ export default class CrossSwapProcessSlide extends Component {
       loading: true,
     }, function() {
       Nxtp.transferStepTwo(this.props.crossChainTransactionId).then(function () {
-        // this.props.handleTransactionComplete(true, nonce);
-
         Metrics.track("cross-swap-complete", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
