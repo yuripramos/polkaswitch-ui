@@ -46,6 +46,7 @@ export default class ConnectWalletButton extends Component {
     if (Wallet.isConnectedToAnyNetwork()) {
       return (
         <>
+          <span className="dot"></span>
           <img className="image-icon" width={20} height={18} src="/images/metamask.png" />
           <span className="wallet-address">
             {this.getTruncWalletAddress()}

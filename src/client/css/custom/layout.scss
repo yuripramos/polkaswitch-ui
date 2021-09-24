@@ -338,6 +338,15 @@ html, body {
   border-right: 1px solid #ccc;
   height: 30px;
 
+  .dot {
+    height: 6px;
+    width: 6px;
+    background-color: $primary;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
   .wallet-address {
     font-weight: 400;
     font-size: 12px;
