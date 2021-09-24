@@ -197,7 +197,7 @@ export default class SwapOrderWidget extends Component {
     }, function() {
       _.delay(function() {
         // put back height after dist expand anim
-        // this.updateBoxHeight();
+        this.updateBoxHeight();
       }.bind(this), 301)
     }.bind(this));
   }
