@@ -290,6 +290,24 @@ export default class SwapOrderSlide extends Component {
     }
   }
 
+  handleNetworkDropdownChange(isFrom) {
+    return function (network) {
+      if (network.enabled) {
+        Sentry.addBreadcrumb({
+          message: "Action: Network Changed: " + network.name
+        });
+
+        this.props.handleCrossChainChange(isFrom, network);
+
+        if (isFrom) {
+          let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+            Wallet.getConnectionStrategy();
+          TokenListManager.updateNetwork(network, connectStrategy);
+        }
+      }
+    }.bind(this);
+  }
+
   handleMax() {
     if (Wallet.isConnected() && this.props.from.address) {
       Wallet.getBalance(this.props.from)
@@ -325,11 +343,13 @@ export default class SwapOrderSlide extends Component {
           crossChain={true}
           selected={isFrom ? this.props.fromChain : this.props.toChain}
           className={classnames({ "is-up": !isFrom })}
+          handleDropdownClick={this.handleNetworkDropdownChange(isFrom).bind(this)}
           compact={true} />
       </div>
       <div className="level is-mobile is-narrow my-0 token-dropdown"
         onClick={this.props.handleSearchToggle(target)}>
         <TokenIconBalanceGroupView
+          network={isFrom ? this.props.fromChain : this.props.toChain}
           token={token}
           refresh={this.props.refresh}
         />

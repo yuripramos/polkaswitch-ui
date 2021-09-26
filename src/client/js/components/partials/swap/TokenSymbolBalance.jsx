@@ -45,7 +45,7 @@ export default class TokenSymbolBalance extends Component {
     }
 
     if (this.props.network && !Wallet.isMatchingConnectedNetwork(this.props.network)) {
-      console.error("TokenSymbolBalance: Wrong network");
+      console.error("TokenSymbolBalance: Wrong network:", this.props.token.symbol, this.props.token.address, this.props.network.name);
       this.setState({
         errored: true,
         loading: false
