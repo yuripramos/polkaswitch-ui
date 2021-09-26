@@ -170,6 +170,7 @@ export default class CrossSwapProcessSlide extends Component {
                 imgSrc={this.props.fromChain.logoURI} />
             </div>
             <TokenIconBalanceGroupView
+              network={this.props.fromChain}
               token={this.props.from}
               refresh={this.props.refresh}
             />
@@ -208,6 +209,7 @@ export default class CrossSwapProcessSlide extends Component {
               imgSrc={this.props.toChain.logoURI} />
           </div>
           <TokenIconBalanceGroupView
+            network={this.props.toChain}
             token={this.props.to}
             refresh={this.props.refresh}
           />
