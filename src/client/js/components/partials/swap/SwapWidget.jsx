@@ -146,6 +146,8 @@ export default class SwapOrderWidget extends Component {
         crossChainEnabled: false,
         to: TokenListManager.findTokenById(network.defaultPair.to),
         from: TokenListManager.findTokenById(network.defaultPair.from),
+        toChain: network,
+        fromChain: network,
         availableBalance: undefined
       });
     }
