@@ -1,21 +1,14 @@
 /* eslint-disable require-jsdoc */
-import React, { Component } from 'react';
-import { useEffect, useState, ReactElement } from "react";
-import { Col, Row, Input, Typography, Form, Button, Select, Table } from "antd";
-import { BigNumber, constants, providers, Signer, utils } from "ethers";
-import { ActiveTransaction, NxtpSdk, NxtpSdkEvents, HistoricalTransaction } from "@connext/nxtp-sdk";
-import {
-  AuctionResponse,
-  ChainData,
-  CrosschainTransaction,
-  getRandomBytes32,
-  Logger,
-  TransactionPreparedEvent,
-} from "@connext/nxtp-utils";
+import React, {useEffect, useState} from 'react';
+import {Button, Col, Form, Input, Row, Select, Table, Typography} from "antd";
+import {BigNumber, constants, utils} from "ethers";
+import {NxtpSdk, NxtpSdkEvents} from "@connext/nxtp-sdk";
+import {getRandomBytes32, Logger,} from "@connext/nxtp-utils";
 
-import { chainConfig, swapConfig } from "./ConnextNxtpModal";
-import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./utils";
-import { chainProviders } from "./ConnextNxtpModal";
+import {chainConfig, chainProviders, swapConfig} from "./ConnextNxtpModal";
+import {getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens} from "./utils";
+
+const Aggregator = require("../../../abi/aggregator-test.json");
 
 const findAssetInSwap = (crosschainTx) =>
   swapConfig.find((sc) =>
@@ -90,9 +83,8 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
       form.setFieldsValue({ receivingAddress: address });
 
       const _sdk = new NxtpSdk(
-        chainProviders,
-        signer,
-        new Logger({ level: "info" }),
+          {chainConfig: chainProviders, signer: signer},
+        new Logger({ name: "NxtpSdk", level: "info" }),
         process.env.REACT_APP_NETWORK || "mainnet",
         process.env.REACT_APP_NATS_URL_OVERRIDE,
         process.env.REACT_APP_AUTH_URL_OVERRIDE,
@@ -267,6 +259,7 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
   };
 
   const getTransferQuote = async (
+    callData,
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -288,6 +281,7 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
     const transactionId = getRandomBytes32();
 
     const response = await sdk.getTransferQuote({
+      callData,
       sendingAssetId,
       sendingChainId,
       receivingChainId,
@@ -297,6 +291,8 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
       transactionId,
       expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
       preferredRouter,
+      // callTo: "0xf591e3D2bc572f9b83533BA8caC8B1ff3BCa1eEc"
+      callTo: "0x4f06dCeB67F70806E7048bABf795a363e689f8f3"
     });
     setAuctionResponse(response);
     return response;
@@ -716,12 +712,18 @@ export const Swap = ({ web3Provider, signer, chainData }) => {
                         if (!sendingAssetId || !receivingAssetId) {
                           throw new Error("Configuration doesn't support selected swap");
                         }
+                        const aggregator = new ethers.utils.Interface(Aggregator);
+                        console.log("receivingAssetId " + receivingAssetId);
+                        const destAssetId = "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"; // USDC on BSC
                         const response = await getTransferQuote(
+                          aggregator.encodeFunctionData("swap", [receivingAssetId, destAssetId, utils.parseEther(form.getFieldValue("amount")).mul(9995).div(10000).toString(), "0", "0xE2B6F88dcC3c95f1b0C0682Eaa2EFa03E1F2D6f7", ["1", "0", "0", "2", "0", "0", "0", "0", "0"], "0"]),
+                          // aggregator.encodeFunctionData("crossChainSwap", [receivingAssetId, destAssetId, utils.parseEther(form.getFieldValue("amount")).mul(9995).div(10000).toString()]),
                           parseInt(form.getFieldValue("sendingChain")),
                           sendingAssetId,
                           parseInt(form.getFieldValue("receivingChain")),
                           receivingAssetId,
-                          utils.parseEther(form.getFieldValue("amount")).toString(),
+                          // utils.parseEther(form.getFieldValue("amount")).toString(),
+                            "100000", //Hardcode 0.1 USDT on matic
                           form.getFieldValue("receivingAddress"),
                           form.getFieldValue("preferredRouter"),
                         );
