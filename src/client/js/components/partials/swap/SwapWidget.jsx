@@ -21,15 +21,19 @@ export default class SwapOrderWidget extends Component {
 
     this.box = React.createRef();
     this.orderPage = React.createRef();
+    this.NETWORKS = window.NETWORK_CONFIGS;
+    this.CROSS_CHAIN_NETWORKS = _.filter(this.NETWORKS, (v) => {
+      return v.crossChainSupported
+    });
 
     var network = TokenListManager.getCurrentNetworkConfig();
-
     var mergeState = {};
 
     if (TokenListManager.isCrossChainEnabled()) {
-      // TODO hardcode chains for now
-      var toChain = TokenListManager.getNetworkById(137);
-      var fromChain = TokenListManager.getNetworkById(56);
+      var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
+        return v.chainId != network.chainId
+      });
+      var fromChain = network;
 
       mergeState = _.extend(mergeState, {
         crossChainEnabled: true,
@@ -119,14 +123,21 @@ export default class SwapOrderWidget extends Component {
     var network = TokenListManager.getCurrentNetworkConfig();
 
     if (TokenListManager.isCrossChainEnabled()) {
+      var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
+        return v.chainId != network.chainId
+      });
+      var fromChain = network;
+
       this.setState({
         loading: false,
         crossChainEnabled: true,
         to: TokenListManager.findTokenById(
-          this.state.toChain.supportedCrossChainTokens[0],
-          this.state.toChain
+          toChain.supportedCrossChainTokens[0],
+          toChain
         ),
         from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+        toChain: toChain,
+        fromChain: fromChain,
         availableBalance: undefined
       });
     } else {
@@ -195,8 +206,6 @@ export default class SwapOrderWidget extends Component {
   }
 
   onSwapTokens() {
-    // TODO handle cross-chain swap
-
     Sentry.addBreadcrumb({
       message: "Action: Swap Tokens"
     });
@@ -205,6 +214,8 @@ export default class SwapOrderWidget extends Component {
       to: this.state.from,
       fromAmount: this.state.toAmount ? SwapFn.validateEthValue(this.state.to, this.state.toAmount) : undefined,
       from: this.state.to,
+      toChain: this.state.fromChain,
+      fromChain: this.state.toChain,
       availableBalance: undefined,
       toAmount: undefined,
       refresh: Date.now(),
@@ -213,9 +224,40 @@ export default class SwapOrderWidget extends Component {
     });
   }
 
-  handleCrossChainChange() {
-    // TODO
-    // swap chains if same
+  handleCrossChainChange(isFrom, network) {
+    var alt = isFrom ? "to" : "from";
+    var target = isFrom ? "from" : "to";
+
+    // if you select the same network as other, swap
+    if (this.state[alt + "Chain"].chainId === network.chainId) {
+      this.onSwapTokens();
+      // don't need to do anything else
+      return;
+    }
+
+    var _s = {
+      availableBalance: undefined,
+      refresh: Date.now()
+    };
+
+    // try to find the current token on the new network if available
+    var parallelToken = TokenListManager.findTokenById(
+      this.state[target].symbol, network
+    );
+
+    if (parallelToken) {
+      _s[target] = parallelToken;
+    } else {
+      // default to any available token
+      _s[target] = TokenListManager.findTokenById(
+        network.supportedCrossChainTokens[0],
+        network
+      );
+    }
+
+    _s[target + "Chain"] = network;
+
+    this.setState(_s);
   }
 
   handleSearchToggle(target) {
