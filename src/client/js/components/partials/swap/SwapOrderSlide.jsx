@@ -298,12 +298,6 @@ export default class SwapOrderSlide extends Component {
         });
 
         this.props.handleCrossChainChange(isFrom, network);
-
-        if (isFrom) {
-          let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-            Wallet.getConnectionStrategy();
-          TokenListManager.updateNetwork(network, connectStrategy);
-        }
       }
     }.bind(this);
   }
