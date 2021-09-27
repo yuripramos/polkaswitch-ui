@@ -602,8 +602,9 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .page-view-cross-process,
   .page-view-results {
-    .view {
+    .centered-view {
       text-align: center;
       margin: 70px 0;
 
