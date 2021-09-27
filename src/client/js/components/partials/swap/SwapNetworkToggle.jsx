@@ -72,7 +72,7 @@ export default class SwapNetworkToggle extends Component {
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
-                size={30}
+                size={32}
                 imgSrc={v.logoURI} />
             </span>
             <span className="level-item">{v.name} {!v.enabled && "(Coming Soon)"}</span>

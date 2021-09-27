@@ -57,7 +57,7 @@ export default class TxHistoryModal extends Component {
         <div onClick={this.handleClose} className="modal-background"></div>
         <div className="modal-content">
           <div className="tx-history-modal box">
-            <div className="level is-mobile">
+            <div className="level header is-mobile">
               <div className="level-left">
                 <div className="level-item">
                   <span
@@ -68,7 +68,7 @@ export default class TxHistoryModal extends Component {
                   </span>
                 </div>
                 <div className="level-item">
-                  <b className="widget-title">Transaction History</b>
+                  <b className="widget-title">Transactions</b>
                 </div>
               </div>
             </div>
