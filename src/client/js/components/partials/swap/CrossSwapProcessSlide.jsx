@@ -229,6 +229,29 @@ export default class CrossSwapProcessSlide extends Component {
     )
   }
 
+  renderLoading() {
+    return (
+      <div className={classnames("centered-view")}>
+        <div className="icon">
+          <ion-icon name="hourglass-outline"></ion-icon>
+        </div>
+        <div className="title">
+          {this.state.finishable ? "Finalizing Transfer" : "Starting Withdrawal"}
+        </div>
+        <div className="details">
+          <div>
+            {this.state.finishable ?
+                "We are depositing funds into the receiving chain." :
+                "We are withdrawing funds from the sending chain."
+            }<br/>
+            This step normally takes 1-2 minutes.<br/>
+            Please do not refresh browser.
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     if (!this.props.toAmount || !this.props.fromAmount) {
       return (<div />)
@@ -237,7 +260,7 @@ export default class CrossSwapProcessSlide extends Component {
     var bodyContent;
 
     if (this.state.loading) {
-      bodyContent = (<div>Loading</div>);
+      bodyContent = this.renderLoading();
     } else {
       bodyContent = this.renderReview();
     }

@@ -32,7 +32,7 @@ export default class SwapFinalResultSlide extends Component {
             </div>
           </div>
 
-          <div className={classnames("view", { "failed": !this.props.transactionSuccess })}>
+          <div className={classnames("centered-view", { "failed": !this.props.transactionSuccess })}>
             <div className="icon">
               {this.props.transactionSuccess ? (
                 <ion-icon name="rocket-outline"></ion-icon>
