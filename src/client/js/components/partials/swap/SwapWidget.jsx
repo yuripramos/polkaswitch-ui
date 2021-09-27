@@ -12,6 +12,7 @@ import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
+import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
 import { ApprovalState } from "../../../constants/Status";
 
@@ -223,6 +224,12 @@ export default class SwapOrderWidget extends Component {
       refresh: Date.now(),
       // make it easy coming from token-selection
       showSearch: false
+    }, () => {
+      if (this.state.crossChainEnabled) {
+        let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+          Wallet.getConnectionStrategy();
+        TokenListManager.updateNetwork(this.state.fromChain, connectStrategy);
+      }
     });
   }
 
@@ -260,6 +267,12 @@ export default class SwapOrderWidget extends Component {
     _s[target + "Chain"] = network;
 
     this.setState(_s);
+
+    if (isFrom) {
+      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+        Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(network, connectStrategy);
+    }
   }
 
   handleSearchToggle(target) {
