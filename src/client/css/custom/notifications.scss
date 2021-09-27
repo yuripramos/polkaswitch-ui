@@ -107,21 +107,50 @@
       }
   }
 
-    &.success {
-      span {
-        color: #4a4a4a;
-      }
+  &.success {
+    span {
+      color: #4a4a4a;
+    }
+    .icon {
+      color: $success;
+    }
+  }
+
+  &.pending {
+    span {
+      color: #FBC44D;
+    }
+    .button::after {
+      border-color: transparent transparent $info $info !important;
+    }
+  }
+
+  &.failed {
+    span {
+      color: #938F95;
+    }
+    .icon {
+      color: $danger;
+    }
+  }
+  
+  .tx-meta {
+    color: #8899a7;
+    font-size: 12px;
+    font-weight: 100;
+  }
+
+  .tx-content {
+    color: #666;
+    font-size: 14px;
+
+    > div {
+      width: 100%;
     }
 
-    &.pending {
-      span {
-        color: #FBC44D;
-      }
+    a {
+      color: #8899a7;
+      font-weight: 100;
     }
-
-    &.failed {
-      span {
-        color: #938F95;
-      }
-    }
+  }
 }
