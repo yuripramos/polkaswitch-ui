@@ -48,7 +48,7 @@ export default class NotificationSystem extends Component {
   }
 
   render() {
-    var data = TxQueue.getTx(this.state.hash) || {};
+    const data = TxQueue.getTx(this.state.hash) || {};
 
     return (
       <div className={classnames("notification-drawer", {
