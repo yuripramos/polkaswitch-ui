@@ -13,7 +13,12 @@ export default class TokenSymbolBalance extends Component {
       timestamp: Date.now()
     };
 
+    this.log = this.log.bind(this);
     this.fetchBalance = this.fetchBalance.bind(this);
+  }
+
+  log(...msg) {
+    console.log("TokenSymbolBalance:", this.props.token.symbol, this.props.token.address, this.props.network.name, ...msg);
   }
 
   componentDidMount() {
@@ -40,12 +45,12 @@ export default class TokenSymbolBalance extends Component {
         errored: true,
         loading: false
       });
-      console.error("TokenSymbolBalance: Network Failure");
+      this.log("Network Failure");
       return;
     }
 
     if (this.props.network && !Wallet.isMatchingConnectedNetwork(this.props.network)) {
-      console.warn("TokenSymbolBalance: Wrong network:", this.props.token.symbol, this.props.token.address, this.props.network.name);
+      this.log("Wrong network");
       this.setState({
         errored: true,
         loading: false
@@ -69,7 +74,7 @@ export default class TokenSymbolBalance extends Component {
         }.bind(this, this.state.timestamp))
         .catch(function(_ts, e) {
           // try again
-          console.error("TokenSymbolBalance: Failed to fetch balance", e);
+          this.log("Failed to fetch balance", e);
           if (this.state.timestamp != _ts) {
             return;
           }
@@ -77,7 +82,7 @@ export default class TokenSymbolBalance extends Component {
           this.fetchBalance(attempt + 1);
         }.bind(this, this.state.timestamp));
     } else {
-      console.error("TokenSymbolBalance: Wallet not connected");
+      this.log("Wallet not connected");
       this.setState({
         errored: true,
         loading: false
