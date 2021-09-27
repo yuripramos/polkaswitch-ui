@@ -104,11 +104,13 @@ export default class SwapOrderWidget extends Component {
   updateBoxHeight() {
     this.box.current.style.height = "";
     _.defer(function() {
+      console.log('## current offsetHeight ###', this.box.current.offsetHeight);
       this.box.current.style.height = `${this.box.current.offsetHeight}px`;
     }.bind(this))
   }
 
   triggerHeightResize(node, isAppearing) {
+    console.log('## offsetHeight ###', node.offsetHeight);
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
