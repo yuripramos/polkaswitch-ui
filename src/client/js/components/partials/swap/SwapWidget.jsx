@@ -62,6 +62,7 @@ export default class SwapOrderWidget extends Component {
       fromAmount: undefined,
       toAmount: undefined,
       availableBalance: undefined,
+      swapDistribution: undefined,
       approveStatus: ApprovalState.UNKNOWN,
       searchTarget: "",
       showSettings: false,
@@ -156,7 +157,9 @@ export default class SwapOrderWidget extends Component {
 
   handleWalletChange(e) {
     this.setState({
-      refresh: Date.now()
+      refresh: Date.now(),
+      availableBalance: undefined,
+      swapDistribution: undefined
     });
   }
 
