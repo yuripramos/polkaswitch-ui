@@ -140,7 +140,6 @@ export default class SwapOrderWidget extends Component {
         from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
         toChain: toChain,
         fromChain: fromChain,
-        swapDistribution: undefined,
         availableBalance: undefined
       });
     } else {
@@ -151,7 +150,6 @@ export default class SwapOrderWidget extends Component {
         from: TokenListManager.findTokenById(network.defaultPair.from),
         toChain: network,
         fromChain: network,
-        swapDistribution: undefined,
         availableBalance: undefined
       });
     }
@@ -160,8 +158,6 @@ export default class SwapOrderWidget extends Component {
   handleWalletChange(e) {
     this.setState({
       refresh: Date.now(),
-      availableBalance: undefined,
-      swapDistribution: undefined
     });
   }
 
