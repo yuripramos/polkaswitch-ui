@@ -68,7 +68,7 @@ window.TokenListManager = {
 
   updateTokenList: async function() {
     var network = this.getCurrentNetworkConfig();
-    var tokenList = this._getTokenListForNetwork(network);
+    var tokenList = this.getTokenListForNetwork(network);
     var gasStats;
 
     if (network.gasApi) {
@@ -101,7 +101,7 @@ window.TokenListManager = {
     var tokenList = window.TOKEN_LIST;
 
     if (optionalNetwork) {
-      tokenList = this._getTokenListForNetwork(optionalNetwork);
+      tokenList = this.getTokenListForNetwork(optionalNetwork);
     }
 
     var foundToken = _.find(tokenList, function(v) {
@@ -145,7 +145,7 @@ window.TokenListManager = {
     }
   },
 
-  _getTokenListForNetwork: function(network) {
+  getTokenListForNetwork: function(network) {
     return this._tokenLists[+network.chainId];
   }
 

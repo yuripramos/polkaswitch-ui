@@ -19,7 +19,8 @@ export default class TokenSearchBar extends Component {
       value: "",
       refresh: Date.now(),
       tokenBalances: {},
-      filteredTokens: []
+      filteredTokens: [],
+      topTokens: this.updateTopTokens()
     };
     this.input = React.createRef();
     this.subscribers = [];
@@ -37,9 +38,6 @@ export default class TokenSearchBar extends Component {
     this.updateTokenBalances = this.updateTokenBalances.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this)
-
-    // init
-    this.updateTopTokens();
   }
 
   componentDidMount() {
@@ -76,16 +74,26 @@ export default class TokenSearchBar extends Component {
   }
 
   updateTopTokens() {
-    var network = TokenListManager.getCurrentNetworkConfig();
-    this.TOP_TOKENS = _.map(network.topTokens, function(v) {
+    var isCrossChain = TokenListManager.isCrossChainEnabled();
+    var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
+    var startingTokenIdList = isCrossChain ?
+      network.supportedCrossChainTokens :
+      network.topTokens;
+    var topTokens = _.map(startingTokenIdList, function(v) {
       return TokenListManager.findTokenById(v)
     });
 
-    this.fetchBalances(this.TOP_TOKENS)
+    this.fetchBalances(topTokens)
+    return topTokens;
   }
 
   updateTokenBalances (token, bal, refresh) {
-    this.mounted && this.setState({tokenBalances: {...this.state.tokenBalances, [token.symbol]: {balance: bal, token: token, refresh: refresh}}});
+    this.mounted && this.setState({
+      tokenBalances: {
+        ...this.state.tokenBalances,
+        [token.symbol]: {balance: bal, token: token, refresh: refresh}
+      }
+    });
   }
 
   fetchBalance(token, attempt) {
@@ -127,15 +135,15 @@ export default class TokenSearchBar extends Component {
 
   handleNetworkChange(e) {
     this.mounted && this.setState({tokenBalances: {}});
-    this.updateTopTokens();
     this.setState({
+      topTokens: this.updateTopTokens(),
       refresh: Date.now()
     });
   }
 
   handleWalletChange(e) {
     this.mounted && this.setState({tokenBalances: {}});
-    this.fetchBalances(this.TOP_TOKENS);
+    this.fetchBalances(this.state.topTokens);
   }
 
   handleQueueChange(e) {
@@ -163,7 +171,13 @@ export default class TokenSearchBar extends Component {
     this.setState({value: event.target.value});
     const _query = event.target.value.toLowerCase().trim();
     if (_query.length > 0) {
-      let filteredTokens = _.first(_.filter(window.TOKEN_LIST, function (t) {
+      var isCrossChain = TokenListManager.isCrossChainEnabled();
+      var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
+      var startingTokenIdList = isCrossChain ?
+        this.state.topTokens :
+        TokenListManager.getTokenListForNetwork(network);
+
+      let filteredTokens = _.first(_.filter(startingTokenIdList, function (t) {
         return (t.symbol) && (
             (t.symbol && t.symbol.toLowerCase().includes(_query)) ||
             (t.name && t.name.toLowerCase().includes(_query)) ||
@@ -204,8 +218,8 @@ export default class TokenSearchBar extends Component {
   renderTopList() {
     // fetch balances of top tokens
 
-    var top3 = _.first(this.TOP_TOKENS, 3);
-    var rest = _.rest(this.TOP_TOKENS, 3);
+    var top3 = _.first(this.state.topTokens, 3);
+    var rest = _.rest(this.state.topTokens, 3);
 
     var top3Content = _.map(top3, function(v, i) {
       return (
