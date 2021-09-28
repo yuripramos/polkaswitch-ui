@@ -38,6 +38,7 @@ export default class SwapOrderSlide extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.from.address !== prevProps.from.address ||
       this.props.to.address !== prevProps.to.address ||
+      this.props.refresh !== prevProps.refresh ||
       (this.props.fromAmount !== prevProps.fromAmount && !this.state.calculatingSwap)) {
       if (this.props.fromAmount) {
         this.fetchSwapEstimate(this.props.fromAmount);
@@ -46,6 +47,11 @@ export default class SwapOrderSlide extends Component {
   }
 
   fetchSwapEstimate(origFromAmount, timeNow, attempt, cb) {
+    if (!Wallet.isConnected()) {
+      console.log("SwapOrderSlide: Wallet not connected, skipping fetchSwapEstimate");
+      return false;
+    }
+
     var fromAmount = origFromAmount;
 
     if (!attempt) {
@@ -90,6 +96,11 @@ export default class SwapOrderSlide extends Component {
       // add delay to slow down UI snappiness
       _.delay(function(_timeNow2, _attempt2, _cb2) {
         if (this.calculatingSwapTimestamp !== _timeNow2) {
+          return;
+        }
+
+        if (!Wallet.isConnected()) {
+          console.log("SwapOrderSlide: Wallet not connected, skipping fetchSwapEstimate");
           return;
         }
 
@@ -207,6 +218,7 @@ export default class SwapOrderSlide extends Component {
       });
     }.bind(this, _timeNow2, _cb2))
     .catch(function(_timeNow3, _attempt3, _cb3, e) {
+      console.error(e);
       console.error("Failed to get swap estimate: ", e);
 
       if (this.calculatingSwapTimestamp !== _timeNow3) {

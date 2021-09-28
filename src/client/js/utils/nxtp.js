@@ -58,33 +58,61 @@ window.NxtpUtils = {
   },
 
   initalize: async function() {
-    // TODO need to refresh when wallet connects/disconnects
+    EventManager.listenFor('walletUpdated', this.resetSdk.bind(this));
+
+    if (Wallet.isConnected()) {
+      this._sdk = await this.initalizeSdk();
+    }
+  },
+
+  initalizeSdk: async function() {
     const signer = Wallet.getProvider().getSigner();
 
-    this._sdk = new NxtpSdk(
+    var sdk = this._sdk = new NxtpSdk(
       { chainConfig: chainProviders, signer: signer },
       new Logger({ name: "NxtpSdk", level: "info" }),
       process.env.REACT_APP_NETWORK || "mainnet",
     );
 
-    // TODO figure out historical later,
-    // need to refresh when wallet connects/disconnects
-    // await this.fetchActiveTxs();
-    // await this.fetchHistoricalTxs();
-    this.attachNxtpSdkListeners(this._sdk);
+    this.attachNxtpSdkListeners(sdk);
+    return sdk;
+  },
+
+  resetSdk: function() {
+    console.log("Nxtp SDK reset");
+
+    if (this._sdk) {
+      //detach all listeners
+      this._sdk.removeAllListeners();
+      this._sdk.detach();
+    }
+
+    this._sdk = false;
+    this._queue = {};
+    this._activeTxs = [];
+    this._historicalTxs = [];
   },
 
   fetchActiveTxs: async function() {
+    if (!this._sdk) {
+      return;
+    }
     this._activeTxs = await this._sdk.getActiveTransactions();
     console.log("activeTxs: ", this._activeTxs);
   },
 
   fetchHistoricalTxs: async function() {
+    if (!this._sdk) {
+      return;
+    }
     this._historicalTxs = await this._sdk.getHistoricalTransactions();
     console.log("historicalTxs: ", this._historicalTxs);
   },
 
   attachNxtpSdkListeners: function(_sdk) {
+    if (!_sdk) {
+      return;
+    }
     _sdk.attach(NxtpSdkEvents.SenderTransactionPrepared, (data) => {
       console.log("SenderTransactionPrepared:", data);
       const { amount, expiry, preparedBlockNumber, ...invariant } = data.txData;
@@ -234,6 +262,15 @@ window.NxtpUtils = {
     amount,
     receivingAddress
   ) {
+    if (!Wallet.isConnected()) {
+      console.error("Nxtp: Wallet not connected");
+      return false;
+    }
+
+    if (!this._sdk) {
+      this._sdk = await this.initalizeSdk();
+    }
+
     // Create txid
     const transactionId = getRandomBytes32();
 
