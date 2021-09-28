@@ -490,6 +490,8 @@ export default class SwapOrderWidget extends Component {
           <SwapFinalResultSlide
             to={this.state.to}
             from={this.state.from}
+            toChain={this.state.toChain}
+            fromChain={this.state.fromChain}
             fromAmount={this.state.fromAmount}
             toAmount={this.state.toAmount}
             transactionSuccess={this.state.transactionSuccess}
