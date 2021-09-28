@@ -155,7 +155,6 @@ html, body {
     line-height: 20px;
     font-size: 20px;
     font-weight: bold;
-    margin-top: 8px;
   }
 
   .balance {
@@ -245,7 +244,7 @@ html, body {
 
 .swap-column {
   flex: none;
-  width: 440px;
+  width: 500px;
 }
 
 @media screen and (max-width: 450px) {
@@ -410,6 +409,12 @@ html, body {
   font-size: 14px !important;
   margin-top: 20px;
   justify-content: space-around;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .loader-wrapper {

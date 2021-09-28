@@ -13,23 +13,35 @@
 
 .swap-network-toggle {
   background: white;
-  padding: 13px 1.5em;
+  padding: 13px 1em;
   margin-bottom: 12px !important;
   border-radius: 20px;
   color: #666;
 
-  .button {
-    background-color: $light-blue !important;
-    color: #666 !important;
-  }
-
-  .option-title {
+  .box-title {
     font-size: 16px;
     color: #333;
     font-weight: bold;
   }
+}
 
-  .dropdown {
+.network-dropdown {
+  &.dropdown {
+    &.compact {
+      .button {
+        padding: 5px 10px;
+      }
+    }
+
+    .button {
+      background-color: $light-blue !important;
+      color: #666 !important;
+
+      &:hover {
+        background-color: darken($light-blue, 5%) !important;
+      }
+    }
+
     .level {
       margin-bottom: 0;
     }
@@ -41,10 +53,10 @@
     .disabled {
       opacity: 0.4;
     }
-  }
 
-  .icon {
-    color: #666;
+    .icon {
+      color: #666;
+    }
   }
 }
 
@@ -170,7 +182,7 @@ $swap-widget-anim-timing: 300ms;
     transition: left $swap-widget-anim-timing ease-in-out,
       opacity $swap-widget-anim-timing ease-in-out,
       transform $swap-widget-anim-timing ease-in-out;
-    min-height: 370px;
+    min-height: 330px;
     background: white;
     position: relative;
     z-index: 10;
@@ -181,6 +193,7 @@ $swap-widget-anim-timing: 300ms;
   }
 
   .page-inner {
+    position: relative;
     padding: 1.25em;
   }
 
@@ -283,6 +296,7 @@ $swap-widget-anim-timing: 300ms;
 
     .text-gray-stylized {
       font-size: 16px;
+      margin-bottom: 6px;
     }
 
     .swap-icon-wrapper {
@@ -291,6 +305,13 @@ $swap-widget-anim-timing: 300ms;
     }
 
     $swap-icon-width: 42px;
+
+    .network-dropdown {
+      .button {
+        height: 55px;
+        padding: 0 10px;
+      }
+    }
 
     .swap-icon {
       position: absolute;
@@ -333,6 +354,11 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .settings-icon {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 100;
+
       font-size: 24px;
       height: 34px;
       width: 34px;
@@ -341,7 +367,9 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .icon-down {
-      width: auto;
+      color: #666;
+      width: 16px;
+      height: 16px;
     }
 
     .input {
@@ -349,7 +377,7 @@ $swap-widget-anim-timing: 300ms;
       border-color: #eee;
       font-size: 22px;
       line-height: 1rem;
-      height: 50px;
+      height: 55px;
       color: #666;
       transition: transform 200ms;
 
@@ -385,7 +413,7 @@ $swap-widget-anim-timing: 300ms;
     .control{
       .max-btn {
         position: absolute;
-        top: 8px;
+        top: 10px;
         right: 8px;
         height: 35px;
         line-height: 35px;
@@ -404,11 +432,11 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .notification {
-      padding: 15px 5px;
+      padding: 20px 5px;
       border-radius: 0;
 
       .token-symbol-wrapper {
-        width: 80px;
+        width: 75px;
       }
 
       .level-item {
@@ -422,6 +450,7 @@ $swap-widget-anim-timing: 300ms;
       &.bottom {
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee;
+        padding-top: 15px;
         padding-bottom: 20px;
       }
     }
@@ -442,10 +471,17 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .token-dropdown {
+      height: 55px;
       margin-right: 15px !important;
       border: 1px solid transparent;
       border-radius: 8px;
       cursor: pointer;
+      background-color: $light-blue;
+      padding: 0 10px;
+
+      &:hover {
+        background-color: darken($light-blue, 5%);
+      }
     }
   }
 
@@ -560,8 +596,15 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .page-view-cross-process {
+    .level-item.chain-icon {
+      margin-right: -7px;
+    }
+  }
+
+  .page-view-cross-process,
   .page-view-results {
-    .view {
+    .centered-view {
       text-align: center;
       margin: 70px 0;
 

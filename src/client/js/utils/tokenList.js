@@ -8,7 +8,26 @@ let store = require('store');
 const Utils = ethers.utils;
 
 window.TokenListManager = {
+  _tokenLists: {},
+
   initialize: async function() {
+    // pre-load all token lists
+    var filteredNetworks = _.filter(window.NETWORK_CONFIGS, (v) => { return v.enabled });
+
+    for (var network of filteredNetworks) {
+      var tokenList = await (await fetch(network.tokenList)).json();
+
+      tokenList = _.map(_.filter(tokenList, function(v) {
+        return (v.native) || (v.symbol && Utils.isAddress(v.address));
+      }), function(v) {
+        if (v.address) {
+          v.address = Utils.getAddress(v.address);
+        }
+        return v;
+      });
+
+      this._tokenLists[+network.chainId] = tokenList;
+    };
   },
 
   getCurrentNetworkConfig: function() {
@@ -38,9 +57,18 @@ window.TokenListManager = {
     });
   },
 
+  isCrossChainEnabled: function() {
+    return Storage.isCrossChainEnabled();
+  },
+
+  toggleCrossChain: function(enabled) {
+    Storage.toggleCrossChain(enabled);
+    EventManager.emitEvent('networkUpdated', 1);
+  },
+
   updateTokenList: async function() {
     var network = this.getCurrentNetworkConfig();
-    var tokenList = await(await fetch(network.tokenList)).json();
+    var tokenList = this.getTokenListForNetwork(network);
     var gasStats;
 
     if (network.gasApi) {
@@ -51,15 +79,6 @@ window.TokenListManager = {
 
       gasStats = { safeLow: defaultGasPrice, fast: defaultGasPrice, fastest: defaultGasPrice };
     }
-
-    tokenList = _.map(_.filter(tokenList, function(v) {
-      return (v.native) || (v.symbol && Utils.isAddress(v.address));
-    }), function(v) {
-      if (v.address) {
-        v.address = Utils.getAddress(v.address);
-      }
-      return v;
-    });
 
     // Binance Smart Chain GasAPI has different fields
     if (!_.has(gasStats, 'safeLow')) {
@@ -78,8 +97,14 @@ window.TokenListManager = {
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
   },
 
-  findTokenById: function(tid) {
-    var foundToken = _.find(window.TOKEN_LIST, function(v) {
+  findTokenById: function(tid, optionalNetwork) {
+    var tokenList = window.TOKEN_LIST;
+
+    if (optionalNetwork) {
+      tokenList = this.getTokenListForNetwork(optionalNetwork);
+    }
+
+    var foundToken = _.find(tokenList, function(v) {
       return v.address === tid || v.symbol === tid;
     });
     if (!foundToken) {
@@ -118,6 +143,10 @@ window.TokenListManager = {
       store.set('customTokenAddress', {[chainId]: addresses});
       this.updateTokenListwithCustom(network);
     }
+  },
+
+  getTokenListForNetwork: function(network) {
+    return this._tokenLists[+network.chainId];
   }
 
 };
