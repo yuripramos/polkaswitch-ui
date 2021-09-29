@@ -33,8 +33,7 @@
       "platform": "ethereum",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/ethereum",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
-    ],
+    },
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
     ]
@@ -76,8 +75,7 @@
       "platform": "polygon-pos",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/polygon-pos",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
-    ],
+    },
     "crossChainSupported": true,
     "supportedCrossChainTokens": [
       "USDT",
@@ -122,8 +120,7 @@
       "platform": "binance-smart-chain",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/binance-smart-chain",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
-    ],
+    },
     "crossChainSupported": true,
     "supportedCrossChainTokens": [
       "USDT",
@@ -170,8 +167,7 @@
       "platform": "avalanche",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/avalanche",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
-    ],
+    },
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
     ]
