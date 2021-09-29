@@ -172,6 +172,7 @@ export default function TradingViewChart(){
     let fromTokenPrices = [];
     let toTokenPrices = [];
     let tokenPrices = [];
+
     setIsLoading(true);
     if (viewMode === 'line') {
       const { fromTimestamp, toTimestamp } = getTimestamps(timeRange);
@@ -486,7 +487,7 @@ export default function TradingViewChart(){
   }
 
   return (
-      <div className="trading-view-wrapper">
+      <div>
         <div className="trading-view-header">
           <TokenPairSelector
             tokenPairs={tokenPairs}

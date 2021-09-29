@@ -1,16 +1,22 @@
 
 .trading-view-wrapper {
+  padding: 30px 32px;
+  border-radius: 24px;
 
+  .dropdown-trigger button {
+    height: 54px;
+    background-color: transparent !important;
+    padding: 0;
+  }
   .trading-view-header {
     display: flex;
     justify-content: space-between;
-    margin-top: 12px;
 
     .price-details {
 
       .price {
         line-height: 20px;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
         text-align: end;
       }
@@ -22,14 +28,14 @@
         box-sizing: border-box;
         align-items: flex-end;
         justify-content: flex-end;
-        margin-top: 6px;
+        margin-top: 8px;
 
         .percent {
-          font-size: 18px;
+          font-size: 16px;
         }
 
         .period {
-          margin-left: 6px;
+          margin-left: 12px;
           font-size: 16px;
         }
       }
@@ -67,7 +73,7 @@
 
     .chart {
       width: 100%;
-      height: 400px;
+      height: 300px;
       display: flex;
       justify-content: center;
       align-items: center;

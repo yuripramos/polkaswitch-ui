@@ -5,11 +5,7 @@ import Dashboard from "./Dashboard";
 
 export default function TokenPairChartOverview(){
   return (
-      <div>
-        <TradingViewChart/>
-        {/*<Dashboard/>*/}
-        {/*<Routing/>*/}
-      </div>
+     <TradingViewChart/>
     );
 }
 

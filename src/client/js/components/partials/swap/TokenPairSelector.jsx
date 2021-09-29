@@ -33,16 +33,17 @@ export default function TokenPairSelector(props){
       <div className="level-item level-left">
         <div className={classnames("dropdown is-right is-hoverable")}>
           <div className="dropdown-trigger">
-            <button className="button is-info is-light" style={{padding: 8}} aria-haspopup="true" aria-controls="dropdown-menu">
+            <button className="button is-info is-light" style={{padding: 0}} aria-haspopup="true" aria-controls="dropdown-menu">
               {
                 props.selectedPair.fromSymbol && props.selectedPair.toSymbol &&
                 <span className="level-left">
                   <TokenIconImg
-                    size={30}
+                    size={54}
+                    mr={-10}
+                    z_index={10}
                     imgSrc={props.selectedPair.fromTokenLogo}/>
                   <TokenIconImg
-                    size={30}
-                    ml={-10}
+                    size={54}
                     mr={10}
                     imgSrc={props.selectedPair.toTokenLogo}/>
                   <span className="level-item">{props.selectedPair.name}</span>
@@ -52,15 +53,12 @@ export default function TokenPairSelector(props){
                 props.selectedPair.fromSymbol && !props.selectedPair.toSymbol &&
                 <span className="level-left">
                   <TokenIconImg
-                    size={30}
+                    size={54}
                     mr={10}
                     imgSrc={props.selectedPair.fromTokenLogo}/>
                   <span className="level-item">{props.selectedPair.name}</span>
                 </span>
               }
-              <span className="icon is-small">
-                <ion-icon name="chevron-down"/>
-              </span>
             </button>
           </div>
           <div className="dropdown-menu" id="dropdown-menu" role="menu">
