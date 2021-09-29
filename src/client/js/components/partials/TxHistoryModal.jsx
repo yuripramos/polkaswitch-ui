@@ -9,15 +9,21 @@ import TokenListManager from '../../utils/tokenList';
 import TxQueue from '../../utils/txQueue';
 
 import TxExplorerLink from './TxExplorerLink';
-import TxStatusView from './TxStatusView';
+import TxStatusView from './TxStatusView'
+import CrossChainToggle from './swap/CrossChainToggle';
 
 export default class TxHistoryModal extends Component {
   constructor(props) {
     super(props);
-    this.state = { refresh: Date.now(), open: false };
+    this.state = {
+      refresh: Date.now(),
+      open: false,
+      showSingleChain: true
+    };
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
+    this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +55,13 @@ export default class TxHistoryModal extends Component {
     });
   }
 
+  handleCrossChainChange(checked) {
+    this.setState({
+      showSingleChain: checked
+    });
+    TokenListManager.toggleCrossChain(!checked);
+  }
+
   render() {
     var queue = TxQueue.getQueue();
 
@@ -69,6 +82,13 @@ export default class TxHistoryModal extends Component {
                 </div>
                 <div className="level-item">
                   <b className="widget-title">Transaction History</b>
+                </div>
+              </div>
+              <div className="level-right">
+                <div className="level-item">
+                  <CrossChainToggle
+                    checked={this.state.showSingleChain}
+                    handleChange={this.handleCrossChainChange} />
                 </div>
               </div>
             </div>
