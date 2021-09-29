@@ -28,7 +28,8 @@ export default class TokenIconImg extends Component {
 
       if (!imgSrc) {
         if (this.props.token) {
-          const chainPart = Storage.getNetwork().toLowerCase().replace(/\s+/g, '');
+          var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
+          const chainPart = network.name.toLowerCase().replace(/\s+/g, '');
           const keyPart = this.props.token.address || this.props.token.symbol;
           imgSrc = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${keyPart}/logo.png`;
         } else {

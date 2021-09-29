@@ -97,19 +97,11 @@ module.exports = (env) => {
     },
     resolve: {
       extensions: ['*', '.js', '.jsx'],
-      /*fallback: {
-        "fs": false,
-        "tls": false,
-        "net": false,
-        "path": false,
-        "zlib": false,
-        "http": false,
-        "https": false,
-        "stream": false,
-        "crypto": false,
-        "util": false,
-        "os": false
-      }*/
+      fallback: {
+        fs: false,
+        net: false,
+        tls: false
+      }
     },
     devServer: {
       port: 3000,

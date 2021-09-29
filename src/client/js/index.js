@@ -4,6 +4,7 @@ import App from './components/App';
 import Wallet from './utils/wallet';
 import TokenListManager from './utils/tokenList';
 import SwapFn from './utils/swapFn';
+import Nxtp from './utils/nxtp';
 import TxQueue from './utils/txQueue';
 import Storage from './utils/storage';
 import _ from 'underscore';
@@ -48,11 +49,14 @@ window.NETWORK_CONFIGS = await config.json();
 
 // initialize TokenList
 window.COINGECKO_TOKEN_LIST = await(await fetch('/tokens/coingecko.list.json')).json();
+window.MAX_RETRIES = process.env.IS_PRODUCTION ? 3 : 1;
 
 await Storage.initialize();
+await TokenListManager.initialize();
 await TokenListManager.updateTokenList();
 await Wallet.initialize();
 await SwapFn.initialize();
+await Nxtp.initalize();
 TxQueue.initialize();
 
 if (Wallet.isMetamaskSupported()) {
