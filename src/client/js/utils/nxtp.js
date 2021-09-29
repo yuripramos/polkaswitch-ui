@@ -19,6 +19,11 @@ import {
   TransactionPreparedEvent,
 } from "@connext/nxtp-utils";
 import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./nxtpUtils";
+import swapFn from "./swapFn";
+import * as connextBridgeUtil from "./connextBridgeUtil";
+import {call} from "ionicons/icons";
+
+const Aggregator = require("../abi/cross-chain-aggregator.json");
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -252,6 +257,76 @@ window.NxtpUtils = {
 
   removeActiveTx: function(transactionId) {
     this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
+  },
+
+  getTransferQuoteWithCallData: async function (
+      sendingChainId,
+      sendingAssetId,
+      receivingChainId,
+      receivingAssetId,
+      amount,
+      receivingAddress
+  ) {
+    if (!Wallet.isConnected()) {
+      console.error("Nxtp: Wallet not connected");
+      return false;
+    }
+
+    const bridgeAsset = connextBridgeUtil.findBridgeAsset(sendingAssetId, receivingChainId);
+    const bridgeAssetAddr = bridgeAsset.address
+    console.log(`bridge asset is ${bridgeAssetAddr}`);
+
+    const callTo = connextBridgeUtil.findContractAddress(receivingChainId);
+    console.log(`callTo is ${callTo}`);
+
+    let aggregator = new ethers.utils.Interface(Aggregator);
+    let correctAmount = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
+    console.log(`correctAmount is ${correctAmount}`);
+
+    console.log(`receivingAssetId is ${receivingAssetId}`);
+    let expectedReturn = await swapFn.getExpectedReturnCrossChain(bridgeAssetAddr, receivingAssetId, correctAmount, receivingChainId);
+    console.log('1. expected return is ' + expectedReturn);
+    let distBN = _.map(expectedReturn.distribution, function(e) {
+      return window.ethers.utils.parseUnits("" + e, "wei");
+    });
+    console.log(`distribution BN is ${distBN}`)
+
+    let callData = aggregator.encodeFunctionData(
+        "swap",
+        [bridgeAssetAddr,
+          receivingAssetId,
+          correctAmount,
+          "0", //TODO: Add MinReturn/Slippage
+          receivingAddress,
+          distBN,
+          "0"]
+    )
+
+    if (!this._sdk) {
+      this._sdk = await this.initalizeSdk();
+    }
+
+    // Create txid
+    const transactionId = getRandomBytes32();
+
+    const quote = await this._sdk.getTransferQuote({
+      callData,
+      sendingAssetId,
+      sendingChainId,
+      receivingChainId,
+      receivingAssetId: bridgeAssetAddr,
+      receivingAddress,
+      amount,
+      transactionId,
+      expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
+      callTo: callTo
+    });
+
+    this._queue[transactionId] = {
+      quote: quote
+    }
+
+    return { quote: quote, id: transactionId };
   },
 
   getTransferQuote: async function (
