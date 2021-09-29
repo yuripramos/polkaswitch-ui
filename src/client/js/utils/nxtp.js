@@ -20,10 +20,8 @@ import {
 } from "@connext/nxtp-utils";
 import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./nxtpUtils";
 import swapFn from "./swapFn";
-import * as connextBridgeUtil from "./connextBridgeUtil";
-import {call} from "ionicons/icons";
 
-const Aggregator = require("../abi/cross-chain-aggregator.json");
+const AggregatorAbi = require("../abi/cross-chain-aggregator.json");
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -260,9 +258,9 @@ window.NxtpUtils = {
   },
 
   getTransferQuoteWithCallData: async function (
-      sendingChainId,
+    sendingChainId, // uni
       sendingAssetId,
-      receivingChainId,
+    receivingChainId, //
       receivingAssetId,
       amount,
       receivingAddress
@@ -272,39 +270,39 @@ window.NxtpUtils = {
       return false;
     }
 
-    const bridgeAsset = connextBridgeUtil.findBridgeAsset(sendingAssetId, receivingChainId);
-    const bridgeAssetAddr = bridgeAsset.address
-    console.log(`bridge asset is ${bridgeAssetAddr}`);
-
-    const callTo = connextBridgeUtil.findContractAddress(receivingChainId);
-    console.log(`callTo is ${callTo}`);
-
-    let aggregator = new ethers.utils.Interface(Aggregator);
-    let correctAmount = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
-    console.log(`correctAmount is ${correctAmount}`);
-
-    console.log(`receivingAssetId is ${receivingAssetId}`);
-    let expectedReturn = await swapFn.getExpectedReturnCrossChain(bridgeAssetAddr, receivingAssetId, correctAmount, receivingChainId);
-    console.log('1. expected return is ' + expectedReturn);
-    let distBN = _.map(expectedReturn.distribution, function(e) {
-      return window.ethers.utils.parseUnits("" + e, "wei");
-    });
-    console.log(`distribution BN is ${distBN}`)
-
-    let callData = aggregator.encodeFunctionData(
-        "swap",
-        [bridgeAssetAddr,
-          receivingAssetId,
-          correctAmount,
-          "0", //TODO: Add MinReturn/Slippage
-          receivingAddress,
-          distBN,
-          "0"]
-    )
-
     if (!this._sdk) {
       this._sdk = await this.initalizeSdk();
     }
+
+    const sendingChain = TokenListManager.getNetworkById(sendingChain);
+    const receivingChain = TokenListManager.getNetworkById(receivingChainId);
+    const bridgeAsset = TokenListManager.findTokenById(sendingAssetId, receivingChain);
+
+    const callToAddr = receivingChainId.aggregatorAddress;
+
+    let aggregator = new utils.Interface(AggregatorAbi);
+    let amountBN = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
+
+    let expectedReturn = await swapFn.getExpectedReturnCrossChain(
+      bridgeAsset.address,
+      receivingAssetId,
+      amountBN,
+      receivingChainId
+    );
+
+    let distBN = _.map(expectedReturn.distribution, function(e) {
+      return window.ethers.utils.parseUnits("" + e, "wei");
+    });
+
+    let callData = aggregator.encodeFunctionData("swap", [
+      bridgeAssetAddr,
+      receivingAssetId,
+      amountBN,
+      "0", //TODO: Add MinReturn/Slippage
+      receivingAddress,
+      distBN,
+      "0"
+    ]);
 
     // Create txid
     const transactionId = getRandomBytes32();
@@ -326,7 +324,7 @@ window.NxtpUtils = {
       quote: quote
     }
 
-    return { quote: quote, id: transactionId };
+    return { quote: quote, id: transactionId, expectedReturn };
   },
 
   getTransferQuote: async function (
