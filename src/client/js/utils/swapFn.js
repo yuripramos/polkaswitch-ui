@@ -311,6 +311,39 @@ window.SwapFn = {
     return result;
   },
 
+  _getExpectedReturnCrossChainCache: {},
+
+  getExpectedReturnCrossChain: async function(fromToken, toToken, amount, chainId) {
+    var key = [fromToken, toToken, amount, chainId].join('');
+    if (key in this._getExpectedReturnCrossChainCache) {
+      var cacheValue = this._getExpectedReturnCrossChainCache[key];
+      if ((Date.now()) - cacheValue._cacheTimestamp < 5000) { // 5 seconds cache
+        console.log('Using expectedReturn cache: ', key);
+        return this._getExpectedReturnCrossChainCache[key];
+      }
+    }
+
+    const contract = new Contract(
+        TokenListManager.getNetworkById(chainId).aggregatorAddress,
+        window.oneSplitAbi,
+        Wallet.getReadOnlyProviderByChainId(chainId,true)
+    );
+    console.log(`contract is ${contract}`);
+    var result = await contract.getExpectedReturn(
+        fromToken,
+        toToken,
+        amount, // uint256 in wei
+        3, // desired parts of splits accross pools(3 is recommended)
+        0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+    );
+    console.log(`result is ${result}`);
+
+    var result = _.extend({}, result);
+    result._cacheTimestamp = new Date()
+    this._getExpectedReturnCrossChainCache[key] = result;
+    return result;
+  },
+
   /*
     function swap(
       IERC20 fromToken,

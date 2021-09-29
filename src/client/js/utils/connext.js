@@ -21,9 +21,9 @@ const Sdk = () => {
         routerPublicIdentifier: "vector892GMZ3CuUkpyW8eeXfW2bt5W73TWEXtgV71nphXUXAmpncnj8", // Router Public Identifier
         // loginProvider: undefined, // Web3/JsonRPCProvider
         senderChainProvider: "https://rpc-mainnet.maticvigil.com", // Rpc Provider Link
-        senderAssetId: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", // Asset/Token Address on Sender Chain
+        senderAssetId: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", // Asset/BridgeToken Address on Sender Chain
         recipientChainProvider: "https://bsc-dataseed.binance.org", // Rpc Provider Link
-        recipientAssetId: "0x55d398326f99059fF775485246999027B3197955", // Asset/Token Address on Recipient Chain
+        recipientAssetId: "0x55d398326f99059fF775485246999027B3197955", // Asset/BridgeToken Address on Recipient Chain
       });
     } catch (e) {
       const message = "Error initalizing";

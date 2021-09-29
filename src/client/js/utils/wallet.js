@@ -79,6 +79,12 @@ window.WalletJS = {
     return provider;
   },
 
+  getReadOnlyProviderByChainId: function(chainId) {
+    var network = TokenListManager.getNetworkById(chainId);
+    const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+    return provider;
+  },
+
   getProvider: function(strictCheck) {
     var condition = strictCheck ? this.isConnected() : this.isConnectedToAnyNetwork();
 
