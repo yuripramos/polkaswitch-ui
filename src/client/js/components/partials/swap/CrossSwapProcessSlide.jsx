@@ -244,7 +244,7 @@ export default class CrossSwapProcessSlide extends Component {
                 "We are depositing funds into the receiving chain." :
                 "We are withdrawing funds from the sending chain."
             }<br/>
-            This step normally takes 1-2 minutes.<br/>
+            This step normally takes 2-3 minutes.<br/>
             Please do not refresh browser.
           </div>
         </div>

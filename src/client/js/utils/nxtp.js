@@ -21,8 +21,6 @@ import {
 import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./nxtpUtils";
 import swapFn from "./swapFn";
 
-const AggregatorAbi = require("../abi/cross-chain-aggregator.json");
-
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
 
@@ -257,13 +255,13 @@ window.NxtpUtils = {
     this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
   },
 
-  getTransferQuoteWithCallData: async function (
-    sendingChainId, // uni
-      sendingAssetId,
-    receivingChainId, //
-      receivingAssetId,
-      amount,
-      receivingAddress
+  getTransferQuoteV2: async function (
+    sendingChainId,
+    sendingAssetId,
+    receivingChainId,
+    receivingAssetId,
+    amount,
+    receivingAddress
   ) {
     if (!Wallet.isConnected()) {
       console.error("Nxtp: Wallet not connected");
@@ -276,33 +274,41 @@ window.NxtpUtils = {
 
     const sendingChain = TokenListManager.getNetworkById(sendingChain);
     const receivingChain = TokenListManager.getNetworkById(receivingChainId);
-    const bridgeAsset = TokenListManager.findTokenById(sendingAssetId, receivingChain);
+    const receivingAsset = TokenListManager.findTokenById(receivingAssetId, receivingChain);
+    const sendingAsset = TokenListManager.findTokenById(sendingAssetId);
+    const bridgeAsset = TokenListManager.findTokenById(sendingAsset.symbol, receivingChain);
 
-    const callToAddr = receivingChainId.aggregatorAddress;
+    let callToAddr, callData, expectedReturn;
 
-    let aggregator = new utils.Interface(AggregatorAbi);
-    let amountBN = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
+    // if same token on both chains, don't do getExpectedReturn
+    if (bridgeAsset.address !== receivingAsset.address) {
+      callToAddr = receivingChainId.aggregatorAddress;
 
-    let expectedReturn = await swapFn.getExpectedReturnCrossChain(
-      bridgeAsset.address,
-      receivingAssetId,
-      amountBN,
-      receivingChainId
-    );
+      let aggregator = new utils.Interface(window.oneSplitAbi);
+      // TODO fix decimal conversion, from sending to receiving chain
+      let amountBN = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
 
-    let distBN = _.map(expectedReturn.distribution, function(e) {
-      return window.ethers.utils.parseUnits("" + e, "wei");
-    });
+      expectedReturn = await swapFn.getExpectedReturn(
+        bridgeAsset,
+        receivingAsset,
+        amountBN,
+        receivingChainId
+      );
 
-    let callData = aggregator.encodeFunctionData("swap", [
-      bridgeAssetAddr,
-      receivingAssetId,
-      amountBN,
-      "0", //TODO: Add MinReturn/Slippage
-      receivingAddress,
-      distBN,
-      "0"
-    ]);
+      let distBN = _.map(expectedReturn.distribution, function(e) {
+        return window.ethers.utils.parseUnits("" + e, "wei");
+      });
+
+      // TODO missing the options i.e { gasprice, value }
+      let callData = aggregator.encodeFunctionData("swap", [
+        bridgeAsset.address,
+        receivingAssetId,
+        amountBN,
+        BigNumber.from(0), //TODO: Add MinReturn/Slippage
+        distBN,
+        0
+      ]);
+    }
 
     // Create txid
     const transactionId = getRandomBytes32();
@@ -312,19 +318,23 @@ window.NxtpUtils = {
       sendingAssetId,
       sendingChainId,
       receivingChainId,
-      receivingAssetId: bridgeAssetAddr,
+      receivingAssetId: bridgeAsset.address,
       receivingAddress,
       amount,
       transactionId,
       expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
-      callTo: callTo
+      callTo: callToAddr
     });
 
     this._queue[transactionId] = {
-      quote: quote
+      quote: quote,
+      expectedReturn: expectedReturn
     }
 
-    return { quote: quote, id: transactionId, expectedReturn };
+    return {
+      id: transactionId,
+      returnAmount: expectedReturn ? expectedReturn.returnAmount : quote.bid.amountReceived
+    };
   },
 
   getTransferQuote: async function (
