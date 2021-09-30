@@ -102,15 +102,15 @@ export default function TradingViewChart(){
           width: chartContainerRef.current.clientWidth,
           height: chartContainerRef.current.clientHeight,
           layout: {
-            backgroundColor: '#253248',
-            textColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: '#FFFFFF',
+            textColor: '#333',
           },
           grid: {
             vertLines: {
-              color: '#334158',
+              visible: false,
             },
             horzLines: {
-              color: '#334158',
+              visible: false,
             },
           },
           crosshair: {
@@ -142,10 +142,10 @@ export default function TradingViewChart(){
 
       if (selectedViewMode === viewModes[0]) {
         candleSeries.current = chart.current.addCandlestickSeries({
-          upColor: '#4bffb5',
+          upColor: '#89c984',
           downColor: '#ff4976',
           borderDownColor: '#ff4976',
-          borderUpColor: '#4bffb5',
+          borderUpColor: '#89c984',
           wickDownColor: '#838ca1',
           wickUpColor: '#838ca1',
         });
@@ -154,9 +154,9 @@ export default function TradingViewChart(){
         chart.current.timeScale().fitContent();
       } else {
         lineSeries.current = chart.current.addAreaSeries({
-          topColor: "rgba(38,198,218, 0.56)",
-          bottomColor: "rgba(38,198,218, 0.04)",
-          lineColor: "rgba(38,198,218, 1)",
+          topColor: "rgba(137,201,132, 0.56)",
+          bottomColor: "rgba(137,201,132, 0.04)",
+          lineColor: "rgba(137,201,132, 1)",
           lineWidth: 2
         });
 
