@@ -280,9 +280,10 @@ window.NxtpUtils = {
 
     // if same token on both chains, don't do getExpectedReturn
     if (bridgeAsset.address !== receivingAsset.address) {
-      callToAddr = receivingChain.aggregatorAddress;
+      callToAddr = receivingChain.crossChainAggregatorAddress;
+      console.log(`callToAddr = ${callToAddr}`);
 
-      let aggregator = new utils.Interface(window.oneSplitAbi);
+      let aggregator = new utils.Interface(window.crossChainOneSplitAbi);
 
       // NXTP has a 5% flat fee
       let o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
@@ -308,6 +309,7 @@ window.NxtpUtils = {
         receivingAssetId,
         estimatedOutputBN,
         BigNumber.from(0), //TODO: Add MinReturn/Slippage
+        receivingAddress,
         distBN,
         0
       ]);
