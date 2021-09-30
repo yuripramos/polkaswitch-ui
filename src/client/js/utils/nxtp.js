@@ -424,10 +424,13 @@ window.NxtpUtils = {
     }
   },
 
-  getQueue: function() {
-    const queue = store.get(this._storeKey()) || {};
-    return queue;
+  getAllActiveTxs: function() {
+    return this._activeTxs.map((x) => x);
   },
+
+  getAllHistoricalTxs: function() {
+    return this._historicalTxs.map((x) => x);
+  }
 };
 
 export default window.NxtpUtils;
