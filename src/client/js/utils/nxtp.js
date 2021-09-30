@@ -154,8 +154,6 @@ window.NxtpUtils = {
       );
 
       if (index === -1) {
-        // TODO: is there a better way to
-        // get the info here?
         this._activeTxs.push({
           preparedTimestamp: Math.floor(Date.now() / 1000),
           crosschainTx: {
@@ -260,7 +258,7 @@ window.NxtpUtils = {
     sendingAssetId,
     receivingChainId,
     receivingAssetId,
-    amount,
+    amountBN,
     receivingAddress
   ) {
     if (!Wallet.isConnected()) {
@@ -285,13 +283,18 @@ window.NxtpUtils = {
       callToAddr = receivingChainId.aggregatorAddress;
 
       let aggregator = new utils.Interface(window.oneSplitAbi);
-      // TODO fix decimal conversion, from sending to receiving chain
-      let amountBN = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
+
+      // NXTP has a 5% flat fee
+      let o1 = BN(utils.formatEther(amountBN))
+        .times(0.95)
+        .times(10 ** bridgeAsset.decimals)
+        .toString()
+      let estimatedOutputBN = utils.parseUnits(swapFn.validateEthValue(bridgeAsset, o1), 0);
 
       expectedReturn = await swapFn.getExpectedReturn(
         bridgeAsset,
         receivingAsset,
-        amountBN,
+        estimatedOutputBN,
         receivingChainId
       );
 
@@ -320,7 +323,7 @@ window.NxtpUtils = {
       receivingChainId,
       receivingAssetId: bridgeAsset.address,
       receivingAddress,
-      amount,
+      amount: amountBN.toString(),
       transactionId,
       expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
       callTo: callToAddr
@@ -337,6 +340,7 @@ window.NxtpUtils = {
     };
   },
 
+  // DEPCREATED
   getTransferQuote: async function (
     sendingChainId,
     sendingAssetId,

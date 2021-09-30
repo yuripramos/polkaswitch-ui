@@ -177,7 +177,7 @@ export default class SwapOrderSlide extends Component {
       this.props.from.address,
       +this.props.toChain.chainId,
       this.props.to.address,
-      fromAmountBN.toString(),
+      fromAmountBN,
       Wallet.currentAddress()
     ).then(function(_timeNow3, _cb3, response) {
       if (this.calculatingSwapTimestamp !== _timeNow3) {
