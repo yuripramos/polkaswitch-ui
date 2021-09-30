@@ -92,7 +92,11 @@ export default class TxHistoryModal extends Component {
   render() {
     var singleChainQueue = TxQueue.getQueue();
     var xChainActiveQueue = Nxtp.getAllActiveTxs();
-    var xChainHistoricalQueue = _.first(Nxtp.getAllHistoricalTxs(), 5);
+    var xChainHistoricalQueue = _.first(
+      Nxtp.getAllHistoricalTxs().sort((first, second) => {
+        return second.preparedTimestamp - first.preparedTimestamp;
+      }),
+    5);
 
     var emptyQueue = (this.state.showSingleChain && _.keys(singleChainQueue).length < 1) ||
       (!this.state.showSingleChain && xChainActiveQueue.length < 1 && xChainHistoricalQueue.length < 1);
