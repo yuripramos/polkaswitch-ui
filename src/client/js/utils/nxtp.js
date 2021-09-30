@@ -280,7 +280,7 @@ window.NxtpUtils = {
 
     // if same token on both chains, don't do getExpectedReturn
     if (bridgeAsset.address !== receivingAsset.address) {
-      callToAddr = receivingChainId.aggregatorAddress;
+      callToAddr = receivingChain.aggregatorAddress;
 
       let aggregator = new utils.Interface(window.oneSplitAbi);
 
@@ -303,7 +303,7 @@ window.NxtpUtils = {
       });
 
       // TODO missing the options i.e { gasprice, value }
-      let callData = aggregator.encodeFunctionData("swap", [
+      callData = aggregator.encodeFunctionData("swap", [
         bridgeAsset.address,
         receivingAssetId,
         amountBN,
