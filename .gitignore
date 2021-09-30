@@ -6,3 +6,4 @@ dist-swap
 *.log
 yarn.lock
 .env
+.idea
