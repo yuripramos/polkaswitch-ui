@@ -77,6 +77,12 @@
     }
   }
 
+  &.action {
+    .icon {
+      color: $warning;
+    }
+  }
+
   &.pending {
     .button::after {
       border-color: transparent transparent $info $info !important;
