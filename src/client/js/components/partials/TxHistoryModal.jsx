@@ -20,8 +20,11 @@ export default class TxHistoryModal extends Component {
     this.state = {
       refresh: Date.now(),
       open: false,
-      showSingleChain: true
+      loading: false,
+      showSingleChain: !TokenListManager.isCrossChainEnabled()
     };
+
+    this.fetchCrossChainHistory = this.fetchCrossChainHistory.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
@@ -49,6 +52,10 @@ export default class TxHistoryModal extends Component {
     this.setState({
       open: true
     });
+
+    if (!this.state.showSingleChain) {
+      this.fetchCrossChainHistory();
+    }
   }
 
   handleClose(e) {
@@ -62,11 +69,22 @@ export default class TxHistoryModal extends Component {
       showSingleChain: checked
     });
 
-    Nxtp.fetchActiveTxs().then(() => {
-      return Nxtp.fetchHistoricalTxs();
-    }).then(() => {
-      this.setState({
-        refresh: Date.now()
+    if (!checked) {
+      this.fetchCrossChainHistory();
+    }
+  }
+
+  fetchCrossChainHistory() {
+    this.setState({
+      loading: true
+    }, () => {
+      Nxtp.fetchActiveTxs().then(() => {
+        return Nxtp.fetchHistoricalTxs();
+      }).then(() => {
+        this.setState({
+          loading: false,
+          refresh: Date.now()
+        });
       });
     });
   }
@@ -107,6 +125,11 @@ export default class TxHistoryModal extends Component {
               </div>
             </div>
 
+            <div style={{ position: "relative" }}>
+              <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
+                <div className="loader is-loading"></div>
+              </div>
+
             {emptyQueue && (
               <div className="empty-state">
                 <div>
@@ -117,39 +140,40 @@ export default class TxHistoryModal extends Component {
                     <ion-icon name="file-tray-outline"></ion-icon>
                   </div>
                 </div>
-              </div>
-            )}
+                </div>
+              )}
 
-            {this.state.showSingleChain && _.map(singleChainQueue, function(item, i) {
-              return (
-                <TxStatusView key={i} data={item} />
-              );
-            })}
-            {this.state.showSingleChain && _.keys(singleChainQueue).length > 0 && (
-              <div className="footer-note">Only showing transactions in the last 72 hours.</div>
-            )}
+              {this.state.showSingleChain && _.map(singleChainQueue, function(item, i) {
+                return (
+                  <TxStatusView key={i} data={item} />
+                );
+              })}
+              {this.state.showSingleChain && _.keys(singleChainQueue).length > 0 && (
+                <div className="footer-note">Only showing transactions in the last 72 hours.</div>
+              )}
 
-            {!this.state.showSingleChain && xChainActiveQueue.map(function(item, i) {
-              return (
-                <TxStatusView key={i} data={item} />
-              );
-            })}
+              {!this.state.showSingleChain && xChainActiveQueue.map(function(item, i) {
+                return (
+                  <TxStatusView key={i} data={item} />
+                );
+              })}
 
-            {!this.state.showSingleChain && xChainHistoricalQueue.length > 0 && (
-              <div className="footer-note mb-2">
-                Past historical transactions
-              </div>
-            )}
+              {!this.state.showSingleChain && xChainHistoricalQueue.length > 0 && (
+                <div className="footer-note mb-2">
+                  Past historical transactions
+                </div>
+              )}
 
-            {!this.state.showSingleChain && xChainHistoricalQueue.map(function(item, i) {
-              return (
-                <TxCrossChainHistoricalStatusView key={i} data={item} />
-              );
-            })}
+              {!this.state.showSingleChain && xChainHistoricalQueue.map(function(item, i) {
+                return (
+                  <TxCrossChainHistoricalStatusView key={i} data={item} />
+                );
+              })}
 
-            {!this.state.showSingleChain && xChainHistoricalQueue.length > 0 && (
-              <div className="footer-note">Only showing last five completed transactions.</div>
-            )}
+              {!this.state.showSingleChain && xChainHistoricalQueue.length > 0 && (
+                <div className="footer-note">Only showing last five completed transactions.</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
