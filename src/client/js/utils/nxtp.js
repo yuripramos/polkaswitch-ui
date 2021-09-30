@@ -19,6 +19,7 @@ import {
   TransactionPreparedEvent,
 } from "@connext/nxtp-utils";
 import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./nxtpUtils";
+import swapFn from "./swapFn";
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -252,6 +253,88 @@ window.NxtpUtils = {
 
   removeActiveTx: function(transactionId) {
     this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
+  },
+
+  getTransferQuoteV2: async function (
+    sendingChainId,
+    sendingAssetId,
+    receivingChainId,
+    receivingAssetId,
+    amount,
+    receivingAddress
+  ) {
+    if (!Wallet.isConnected()) {
+      console.error("Nxtp: Wallet not connected");
+      return false;
+    }
+
+    if (!this._sdk) {
+      this._sdk = await this.initalizeSdk();
+    }
+
+    const sendingChain = TokenListManager.getNetworkById(sendingChain);
+    const receivingChain = TokenListManager.getNetworkById(receivingChainId);
+    const receivingAsset = TokenListManager.findTokenById(receivingAssetId, receivingChain);
+    const sendingAsset = TokenListManager.findTokenById(sendingAssetId);
+    const bridgeAsset = TokenListManager.findTokenById(sendingAsset.symbol, receivingChain);
+
+    let callToAddr, callData, expectedReturn;
+
+    // if same token on both chains, don't do getExpectedReturn
+    if (bridgeAsset.address !== receivingAsset.address) {
+      callToAddr = receivingChainId.aggregatorAddress;
+
+      let aggregator = new utils.Interface(window.oneSplitAbi);
+      // TODO fix decimal conversion, from sending to receiving chain
+      let amountBN = utils.parseUnits(amount, bridgeAsset.decimals).mul(9995).div(10000).toString();
+
+      expectedReturn = await swapFn.getExpectedReturn(
+        bridgeAsset,
+        receivingAsset,
+        amountBN,
+        receivingChainId
+      );
+
+      let distBN = _.map(expectedReturn.distribution, function(e) {
+        return window.ethers.utils.parseUnits("" + e, "wei");
+      });
+
+      // TODO missing the options i.e { gasprice, value }
+      let callData = aggregator.encodeFunctionData("swap", [
+        bridgeAsset.address,
+        receivingAssetId,
+        amountBN,
+        BigNumber.from(0), //TODO: Add MinReturn/Slippage
+        distBN,
+        0
+      ]);
+    }
+
+    // Create txid
+    const transactionId = getRandomBytes32();
+
+    const quote = await this._sdk.getTransferQuote({
+      callData,
+      sendingAssetId,
+      sendingChainId,
+      receivingChainId,
+      receivingAssetId: bridgeAsset.address,
+      receivingAddress,
+      amount,
+      transactionId,
+      expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
+      callTo: callToAddr
+    });
+
+    this._queue[transactionId] = {
+      quote: quote,
+      expectedReturn: expectedReturn
+    }
+
+    return {
+      id: transactionId,
+      returnAmount: expectedReturn ? expectedReturn.returnAmount : quote.bid.amountReceived
+    };
   },
 
   getTransferQuote: async function (

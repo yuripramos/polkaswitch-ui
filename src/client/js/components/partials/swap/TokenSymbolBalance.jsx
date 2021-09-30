@@ -18,7 +18,12 @@ export default class TokenSymbolBalance extends Component {
   }
 
   log(...msg) {
-    console.log("TokenSymbolBalance:", this.props.token.symbol, this.props.token.address, this.props.network.name, ...msg);
+    console.log("TokenSymbolBalance:",
+      this.props.token?.symbol,
+      this.props.token?.address,
+      this.props.network?.name,
+      ...msg
+    );
   }
 
   componentDidMount() {
