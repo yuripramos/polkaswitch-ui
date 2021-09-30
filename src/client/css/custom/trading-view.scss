@@ -67,7 +67,7 @@
       flex-wrap: wrap;
       box-sizing: border-box;
       justify-content: flex-end;
-      margin-top: 10px;
+      margin-top: 20px;
       margin-bottom: 10px;
     }
 
@@ -101,15 +101,16 @@
       box-sizing: border-box;
       align-items: center;
       justify-content: flex-end;
-      margin-top: 10px;
+      margin-top: 14px;
 
       .time-range-item {
+        font-size: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 39px;
+        width: 19px;
         cursor: pointer;
-        height: 24px;
+        height: 14px;
         padding: 3px 6px;
         background: rgb(255, 255, 255);;
         box-sizing: border-box;

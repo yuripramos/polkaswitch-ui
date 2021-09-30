@@ -8,7 +8,6 @@ import EventManager from "../../../utils/events";
 import BN from 'bignumber.js';
 
 export default function TradingViewChart(){
-
   const timeRangeList = {
     candlestick: [
       {name: "1D", value: 1, from: 'Past 1 day'},

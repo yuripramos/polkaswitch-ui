@@ -1,6 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { createChart, CrosshairMode } from "lightweight-charts";
-import classnames from "classnames";
+import React from 'react';
 export default function ChartViewOption(props) {
   const handleViewOptionChange = (event) => {
     let viewOption = 'candlestick'

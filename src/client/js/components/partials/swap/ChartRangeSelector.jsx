@@ -17,7 +17,7 @@ export default function ChartRangeSelector(props) {
                 })}
                 key={i}
                 onClick={() => handleTimeRangeChange(v)}>
-                <h5>{v.name}</h5>
+                <span>{v.name}</span>
               </div>
             )
           })
