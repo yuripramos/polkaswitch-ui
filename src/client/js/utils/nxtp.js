@@ -285,7 +285,7 @@ window.NxtpUtils = {
       let aggregator = new utils.Interface(window.oneSplitAbi);
 
       // NXTP has a 5% flat fee
-      let o1 = BN(utils.formatEther(amountBN))
+      let o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
         .times(0.95)
         .times(10 ** bridgeAsset.decimals)
         .toString()
