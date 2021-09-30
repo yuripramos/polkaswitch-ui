@@ -66,6 +66,10 @@ window.NxtpUtils = {
     }
   },
 
+  isSdkInitalized: function() {
+    return !!this._sdk;
+  },
+
   initalizeSdk: async function() {
     const signer = Wallet.getProvider().getSigner();
 

@@ -55,7 +55,9 @@ export default class TokenSearchBar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.network?.chainId !== prevProps.network?.chainId) {
+    if (this.props.network?.chainId !== prevProps.network?.chainId ||
+      _.first(this.props.tokenList) !== _.first(prevProps.tokenList) ||
+      this.props.tokenList?.length !== prevProps.tokenList?.length) {
       this.setState({
         tokenBalances: {},
         topTokens: this.updateTopTokens(),
@@ -82,14 +84,16 @@ export default class TokenSearchBar extends Component {
   }
 
   updateTopTokens() {
-    var isCrossChain = TokenListManager.isCrossChainEnabled();
-    var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
-    var startingTokenIdList = isCrossChain ?
-      network.supportedCrossChainTokens :
-      network.topTokens;
-    var topTokens = _.map(startingTokenIdList, function(v) {
-      return TokenListManager.findTokenById(v, network)
-    });
+    var topTokens;
+
+    if (!this.props.tokenList) {
+      var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
+      topTokens = _.map(network.topTokens, function(v) {
+        return TokenListManager.findTokenById(v, network)
+      });
+    } else {
+      topTokens = _.first(this.props.tokenList, 5);
+    }
 
     this.fetchBalances(topTokens)
     return topTokens;
@@ -185,10 +189,8 @@ export default class TokenSearchBar extends Component {
     this.setState({value: event.target.value});
     const _query = event.target.value.toLowerCase().trim();
     if (_query.length > 0) {
-      var isCrossChain = TokenListManager.isCrossChainEnabled();
       var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
-      var startingTokenIdList = isCrossChain ?
-        this.state.topTokens :
+      var startingTokenIdList = this.props.tokenList ||
         TokenListManager.getTokenListForNetwork(network);
 
       let filteredTokens = _.first(_.filter(startingTokenIdList, function (t) {

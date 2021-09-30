@@ -75,9 +75,17 @@ export default class TxHistoryModal extends Component {
   }
 
   fetchCrossChainHistory() {
+    if (!Wallet.isConnected()) {
+      return;
+    }
+
     this.setState({
       loading: true
-    }, () => {
+    }, async () => {
+      if (Nxtp.isSdkInitalized()) {
+        await Nxtp.initalizeSdk();
+      }
+
       Nxtp.fetchActiveTxs().then(() => {
         return Nxtp.fetchHistoricalTxs();
       }).then(() => {

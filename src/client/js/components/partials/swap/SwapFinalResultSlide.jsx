@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 
-import TokenSearchBar from './../TokenSearchBar';
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import MarketLimitToggle from './MarketLimitToggle';
