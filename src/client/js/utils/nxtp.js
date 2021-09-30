@@ -306,7 +306,7 @@ window.NxtpUtils = {
       callData = aggregator.encodeFunctionData("swap", [
         bridgeAsset.address,
         receivingAssetId,
-        amountBN,
+        estimatedOutputBN,
         BigNumber.from(0), //TODO: Add MinReturn/Slippage
         distBN,
         0
