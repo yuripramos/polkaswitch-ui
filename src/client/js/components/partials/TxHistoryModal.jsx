@@ -12,7 +12,6 @@ import Nxtp from '../../utils/nxtp';
 import TxExplorerLink from './TxExplorerLink';
 import TxStatusView from './TxStatusView'
 import TxCrossChainHistoricalStatusView from './TxCrossChainHistoricalStatusView'
-import TxCrossChainActiveStatusView from './TxCrossChainActiveStatusView'
 import CrossChainToggle from './swap/CrossChainToggle';
 
 export default class TxHistoryModal extends Component {
@@ -30,15 +29,11 @@ export default class TxHistoryModal extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
-    this.handleFinishAction = this.handleFinishAction.bind(this);
   }
 
   componentDidMount() {
     this.subUpdate = EventManager.listenFor(
       'txQueueUpdated', this.handleUpdate
-    );
-    this.subNxtp = EventManager.listenFor(
-      'nxtpEventUpdated', this.handleUpdate
     );
     this.subPrompt = EventManager.listenFor(
       'promptTxHistory', this.handleOpen
@@ -79,27 +74,10 @@ export default class TxHistoryModal extends Component {
     }
   }
 
-  handleFinishAction(transactionId) {
-    if (!Wallet.isConnected()) {
-      console.error("TxHistoryModal: Wallet not connected");
-      return;
-    }
-
-    Nxtp.transferStepTwo(transactionId);
-  }
-
   fetchCrossChainHistory() {
-    if (!Wallet.isConnected()) {
-      return;
-    }
-
     this.setState({
       loading: true
-    }, async () => {
-      if (Nxtp.isSdkInitalized()) {
-        await Nxtp.initalizeSdk();
-      }
-
+    }, () => {
       Nxtp.fetchActiveTxs().then(() => {
         return Nxtp.fetchHistoricalTxs();
       }).then(() => {
@@ -113,21 +91,22 @@ export default class TxHistoryModal extends Component {
 
   render() {
     var singleChainQueue = TxQueue.getQueue();
-    var xActiveQueue = Nxtp.getAllActiveTxs();
-    var xAllHistQueue = Nxtp.getAllHistoricalTxs().sort((first, second) => {
-      return second.preparedTimestamp - first.preparedTimestamp;
-    });
-    var xHistQueue = _.first(xAllHistQueue, 5);
+    var xChainActiveQueue = Nxtp.getAllActiveTxs();
+    var xChainHistoricalQueue = _.first(
+      Nxtp.getAllHistoricalTxs().sort((first, second) => {
+        return second.preparedTimestamp - first.preparedTimestamp;
+      }),
+    5);
 
     var emptyQueue = (this.state.showSingleChain && _.keys(singleChainQueue).length < 1) ||
-      (!this.state.showSingleChain && xActiveQueue.length < 1 && xHistQueue.length < 1);
+      (!this.state.showSingleChain && xChainActiveQueue.length < 1 && xChainHistoricalQueue.length < 1);
 
     return (
       <div className={classnames("modal", { "is-active": this.state.open })}>
         <div onClick={this.handleClose} className="modal-background"></div>
         <div className="modal-content">
           <div className="tx-history-modal box">
-            <div className="level is-mobile">
+            <div className="level header is-mobile">
               <div className="level-left">
                 <div className="level-item">
                   <span
@@ -138,7 +117,7 @@ export default class TxHistoryModal extends Component {
                   </span>
                 </div>
                 <div className="level-item">
-                  <b className="widget-title">Transaction History</b>
+                  <b className="widget-title">Transactions</b>
                 </div>
               </div>
               <div className="level-right">
@@ -177,38 +156,27 @@ export default class TxHistoryModal extends Component {
                 <div className="footer-note">Only showing transactions in the last 72 hours.</div>
               )}
 
-              {!this.state.showSingleChain && xActiveQueue.map(function(item, i) {
+              {!this.state.showSingleChain && xChainActiveQueue.map(function(item, i) {
                 return (
                   <TxStatusView key={i} data={item} />
                 );
               })}
 
-              {!this.state.showSingleChain && (
+              {!this.state.showSingleChain && xChainHistoricalQueue.length > 0 && (
                 <div className="footer-note mb-2">
-                  {xActiveQueue.length > 0 ? "Current active transactions" : "No active transactions"} ({xActiveQueue.length})
+                  Past historical transactions
                 </div>
               )}
 
-              {!this.state.showSingleChain && xActiveQueue.map((item, i) => {
-                return (
-                  <TxCrossChainActiveStatusView
-                    key={i} data={item}
-                    handleFinishAction={this.handleFinishAction}
-                  />
-                );
-              })}
-
-              {!this.state.showSingleChain && xHistQueue.length > 0 && (
-                <div className="footer-note mb-2">
-                  Last five historical transactions ({xHistQueue.length}/{xAllHistQueue.length})
-                </div>
-              )}
-
-              {!this.state.showSingleChain && xHistQueue.map(function(item, i) {
+              {!this.state.showSingleChain && xChainHistoricalQueue.map(function(item, i) {
                 return (
                   <TxCrossChainHistoricalStatusView key={i} data={item} />
                 );
               })}
+
+              {!this.state.showSingleChain && xChainHistoricalQueue.length > 0 && (
+                <div className="footer-note">Only showing last five completed transactions.</div>
+              )}
             </div>
           </div>
         </div>

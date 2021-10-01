@@ -1,16 +1,17 @@
 $black:#1E1E1E;
 $grey:#CCCCCC;
 $white:#FFFFFF;
+$green: #58B57E;
 
-$switcher-background: $light-blue;
-$switcher-height: 40px;
-$switcher-width: 170px;
-$switcher-toggle-padding: 5px;
+$switcher-background: $green;
+$switcher-height: 20px;
+$switcher-width: 33px;
+$switcher-toggle-padding: 1px;
 $switcher-off-color: #a2bcce;
 $switcher-on-color: #666;
-$switcher-radius: 10px;
+$switcher-radius: 31px;
 
-.switcher {
+.item-switcher {
   position: relative;
   width: $switcher-width;
   height: $switcher-height;
@@ -29,7 +30,7 @@ $switcher-radius: 10px;
     height: $switcher-height;
     border-radius: $switcher-radius;
 
-    background-color: var(--bg-element);
+    background-color: $switcher-background;
     outline:none;
     user-select: none;
 
@@ -40,7 +41,7 @@ $switcher-radius: 10px;
 
     &:before, &:after {
       z-index:2;
-      width: $switcher-width / 2;
+      width: $switcher-width / 2 - 1;
       text-align: center;
       position: absolute;
       top:50%;
@@ -50,11 +51,9 @@ $switcher-radius: 10px;
     }
     &:before {
       left: 0;
-      content: 'Market';
     }
     &:after {
       right: 0;
-      content: 'Limit';
     }
   }
   label {
@@ -63,9 +62,9 @@ $switcher-radius: 10px;
     position: absolute;
     top: $switcher-toggle-padding;
     bottom: $switcher-toggle-padding;
-    background:var(--dialogue-bg);
+    background:$white;
     border-radius: $switcher-radius - $switcher-toggle-padding;
-    box-shadow: 0px 0px 10px var(--switch-shadow);
+    box-shadow: 0px 0px 10px #f1f1f1;
   }
 
   input {
@@ -73,7 +72,7 @@ $switcher-radius: 10px;
 
     &:checked {
       &:before {
-        color:var(--toggle-text);
+        color:$switcher-on-color;
         transition: color .5s .2s;
       }
       &:after {
@@ -82,7 +81,7 @@ $switcher-radius: 10px;
       }
       &+label {
         left: $switcher-toggle-padding;
-        right: $switcher-width / 2;
+        right: $switcher-width / 2 - 1;
         transition: left .5s, right .4s .2s;
       }
     }
@@ -96,21 +95,10 @@ $switcher-radius: 10px;
         transition: color .5s .2s;
       }
       &+label {
-        left: $switcher-width / 2;
+        left: $switcher-width / 2 - 1;
         right: $switcher-toggle-padding;
         transition: left .4s .2s, right .5s, background .35s -.1s;
       }
-    }
-  }
-}
-
-.cross-chain-toggle.switcher {
-  input {
-    &:before {
-      content: 'Swap';
-    }
-    &:after {
-      content: 'Bridge';
     }
   }
 }
