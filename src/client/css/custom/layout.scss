@@ -1,9 +1,8 @@
 .theme-light {
-  --light-text: #5E4B56;
-  --background: #f2f7f9;
-  --toggle-text:#666;
-  --dialogue-bg:#FFFFFF;
-  --bg-element:#f2f7f9;
+  --primary-background: #f2f7f9;
+  --primary-text-color:#666;
+  --secondary-background:#FFFFFF;
+  --dropdown-color:#f2f7f9;
   --switch-shadow:#f1f1f1;
   --dropdown-hover-color:#e1ecf1;
   --dropdown-bg:#FFFFFF;
@@ -14,21 +13,20 @@
   --btn-color:#E6007A;
   --symbol-color:#0a0a0a;
   --balance-color:#0a0a0a;
-  --input-color:#ffffff;
+  --input-color:#FFFFFF;
   --input-box-shadow:#efefef;
   --input-border:#3273dc;
   --max-bg:#feecf0;
   --hint-color:#b5daf2;
-  --disabled-dropdown:f5f5f5;
+  --disabled-dropdown:#f5f5f5;
   --back-arrow-icon:#f0f8ff;
   --bridge-btn-border:#dddddd;
 }
 .theme-dark {
-  --dark-text: #5E4B56;
-  --background: #201923;
-  --toggle-text:#ffffff;
-  --dialogue-bg:#29212D;
-  --bg-element:#1e1721;
+  --primary-background: #201923;
+  --primary-text-color:#ffffff;
+  --secondary-background:#29212D;
+  --dropdown-color:#1e1721;
   --switch-shadow:#29212D;
   --dropdown-hover-color:#221926;
   --dropdown-bg:#1e1721;
@@ -71,7 +69,7 @@ input{
 
 .gas-price-control {
   select,input{
-    background-color: var(--bg-element);
+    background-color: var(--dropdown-color);
     color: var(--symbol-color);
     border-color: var(--input-border);
   }
@@ -95,7 +93,7 @@ input{
 }
 
 html, body {
-  background: var(--background);
+  background: var(--primary-background);
 }
 
 @keyframes flickerAnimation {
@@ -209,7 +207,7 @@ html, body {
   }
 
   .bridge-button {
-    background: var(--dialogue-bg) !important;
+    background: var(--secondary-background) !important;
     border: 1px solid var(--bridge-btn-border) !important;
     border-radius: 12px;
     height: 42px;
@@ -235,7 +233,7 @@ html, body {
 
     a {
       font-size: 16px;
-      color: var(--toggle-text) !important;
+      color: var(--primary-text-color) !important;
     }
   }
 
@@ -509,7 +507,7 @@ html, body {
   display: flex;
   flex-direction: column;
   .has-text-grey{
-    color: var(--toggle-text) !important;
+    color: var(--primary-text-color) !important;
   }
 }
 

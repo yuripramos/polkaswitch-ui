@@ -12,7 +12,7 @@
 }
 
 .swap-network-toggle {
-  background: var(--dialogue-bg);
+  background: var(--secondary-background);
   padding: 13px 1em;
   margin-bottom: 12px !important;
   border-radius: 16px;
@@ -37,8 +37,8 @@
     }
 
     .button {
-      background-color: var(--bg-element) !important;
-      color: var(--toggle-text) !important;
+      background-color: var(--dropdown-color) !important;
+      color: var(--primary-text-color) !important;
 
       &:hover {
         background-color: var(--dropdown-hover-color) !important;
@@ -62,7 +62,7 @@
     }
 
     .icon {
-      color: var(--toggle-text) !important;
+      color: var(--primary-text-color) !important;
     }
   }
 }
@@ -178,7 +178,7 @@
 $swap-widget-anim-timing: 300ms;
 
 .swap-widget {
-  background: var(--dialogue-bg) !important;
+  background: var(--secondary-background) !important;
   padding: 0px;
   overflow: hidden;
   position: relative;
@@ -191,7 +191,7 @@ $swap-widget-anim-timing: 300ms;
       opacity $swap-widget-anim-timing ease-in-out,
       transform $swap-widget-anim-timing ease-in-out;
     min-height: 330px;
-    background: var(--dialogue-bg) !important;
+    background: var(--secondary-background) !important;
     position: relative;
     z-index: 10;
     top: 0;
@@ -356,7 +356,7 @@ $swap-widget-anim-timing: 300ms;
       height: $swap-icon-width;
       margin-left: - ($swap-icon-width / 2);
       margin-top: - ($swap-icon-width / 2);
-      background: var(--dialogue-bg);
+      background: var(--secondary-background);
       border-radius: 40px;
       border: 1px solid var(--notification-border-color);
       z-index: 10;
@@ -377,7 +377,7 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .icon-down {
-      color: var(--toggle-text) !important;
+      color: var(--primary-text-color) !important;
       width: 16px;
       height: 16px;
     }
@@ -388,13 +388,13 @@ $swap-widget-anim-timing: 300ms;
       font-size: 22px;
       line-height: 1rem;
       height: 55px;
-      color: var(--toggle-text);
+      color: var(--primary-text-color);
       transition: transform 200ms;
       background: var(--input-color);
       &.is-to {
         background-color: var(--input-color);
         border-color: var(--input-color);
-        color: var(--toggle-text) !important;
+        color: var(--primary-text-color) !important;
       }
 
       &.is-from {
@@ -428,7 +428,7 @@ $swap-widget-anim-timing: 300ms;
         right: 8px;
         height: 35px;
         line-height: 35px;
-        background: var(--background);
+        background: var(--primary-background);
         border-radius: 10px;
         color: var(--btn-color);
         padding: 0 10px;
@@ -443,7 +443,7 @@ $swap-widget-anim-timing: 300ms;
     }
 
     .notification {
-      background: var(--dialogue-bg) !important;
+      background: var(--secondary-background) !important;
       padding: 20px 5px;
       border-radius: 0;
 
@@ -488,7 +488,7 @@ $swap-widget-anim-timing: 300ms;
       border: 1px solid transparent;
       border-radius: 8px;
       cursor: pointer;
-      background-color: var(--dialogue-bg) !important;
+      background-color: var(--secondary-background) !important;
       padding: 0 10px;
 
       &:hover {
@@ -548,7 +548,7 @@ $swap-widget-anim-timing: 300ms;
 
   /* Firefox */
   input[type=number] {
-    background-color: var(--bg-element);
+    background-color: var(--dropdown-color);
     color: var(--symbol-color);
     border-color: var(--input-border);
     -moz-appearance: textfield;
@@ -593,7 +593,7 @@ $swap-widget-anim-timing: 300ms;
       display: flex;
 
       .button {
-        background-color: var(--bg-element);
+        background-color: var(--dropdown-color);
         color: var(--symbol-color);
         border-color: var(--input-border);
         margin-right: 5px;
@@ -661,7 +661,7 @@ $swap-widget-anim-timing: 300ms;
         background: var(--input-color) !important;
         border-radius: 16px;
         border-color: var(--input-border);
-        color: var(--toggle-text);
+        color: var(--primary-text-color);
       }
 
       .token-top-list {
@@ -680,7 +680,7 @@ $swap-widget-anim-timing: 300ms;
           margin-bottom: 10px;
 
           &:hover {
-            background: var(--bg-element);
+            background: var(--dropdown-color);
           }
 
           .level-item {
@@ -714,7 +714,7 @@ $swap-widget-anim-timing: 300ms;
         height: 30px;
         bottom: 0;
         width: 100%;
-        box-shadow: inset 0px -8px 12px 6px var(--dialogue-bg);
+        box-shadow: inset 0px -8px 12px 6px var(--secondary-background);
         z-index: 15;
       }
 
@@ -732,11 +732,11 @@ $swap-widget-anim-timing: 300ms;
         }
 
         &:hover {
-          background: var(--bg-element);
+          background: var(--dropdown-color);
         }
 
         .level-item {
-          color: var(--toggle-text) !important;
+          color: var(--primary-text-color) !important;
           font-size: 1rem;
         }
       }
