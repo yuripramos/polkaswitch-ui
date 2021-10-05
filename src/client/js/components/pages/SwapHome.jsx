@@ -21,7 +21,7 @@ export default class Home extends Component {
         <ConnectWalletModal />
         <TxHistoryModal />
         <div className="columns">
-          <div className="column">
+          <div className="column trading-view-column" style={{ minWidth: 0 }}>
             <div className="box trading-view-wrapper">
               <TokenPairChartOverview />
             </div>

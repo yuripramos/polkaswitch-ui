@@ -76,18 +76,23 @@ export default function TradingViewChart(){
 
   // Resize chart on container resizes.
   useEffect(() => {
-    if (chartContainerRef.current) {
-      resizeObserver.current = new ResizeObserver(entries => {
-        const {width, height} = entries[0].contentRect;
-        chart.current.applyOptions({width, height});
-        setTimeout(() => {
-          chart.current.timeScale().fitContent();
-        }, 0);
-      });
-
-      resizeObserver.current.observe(chartContainerRef.current);
+    const handleResize = (width, height) => {
+      chart.current.resize(width, height);
+      setTimeout(() => {
+        chart.current.timeScale().fitContent();
+      }, 0);
     }
-    return () => resizeObserver.current.disconnect();
+
+    if (chartContainerRef.current) {
+      window.addEventListener('resize', ()=> {
+        console.log('## width, height ###', chartContainerRef.current.clientWidth, chartContainerRef.current.clientHeight)
+        handleResize(chartContainerRef.current.clientWidth, chartContainerRef.current.clientHeight)
+      })
+    }
+    return () => {
+      // resizeObserver.current.disconnect();
+      window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
   // Fetch Data
@@ -101,6 +106,12 @@ export default function TradingViewChart(){
         chart.current = createChart(chartContainerRef.current, {
           width: chartContainerRef.current.clientWidth,
           height: chartContainerRef.current.clientHeight,
+          rightPriceScale:{
+            visible: false,
+          },
+          leftPriceScale: {
+            visible: true,
+          },
           layout: {
             backgroundColor: '#FFFFFF',
             textColor: '#333',
@@ -128,7 +139,7 @@ export default function TradingViewChart(){
       }
 
       if (chart && chart.current && tokenPriceData.length > 0) {
-        chartContainerRef.current.style.display="block";
+        chartContainerRef.current.style.display="flex";
       }
 
       if (candleSeries.current) {
@@ -501,7 +512,7 @@ export default function TradingViewChart(){
             handleViewModeChange={handleViewModeChange}
           />
           {renderTradingChatView(isLoading, selectedViewMode, tokenPriceData)}
-          <div className="chart" ref={chartContainerRef}></div>
+          <div className="chart" ref={chartContainerRef}/>
           <ChartRangeSelector
               timeRangeList={timeRangeList}
               selectedTimeRange={selectedTimeRange}

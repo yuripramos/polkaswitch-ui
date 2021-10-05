@@ -423,6 +423,14 @@ html, body {
   flex-direction: column;
 }
 
+.trading-view-column {
+  display: block;
+
+  @media screen and (max-width: 992px) {
+    display: none;
+  }
+}
+
 .swap-column {
   flex: none;
   width: 500px;
