@@ -1,0 +1,14 @@
+.grid-table {
+  .header {
+  }
+
+  .body {
+    .row {
+      border-radius: 16px;
+      padding: 15px;
+    }
+    :nth-child(odd) {
+      background-color: white;
+    }
+  }
+}

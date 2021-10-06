@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createChart, CrosshairMode } from "lightweight-charts";
 import TokenPairSelector from "./TokenPairSelector";
 import ChartPriceDetails from "./ChartPriceDetails";
@@ -32,7 +32,6 @@ export default function TradingViewChart(){
   const viewModes = ["candlestick", "line"];
   const chartContainerRef = useRef();
   const chart = useRef();
-  const resizeObserver = useRef();
   const createTokenPairList = () => {
     const swapConfig = TokenListManager.getSwapConfig();
     const list = []
@@ -85,12 +84,10 @@ export default function TradingViewChart(){
 
     if (chartContainerRef.current) {
       window.addEventListener('resize', ()=> {
-        console.log('## width, height ###', chartContainerRef.current.clientWidth, chartContainerRef.current.clientHeight)
         handleResize(chartContainerRef.current.clientWidth, chartContainerRef.current.clientHeight)
       })
     }
     return () => {
-      // resizeObserver.current.disconnect();
       window.removeEventListener("resize", handleResize);
     }
   }, []);
@@ -463,13 +460,13 @@ export default function TradingViewChart(){
       }
       if (viewMode === 'line') {
         return (
-          <div class="chart">
+          <div className="chart">
             <img src="/images/chart_line_animate.svg"/>
           </div>
         )
       } else {
         return (
-          <div class="chart">
+          <div className="chart">
             <img src="/images/chart_cundle_animate.svg"/>
           </div>
         )
@@ -480,7 +477,7 @@ export default function TradingViewChart(){
           chartContainerRef.current.style.display="none";
         }
         return (
-          <div class="chart">
+          <div className="chart">
             <div>
               <img width={110} height={110} src="/images/no_data.svg"/>
             </div>
@@ -511,13 +508,13 @@ export default function TradingViewChart(){
             selectedViewMode={selectedViewMode}
             handleViewModeChange={handleViewModeChange}
           />
-          {renderTradingChatView(isLoading, selectedViewMode, tokenPriceData)}
           <div className="chart" ref={chartContainerRef}/>
+          {renderTradingChatView(isLoading, selectedViewMode, tokenPriceData)}
           <ChartRangeSelector
-              timeRangeList={timeRangeList}
-              selectedTimeRange={selectedTimeRange}
-              selectedViewMode={selectedViewMode}
-              handleTimeRangeChange={handleRangeChange}/>
+            timeRangeList={timeRangeList}
+            selectedTimeRange={selectedTimeRange}
+            selectedViewMode={selectedViewMode}
+            handleTimeRangeChange={handleRangeChange}/>
         </div>
       </div>
     );
