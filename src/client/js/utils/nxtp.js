@@ -319,9 +319,9 @@ window.NxtpUtils = {
 
       let aggregator = new utils.Interface(window.crossChainOneSplitAbi);
 
-      // NXTP has a 5% flat fee
+      // NXTP has a 0.05% flat fee
       let o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
-        .times(0.95)
+        .times(0.9995)
         .times(10 ** bridgeAsset.decimals)
         .toString()
       let estimatedOutputBN = utils.parseUnits(swapFn.validateEthValue(bridgeAsset, o1), 0);
