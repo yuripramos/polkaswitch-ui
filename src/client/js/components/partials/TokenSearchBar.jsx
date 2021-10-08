@@ -59,7 +59,6 @@ export default class TokenSearchBar extends Component {
       if (this.props.focused) {
         _.defer(function() {
           window.document.dispatchEvent(new Event('fullScreenOn'));
-
           // wait for animation to clear;
           _.delay(function() {
             this.input.current.focus();

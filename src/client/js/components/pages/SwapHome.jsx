@@ -10,6 +10,7 @@ import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from "../partials/navbar/MobileMenu";
 import TxnHistory from "../partials/swap/TxnHistory";
+import Search from "../partials/swap/Search";
 
 export default class Home extends Component {
   render() {
@@ -22,6 +23,7 @@ export default class Home extends Component {
         <TxHistoryModal />
         <div className="columns">
           <div className="column trading-view-column" style={{ minWidth: 0 }}>
+            <Search />
             <div className="box trading-view-wrapper">
               <TokenPairChartOverview />
             </div>
