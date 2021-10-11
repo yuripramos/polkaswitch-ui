@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import {setTheme} from "../../utils/theme";
+import { setTheme } from "../../utils/theme";
 
 export default class Settings extends Component {
   constructor(props) {

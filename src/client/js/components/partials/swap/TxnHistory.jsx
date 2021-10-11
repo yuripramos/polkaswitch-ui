@@ -2,12 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react'
 import _ from "underscore";
 import TxStatusView from "../TxStatusView";
 import TxQueue from '../../../utils/txQueue';
+import EventManager from "../../../utils/events";
 
 export default function TxnHistory() {
   const itemMax = 3;
   const [queue, setQueue] = useState({});
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
+  const [refresh, setRefresh] = useState(Date.now());
 
   useEffect(() =>{
     setMaxPage(1);
@@ -26,18 +28,33 @@ export default function TxnHistory() {
   useEffect(() =>{
     setPage(1)
     setQueue(TxQueue.getQueue())
+    let subTxUpdates = EventManager.listenFor(
+        'txQueueUpdated', handleUpdate
+    );
+    let subUpdates = EventManager.listenFor(
+        'walletUpdated', handleUpdate
+    );
+    return () => {
+      subTxUpdates.unsubscribe();
+      subUpdates.unsubscribe();
+    }
   }, []);
+
+  const handleUpdate = () => {
+    setRefresh(Date.now());
+    setQueue(TxQueue.getQueue());
+  }
 
   const filteredList = useMemo(() => {
     return (
         queue && Object.keys(queue).map((key) => queue[key]).slice(itemMax * (page - 1), page * itemMax)
     )
-  }, [queue, itemMax, page])
+  }, [queue, itemMax, page, refresh])
 
   return (
       <div>
       {
-        queue && Object.keys(queue).length > 0 &&
+        refresh && queue && Object.keys(queue).length > 0 &&
           <div className="grid-table">
             <div className="title-bar">Trade History</div>
             <div className="body">

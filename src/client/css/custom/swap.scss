@@ -384,7 +384,7 @@ $swap-widget-anim-timing: 300ms;
 
     .input {
       box-shadow: none;
-      border-color: var(--input-color);
+      border-color: var(--input-border);
       font-size: 22px;
       line-height: 1rem;
       height: 55px;
@@ -393,7 +393,7 @@ $swap-widget-anim-timing: 300ms;
       background: var(--input-color);
       &.is-to {
         background-color: var(--input-color);
-        border-color: var(--input-color);
+        border-color: var(--input-border);
         color: var(--primary-text-color) !important;
       }
 
@@ -437,7 +437,7 @@ $swap-widget-anim-timing: 300ms;
         cursor: pointer;
 
         &:hover {
-          background: var(--max-bg);
+          background: var(--secondary-background);
         }
       }
     }

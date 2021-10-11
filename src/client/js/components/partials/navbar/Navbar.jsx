@@ -12,10 +12,10 @@ export default class Navbar extends Component {
         <div className="level-left is-flex-grow-1">
           <div className="level-item is-narrow">
             <span className="logo-icon icon is-left is-hidden-mobile">
-              <img src="/images/logo_only.svg" />
+              <img src="/images/logo.svg" />
             </span>
             <span className="logo-icon icon is-left is-hidden-tablet">
-              <img src="/images/logo_only.svg" />
+              <img src="/images/logo.svg" />
             </span>
           </div>
           <div className="level-item is-flex-grow-3 is-justify-content-left is-hidden-touch">
@@ -27,7 +27,7 @@ export default class Navbar extends Component {
           <div className="level-item is-narrow"><BridgeButton /></div>
           <div className="level-item is-narrow"><NotificationButton /></div>
           <div className="level-item is-narrow"><ConnectWalletButton /></div>
-          <div className="level-item"><Settings /></div>
+          {/*<div className="level-item"><Settings /></div>*/}
         </div>
       </nav>
     );

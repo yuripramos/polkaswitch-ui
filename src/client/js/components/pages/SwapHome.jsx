@@ -23,7 +23,7 @@ export default class Home extends Component {
         <TxHistoryModal />
         <div className="columns">
           <div className="column trading-view-column" style={{ minWidth: 0 }}>
-            <Search />
+            {/*<Search />*/}
             <div className="box trading-view-wrapper">
               <TokenPairChartOverview />
             </div>
