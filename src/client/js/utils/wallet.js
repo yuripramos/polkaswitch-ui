@@ -70,8 +70,10 @@ window.WalletJS = {
     }.bind(this));
   },
 
-  getReadOnlyProvider: function() {
-    var network = TokenListManager.getCurrentNetworkConfig();
+  getReadOnlyProvider: function(chainId) {
+    var network = chainId ?
+      TokenListManager.getNetworkById(chainId) :
+      TokenListManager.getCurrentNetworkConfig();
     const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
     return provider;
   },

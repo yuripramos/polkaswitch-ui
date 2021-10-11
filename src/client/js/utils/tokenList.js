@@ -128,7 +128,7 @@ window.TokenListManager = {
       return v.address === tid || v.symbol === tid;
     });
     if (!foundToken) {
-      console.log("WARNING: Unable to find token ID", tid);
+      console.log("WARN: TokenListManager: Token ID Not Found:", tid, optionalNetwork?.name);
     }
     return foundToken;
   },

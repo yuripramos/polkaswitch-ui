@@ -55,6 +55,14 @@ export default class TokenSearchBar extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.network?.chainId !== prevProps.network?.chainId) {
+      this.setState({
+        tokenBalances: {},
+        topTokens: this.updateTopTokens(),
+        refresh: Date.now()
+      });
+    }
+
     if (this.props.focused !== prevProps.focused) {
       if (this.props.focused) {
         _.defer(function() {
@@ -79,7 +87,7 @@ export default class TokenSearchBar extends Component {
       network.supportedCrossChainTokens :
       network.topTokens;
     var topTokens = _.map(startingTokenIdList, function(v) {
-      return TokenListManager.findTokenById(v)
+      return TokenListManager.findTokenById(v, network)
     });
 
     this.fetchBalances(topTokens)
@@ -133,16 +141,22 @@ export default class TokenSearchBar extends Component {
   }
 
   handleNetworkChange(e) {
-    this.mounted && this.setState({tokenBalances: {}});
-    this.setState({
-      topTokens: this.updateTopTokens(),
-      refresh: Date.now()
-    });
+    if (this.mounted) {
+      this.setState({
+        tokenBalances: {},
+        topTokens: this.updateTopTokens(),
+        refresh: Date.now()
+      });
+    }
   }
 
   handleWalletChange(e) {
-    this.mounted && this.setState({tokenBalances: {}});
-    this.fetchBalances(this.state.topTokens);
+    if (this.mounted) {
+      this.setState({
+        tokenBalances: {},
+      });
+      this.fetchBalances(this.state.topTokens);
+    }
   }
 
   handleQueueChange(e) {
@@ -229,6 +243,7 @@ export default class TokenSearchBar extends Component {
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
+                network={this.props.network}
                 size={35}
                 token={v} />
             </span>
@@ -263,6 +278,7 @@ export default class TokenSearchBar extends Component {
           className={classnames("dropdown-item level is-mobile")}>
           <TokenSearchItem
             token={v}
+            network={this.props.network}
             balances={this.state.tokenBalances}
             getBalanceNumber={this.getBalanceNumber}
             fetchBalance={this.fetchBalance}
@@ -281,7 +297,7 @@ export default class TokenSearchBar extends Component {
           <div className="empty-text">Unable to locate the input token. Add a custom token below.</div>
           <div>
             <button
-                className="button is-primary is-fullwidth is-medium"
+                className="button is-primary is-fullwidth is-medium custom-btn"
                 onClick={this.handleCustomModal.bind(this)}
             >
               Add Custom Token

@@ -19,6 +19,7 @@ import {
   TransactionPreparedEvent,
 } from "@connext/nxtp-utils";
 import { getBalance, getChainName, getExplorerLinkForTx, mintTokens as _mintTokens } from "./nxtpUtils";
+import swapFn from "./swapFn";
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -153,8 +154,6 @@ window.NxtpUtils = {
       );
 
       if (index === -1) {
-        // TODO: is there a better way to
-        // get the info here?
         this._activeTxs.push({
           preparedTimestamp: Math.floor(Date.now() / 1000),
           crosschainTx: {
@@ -254,6 +253,94 @@ window.NxtpUtils = {
     this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
   },
 
+  getTransferQuoteV2: async function (
+    sendingChainId,
+    sendingAssetId,
+    receivingChainId,
+    receivingAssetId,
+    amountBN,
+    receivingAddress
+  ) {
+    if (!Wallet.isConnected()) {
+      console.error("Nxtp: Wallet not connected");
+      return false;
+    }
+
+    if (!this._sdk) {
+      this._sdk = await this.initalizeSdk();
+    }
+
+    const sendingChain = TokenListManager.getNetworkById(sendingChain);
+    const receivingChain = TokenListManager.getNetworkById(receivingChainId);
+    const receivingAsset = TokenListManager.findTokenById(receivingAssetId, receivingChain);
+    const sendingAsset = TokenListManager.findTokenById(sendingAssetId);
+    const bridgeAsset = TokenListManager.findTokenById(sendingAsset.symbol, receivingChain);
+
+    let callToAddr, callData, expectedReturn;
+
+    // if same token on both chains, don't do getExpectedReturn
+    if (bridgeAsset.address !== receivingAsset.address) {
+      callToAddr = receivingChain.aggregatorAddress;
+
+      let aggregator = new utils.Interface(window.oneSplitAbi);
+
+      // NXTP has a 5% flat fee
+      let o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
+        .times(0.95)
+        .times(10 ** bridgeAsset.decimals)
+        .toString()
+      let estimatedOutputBN = utils.parseUnits(swapFn.validateEthValue(bridgeAsset, o1), 0);
+
+      expectedReturn = await swapFn.getExpectedReturn(
+        bridgeAsset,
+        receivingAsset,
+        estimatedOutputBN,
+        receivingChainId
+      );
+
+      let distBN = _.map(expectedReturn.distribution, function(e) {
+        return window.ethers.utils.parseUnits("" + e, "wei");
+      });
+
+      // TODO missing the options i.e { gasprice, value }
+      callData = aggregator.encodeFunctionData("swap", [
+        bridgeAsset.address,
+        receivingAssetId,
+        estimatedOutputBN,
+        BigNumber.from(0), //TODO: Add MinReturn/Slippage
+        distBN,
+        0
+      ]);
+    }
+
+    // Create txid
+    const transactionId = getRandomBytes32();
+
+    const quote = await this._sdk.getTransferQuote({
+      callData,
+      sendingAssetId,
+      sendingChainId,
+      receivingChainId,
+      receivingAssetId: bridgeAsset.address,
+      receivingAddress,
+      amount: amountBN.toString(),
+      transactionId,
+      expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
+      callTo: callToAddr
+    });
+
+    this._queue[transactionId] = {
+      quote: quote,
+      expectedReturn: expectedReturn
+    }
+
+    return {
+      id: transactionId,
+      returnAmount: expectedReturn ? expectedReturn.returnAmount : quote.bid.amountReceived
+    };
+  },
+
+  // DEPCREATED
   getTransferQuote: async function (
     sendingChainId,
     sendingAssetId,
@@ -341,10 +428,13 @@ window.NxtpUtils = {
     }
   },
 
-  getQueue: function() {
-    const queue = store.get(this._storeKey()) || {};
-    return queue;
+  getAllActiveTxs: function() {
+    return this._activeTxs.map((x) => x);
   },
+
+  getAllHistoricalTxs: function() {
+    return this._historicalTxs.map((x) => x);
+  }
 };
 
 export default window.NxtpUtils;

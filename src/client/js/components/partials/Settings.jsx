@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
+import {setTheme} from "../../utils/theme";
 
 export default class Settings extends Component {
   constructor(props) {
@@ -13,6 +14,11 @@ export default class Settings extends Component {
   }
 
   handleDarkModeChange = (event) => {
+    if(event.target.checked){
+      setTheme("theme-light");
+    }else {
+      setTheme("theme-dark");
+    }
     this.setState({ darkMode: event.target.checked });
   }
 

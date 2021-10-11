@@ -14,7 +14,7 @@ import MarketsHome from './pages/MarketsHome';
 import StakeHome from './pages/StakeHome';
 import Footer from './partials/Footer';
 import classnames from 'classnames';
-import Markets from "./pages/MarketsHome";
+import { keepTheme } from '../utils/theme';
 
 require('../../css/index.scss');
 
@@ -25,7 +25,8 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.handleFullScreenOn = this.handleFullScreenOn.bind(this);
+  keepTheme();
+  this.handleFullScreenOn = this.handleFullScreenOn.bind(this);
     this.handleFullScreenOff = this.handleFullScreenOff.bind(this);
     window.document.addEventListener('fullScreenOn', this.handleFullScreenOn);
     window.document.addEventListener('fullScreenOff', this.handleFullScreenOff);

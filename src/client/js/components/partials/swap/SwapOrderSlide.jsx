@@ -47,10 +47,6 @@ export default class SwapOrderSlide extends Component {
   }
 
   fetchSwapEstimate(origFromAmount, timeNow, attempt, cb) {
-    if (!Wallet.isConnected()) {
-      console.log("SwapOrderSlide: Wallet not connected, skipping fetchSwapEstimate");
-      return false;
-    }
 
     var fromAmount = origFromAmount;
 
@@ -96,11 +92,6 @@ export default class SwapOrderSlide extends Component {
       // add delay to slow down UI snappiness
       _.delay(function(_timeNow2, _attempt2, _cb2) {
         if (this.calculatingSwapTimestamp !== _timeNow2) {
-          return;
-        }
-
-        if (!Wallet.isConnected()) {
-          console.log("SwapOrderSlide: Wallet not connected, skipping fetchSwapEstimate");
           return;
         }
 
@@ -175,12 +166,18 @@ export default class SwapOrderSlide extends Component {
   }
 
   fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
-    Nxtp.getTransferQuote(
+    if (!Wallet.isConnected()) {
+      // not supported in cross-chain mode
+      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      return false;
+    }
+
+    Nxtp.getTransferQuoteV2(
       +this.props.fromChain.chainId,
       this.props.from.address,
       +this.props.toChain.chainId,
       this.props.to.address,
-      fromAmountBN.toString(),
+      fromAmountBN,
       Wallet.currentAddress()
     ).then(function(_timeNow3, _cb3, response) {
       if (this.calculatingSwapTimestamp !== _timeNow3) {
@@ -190,7 +187,7 @@ export default class SwapOrderSlide extends Component {
       Wallet.getBalance(this.props.from).then((bal) => {
         this.props.onSwapEstimateComplete(
           origFromAmount,
-          window.ethers.utils.formatUnits(response?.quote.bid.amountReceived ?? constants.Zero, this.props.to.decimals),
+          window.ethers.utils.formatUnits(response?.returnAmount ?? constants.Zero, this.props.to.decimals),
           false,
           window.ethers.utils.formatUnits(bal, this.props.from.decimals),
           status
@@ -475,7 +472,7 @@ export default class SwapOrderSlide extends Component {
           <div>
             <button
               disabled={Wallet.isConnected() && !this.validateOrderForm()}
-              className="button is-primary is-fullwidth is-medium"
+              className="button is-primary is-fullwidth is-medium custom-btn"
               onClick={this.handleSubmit}
             >
               {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
