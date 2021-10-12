@@ -34,6 +34,9 @@ export default function TradingViewChart(){
   const chart = useRef();
 
   const getLogoURL = (network, address) => {
+    if (network === 'Polygon') {
+      network = 'smartchain'
+    }
     const chainPart = network.toLowerCase().replace(/\s+/g, '');
     return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${address}/logo.png`
   }
