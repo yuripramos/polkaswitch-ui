@@ -14,7 +14,7 @@ export default class CustomTokenWarning extends Component {
             </div>
             <div>
                 <div className="warning-text-bold">Warning!</div>
-                <div className="warning-text">This token is not whitelisted by polkaswtich. The polkaswitch team makes no representation about the quality or legal categorization of the token.</div>
+                <div className="warning-text">This token is not whitelisted by polkaswtich. The Swing team makes no representation about the quality or legal categorization of the token.</div>
             </div>
         </div>
       </div>

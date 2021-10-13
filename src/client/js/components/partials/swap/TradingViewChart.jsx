@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createChart, CrosshairMode } from "lightweight-charts";
+import React, {useEffect, useRef, useState} from 'react';
+import {createChart, CrosshairMode} from "lightweight-charts";
 import TokenPairSelector from "./TokenPairSelector";
 import ChartPriceDetails from "./ChartPriceDetails";
 import ChartViewOption from "./ChartViewOption";
@@ -32,20 +32,32 @@ export default function TradingViewChart(){
   const viewModes = ["candlestick", "line"];
   const chartContainerRef = useRef();
   const chart = useRef();
+
+  const getLogoURL = (network, address) => {
+    if (network === 'Polygon') {
+      network = 'smartchain'
+    }
+    const chainPart = network.toLowerCase().replace(/\s+/g, '');
+    return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${address}/logo.png`
+  }
+
   const createTokenPairList = () => {
     const swapConfig = TokenListManager.getSwapConfig();
     const list = []
     const fromSymbol = swapConfig.from.symbol;
     const fromAddress = swapConfig.from.address;
-    const fromTokenLogo = swapConfig.from.logoURI;
+    const fromChain = swapConfig.fromChain;
+    const fromTokenLogo = swapConfig.from.logoURI || getLogoURL(fromChain, fromAddress);
     const toSymbol = swapConfig.to.symbol;
     const toAddress = swapConfig.to.address;
-    const toTokenLogo = swapConfig.to.logoURI;
+    const toChain = swapConfig.toChain;
+    const toTokenLogo = swapConfig.to.logoURI || getLogoURL(toChain, toAddress);
 
-    list.push({name: fromSymbol + '/' + toSymbol, fromSymbol, fromAddress, fromTokenLogo, toSymbol, toAddress, toTokenLogo});
-    list.push({name: toSymbol + '/' + fromSymbol, fromSymbol: toSymbol, fromAddress:toAddress, fromTokenLogo:toTokenLogo,  toSymbol: fromSymbol, toAddress: fromAddress, toTokenLogo: fromTokenLogo});
-    list.push({name: fromSymbol, fromSymbol, fromAddress: fromAddress, fromTokenLogo});
-    list.push({name: toSymbol, fromSymbol: toSymbol, fromAddress: toAddress, fromTokenLogo: toTokenLogo});
+    list.push({name: fromSymbol + '/' + toSymbol, fromSymbol, fromAddress, fromTokenLogo, toSymbol, toAddress, toTokenLogo, fromChain, toChain});
+    list.push({name: toSymbol + '/' + fromSymbol, fromSymbol: toSymbol, fromAddress:toAddress, fromTokenLogo:toTokenLogo,  fromChain: toChain, toSymbol: fromSymbol, toAddress: fromAddress, toTokenLogo: fromTokenLogo, toChain: fromChain});
+    list.push({name: fromSymbol, fromSymbol, fromAddress: fromAddress, fromTokenLogo, fromChain});
+    list.push({name: toSymbol, fromSymbol: toSymbol, fromAddress: toAddress, fromTokenLogo: toTokenLogo, fromChain:toChain});
+
     return list;
   }
   let candleSeries = useRef(null);
@@ -175,7 +187,9 @@ export default function TradingViewChart(){
   }, [tokenPriceData]);
 
   const fetchData = async (selectedPair, timeRange, viewMode) => {
-    const config = TokenListManager.getCurrentNetworkConfig();
+    const fromChain = TokenListManager.getNetworkByName(selectedPair.fromChain);
+    const toChain = TokenListManager.getNetworkByName(selectedPair.toChain);
+
     let fromTokenPrices = [];
     let toTokenPrices = [];
     let tokenPrices = [];
@@ -183,32 +197,35 @@ export default function TradingViewChart(){
     setIsLoading(true);
     if (viewMode === 'line') {
       const { fromTimestamp, toTimestamp } = getTimestamps(timeRange);
-      const url = config.tradeView.lineUrl;
-      const platform = config.tradeView.platform;
+      const urlFromChain = fromChain.tradeView.lineUrl;
+      const platformFromChain = fromChain.tradeView.platform;
 
       if (selectedPair.fromSymbol && selectedPair.toSymbol) {
-        const fromAddress = getContractAddress( selectedPair.fromAddress, selectedPair.fromSymbol, platform);
-        const toAddress = getContractAddress( selectedPair.toAddress, selectedPair.toSymbol, platform);
+        const urlToChain = toChain.tradeView.lineUrl;
+        const platformToChain = toChain.tradeView.platform;
+        const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platformFromChain);
+        const toAddress = getContractAddress(selectedPair.toAddress, selectedPair.toSymbol, platformToChain);
 
-        fromTokenPrices = await fetchLinePrices(url, fromAddress, 'usd', fromTimestamp, toTimestamp);
-        toTokenPrices = await fetchLinePrices(url, toAddress, 'usd', fromTimestamp, toTimestamp) || [];
+        fromTokenPrices = await fetchLinePrices(urlFromChain, fromAddress, 'usd', fromTimestamp, toTimestamp);
+        toTokenPrices = await fetchLinePrices(urlToChain, toAddress, 'usd', fromTimestamp, toTimestamp) || [];
         tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
       } else {
-        const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platform);
+        const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platformFromChain);
 
-        fromTokenPrices = await fetchLinePrices(url, fromAddress, 'usd', fromTimestamp, toTimestamp);
+        fromTokenPrices = await fetchLinePrices(urlFromChain, fromAddress, 'usd', fromTimestamp, toTimestamp);
         tokenPrices = mergeLinePrices(fromTokenPrices, null);
       }
     } else {
-      const url = config.tradeView.candleStickUrl;
+      const urlFromChain = fromChain.tradeView.candleStickUrl;
 
       if (selectedPair.fromSymbol && selectedPair.toSymbol) {
+        const urlToChain = toChain.tradeView.candleStickUrl;
         const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
         const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.toSymbol.toLowerCase());
 
         if (fromCoin && toCoin) {
-          fromTokenPrices = await fetchCandleStickPrices(url, fromCoin.id, 'usd', timeRange.value) || [];
-          toTokenPrices = await fetchCandleStickPrices(url, toCoin.id, 'usd', timeRange.value) || [];
+          fromTokenPrices = await fetchCandleStickPrices(urlFromChain, fromCoin.id, 'usd', timeRange.value) || [];
+          toTokenPrices = await fetchCandleStickPrices(urlToChain, toCoin.id, 'usd', timeRange.value) || [];
         }
 
         tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
@@ -216,7 +233,7 @@ export default function TradingViewChart(){
         const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
 
         if (coinId) {
-          fromTokenPrices = await fetchCandleStickPrices(url, coinId.id, 'usd', timeRange.value);
+          fromTokenPrices = await fetchCandleStickPrices(urlFromChain, coinId.id, 'usd', timeRange.value);
         }
 
         tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
@@ -331,11 +348,10 @@ export default function TradingViewChart(){
           const timeStampOfTotoken = getFilteredTimestamp(toTokenPrices[j][0]);
           if (tempObj.hasOwnProperty(timeStampOfTotoken)) {
             const fromTokenItem = tempObj[timeStampOfTotoken];
-            const mergedValue = {
+            tempObj[timeStampOfTotoken] = {
               time: timeStampOfTotoken,
               value: BN(fromTokenItem[1]).div(toTokenPrices[j][1]).toNumber()
             }
-            tempObj[timeStampOfTotoken] = mergedValue
           }
         }
 
@@ -365,14 +381,13 @@ export default function TradingViewChart(){
         const timeStampOfTotoken = getFilteredTimestamp(toTokenPrices[j][0]);
         if (tempObj.hasOwnProperty(timeStampOfTotoken)) {
           const fromTokenItem = tempObj[timeStampOfTotoken];
-          const mergedValue = {
-            time : timeStampOfTotoken,
+          tempObj[timeStampOfTotoken] = {
+            time: timeStampOfTotoken,
             open: BN(fromTokenItem[1]).div(toTokenPrices[j][1]).toNumber(),
             high: BN(fromTokenItem[2]).div(toTokenPrices[j][2]).toNumber(),
             low: BN(fromTokenItem[3]).div(toTokenPrices[j][3]).toNumber(),
             close: BN(fromTokenItem[4]).div(toTokenPrices[j][4]).toNumber(),
           }
-          tempObj[timeStampOfTotoken] = mergedValue
         }
       }
 
@@ -398,8 +413,7 @@ export default function TradingViewChart(){
 
   const getFilteredTimestamp = (timestampMillisec) => {
     const timestampSec = (timestampMillisec - (timestampMillisec % 1000)) / 1000;
-    const timestampMin = timestampSec - (timestampSec % 60);
-    return timestampMin;
+    return timestampSec - (timestampSec % 60);
   }
 
   const getTimestamps = (timeRange) => {

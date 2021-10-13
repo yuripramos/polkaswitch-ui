@@ -17,7 +17,7 @@ export default class MarketLimitToggle extends Component {
     return (
       <span
         className="switcher hint--bottom hint--medium"
-        aria-label="Limit orders are coming soon to Polkaswitch! Currently only Market orders are available"
+        aria-label="Limit orders are coming soon to Swing! Currently only Market orders are available"
       >
         <input
           id="order-type-switcher"

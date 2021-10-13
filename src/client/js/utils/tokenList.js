@@ -11,7 +11,6 @@ window.TokenListManager = {
   swap: {
     from:{},
     to:{},
-    network: 'Ethereum'
   },
   _tokenLists: {},
   initialize: async function() {
@@ -41,6 +40,11 @@ window.TokenListManager = {
 
   getNetworkById: function(chainId) {
     var network = _.findWhere(window.NETWORK_CONFIGS, { chainId: ("" + chainId) });
+    return network;
+  },
+
+  getNetworkByName: function(name) {
+    var network = _.findWhere(window.NETWORK_CONFIGS, { name });
     return network;
   },
 
@@ -99,12 +103,37 @@ window.TokenListManager = {
     this.updateTokenListwithCustom(network);
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
     // update swap token configuration
-    const swap = {
-      from: this.findTokenById(network.defaultPair.from),
-      to: this.findTokenById(network.defaultPair.to),
-      network: network.name
+
+    if (this.isCrossChainEnabled()) {
+      console.log('## is enabled ###')
+      const crossChainNetwork = _.filter(window.NETWORK_CONFIGS, (v) => {
+        return v.crossChainSupported
+      });
+
+      let toChain = crossChainNetwork.find((v) => {
+        return v.chainId !== network.chainId
+      });
+
+      const swap = {
+        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+        to: TokenListManager.findTokenById(
+            toChain.supportedCrossChainTokens[0],
+            toChain
+        ),
+        fromChain: network.name,
+        toChain: toChain.name
+      }
+      this.updateSwapConfig(swap);
+    } else {
+      console.log('## is not enabled ###')
+      const swap = {
+        from: this.findTokenById(network.defaultPair.from),
+        to: this.findTokenById(network.defaultPair.to),
+        fromChain: network.name,
+        toChain: network.name
+      }
+      this.updateSwapConfig(swap);
     }
-    this.updateSwapConfig(swap);
   },
 
   updateSwapConfig: function(swap) {
