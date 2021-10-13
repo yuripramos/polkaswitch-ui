@@ -152,6 +152,9 @@
     ],
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   }
 ]

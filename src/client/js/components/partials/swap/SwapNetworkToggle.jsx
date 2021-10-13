@@ -24,6 +24,12 @@ export default class SwapNetworkToggle extends Component {
       singleChain: !TokenListManager.isCrossChainEnabled(),
       hoverable: true,
     };
+
+    this.NETWORKS = window.NETWORK_CONFIGS;
+    this.CROSS_CHAIN_NETWORKS = _.filter(this.NETWORKS, (v) => {
+      return v.crossChainSupported
+    });
+
     this.subscribers = [];
     this.handleNetworkHoverable = this.handleNetworkHoverable.bind(this);
     this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
@@ -40,9 +46,23 @@ export default class SwapNetworkToggle extends Component {
   }
 
   handleCrossChainChange(checked) {
+    var currNetwork = TokenListManager.getCurrentNetworkConfig();
+    var changeNetwork = !checked && !currNetwork.crossChainSupported;
+    var nextNetwork = !changeNetwork ?
+      currNetwork :
+      _.first(this.CROSS_CHAIN_NETWORKS);
+
     this.setState({
-      singleChain: checked
+      singleChain: checked,
+      selected: nextNetwork
     });
+
+    if (changeNetwork) {
+      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+        Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(nextNetwork, connectStrategy);
+    }
+
     TokenListManager.toggleCrossChain(!checked);
   }
 
