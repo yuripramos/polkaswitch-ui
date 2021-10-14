@@ -150,7 +150,7 @@
       "0x60781C2586D68229fde47564546784ab3fACA982",
       "0xaEb044650278731Ef3DC244692AB9F64C78FfaEA"
     ],
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
       "USDT",
       "USDC",
