@@ -173,5 +173,46 @@
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
     ]
+  },
+  {
+    "enabled": true,
+    "name": "xDai",
+    "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/xdai/info/logo.png",
+    "bridgeURI": "https://bridge.xdaichain.com/",
+    "tokenList": "/tokens/100.list.json",
+    "chainId": "100",
+    "nodeProvider": "https://rpc.xdaichain.com/",
+    "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
+    "gasApi": false,
+    "chain": {
+      "chainId": "0x64",
+      "rpcUrls": ["https://rpc.xdaichain.com/"],
+      "chainName": "xDai Chain",
+      "nativeCurrency": {
+        "name": "xDai",
+        "symbol": "xDai",
+        "decimals": 18
+      }
+    },
+    "defaultPair": {
+      "to": "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
+      "from": "0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e"
+    },
+    "topTokens": [
+      "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
+      "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
+      "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
+      "0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252",
+      "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1"
+    ],
+    "tradeView": {
+      "platform": "xdai",
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/xdai",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
+    },
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
+    ]
   }
 ]
