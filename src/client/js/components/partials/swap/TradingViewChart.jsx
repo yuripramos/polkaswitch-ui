@@ -6,6 +6,7 @@ import ChartViewOption from "./ChartViewOption";
 import ChartRangeSelector from "./ChartRangeSelector";
 import EventManager from "../../../utils/events";
 import BN from 'bignumber.js';
+import TokenListManager from "../../../utils/tokenList";
 
 export default function TradingViewChart(){
   const timeRangeList = {
@@ -43,21 +44,51 @@ export default function TradingViewChart(){
 
   const createTokenPairList = () => {
     const swapConfig = TokenListManager.getSwapConfig();
+    const network = TokenListManager.getCurrentNetworkConfig();
     const list = []
-    const fromSymbol = swapConfig.from.symbol;
-    const fromAddress = swapConfig.from.address;
-    const fromChain = swapConfig.fromChain;
-    const fromTokenLogo = swapConfig.from.logoURI || getLogoURL(fromChain, fromAddress);
-    const toSymbol = swapConfig.to.symbol;
-    const toAddress = swapConfig.to.address;
-    const toChain = swapConfig.toChain;
-    const toTokenLogo = swapConfig.to.logoURI || getLogoURL(toChain, toAddress);
+    if (TokenListManager.isCrossChainEnabled() && !network.crossChainSupported) {
+      return list;
+    } else {
+      const fromSymbol = swapConfig.from.symbol;
+      const fromAddress = swapConfig.from.address;
+      const fromChain = swapConfig.fromChain;
+      const fromTokenLogo = swapConfig.from.logoURI || getLogoURL(fromChain, fromAddress);
+      const toSymbol = swapConfig.to.symbol;
+      const toAddress = swapConfig.to.address;
+      const toChain = swapConfig.toChain;
+      const toTokenLogo = swapConfig.to.logoURI || getLogoURL(toChain, toAddress);
 
-    list.push({name: fromSymbol + '/' + toSymbol, fromSymbol, fromAddress, fromTokenLogo, toSymbol, toAddress, toTokenLogo, fromChain, toChain});
-    list.push({name: toSymbol + '/' + fromSymbol, fromSymbol: toSymbol, fromAddress:toAddress, fromTokenLogo:toTokenLogo,  fromChain: toChain, toSymbol: fromSymbol, toAddress: fromAddress, toTokenLogo: fromTokenLogo, toChain: fromChain});
-    list.push({name: fromSymbol, fromSymbol, fromAddress: fromAddress, fromTokenLogo, fromChain});
-    list.push({name: toSymbol, fromSymbol: toSymbol, fromAddress: toAddress, fromTokenLogo: toTokenLogo, fromChain:toChain});
-
+      list.push({
+        name: fromSymbol + '/' + toSymbol,
+        fromSymbol,
+        fromAddress,
+        fromTokenLogo,
+        toSymbol,
+        toAddress,
+        toTokenLogo,
+        fromChain,
+        toChain
+      });
+      list.push({
+        name: toSymbol + '/' + fromSymbol,
+        fromSymbol: toSymbol,
+        fromAddress: toAddress,
+        fromTokenLogo: toTokenLogo,
+        fromChain: toChain,
+        toSymbol: fromSymbol,
+        toAddress: fromAddress,
+        toTokenLogo: fromTokenLogo,
+        toChain: fromChain
+      });
+      list.push({name: fromSymbol, fromSymbol, fromAddress: fromAddress, fromTokenLogo, fromChain});
+      list.push({
+        name: toSymbol,
+        fromSymbol: toSymbol,
+        fromAddress: toAddress,
+        fromTokenLogo: toTokenLogo,
+        fromChain: toChain
+      });
+    }
     return list;
   }
   let candleSeries = useRef(null);
@@ -67,7 +98,7 @@ export default function TradingViewChart(){
   const initTokenPair = createTokenPairList();
   const [isLoading, setIsLoading] = useState(false);
   const [tokenPairs, setTokenPairs] = useState(initTokenPair);
-  const [selectedPair, setSelectedPair] = useState(initTokenPair[0]);
+  const [selectedPair, setSelectedPair] = useState(initTokenPair[0] || undefined);
   const [selectedViewMode, setSelectedViewMode] = useState(viewModes[1]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRangeList['line'][0]);
   const [isPair, setIsPair] = useState(true);
@@ -187,56 +218,61 @@ export default function TradingViewChart(){
   }, [tokenPriceData]);
 
   const fetchData = async (selectedPair, timeRange, viewMode) => {
-    const fromChain = TokenListManager.getNetworkByName(selectedPair.fromChain);
-    const toChain = TokenListManager.getNetworkByName(selectedPair.toChain);
-
+    const network = TokenListManager.getCurrentNetworkConfig();
     let fromTokenPrices = [];
     let toTokenPrices = [];
-    let tokenPrices = [];
+    let tokenPrices;
 
     setIsLoading(true);
-    if (viewMode === 'line') {
-      const { fromTimestamp, toTimestamp } = getTimestamps(timeRange);
-      const urlFromChain = fromChain.tradeView.lineUrl;
-      const platformFromChain = fromChain.tradeView.platform;
 
-      if (selectedPair.fromSymbol && selectedPair.toSymbol) {
-        const urlToChain = toChain.tradeView.lineUrl;
-        const platformToChain = toChain.tradeView.platform;
-        const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platformFromChain);
-        const toAddress = getContractAddress(selectedPair.toAddress, selectedPair.toSymbol, platformToChain);
-
-        fromTokenPrices = await fetchLinePrices(urlFromChain, fromAddress, 'usd', fromTimestamp, toTimestamp);
-        toTokenPrices = await fetchLinePrices(urlToChain, toAddress, 'usd', fromTimestamp, toTimestamp) || [];
-        tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
-      } else {
-        const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platformFromChain);
-
-        fromTokenPrices = await fetchLinePrices(urlFromChain, fromAddress, 'usd', fromTimestamp, toTimestamp);
-        tokenPrices = mergeLinePrices(fromTokenPrices, null);
-      }
+    if (TokenListManager.isCrossChainEnabled() && !network.crossChainSupported) {
+      tokenPrices = [];
     } else {
-      const urlFromChain = fromChain.tradeView.candleStickUrl;
+      const fromChain = TokenListManager.getNetworkByName(selectedPair.fromChain);
+      const toChain = TokenListManager.getNetworkByName(selectedPair.toChain);
+      if (viewMode === 'line') {
+        const {fromTimestamp, toTimestamp} = getTimestamps(timeRange);
+        const urlFromChain = fromChain.tradeView.lineUrl;
+        const platformFromChain = fromChain.tradeView.platform;
 
-      if (selectedPair.fromSymbol && selectedPair.toSymbol) {
-        const urlToChain = toChain.tradeView.candleStickUrl;
-        const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
-        const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.toSymbol.toLowerCase());
+        if (selectedPair.fromSymbol && selectedPair.toSymbol) {
+          const urlToChain = toChain.tradeView.lineUrl;
+          const platformToChain = toChain.tradeView.platform;
+          const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platformFromChain);
+          const toAddress = getContractAddress(selectedPair.toAddress, selectedPair.toSymbol, platformToChain);
 
-        if (fromCoin && toCoin) {
-          fromTokenPrices = await fetchCandleStickPrices(urlFromChain, fromCoin.id, 'usd', timeRange.value) || [];
-          toTokenPrices = await fetchCandleStickPrices(urlToChain, toCoin.id, 'usd', timeRange.value) || [];
+          fromTokenPrices = await fetchLinePrices(urlFromChain, fromAddress, 'usd', fromTimestamp, toTimestamp);
+          toTokenPrices = await fetchLinePrices(urlToChain, toAddress, 'usd', fromTimestamp, toTimestamp) || [];
+          tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
+        } else {
+          const fromAddress = getContractAddress(selectedPair.fromAddress, selectedPair.fromSymbol, platformFromChain);
+
+          fromTokenPrices = await fetchLinePrices(urlFromChain, fromAddress, 'usd', fromTimestamp, toTimestamp);
+          tokenPrices = mergeLinePrices(fromTokenPrices, null);
         }
-
-        tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
       } else {
-        const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
+        const urlFromChain = fromChain.tradeView.candleStickUrl;
 
-        if (coinId) {
-          fromTokenPrices = await fetchCandleStickPrices(urlFromChain, coinId.id, 'usd', timeRange.value);
+        if (selectedPair.fromSymbol && selectedPair.toSymbol) {
+          const urlToChain = toChain.tradeView.candleStickUrl;
+          const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
+          const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.toSymbol.toLowerCase());
+
+          if (fromCoin && toCoin) {
+            fromTokenPrices = await fetchCandleStickPrices(urlFromChain, fromCoin.id, 'usd', timeRange.value) || [];
+            toTokenPrices = await fetchCandleStickPrices(urlToChain, toCoin.id, 'usd', timeRange.value) || [];
+          }
+
+          tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
+        } else {
+          const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(selectedPair.fromSymbol.toLowerCase());
+
+          if (coinId) {
+            fromTokenPrices = await fetchCandleStickPrices(urlFromChain, coinId.id, 'usd', timeRange.value);
+          }
+
+          tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
         }
-
-        tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
       }
     }
 

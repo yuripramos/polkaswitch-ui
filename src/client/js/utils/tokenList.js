@@ -152,9 +152,10 @@ window.TokenListManager = {
     if (optionalNetwork) {
       tokenList = this.getTokenListForNetwork(optionalNetwork);
     }
-
     var foundToken = _.find(tokenList, function(v) {
-      return v.address === tid || v.symbol === tid;
+      if ((v.address === tid) || (v.symbol === tid)) {
+        return true;
+      }
     });
     if (!foundToken) {
       console.log("WARN: TokenListManager: Token ID Not Found:", tid, optionalNetwork?.name);

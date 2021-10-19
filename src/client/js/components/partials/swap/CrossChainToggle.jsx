@@ -6,6 +6,9 @@ export default class CrossChainToggle extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      crossChainSupported: TokenListManager.getCurrentNetworkConfig().crossChainSupported
+    }
   }
 
   handleChange(event) {
@@ -15,7 +18,9 @@ export default class CrossChainToggle extends Component {
   render() {
     return (
       <span
-        className="cross-chain-toggle switcher"
+        className={classnames("cross-chain-toggle switcher", {
+          "disabled": this.state.crossChainSupported
+        })}
       >
         <input
           id="cross-chain-switcher"

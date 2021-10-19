@@ -86,8 +86,13 @@ export default class TokenSearchBar extends Component {
     var startingTokenIdList = isCrossChain ?
       network.supportedCrossChainTokens :
       network.topTokens;
+
     var topTokens = _.map(startingTokenIdList, function(v) {
-      return TokenListManager.findTokenById(v, network)
+      const token = TokenListManager.findTokenById(v, network);
+      console.log('Token', token)
+      if (token) {
+        return token;
+      }
     });
 
     this.fetchBalances(topTokens)
