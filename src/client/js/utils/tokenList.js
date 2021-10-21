@@ -125,7 +125,6 @@ window.TokenListManager = {
       }
       this.updateSwapConfig(swap);
     } else {
-      console.log('## is not enabled ###')
       const swap = {
         from: this.findTokenById(network.defaultPair.from),
         to: this.findTokenById(network.defaultPair.to),
