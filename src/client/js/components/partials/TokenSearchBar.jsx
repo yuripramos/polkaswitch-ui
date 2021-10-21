@@ -89,7 +89,6 @@ export default class TokenSearchBar extends Component {
 
     var topTokens = _.map(startingTokenIdList, function(v) {
       const token = TokenListManager.findTokenById(v, network);
-      console.log('Token', token)
       if (token) {
         return token;
       }
