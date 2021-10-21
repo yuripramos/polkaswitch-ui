@@ -4,12 +4,12 @@
     "name": "Arbitrum",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
-    "tokenList": "/tokens/eth.list.json",
     "bridgeURI": "https://wallet.matic.network/",
+    "tokenList": "/tokens/eth.list.json",
     "chainId": "1287",
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
-    "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
+    "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -33,7 +33,10 @@
       "platform": "ethereum",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/ethereum",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
+    },
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
+    ]
   },
   {
     "enabled": true,
@@ -45,8 +48,8 @@
     "tokenList": "/tokens/137.list.json",
     "chainId": "137",
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
-    "gasApi": "https://gasstation-mainnet.matic.network",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
+    "gasApi": "https://gasstation-mainnet.matic.network",
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
@@ -73,10 +76,16 @@
       "platform": "polygon-pos",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/polygon-pos",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
+    },
+    "crossChainSupported": true,
+    "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
+    ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Smart Chain",
     "aggregatorAddress": "0x08C1242F51a16f9451D873644ED4E29E224Da71e",
     "crossChainAggregatorAddress": "0x7cfDd47854ccf321285f6A8726c9fA64bD621D9C",
@@ -113,7 +122,13 @@
       "platform": "binance-smart-chain",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/binance-smart-chain",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
+    },
+    "crossChainSupported": true,
+    "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
+    ]
   },
   {
     "enabled": true,
@@ -154,6 +169,55 @@
       "platform": "avalanche",
       "lineUrl": "https://api.coingecko.com/api/v3/coins/avalanche",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
-    }
+    },
+    "crossChainSupported": true,
+    "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
+    ]
+  },
+  {
+    "enabled": false,
+    "name": "xDai",
+    "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/xdai/info/logo.png",
+    "bridgeURI": "https://bridge.xdaichain.com/",
+    "tokenList": "/tokens/100.list.json",
+    "chainId": "100",
+    "nodeProvider": "https://rpc.xdaichain.com/",
+    "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
+    "gasApi": false,
+    "chain": {
+      "chainId": "0x64",
+      "rpcUrls": ["https://rpc.xdaichain.com/"],
+      "chainName": "xDai Chain",
+      "nativeCurrency": {
+        "name": "xDai",
+        "symbol": "xDai",
+        "decimals": 18
+      }
+    },
+    "defaultPair": {
+      "to": "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
+      "from": "0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e"
+    },
+    "topTokens": [
+      "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
+      "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
+      "0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252",
+      "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1"
+    ],
+    "tradeView": {
+      "platform": "xdai",
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/xdai",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
+    },
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
+    ]
   }
 ]

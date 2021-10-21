@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 import * as Sentry from "@sentry/react";
-
 import Wallet from '../../../utils/wallet';
-import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
 import TokenIconImg from './../TokenIconImg';
@@ -24,6 +22,12 @@ export default class SwapNetworkToggle extends Component {
       singleChain: !TokenListManager.isCrossChainEnabled(),
       hoverable: true,
     };
+
+    this.NETWORKS = window.NETWORK_CONFIGS;
+    this.CROSS_CHAIN_NETWORKS = _.filter(this.NETWORKS, (v) => {
+      return v.crossChainSupported
+    });
+
     this.subscribers = [];
     this.handleNetworkHoverable = this.handleNetworkHoverable.bind(this);
   }
@@ -39,9 +43,23 @@ export default class SwapNetworkToggle extends Component {
   }
 
   handleCrossChainChange = async(checked) => {
+    var currNetwork = TokenListManager.getCurrentNetworkConfig();
+    var changeNetwork = !checked && !currNetwork.crossChainSupported;
+    var nextNetwork = !changeNetwork ?
+      currNetwork :
+      _.first(this.CROSS_CHAIN_NETWORKS);
+
     this.setState({
-      singleChain: checked
+      singleChain: checked,
+      selected: nextNetwork
     });
+
+    if (changeNetwork) {
+      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+        Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(nextNetwork, connectStrategy);
+    }
+
     TokenListManager.toggleCrossChain(!checked);
     await TokenListManager.updateTokenList();
   }

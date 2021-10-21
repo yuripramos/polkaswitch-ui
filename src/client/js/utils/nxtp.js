@@ -32,6 +32,11 @@ const REACT_APP_CHAIN_CONFIG = {
   },
   "137":{
     "provider":["https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"]
+  },
+  "43114":{
+    "provider":["https://api.avax.network/ext/bc/C/rpc"],
+    "subgraph":"https://api.thegraph.com/subgraphs/name/connext/nxtp-avalanche",
+    "transactionManagerAddress": "0x31eFc4AeAA7c39e54A33FDc3C46ee2Bd70ae0A09"
   }
 };
 
