@@ -170,8 +170,11 @@
       "lineUrl": "https://api.coingecko.com/api/v3/coins/avalanche",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   }
 ]
