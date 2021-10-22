@@ -393,7 +393,6 @@ $swap-widget-anim-timing: 300ms;
       &.is-to {
         background-color: var(--primary-background);
         border-color: var(--primary-background);
-        color: var(--primary-text-color) !important;
       }
 
       &.is-from {
