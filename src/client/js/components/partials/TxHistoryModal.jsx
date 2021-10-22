@@ -177,12 +177,6 @@ export default class TxHistoryModal extends Component {
                 <div className="footer-note">Only showing transactions in the last 72 hours.</div>
               )}
 
-              {!this.state.showSingleChain && xActiveQueue.map(function(item, i) {
-                return (
-                  <TxStatusView key={i} data={item} />
-                );
-              })}
-
               {!this.state.showSingleChain && (
                 <div className="footer-note mb-2">
                   {xActiveQueue.length > 0 ? "Current active transactions" : "No active transactions"} ({xActiveQueue.length})
