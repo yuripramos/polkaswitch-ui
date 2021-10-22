@@ -5,8 +5,11 @@ import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
+
 import WalletConnectProvider from "@walletconnect/web3-provider";
+
 const BigNumber = ethers.BigNumber;
+const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.WalletJS = {
@@ -37,6 +40,7 @@ window.WalletJS = {
 
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
+    window.crossChainOneSplitAbi = await (await fetch('/abi/cross-chain/cross-chain-aggregator.json')).json();
 
     EventManager.listenFor(
       'initiateWalletConnect',

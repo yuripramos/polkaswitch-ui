@@ -71,6 +71,10 @@ window.NxtpUtils = {
     }
   },
 
+  isSdkInitalized: function() {
+    return !!this._sdk;
+  },
+
   initalizeSdk: async function() {
     const signer = Wallet.getProvider().getSigner();
 
@@ -123,24 +127,44 @@ window.NxtpUtils = {
       console.log("SenderTransactionPrepared:", data);
       const { amount, expiry, preparedBlockNumber, ...invariant } = data.txData;
 
-      this._activeTxs.push({
-        crosschainTx: {
-          invariant,
-          sending: { amount, expiry, preparedBlockNumber },
-        },
-        preparedTimestamp: Math.floor(Date.now() / 1000),
-        bidSignature: data.bidSignature,
-        encodedBid: data.encodedBid,
-        encryptedCallData: data.encryptedCallData,
-        status: NxtpSdkEvents.SenderTransactionPrepared,
-      });
+      const index = this._activeTxs.findIndex(
+        (col) => col.crosschainTx.invariant.transactionId === invariant.transactionId,
+      );
+
+      if (index === -1) {
+        this._activeTxs.push({
+          crosschainTx: {
+            invariant,
+            sending: { amount, expiry, preparedBlockNumber },
+          },
+          preparedTimestamp: Math.floor(Date.now() / 1000),
+          bidSignature: data.bidSignature,
+          encodedBid: data.encodedBid,
+          encryptedCallData: data.encryptedCallData,
+          status: NxtpSdkEvents.SenderTransactionPrepared,
+        });
+      } else {
+        const item = { ...this._activeTxs[index] };
+        this._activeTxs[index] = {
+          ...item,
+          preparedTimestamp: Math.floor(Date.now() / 1000),
+          bidSignature: data.bidSignature,
+          encodedBid: data.encodedBid,
+          encryptedCallData: data.encryptedCallData,
+          status: NxtpSdkEvents.SenderTransactionPrepared,
+          crosschainTx: {
+            ...item.crosschainTx,
+            sending: { amount, expiry, preparedBlockNumber },
+          },
+        };
+      }
+
       EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionPrepared);
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTransactionFulfilled, async (data) => {
       console.log("SenderTransactionFulfilled:", data);
       this.removeActiveTx(data.txData.transactionId)
-      await this.fetchHistoricalTxs();
       EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionFulfilled);
     });
 
@@ -184,6 +208,12 @@ window.NxtpUtils = {
       }
 
       EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionPrepared);
+    });
+
+    _sdk.attach(NxtpSdkEvents.ReceiverPrepareSigned, async (data) => {
+      console.log("ReceiverPrepareSigned:", data);
+      this.updateActiveTx(data.transactionId, NxtpSdkEvents.ReceiverPrepareSigned)
+      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverPrepareSigned);
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionFulfilled, async (data) => {
@@ -243,19 +273,23 @@ window.NxtpUtils = {
           item.crosschainTx = Object.assign({}, item.crosschainTx, crosschainTx)
         }
         item.status = status
-        item.event = event
+        if (event) {
+          item.event = event
+        }
         updated = true
       }
       return item;
     })
 
-    if (!updated) {
+    if (!updated && crosschainTx) {
       this._activeTxs.push({ crosschainTx: crosschainTx, status, event });
     }
   },
 
   removeActiveTx: function(transactionId) {
-    this._activeTxs = this._activeTxs.filter((t) => t.crosschainTx.invariant.transactionId !== transactionId);
+    this._activeTxs = this._activeTxs.filter((t) => {
+      return t.crosschainTx.invariant.transactionId !== transactionId
+    });
   },
 
   getTransferQuoteV2: async function (
@@ -285,9 +319,10 @@ window.NxtpUtils = {
 
     // if same token on both chains, don't do getExpectedReturn
     if (bridgeAsset.address !== receivingAsset.address) {
-      callToAddr = receivingChain.aggregatorAddress;
+      callToAddr = receivingChain.crossChainAggregatorAddress;
+      console.log(`callToAddr = ${callToAddr}`);
 
-      let aggregator = new utils.Interface(window.oneSplitAbi);
+      let aggregator = new utils.Interface(window.crossChainOneSplitAbi);
 
       // NXTP has a 0.05% flat fee
       let o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
@@ -313,6 +348,7 @@ window.NxtpUtils = {
         receivingAssetId,
         estimatedOutputBN,
         BigNumber.from(0), //TODO: Add MinReturn/Slippage
+        receivingAddress,
         distBN,
         0
       ]);

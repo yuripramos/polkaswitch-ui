@@ -173,12 +173,11 @@
     "crossChainSupported": true,
     "supportedCrossChainTokens": [
       "USDT",
-      "USDC",
       "DAI"
     ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "xDai",
     "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/xdai/info/logo.png",

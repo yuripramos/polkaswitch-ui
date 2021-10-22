@@ -390,11 +390,9 @@ $swap-widget-anim-timing: 300ms;
       height: 55px;
       color: var(--primary-text-color);
       transition: transform 200ms;
-      background: var(--input-color);
       &.is-to {
-        background-color: var(--input-color);
-        border-color: var(--input-border);
-        color: var(--primary-text-color) !important;
+        background-color: var(--primary-background);
+        border-color: var(--primary-background);
       }
 
       &.is-from {
@@ -404,7 +402,7 @@ $swap-widget-anim-timing: 300ms;
       &:hover, &:focus {
         transform: scale(1.05);
         box-shadow: 0 0px 10px 0 var(--input-box-shadow);
-        border: 1px solid var(--input-border);
+        border: 1px solid $link;
       }
 
       &.is-danger {
@@ -488,7 +486,7 @@ $swap-widget-anim-timing: 300ms;
       border: 1px solid transparent;
       border-radius: 8px;
       cursor: pointer;
-      background-color: var(--secondary-background) !important;
+      background-color: var(--dropdown-color) !important;
       padding: 0 10px;
 
       &:hover {
@@ -548,9 +546,6 @@ $swap-widget-anim-timing: 300ms;
 
   /* Firefox */
   input[type=number] {
-    background-color: var(--dropdown-color);
-    color: var(--symbol-color);
-    border-color: var(--input-border);
     -moz-appearance: textfield;
   }
 
@@ -593,9 +588,6 @@ $swap-widget-anim-timing: 300ms;
       display: flex;
 
       .button {
-        background-color: var(--dropdown-color);
-        color: var(--symbol-color);
-        border-color: var(--input-border);
         margin-right: 5px;
         padding-left: 1.2em;
         padding-right: 1.2em;
@@ -658,10 +650,7 @@ $swap-widget-anim-timing: 300ms;
   .page-view-search {
     .token-search-bar {
       input {
-        background: var(--input-color) !important;
         border-radius: 16px;
-        border-color: var(--input-border);
-        color: var(--primary-text-color);
       }
 
       .token-top-list {

@@ -4,6 +4,8 @@ import TxStatusView from "../TxStatusView";
 import TxQueue from '../../../utils/txQueue';
 import EventManager from "../../../utils/events";
 
+// TODO WIP component, not used anywhere
+
 export default function TxnHistory() {
   const itemMax = 3;
   const [queue, setQueue] = useState({});
