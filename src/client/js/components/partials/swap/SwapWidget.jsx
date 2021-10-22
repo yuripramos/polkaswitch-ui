@@ -430,6 +430,7 @@ export default class SwapOrderWidget extends Component {
           onEntering={this.triggerHeightResize}
           classNames="slidein">
           <SwapTokenSearchSlide
+            isFrom={this.state.searchTarget === "from"}
             network={this.state.searchTarget === "to" ? this.state.toChain : this.state.fromChain}
             showSearch={this.state.showSearch}
             handleSearchToggle={this.handleSearchToggle}
