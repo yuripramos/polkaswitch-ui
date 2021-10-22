@@ -8,12 +8,6 @@
   border-color: var(--input-border) !important;
 }
 
-input{
-  &::placeholder{
-    color: var(--primary-text-color) !important;
-  }
-}
-
 .setting-input-title{
   color: var(--dropdown-text-color) !important;
 }
