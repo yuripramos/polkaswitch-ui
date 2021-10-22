@@ -55,6 +55,8 @@ module.exports = (env) => {
         include: "./dist"
       })
     );
+  } else {
+    console.log('Sentry not configured - skipped');
   }
 
   return {
