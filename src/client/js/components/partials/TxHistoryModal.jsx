@@ -12,6 +12,7 @@ import Nxtp from '../../utils/nxtp';
 import TxExplorerLink from './TxExplorerLink';
 import TxStatusView from './TxStatusView'
 import TxCrossChainHistoricalStatusView from './TxCrossChainHistoricalStatusView'
+import TxCrossChainActiveStatusView from './TxCrossChainActiveStatusView'
 import CrossChainToggle from './swap/CrossChainToggle';
 
 export default class TxHistoryModal extends Component {
@@ -29,11 +30,15 @@ export default class TxHistoryModal extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
+    this.handleFinishAction = this.handleFinishAction.bind(this);
   }
 
   componentDidMount() {
     this.subUpdate = EventManager.listenFor(
       'txQueueUpdated', this.handleUpdate
+    );
+    this.subNxtp = EventManager.listenFor(
+      'nxtpEventUpdated', this.handleUpdate
     );
     this.subPrompt = EventManager.listenFor(
       'promptTxHistory', this.handleOpen
@@ -64,6 +69,15 @@ export default class TxHistoryModal extends Component {
     });
   }
 
+  handleFinishAction(transactionId) {
+    if (!Wallet.isConnected()) {
+      console.error("TxHistoryModal: Wallet not connected");
+      return;
+    }
+
+    Nxtp.transferStepTwo(transactionId);
+  }
+
   handleCrossChainChange(checked) {
     this.setState({
       showSingleChain: checked
@@ -75,9 +89,17 @@ export default class TxHistoryModal extends Component {
   }
 
   fetchCrossChainHistory() {
+    if (!Wallet.isConnected()) {
+            return;
+          }
+
     this.setState({
       loading: true
-    }, () => {
+    }, async () => {
+      if (Nxtp.isSdkInitalized()) {
+        await Nxtp.initalizeSdk();
+      }
+
       Nxtp.fetchActiveTxs().then(() => {
         return Nxtp.fetchHistoricalTxs();
       }).then(() => {
@@ -158,7 +180,7 @@ export default class TxHistoryModal extends Component {
 
               {!this.state.showSingleChain && xChainActiveQueue.map(function(item, i) {
                 return (
-                  <TxStatusView key={i} data={item} />
+                  <TxCrossChainActiveStatusView key={i} data={item} />
                 );
               })}
 
