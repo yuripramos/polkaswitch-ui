@@ -173,7 +173,6 @@
     "crossChainSupported": true,
     "supportedCrossChainTokens": [
       "USDT",
-      "USDC",
       "DAI"
     ]
   }
