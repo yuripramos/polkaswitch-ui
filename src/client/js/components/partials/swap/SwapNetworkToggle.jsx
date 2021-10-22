@@ -32,7 +32,6 @@ export default class SwapNetworkToggle extends Component {
 
     this.subscribers = [];
     this.handleNetworkHoverable = this.handleNetworkHoverable.bind(this);
-    this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
   }
 
   componentDidMount() {
@@ -45,7 +44,7 @@ export default class SwapNetworkToggle extends Component {
     });
   }
 
-  handleCrossChainChange(checked) {
+  handleCrossChainChange = async(checked) => {
     var currNetwork = TokenListManager.getCurrentNetworkConfig();
     var changeNetwork = !checked && !currNetwork.crossChainSupported;
     var nextNetwork = !changeNetwork ?
@@ -64,6 +63,7 @@ export default class SwapNetworkToggle extends Component {
     }
 
     TokenListManager.toggleCrossChain(!checked);
+    await TokenListManager.updateTokenList();
   }
 
   handleNetworkHoverable(event) {

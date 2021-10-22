@@ -8,8 +8,13 @@ let store = require('store');
 const Utils = ethers.utils;
 
 window.TokenListManager = {
-  _tokenLists: {},
+  // TODO - not a great place to store this state
+  swap: {
+    from:{},
+    to:{},
+  },
 
+  _tokenLists: {},
   initialize: async function() {
     // pre-load all token lists
     var filteredNetworks = _.filter(window.NETWORK_CONFIGS, (v) => { return v.enabled });
@@ -40,9 +45,13 @@ window.TokenListManager = {
     return network;
   },
 
+  getNetworkByName: function(name) {
+    var network = _.findWhere(window.NETWORK_CONFIGS, { name });
+    return network;
+  },
+
   updateNetwork: function(network, connectStrategy) {
     EventManager.emitEvent('networkPendingUpdate', 1);
-
     Storage.updateNetwork(network);
 
     this.updateTokenList().then(function() {
@@ -95,6 +104,50 @@ window.TokenListManager = {
     window.TOKEN_LIST = tokenList;
     this.updateTokenListwithCustom(network);
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
+    // update swap token configuration
+
+    // TODO need to refactor this
+    if (this.isCrossChainEnabled()) {
+      console.log('## is enabled ###')
+      const crossChainNetwork = _.filter(window.NETWORK_CONFIGS, (v) => {
+        return v.crossChainSupported
+      });
+
+      let toChain = crossChainNetwork.find((v) => {
+        return v.chainId !== network.chainId
+      });
+
+      const swap = {
+        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+        to: TokenListManager.findTokenById(
+            toChain.supportedCrossChainTokens[0],
+            toChain
+        ),
+        fromChain: network.name,
+        toChain: toChain.name
+      }
+      this.updateSwapConfig(swap);
+    } else {
+      console.log('## is not enabled ###')
+      const swap = {
+        from: this.findTokenById(network.defaultPair.from),
+        to: this.findTokenById(network.defaultPair.to),
+        fromChain: network.name,
+        toChain: network.name
+      }
+      this.updateSwapConfig(swap);
+    }
+  },
+
+  // TODO need to refactor this
+  updateSwapConfig: function(swap) {
+    this.swap = _.extend(this.getSwapConfig(), swap);
+    store.set('swap', this.swap);
+    EventManager.emitEvent('swapConfigUpdated', 1);
+  },
+
+  getSwapConfig: function () {
+    return this.swap;
   },
 
   findTokenById: function(tid, optionalNetwork) {
@@ -111,6 +164,12 @@ window.TokenListManager = {
       console.log("WARN: TokenListManager: Token ID Not Found:", tid, optionalNetwork?.name);
     }
     return foundToken;
+  },
+
+  findTokenBySymbolFromCoinGecko: function(symbol) {
+    return _.find(window.COINGECKO_TOKEN_LIST, function(v) {
+      return v.symbol.toLowerCase() === symbol;
+    });
   },
 
   updateTokenListwithCustom: function (network) {
