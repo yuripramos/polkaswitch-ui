@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import classnames from "classnames";
 
+// TODO WIP component, not used anywhere
+
 export default function Search() {
   const [showMenu, toggleMenu] = useState(false);
   const [value, setValue] = useState('');

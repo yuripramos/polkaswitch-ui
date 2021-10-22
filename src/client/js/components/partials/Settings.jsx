@@ -3,6 +3,8 @@ import _ from "underscore";
 import classnames from 'classnames';
 import { setTheme } from "../../utils/theme";
 
+// TODO WIP component, not used anywhere
+
 export default class Settings extends Component {
   constructor(props) {
     super(props);

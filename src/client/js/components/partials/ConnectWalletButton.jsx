@@ -66,7 +66,7 @@ export default class ConnectWalletButton extends Component {
     var isConnected = Wallet.isConnectedToAnyNetwork();
 
     return (
-      <div className={classnames("wallet-status custom-btn", {
+      <div className={classnames("wallet-status", {
         "button is-primary": !isConnected
         })}
         onClick={this.handleConnection.bind(this)}>

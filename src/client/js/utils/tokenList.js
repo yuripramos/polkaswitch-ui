@@ -8,10 +8,12 @@ let store = require('store');
 const Utils = ethers.utils;
 
 window.TokenListManager = {
+  // TODO - not a great place to store this state
   swap: {
     from:{},
     to:{},
   },
+
   _tokenLists: {},
   initialize: async function() {
     // pre-load all token lists
