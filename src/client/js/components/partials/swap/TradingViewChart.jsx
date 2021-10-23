@@ -27,7 +27,9 @@ export default function TradingViewChart(){
 
   const wrapTokens = {
     "BNB": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
-    "AVAX": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+    "AVAX": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+    "xDai": "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
+    "FTM": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83"
   }
 
   const viewModes = ["candlestick", "line"];

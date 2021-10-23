@@ -200,13 +200,15 @@
     },
     "defaultPair": {
       "to": "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
-      "from": "0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e"
+      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "topTokens": [
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
       "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
       "0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252",
-      "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1"
+      "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
+      "0x7f7440C5098462f833E123B44B8A03E1d9785BAb"
     ],
     "tradeView": {
       "platform": "xdai",
@@ -215,9 +217,48 @@
     },
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
-      "USDT",
-      "USDC",
-      "DAI"
+    ]
+  },
+  {
+    "enabled": false,
+    "name": "Fantom",
+    "aggregatorAddress": "0xF09ecB66eF88973eBE7B0B5B5d700050F200c85D",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
+    "bridgeURI": "https://multichain.xyz/",
+    "tokenList": "/tokens/250.list.json",
+    "chainId": "250",
+    "nodeProvider": "https://rpcapi.fantom.network",
+    "explorerBaseUrl": "https://ftmscan.com/tx/",
+    "gasApi": false,
+    "chain": {
+      "chainId": "0xFA",
+      "rpcUrls": ["https://rpcapi.fantom.network"],
+      "chainName": "Fantom",
+      "nativeCurrency": {
+        "name": "Fantom",
+        "symbol": "FTM",
+        "decimals": 18
+      }
+    },
+    "defaultPair": {
+      "to": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    "topTokens": [
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
+      "0x321162cd933e2be498cd2267a90534a804051b11",
+      "0x74b23882a30290451a17c44f4f05243b6b58c76d",
+      "0xae75a438b2e0cb8bb01ec1e1e376de11d44477cc"
+    ],
+    "tradeView": {
+      "platform": "fantom",
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/fantom",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
+    },
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
     ]
   }
 ]

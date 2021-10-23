@@ -146,16 +146,15 @@ window.TokenListManager = {
   },
 
   findTokenById: function(tid, optionalNetwork) {
-    var tokenList = window.TOKEN_LIST;
-
+    let tokenList = window.TOKEN_LIST;
     if (optionalNetwork) {
       tokenList = this.getTokenListForNetwork(optionalNetwork);
     }
-    var foundToken = _.find(tokenList, function(v) {
-      if ((v.address === tid) || (v.symbol === tid)) {
-        return true;
-      }
+
+    const foundToken = _.find(tokenList, function(v) {
+      return (v.address.toLowerCase() === tid.toLowerCase()) || (v.symbol.toLowerCase() === tid.toLowerCase())
     });
+
     if (!foundToken) {
       console.log("WARN: TokenListManager: Token ID Not Found:", tid, optionalNetwork?.name);
     }

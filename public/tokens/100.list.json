@@ -1,7 +1,7 @@
 [
   {
     "name": "xDai",
-    "address": "0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "symbol": "xDai",
     "decimals": 18,
     "native": true,
