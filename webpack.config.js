@@ -39,7 +39,9 @@ module.exports = (env) => {
     new NodePolyfillPlugin()
   ];
 
-  if (isProduction) {
+  if (isProduction &&
+    process.env.HEROKU_APP_NAME &&
+    process.env.SENTRY_AUTH_TOKEN) {
     plugins.push(
       new SentryWebpackPlugin({
         authToken: process.env.SENTRY_AUTH_TOKEN,
@@ -55,6 +57,8 @@ module.exports = (env) => {
         include: "./dist"
       })
     );
+  } else {
+    console.log('Sentry not configured - skipped');
   }
 
   return {

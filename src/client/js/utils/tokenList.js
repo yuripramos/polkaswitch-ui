@@ -8,10 +8,12 @@ let store = require('store');
 const Utils = ethers.utils;
 
 window.TokenListManager = {
+  // TODO - not a great place to store this state
   swap: {
     from:{},
     to:{},
   },
+
   _tokenLists: {},
   initialize: async function() {
     // pre-load all token lists
@@ -104,6 +106,7 @@ window.TokenListManager = {
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
     // update swap token configuration
 
+    // TODO need to refactor this
     if (this.isCrossChainEnabled()) {
       console.log('## is enabled ###')
       const crossChainNetwork = _.filter(window.NETWORK_CONFIGS, (v) => {
@@ -135,6 +138,7 @@ window.TokenListManager = {
     }
   },
 
+  // TODO need to refactor this
   updateSwapConfig: function(swap) {
     this.swap = _.extend(this.getSwapConfig(), swap);
     store.set('swap', this.swap);

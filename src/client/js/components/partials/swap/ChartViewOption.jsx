@@ -14,7 +14,7 @@ export default function ChartViewOption(props) {
   return (
       <div className="chart-view-option">
         <span
-            className="trading-view-switcher hint--bottom hint--medium"
+            className="trading-view-switcher"
         >
           <input
               id="trading-view-switcher"
