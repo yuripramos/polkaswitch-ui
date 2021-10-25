@@ -47,9 +47,7 @@ export default class SwapOrderWidget extends Component {
         from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
           TokenListManager.findTokenById(network.defaultPair.from)
       });
-    }
-
-    else {
+    } else {
       mergeState = _.extend(mergeState, {
         crossChainEnabled: false,
         toChain: network,
