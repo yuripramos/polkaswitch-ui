@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import * as Sentry from "@sentry/react";
-
-import Wallet from '../../../utils/wallet';
-import Metrics from '../../../utils/metrics';
-import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
 import TokenIconImg from './../TokenIconImg';
-
-import CrossChainToggle from './CrossChainToggle';
 
 export default class NetworkDropdown extends Component {
   constructor(props) {

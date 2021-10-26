@@ -31,7 +31,7 @@ export default function TokenPairSelector(props){
           <div className="dropdown-trigger">
             <button className="button boxshadow-none is-info is-light" style={{padding: 0}} aria-haspopup="true" aria-controls="dropdown-menu">
               {
-                props.selectedPair.fromSymbol && props.selectedPair.toSymbol &&
+                props.selectedPair && props.selectedPair.fromSymbol && props.selectedPair.toSymbol &&
                 <span className="level-left">
                   <TokenIconImg
                     size={54}
@@ -46,7 +46,7 @@ export default function TokenPairSelector(props){
                 </span>
               }
               {
-                props.selectedPair.fromSymbol && !props.selectedPair.toSymbol &&
+                props.selectedPair && props.selectedPair.fromSymbol && !props.selectedPair.toSymbol &&
                 <span className="level-left">
                   <TokenIconImg
                     size={54}
