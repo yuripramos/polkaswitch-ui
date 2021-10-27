@@ -65,13 +65,15 @@ window.HopUtils = {
     }
   },
 
+  isSupportedAsset: function(sendingAssetId) {
+    return true;
+  },
+
   getEstimate: async function (
     sendingChainId,
     sendingAssetId,
     receivingChainId,
-    receivingAssetId,
-    amountBN,
-    receivingAddress
+    amountBN
   ) {
     if (!Wallet.isConnected()) {
       console.error("Hop: Wallet not connected");
@@ -121,9 +123,7 @@ window.HopUtils = {
     sendingChainId,
     sendingAssetId,
     receivingChainId,
-    receivingAssetId,
-    amountBN,
-    receivingAddress
+    amountBN
   ) {
     if (!Wallet.isConnected()) {
       console.error("Hop: Wallet not connected");
@@ -157,6 +157,8 @@ window.HopUtils = {
       hopSendingChain,
       hopReceivingChain
     );
+
+    console.log('Started Hop TX: ', tx.hash);
 
     this._sdk
       .watch(tx.hash, sendingAsset.symbol, hopSendingChain, hopReceivingChain)
