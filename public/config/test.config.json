@@ -214,8 +214,11 @@
       "lineUrl": "https://api.coingecko.com/api/v3/coins/xdai",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   },
   {
@@ -256,8 +259,11 @@
       "lineUrl": "https://api.coingecko.com/api/v3/coins/fantom",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   }
 ]
