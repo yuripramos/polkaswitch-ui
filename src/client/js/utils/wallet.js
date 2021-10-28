@@ -264,30 +264,49 @@ window.WalletJS = {
   },
 
   _connectProviderMetamask: function() {
-    return new Promise(function (resolve, reject) {
+    return new Promise(async function (resolve, reject) {
       let network = TokenListManager.getCurrentNetworkConfig();
 
-      window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [network.chain]
-      }).then(function() {
-        _.delay(function() {
-          window.ethereum.request({ method: 'eth_requestAccounts' })
-            .then(function(accounts) {
-              // Metamask currently only ever provide a single account
-              const account = accounts[0];
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: network.chain.chainId }],
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [network.chain]
+          }).then(function() {
+            _.delay(function() {
+              window.ethereum.request({ method: 'eth_requestAccounts' })
+                .then(function(accounts) {
+                  // Metamask currently only ever provide a single account
+                  const account = accounts[0];
 
-              var web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-              return this._saveConnection(web3Provider, "metamask").then(function() {
-                resolve(account);
-              });
-            }.bind(this))
-            .catch(function(e) {
-              console.error(e);
-              reject(e);
-            });
-        }.bind(this), 1000)
-      }.bind(this));
+                  var web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+                  return this._saveConnection(web3Provider, "metamask").then(function() {
+                    resolve(account);
+                  });
+                }.bind(this))
+                .catch(function(e) {
+                  console.error(e);
+                  reject(e);
+                });
+            }.bind(this), 1000)
+          }.bind(this))
+          .catch(function(e) {
+            console.error(e);
+            reject(e);
+          });
+        }
+
+        else {
+          console.error(switchError);
+          reject(e);
+        }
+      }
     }.bind(this));
   }
 };

@@ -112,12 +112,12 @@ window.HopUtils = {
     );
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);
 
-    const amountOut = hopBridge.getAmountOut(
+    const amountOut = await hopBridge.getAmountOut(
       amountBN.toString(),
       hopSendingChain,
       hopReceivingChain
     );
-    const bonderFee = hopBridge.getTotalFee(
+    const bonderFee = await hopBridge.getTotalFee(
       amountBN.toString(),
       hopSendingChain,
       hopReceivingChain

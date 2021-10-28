@@ -8,16 +8,14 @@
     "tokenList": "/tokens/eth.list.json",
     "chainId": "1",
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
-    "explorerBaseUrl": "https://polygonscan.com/tx/",
+    "explorerBaseUrl": "https://etherscan.io/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "chain": {
-      "chainId": "0x507",
-      "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
-      "chainName": "Moonbeam Alphanet"
+      "chainId": "0x1"
     },
     "defaultPair": {
-      "to": "0x806628fC9c801A5a7CcF8FfBC8a0ae3348C5F913",
-      "from": "0x798fA7Cf084129616B0108452aF3E1d5d1B32179"
+      "to": "ETH",
+      "from": "USDT"
     },
     "topTokens": [
       "ETH",
