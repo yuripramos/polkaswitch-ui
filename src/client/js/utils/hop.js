@@ -69,11 +69,21 @@ window.HopUtils = {
     return true;
   },
 
+  isSupportedNetwork: async function(network) {
+    if (!this._sdk) {
+      this._sdk = await this.initalizeSdk();
+    }
+
+    return _.contains(this._sdk.supportedChains, network.name.toLowerCase());
+  },
+
   getEstimate: async function (
     sendingChainId,
     sendingAssetId,
     receivingChainId,
-    amountBN
+    receivingAssetId,
+    amountBN,
+    receivingAddress
   ) {
     if (!Wallet.isConnected()) {
       console.error("Hop: Wallet not connected");
@@ -84,7 +94,7 @@ window.HopUtils = {
       this._sdk = await this.initalizeSdk();
     }
 
-    const sendingChain = TokenListManager.getNetworkById(sendingChain);
+    const sendingChain = TokenListManager.getNetworkById(sendingChainId);
     const receivingChain = TokenListManager.getNetworkById(receivingChainId);
     const receivingAsset = TokenListManager.findTokenById(receivingAssetId, receivingChain);
     const sendingAsset = TokenListManager.findTokenById(sendingAssetId);
@@ -102,16 +112,18 @@ window.HopUtils = {
     );
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);
 
-    const amountOut = bridge.getAmountOut(
+    const amountOut = hopBridge.getAmountOut(
       amountBN.toString(),
       hopSendingChain,
       hopReceivingChain
     );
-    const bonderFee = bridge.getTotalFee(
+    const bonderFee = hopBridge.getTotalFee(
       amountBN.toString(),
       hopSendingChain,
       hopReceivingChain
     );
+
+    console.log(amountOut, bonderFee);
 
     return {
       transactionFee: bonderFee,
@@ -123,7 +135,9 @@ window.HopUtils = {
     sendingChainId,
     sendingAssetId,
     receivingChainId,
-    amountBN
+    receivingAssetId,
+    amountBN,
+    receivingAddress
   ) {
     if (!Wallet.isConnected()) {
       console.error("Hop: Wallet not connected");
@@ -134,7 +148,7 @@ window.HopUtils = {
       this._sdk = await this.initalizeSdk();
     }
 
-    const sendingChain = TokenListManager.getNetworkById(sendingChain);
+    const sendingChain = TokenListManager.getNetworkById(sendingChainId);
     const receivingChain = TokenListManager.getNetworkById(receivingChainId);
     const receivingAsset = TokenListManager.findTokenById(receivingAssetId, receivingChain);
     const sendingAsset = TokenListManager.findTokenById(sendingAssetId);
@@ -152,7 +166,7 @@ window.HopUtils = {
     );
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);
 
-    const tx = await bridge.send(
+    const tx = await hopBridge.send(
       amountBN.toString(),
       hopSendingChain,
       hopReceivingChain
