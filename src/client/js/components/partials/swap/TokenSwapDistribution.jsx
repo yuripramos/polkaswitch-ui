@@ -29,7 +29,7 @@ export default class TokenSwapDistribution extends Component {
     var network = TokenListManager.getCurrentNetworkConfig();
     var sumOne, sumTwo, sumThree, parts, totalParts;
 
-    if (network.name == "Ethereum") {
+    if (network.name === "Ethereum") {
       totalParts = 3;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
 
@@ -63,7 +63,7 @@ export default class TokenSwapDistribution extends Component {
       }];
     }
 
-    else if (network.name == "Polygon") {
+    else if (network.name === "Polygon") {
       totalParts = 3;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0];
 
@@ -97,7 +97,7 @@ export default class TokenSwapDistribution extends Component {
       }];
     }
 
-    else if (network.name == "Smart Chain") {
+    else if (network.name === "Smart Chain") {
       totalParts = 3;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0];
 
@@ -132,7 +132,7 @@ export default class TokenSwapDistribution extends Component {
       }];
     }
 
-    else if (network.name == "Avalanche") {
+    else if (network.name === "Avalanche") {
       totalParts = 3;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0];
 
@@ -163,6 +163,58 @@ export default class TokenSwapDistribution extends Component {
       }, {
         name: "TraderJoe",
         icon: TokenListManager.findTokenById("JOE"),
+        size: sumThree / totalParts
+      }];
+    } else if (network.name === "xDai") {
+      totalParts = 2;
+      parts = this.props.parts || [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+      /*
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 18 pools: pool 0 - 8 are Honeyswap pools, pool 8-17 are Sushiswap pools.
+        For example, the distribution [0,0,0,0,0,0,0,6,0,0,0,0,6,0,0,6,0,0] means 1/3 of the swap amount will route
+        to Honeyswap and 2/3 will route to Sushiswap.
+      */
+
+      sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5] + parts[6] + parts[7] + parts[8];
+      sumTwo = parts[9] + parts[10] + parts[11] + parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+
+      pools = [{
+        name: "Honeyswap",
+        icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1190.png' },
+        size: sumOne / totalParts
+      }, {
+        name: "Sushiswap",
+        icon: TokenListManager.findTokenById("SUSHI"),
+        size: sumTwo / totalParts
+      }];
+    } else if (network.name === "Fantom") {
+      totalParts = 3;
+      parts = this.props.parts || [0,0,0,0,0,0,0,0,0,0,0,0];
+
+      /*
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 12 pools: pool 0 - 3 are Spookyswap pools, pool 4-7 are Sushiswap pools, pool 8-11 are Spiritswap pools.
+        For example, the distribution [3,0,3,0,0,0,0,0,3,0,3,0] means 2/3 of the swap amount will route
+        to Spookyswap and 1/3 will route to Sushiswap.[0,0,0,0,2,0,0,0,3,3,2,2] means 1/6 of amount will route
+        to Sushiswap and 5/6 will route to Spiritswap.
+      */
+
+      sumOne = parts[0] + parts[1] + parts[2] + parts[3];
+      sumTwo = parts[4] + parts[5] + parts[6] + parts[7];
+      sumThree = parts[8] + parts[9] + parts[10] + parts[11];
+
+      pools = [{
+        name: "Spookyswap",
+        icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png' },
+        size: sumOne / totalParts
+      }, {
+        name: "Sushiswap",
+        icon: TokenListManager.findTokenById("SUSHI"),
+        size: sumTwo / totalParts
+      }, {
+        name: "Spiritswap",
+        icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1359.png' },
         size: sumThree / totalParts
       }];
     }

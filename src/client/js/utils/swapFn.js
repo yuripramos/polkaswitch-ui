@@ -302,11 +302,12 @@ window.SwapFn = {
       window.oneSplitAbi,
       Wallet.getReadOnlyProvider(chainId)
     );
+
     var result = await contract.getExpectedReturn(
       fromToken.address,
       toToken.address,
       amount, // uint256 in wei
-      3, // desired parts of splits accross pools(3 is recommended)
+      network.desiredParts, // desired parts of splits accross pools(3 is recommended)
       0  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
     );
 
