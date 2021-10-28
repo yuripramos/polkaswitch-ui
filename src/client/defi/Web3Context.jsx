@@ -13,7 +13,7 @@ const web3Context = React.createContext({
     ethAccount: undefined
 })
 
-export const web3ContextProvider = ({ children, supportedChainIds }) => {
+exports.Web3ContextProvider = ({ children, supportedChainIds }) => {
     const [ethProvider, setEthProvider] = useState(undefined);
     const [ethSigner, setEthSigner] = useState(undefined);
     const [ethAccount, setEthAccount] = useState(undefined);
@@ -91,4 +91,8 @@ export const web3ContextProvider = ({ children, supportedChainIds }) => {
             connectWallet
         }}>{children}</web3Context.Provider>
     )
+}
+
+exports.useWeb3Context = () => {
+    return React.useContext(web3Context);
 }
