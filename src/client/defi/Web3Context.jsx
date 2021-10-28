@@ -55,6 +55,7 @@ export const web3ContextProvider = ({ children, supportedChainIds }) => {
                 setEthProvider(provider);
                 setEthSigner(signer);
                 setNetworkId(networkId);
+                setIsConnected(true);
                 break;
             case "walletconnect":
                 let chainId = 137;
@@ -73,6 +74,7 @@ export const web3ContextProvider = ({ children, supportedChainIds }) => {
                 setEthProvider(ethersProvider);
                 setEthSigner(signer);
                 setNetworkId(networkId);
+                setIsConnected(true);
             default:
                 return;
         }
