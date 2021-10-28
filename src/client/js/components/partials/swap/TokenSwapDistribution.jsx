@@ -166,7 +166,6 @@ export default class TokenSwapDistribution extends Component {
         size: sumThree / totalParts
       }];
     } else if (network.name === "xDai") {
-      totalParts = 18;
       parts = this.props.parts || [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
       /*
@@ -177,6 +176,7 @@ export default class TokenSwapDistribution extends Component {
       */
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5] + parts[6] + parts[7] + parts[8];
       sumTwo = parts[9] + parts[10] + parts[11] + parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      totalParts = sumOne + sumTwo;
       pools = [{
         name: "Honeyswap",
         icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1190.png' },
@@ -187,7 +187,6 @@ export default class TokenSwapDistribution extends Component {
         size: sumTwo / totalParts
       }];
     } else if (network.name === "Fantom") {
-      totalParts = 12;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -200,6 +199,7 @@ export default class TokenSwapDistribution extends Component {
       sumOne = parts[0] + parts[1] + parts[2] + parts[3];
       sumTwo = parts[4] + parts[5] + parts[6] + parts[7];
       sumThree = parts[8] + parts[9] + parts[10] + parts[11];
+      totalParts = sumOne + sumTwo + sumThree;
       pools = [{
         name: "Spookyswap",
         icon: {logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png'},
