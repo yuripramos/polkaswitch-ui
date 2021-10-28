@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react"
+import WalletConnectProvider from "@walletconnect/web3-provider";
+
+const networks = require("./networks");
 
 const web3Context = React.createContext({
     tokens: {},
@@ -53,6 +56,23 @@ export const web3ContextProvider = ({ children, supportedChainIds }) => {
                 setEthSigner(signer);
                 setNetworkId(networkId);
                 break;
+            case "walletconnect":
+                let chainId = 137;
+                
+                let rpc = { [chainId]: networks[chainId].chain.rpcUrls[0] }
+                const provider = new WalletConnectProvider({
+                    rpc
+                });
+
+                await provider.enable();
+                const ethersProvider = new ethers.providers.Web3Provider(provider);
+                const signer = web3Provider.getSigner();
+                const address = signer.getAddress();
+
+                setEthAccount(address);
+                setEthProvider(ethersProvider);
+                setEthSigner(signer);
+                setNetworkId(networkId);
             default:
                 return;
         }
