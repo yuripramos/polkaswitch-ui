@@ -22,7 +22,6 @@ window.TokenListManager = {
     for (var network of filteredNetworks) {
       var tokenList = await (await fetch(network.tokenList)).json();
 
-      console.log(tokenList)
       tokenList = _.map(_.filter(tokenList, function(v) {
         return (v.native) || (v.symbol && Utils.isAddress(v.address));
       }), function(v) {

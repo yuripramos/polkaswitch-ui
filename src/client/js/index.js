@@ -15,6 +15,7 @@ import { Integrations } from "@sentry/tracing";
 
 import { store } from './store/store'
 import { Provider } from 'react-redux'
+import { Updater } from './store/tokenList/updater';
 
 const IS_MAIN_NETWORK = (process.env.IS_MAIN_NETWORK === "true");
 
@@ -70,5 +71,6 @@ if (Wallet.isMetamaskSupported()) {
 
 ReactDOM.render(
   <Provider store={store}>
+    <Updater />
     <App />
   </Provider>, document.getElementById('root'));
