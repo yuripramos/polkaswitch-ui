@@ -166,7 +166,7 @@ export default class TokenSwapDistribution extends Component {
         size: sumThree / totalParts
       }];
     } else if (network.name === "xDai") {
-      totalParts = 2;
+      totalParts = 18;
       parts = this.props.parts || [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
       /*
@@ -187,7 +187,7 @@ export default class TokenSwapDistribution extends Component {
         size: sumTwo / totalParts
       }];
     } else if (network.name === "Fantom") {
-      totalParts = 3;
+      totalParts = 12;
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
