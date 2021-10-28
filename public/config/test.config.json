@@ -48,6 +48,7 @@
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
+    "desiredParts": 3,
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -88,6 +89,7 @@
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
+    "desiredParts": 3,
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
@@ -134,6 +136,7 @@
     "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
     "explorerBaseUrl": "https://bscscan.com/tx/",
     "gasApi": false,
+    "desiredParts": 3,
     "chain": {
       "chainId": "0x38",
       "rpcUrls": ["https://bsc-dataseed.binance.org/"],
@@ -180,6 +183,7 @@
     "nodeProvider2": "https://avalanche--mainnet--rpc.datahub.figment.io/apikey/b56dcd7987f05a43637a94ad98d546be/ext/bc/C/rpc",
     "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
     "gasApi": false,
+    "desiredParts": 3,
     "chain": {
       "chainId": "0xA86A",
       "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],
@@ -225,6 +229,7 @@
     "nodeProvider": "https://rpc.xdaichain.com/",
     "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
     "gasApi": false,
+    "desiredParts": 18,
     "chain": {
       "chainId": "0x64",
       "rpcUrls": ["https://rpc.xdaichain.com/"],
@@ -252,8 +257,11 @@
       "lineUrl": "https://api.coingecko.com/api/v3/coins/xdai",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   },
   {
@@ -267,6 +275,7 @@
     "nodeProvider": "https://rpcapi.fantom.network",
     "explorerBaseUrl": "https://ftmscan.com/tx/",
     "gasApi": false,
+    "desiredParts": 18,
     "chain": {
       "chainId": "0xFA",
       "rpcUrls": ["https://rpcapi.fantom.network"],
@@ -294,8 +303,11 @@
       "lineUrl": "https://api.coingecko.com/api/v3/coins/fantom",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   }
 ]
