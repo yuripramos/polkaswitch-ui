@@ -38,7 +38,7 @@ window.HopUtils = {
   initalizeSdk: async function() {
     const signer = Wallet.getProvider().getSigner();
 
-    var sdk = this._sdk = (new Hop()).connect(signer);
+    var sdk = this._sdk = (new Hop('mainnet')).connect(signer);
 
     this._attachSdkListeners(sdk);
     return sdk;

@@ -51,18 +51,25 @@ window.WalletJS = {
   initListeners: function(provider) {
     provider.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
-      console.log(accounts);
-      if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
+      console.log('event - accountsChanged:', accounts);
+      if (accounts.length === 0) {
+        this.disconnect();
+        EventManager.emitEvent('walletUpdated', 1);
+      }
+
+      else if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
         this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
     }.bind(this));
 
     provider.on('disconnect', function(providerRpcError) {
+      console.log('event - disconnect:', providerRpcError);
       this.disconnect();
       EventManager.emitEvent('walletUpdated', 1);
     }.bind(this));
 
     provider.on('chainChanged', function(chainId) {
+      console.log('event - chainChanged:', chainId);
       // if chain changes due to manual user change, not via connect change:
       // just wipe clean, too hard to manage otherwise
       this._cachedNetworkId = chainId;
@@ -267,11 +274,37 @@ window.WalletJS = {
     return new Promise(async function (resolve, reject) {
       let network = TokenListManager.getCurrentNetworkConfig();
 
+      const requestAccount = function() {
+        _.delay(function() {
+          window.ethereum.request({ method: 'eth_requestAccounts' })
+            .then(function(accounts) {
+              // Metamask currently only ever provide a single account
+              const account = accounts[0];
+
+              var web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+              return this._saveConnection(web3Provider, "metamask").then(function() {
+                resolve(account);
+              });
+            }.bind(this))
+            .catch(function(e) {
+              console.error(e);
+              reject(e);
+            });
+        }.bind(this), 1000)
+      }.bind(this);
+
       try {
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: network.chain.chainId }],
-        });
+        })
+          .then(function() {
+            requestAccount();
+          }.bind(this))
+          .catch(function(e) {
+            console.error(e);
+            reject(e);
+          });
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask.
         if (switchError.code === 4902) {
@@ -279,22 +312,7 @@ window.WalletJS = {
             method: 'wallet_addEthereumChain',
             params: [network.chain]
           }).then(function() {
-            _.delay(function() {
-              window.ethereum.request({ method: 'eth_requestAccounts' })
-                .then(function(accounts) {
-                  // Metamask currently only ever provide a single account
-                  const account = accounts[0];
-
-                  var web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-                  return this._saveConnection(web3Provider, "metamask").then(function() {
-                    resolve(account);
-                  });
-                }.bind(this))
-                .catch(function(e) {
-                  console.error(e);
-                  reject(e);
-                });
-            }.bind(this), 1000)
+            requestAccount();
           }.bind(this))
           .catch(function(e) {
             console.error(e);

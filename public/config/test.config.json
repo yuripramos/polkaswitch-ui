@@ -11,7 +11,8 @@
     "explorerBaseUrl": "https://etherscan.io/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "chain": {
-      "chainId": "0x1"
+      "chainId": "0x1",
+      "chainName": "Ethereum Mainnet"
     },
     "defaultPair": {
       "to": "ETH",

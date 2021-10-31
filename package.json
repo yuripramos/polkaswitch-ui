@@ -41,7 +41,7 @@
     "@babel/preset-react": "7.12.13",
     "@connext/nxtp-sdk": "0.0.56",
     "@connext/nxtp-utils": "0.0.56",
-    "@hop-protocol/sdk": "*",
+    "@hop-protocol/sdk": "^0.0.1-beta.221",
     "@sentry/react": "6.11.0",
     "@sentry/tracing": "6.11.0",
     "@sentry/webpack-plugin": "^1.17.1",
