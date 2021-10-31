@@ -225,7 +225,7 @@
     "bridgeURI": "https://bridge.xdaichain.com/",
     "tokenList": "/tokens/100.list.json",
     "chainId": "100",
-    "nodeProvider": "https://api-xda.swing.xyz/6e25f5fc6a6efc79fa8c97b2c699abe2d59f6817/",
+    "nodeProvider": "https://api-xdai.swing.xyz/6e25f5fc6a6efc79fa8c97b2c699abe2d59f6817/",
     "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
     "gasApi": false,
     "desiredParts": 18,
