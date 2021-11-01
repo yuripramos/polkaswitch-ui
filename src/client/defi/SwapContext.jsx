@@ -2,14 +2,30 @@ const { useState } = require("react");
 
 const initialContext = {
     txMode: "SWAP",
-    formNetwork: 1,
-    toNetwork: 137
+    fromNetwork: 137,
+    toNetwork: 1,
+    tokenSelected: "",
+    setTo: undefined,
+    setFrom: undefined,
+    setToken: undefined
 };
 
 const SwapContext = React.createContext(initialContext)
 
 exports.SwapContextProvider = () => {
     const [txMode, setTxMode] = useState("SWAP");
+    const [toNetwork, setTo] = useState(137);
+    const [fromNetwork, setFrom] = useState(1);
+    const [token, setToken] = useState("");
 
-    return <SwapContext.Provider value={{}}></SwapContext.Provider>
+    return <SwapContext.Provider value={{
+        txMode,
+        toNetwork,
+        fromNetwork,
+        setTo,
+        setFrom,
+        setTxMode,
+        token,
+        setToken
+    }}></SwapContext.Provider>
 }
