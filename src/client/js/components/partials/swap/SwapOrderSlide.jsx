@@ -91,13 +91,7 @@ export default class SwapOrderSlide extends Component {
         if (this.calculatingSwapTimestamp !== _timeNow2) {
           return;
         }
-
-        if (this.props.crossChainEnabled) {
-          this.fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
-        } else {
-          this.fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
-        }
-
+        this.fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
       }.bind(this), 500, _timeNow, _attempt, _cb);
     }.bind(this, timeNow, attempt, cb));
   }
@@ -151,68 +145,6 @@ export default class SwapOrderSlide extends Component {
       });
     }.bind(this, _timeNow2, _cb2))
     .catch(function(_timeNow3, _attempt3, _cb3, e) {
-      console.error("Failed to get swap estimate: ", e);
-
-      if (this.calculatingSwapTimestamp !== _timeNow3) {
-        return;
-      }
-
-      // try again
-      this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1, _cb3);
-    }.bind(this, _timeNow2, _attempt2, _cb2));
-  }
-
-  fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
-    if (!Wallet.isConnected()) {
-      // not supported in cross-chain mode
-      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
-      return false;
-    }
-
-    Nxtp.getTransferQuoteV2(
-      +this.props.fromChain.chainId,
-      this.props.from.address,
-      +this.props.toChain.chainId,
-      this.props.to.address,
-      fromAmountBN,
-      Wallet.currentAddress()
-    ).then(function(_timeNow3, _cb3, response) {
-      if (this.calculatingSwapTimestamp !== _timeNow3) {
-        return;
-      }
-
-      Wallet.getBalance(this.props.from).then((bal) => {
-        this.props.onSwapEstimateComplete(
-          origFromAmount,
-          window.ethers.utils.formatUnits(response?.returnAmount ?? constants.Zero, this.props.to.decimals),
-          false,
-          window.ethers.utils.formatUnits(bal, this.props.from.decimals),
-          status
-        )
-
-        this.props.onCrossChainEstimateComplete(response.id);
-
-        this.setState({
-          calculatingSwap: false
-        }, () => {
-          if (_cb3) {
-            _cb3();
-          }
-
-          Metrics.track("swap-estimate-result", {
-            from: this.props.from,
-            to: this.props.to,
-            fromAmont: fromAmountBN.toString(),
-            toAmount: this.props.toAmount,
-            swapDistribution: this.props.swapDistribution
-          });
-        });
-      }).catch((e) => {
-        console.error("Failed to get swap estimate: ", e);
-      });
-    }.bind(this, _timeNow2, _cb2))
-    .catch(function(_timeNow3, _attempt3, _cb3, e) {
-      console.error(e);
       console.error("Failed to get swap estimate: ", e);
 
       if (this.calculatingSwapTimestamp !== _timeNow3) {
@@ -296,18 +228,6 @@ export default class SwapOrderSlide extends Component {
     }
   }
 
-  handleNetworkDropdownChange(isFrom) {
-    return function (network) {
-      if (network.enabled) {
-        Sentry.addBreadcrumb({
-          message: "Action: Network Changed: " + network.name
-        });
-
-        this.props.handleCrossChainChange(isFrom, network);
-      }
-    }.bind(this);
-  }
-
   handleMax() {
     if (Wallet.isConnected() && this.props.from.address) {
       Wallet.getBalance(this.props.from)
@@ -336,29 +256,19 @@ export default class SwapOrderSlide extends Component {
 
     return (
       <div className="level is-mobile">
-        <div className={classnames("level is-mobile is-narrow my-0 mr-2", {
-          "is-hidden": !this.props.crossChainEnabled
-        })}>
-        <NetworkDropdown
-          crossChain={true}
-          selected={isFrom ? this.props.fromChain : this.props.toChain}
-          className={classnames({ "is-up": !isFrom })}
-          handleDropdownClick={this.handleNetworkDropdownChange(isFrom).bind(this)}
-          compact={true} />
-      </div>
-      <div className="level is-mobile is-narrow my-0 token-dropdown"
-        onClick={this.props.handleSearchToggle(target)}>
-        <TokenIconBalanceGroupView
-          network={isFrom ? this.props.fromChain : this.props.toChain}
-          token={token}
-          refresh={this.props.refresh}
-        />
-        <div className="level-item">
-          <span className="icon-down">
-            <ion-icon name="chevron-down"></ion-icon>
-          </span>
+        <div className="level is-mobile is-narrow my-0 token-dropdown"
+          onClick={this.props.handleSearchToggle(target)}>
+          <TokenIconBalanceGroupView
+            network={isFrom ? this.props.fromChain : this.props.toChain}
+            token={token}
+            refresh={this.props.refresh}
+          />
+          <div className="level-item">
+            <span className="icon-down">
+              <ion-icon name="chevron-down"></ion-icon>
+            </span>
+          </div>
         </div>
-      </div>
       <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
         <div className="field" style={{ width: "100%", maxWidth: "250px" }}>
           <div

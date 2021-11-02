@@ -106,10 +106,10 @@
 .cross-chain-toggle.switcher {
   input {
     &:before {
-      content: 'Swap';
+      content: 'Market';
     }
     &:after {
-      content: 'Bridge';
+      content: 'Limit';
     }
   }
 }

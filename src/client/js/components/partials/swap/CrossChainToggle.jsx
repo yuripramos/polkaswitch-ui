@@ -9,11 +9,9 @@ export default class CrossChainToggle extends Component {
   }
 
   handleChange(event) {
-    this.props.handleChange(event.target.checked);
   }
 
   render() {
-    const crossChainSupported = TokenListManager.getCurrentNetworkConfig().crossChainSupported;
     return (
       <span
         className="cross-chain-toggle switcher"
@@ -22,7 +20,7 @@ export default class CrossChainToggle extends Component {
           id="cross-chain-switcher"
           type="checkbox"
           checked={this.props.checked}
-          disabled={!crossChainSupported}
+          disabled={true}
           onChange={this.handleChange} />
         <label htmlFor="cross-chain-switcher"></label>
       </span>
