@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 const networks = require("./networks");
+const networksIds = Object.keys(networks);
 
 const web3Context = React.createContext({
     tokens: {},
@@ -10,7 +11,8 @@ const web3Context = React.createContext({
     networkId: -1,
     isConnected: boolean,
     connectWallet: undefined,
-    ethAccount: undefined
+    ethAccount: undefined,
+
 })
 
 exports.Web3ContextProvider = ({ children, supportedChainIds }) => {
@@ -20,6 +22,7 @@ exports.Web3ContextProvider = ({ children, supportedChainIds }) => {
     const [networkId, setNetworkId] = useState(-1);
     const [isConnected, setIsConnected] = useState(false);
     const [errorMessage, setErrorMessage] = useState(undefined);
+    const [ethBalance, setEthBalace] = useState(undefined);
 
     const connectWallet = (wallet) => {
         switch(wallet) {
@@ -88,7 +91,8 @@ exports.Web3ContextProvider = ({ children, supportedChainIds }) => {
             isConnected,
             errorMessage,
             ethAccount,
-            connectWallet
+            connectWallet,
+            ethBalance
         }}>{children}</web3Context.Provider>
     )
 }

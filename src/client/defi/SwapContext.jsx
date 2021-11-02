@@ -2,8 +2,8 @@ const { useState } = require("react");
 
 const initialContext = {
     txMode: "SWAP",
-    fromNetwork: 137,
-    toNetwork: 1,
+    fromNetwork: undefined,
+    toNetwork: undefined,
     tokenSelected: "",
     setTo: undefined,
     setFrom: undefined,
