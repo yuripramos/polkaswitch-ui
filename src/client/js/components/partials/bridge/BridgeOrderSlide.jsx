@@ -20,13 +20,10 @@ export default class BridgeOrderSlide extends Component {
       calculatingSwap: false,
       errored: false
     };
-
     this.calculatingSwapTimestamp = Date.now();
-
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
-    this.debounced_fetchSwapEstimate = _.debounce(this.fetchSwapEstimate, 600, true);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
@@ -90,75 +87,9 @@ export default class BridgeOrderSlide extends Component {
         if (this.calculatingSwapTimestamp !== _timeNow2) {
           return;
         }
-
-        if (this.props.crossChainEnabled) {
-          this.fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
-        } else {
-          this.fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
-        }
-
+        this.fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
       }.bind(this), 500, _timeNow, _attempt, _cb);
     }.bind(this, timeNow, attempt, cb));
-  }
-
-  fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
-    return SwapFn.getExpectedReturn(
-      this.props.from,
-      this.props.to,
-      fromAmountBN
-    ).then(function(_timeNow3, _cb3, result) {
-      if (this.calculatingSwapTimestamp !== _timeNow3) {
-        return;
-      }
-
-      var dist = _.map(result.distribution, function(e) {
-        return e.toNumber();
-      });
-
-      Wallet.getBalance(this.props.from).then((bal) => {
-        return SwapFn.getApproveStatus(
-          this.props.from,
-          fromAmountBN
-        ).then((status) => {
-          console.log('Approval Status', status)
-          this.props.onSwapEstimateComplete(
-            origFromAmount,
-            window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
-            dist,
-            window.ethers.utils.formatUnits(bal, this.props.from.decimals),
-            status
-          )
-
-          this.setState({
-            calculatingSwap: false
-          }, () => {
-            if (_cb3) {
-              _cb3();
-            }
-
-            Metrics.track("swap-estimate-result", {
-              from: this.props.from,
-              to: this.props.to,
-              fromAmont: fromAmountBN.toString(),
-              toAmount: this.props.toAmount,
-              swapDistribution: this.props.swapDistribution
-            });
-          });
-        });
-      }).catch((e) => {
-        console.error("Failed to get swap estimate: ", e);
-      });
-    }.bind(this, _timeNow2, _cb2))
-    .catch(function(_timeNow3, _attempt3, _cb3, e) {
-      console.error("Failed to get swap estimate: ", e);
-
-      if (this.calculatingSwapTimestamp !== _timeNow3) {
-        return;
-      }
-
-      // try again
-      this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1, _cb3);
-    }.bind(this, _timeNow2, _attempt2, _cb2));
   }
 
   fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
@@ -335,16 +266,15 @@ export default class BridgeOrderSlide extends Component {
 
     return (
       <div className="level is-mobile">
-        <div className={classnames("level is-mobile is-narrow my-0 mr-2", {
-          "is-hidden": !this.props.crossChainEnabled
-        })}>
-        <NetworkDropdown
-          crossChain={true}
-          selected={isFrom ? this.props.fromChain : this.props.toChain}
-          className={classnames({ "is-up": !isFrom })}
-          handleDropdownClick={this.handleNetworkDropdownChange(isFrom).bind(this)}
-          compact={true} />
-      </div>
+        <div className="level is-mobile is-narrow my-0 mr-2">
+          <NetworkDropdown
+            crossChain={true}
+            selected={isFrom ? this.props.fromChain : this.props.toChain}
+            className={classnames({ "is-up": !isFrom })}
+            handleDropdownClick={this.handleNetworkDropdownChange(isFrom).bind(this)}
+            compact={true}
+          />
+        </div>
       <div className="level is-mobile is-narrow my-0 token-dropdown"
         onClick={this.props.handleSearchToggle(target)}>
         <TokenIconBalanceGroupView
@@ -427,7 +357,7 @@ export default class BridgeOrderSlide extends Component {
 
           <div className="notification is-white my-0">
             <div className="text-gray-stylized">
-              <span>You Pay</span>
+              <span>Send</span>
             </div>
             {this.renderTokenInput("from", this.props.from)}
           </div>
@@ -445,7 +375,7 @@ export default class BridgeOrderSlide extends Component {
 
           <div className="notification is-white bottom">
             <div className="text-gray-stylized">
-              <span>You Receive</span>
+              <span>Receive</span>
             </div>
             {this.renderTokenInput("to", this.props.to)}
           </div>
@@ -471,7 +401,7 @@ export default class BridgeOrderSlide extends Component {
               className="button is-primary is-fullwidth is-medium"
               onClick={this.handleSubmit}
             >
-              {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
+              {Wallet.isConnected() ? "Review Bridge Order" : "Connect Wallet"}
             </button>
           </div>
         </div>

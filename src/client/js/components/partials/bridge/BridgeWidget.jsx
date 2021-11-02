@@ -6,7 +6,6 @@ import * as Sentry from "@sentry/react";
 
 import BridgeOrderSlide from './BridgeOrderSlide';
 import BridgeTokenSearchSlide from './BridgeTokenSearchSlide';
-import BridgeConfirmSlide from './BridgeConfirmSlide';
 import CrossSwapProcessSlide from './CrossSwapProcessSlide';
 import BridgeAdvancedSettingsSlide from './BridgeAdvancedSettingsSlide';
 import BridgeFinalResultSlide from './BridgeFinalResultSlide';
@@ -29,25 +28,21 @@ export default class BridgeWidget extends Component {
 
     var network = TokenListManager.getCurrentNetworkConfig();
     var mergeState = {};
+    var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
+      return v.chainId !== network.chainId
+    });
+    var fromChain = network;
 
-    if (TokenListManager.isCrossChainEnabled()) {
-      var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
-        return v.chainId != network.chainId
-      });
-      var fromChain = network;
-
-      mergeState = _.extend(mergeState, {
-        crossChainEnabled: true,
-        toChain: toChain,
-        fromChain: fromChain,
-        to: TokenListManager.findTokenById(
-          toChain.supportedCrossChainTokens[0],
-          toChain
-        ) || TokenListManager.findTokenById(network.defaultPair.to, toChain),
-        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
-          TokenListManager.findTokenById(network.defaultPair.from)
-      });
-    }
+    mergeState = _.extend(mergeState, {
+      toChain: toChain,
+      fromChain: fromChain,
+      to: TokenListManager.findTokenById(
+        toChain.supportedCrossChainTokens[0],
+        toChain
+      ) || TokenListManager.findTokenById(network.defaultPair.to, toChain),
+      from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
+        TokenListManager.findTokenById(network.defaultPair.from)
+    });
 
     this.state = _.extend(mergeState, {
       fromAmount: undefined,
@@ -111,26 +106,23 @@ export default class BridgeWidget extends Component {
 
   handleNetworkChange(e) {
     var network = TokenListManager.getCurrentNetworkConfig();
+    var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
+      return v.chainId != network.chainId
+    });
+    var fromChain = network;
 
-    if (TokenListManager.isCrossChainEnabled()) {
-      var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
-        return v.chainId != network.chainId
-      });
-      var fromChain = network;
-
-      this.setState({
-        loading: false,
-        crossChainEnabled: true,
-        to: TokenListManager.findTokenById(
-          toChain.supportedCrossChainTokens[0],
-          toChain
-        ),
-        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
-        toChain: toChain,
-        fromChain: fromChain,
-        availableBalance: undefined
-      });
-    }
+    this.setState({
+      loading: false,
+      crossChainEnabled: true,
+      to: TokenListManager.findTokenById(
+        toChain.supportedCrossChainTokens[0],
+        toChain
+      ),
+      from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+      toChain: toChain,
+      fromChain: fromChain,
+      availableBalance: undefined
+    });
   }
 
   handleWalletChange(e) {
@@ -205,11 +197,9 @@ export default class BridgeWidget extends Component {
       // make it easy coming from token-selection
       showSearch: false
     }, () => {
-      if (this.state.crossChainEnabled) {
-        let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-          Wallet.getConnectionStrategy();
-        TokenListManager.updateNetwork(this.state.fromChain, connectStrategy);
-      }
+      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
+        Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(this.state.fromChain, connectStrategy);
     });
   }
 
@@ -378,7 +368,6 @@ export default class BridgeWidget extends Component {
           classNames="fade">
           <BridgeOrderSlide
             ref={this.orderPage}
-            crossChainEnabled={this.state.crossChainEnabled}
             toChain={this.state.toChain}
             fromChain={this.state.fromChain}
             to={this.state.to}
@@ -429,36 +418,20 @@ export default class BridgeWidget extends Component {
             in={!this.state.showResults}
             timeout={animTiming}
             classNames="fade">
-            {!this.state.crossChainEnabled ? (
-              <BridgeConfirmSlide
-                to={this.state.to}
-                from={this.state.from}
-                fromAmount={this.state.fromAmount}
-                toAmount={this.state.toAmount}
-                availableBalance={this.state.availableBalance}
-                approveStatus={this.state.approveStatus}
-                refresh={this.state.refresh}
-                swapDistribution={this.state.swapDistribution}
-                handleTransactionComplete={this.handleResults}
-                onApproveComplete={this.onApproveComplete}
-                handleBackOnConfirm={this.handleBackOnConfirm}
-              />
-            ) : (
-              <CrossSwapProcessSlide
-                to={this.state.to}
-                from={this.state.from}
-                fromChain={this.state.fromChain}
-                toChain={this.state.toChain}
-                fromAmount={this.state.fromAmount}
-                toAmount={this.state.toAmount}
-                crossChainTransactionId={this.state.crossChainTransactionId}
-                availableBalance={this.state.availableBalance}
-                approveStatus={this.state.approveStatus}
-                refresh={this.state.refresh}
-                handleTransactionComplete={this.handleResults}
-                handleBackOnConfirm={this.handleBackOnConfirm}
-              />
-            )}
+            <CrossSwapProcessSlide
+              to={this.state.to}
+              from={this.state.from}
+              fromChain={this.state.fromChain}
+              toChain={this.state.toChain}
+              fromAmount={this.state.fromAmount}
+              toAmount={this.state.toAmount}
+              crossChainTransactionId={this.state.crossChainTransactionId}
+              availableBalance={this.state.availableBalance}
+              approveStatus={this.state.approveStatus}
+              refresh={this.state.refresh}
+              handleTransactionComplete={this.handleResults}
+              handleBackOnConfirm={this.handleBackOnConfirm}
+            />
           </CSSTransition>
         </CSSTransition>
         <CSSTransition
