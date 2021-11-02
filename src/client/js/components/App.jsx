@@ -12,6 +12,7 @@ import SwapHome from './pages/SwapHome';
 import TokenClaimHome from './pages/TokenClaimHome';
 import MarketsHome from './pages/MarketsHome';
 import StakeHome from './pages/StakeHome';
+import WalletHome from './pages/WalletHome';
 import Footer from './partials/Footer';
 import classnames from 'classnames';
 import { keepTheme } from '../utils/theme';
@@ -68,6 +69,9 @@ export default class App extends Component {
             </Route>
             <Route path="/stake">
               <StakeHome />
+            </Route>
+            <Route path="/wallet">
+              <WalletHome />
             </Route>
             <Route>
               <Redirect to="/swap" />

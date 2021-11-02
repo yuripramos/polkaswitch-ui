@@ -1,0 +1,67 @@
+.wallet-card {
+    padding: 14px 25px 0px 21px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.wallet-card .columns {
+    margin: 0;
+}
+
+.wallet-card .column {
+    padding: 0;
+}
+
+.portfolio-balance {
+    border-bottom: 1px solid #eee;
+}
+
+.portfolio-balance__main-heading {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 22px;
+    color: #333333;
+    margin-bottom: 14px;
+}
+
+.total-balance {
+    margin-right: 0;
+    margin-left: 0;
+    border-bottom: 1px solid #eee;
+}
+
+.total-balance__sub-heading {
+    margin-bottom: 4px;
+    margin-top: 24px;
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    color: #333333;
+    mix-blend-mode: normal;
+    opacity: 0.49;
+}
+
+.total-balance__main-heading {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 44px;
+    margin-bottom: 14px;
+}
+
+.portfolio-makeup__heading {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 17px;
+    color: #333333;
+    margin-top: 14px;
+    margin-bottom: 4px;
+}
