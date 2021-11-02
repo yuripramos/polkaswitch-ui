@@ -139,6 +139,10 @@ export default class SwapOrderWidget extends Component {
         from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
         toChain: toChain,
         fromChain: fromChain,
+        showSettings: false,
+        showConfirm: false,
+        showSearch: false,
+        showResults: false,
         availableBalance: undefined
       });
     } else {
@@ -149,6 +153,10 @@ export default class SwapOrderWidget extends Component {
         from: TokenListManager.findTokenById(network.defaultPair.from),
         toChain: network,
         fromChain: network,
+        showSettings: false,
+        showConfirm: false,
+        showSearch: false,
+        showResults: false,
         availableBalance: undefined
       });
     }
