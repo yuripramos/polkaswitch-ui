@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import TokenSearchBar from './../TokenSearchBar';
 
-export default class SwapTokenSearchSlide extends Component {
+export default class BridgeTokenSearchSlide extends Component {
   constructor(props) {
     super(props);
   }

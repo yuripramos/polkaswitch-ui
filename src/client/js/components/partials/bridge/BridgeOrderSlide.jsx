@@ -7,14 +7,13 @@ import * as Sentry from "@sentry/react";
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import NetworkDropdown from './NetworkDropdown';
-
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
 import Nxtp from '../../../utils/nxtp';
 
-export default class SwapOrderSlide extends Component {
+export default class BridgeOrderSlide extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -379,10 +378,10 @@ export default class SwapOrderSlide extends Component {
               lang="en"
               step="0.000000000000000001"
               className={classnames("input is-medium", {
-                //"is-danger": isFrom && !this.hasSufficientBalance(),
+                "is-danger": isFrom && !this.hasSufficientBalance(),
                 "is-to": !isFrom,
                 "is-from": isFrom,
-                "is-danger": !isFrom && this.state.errored
+                //"is-danger": !isFrom && this.state.errored
               })}
               placeholder="0.0"
               disabled={!isFrom}

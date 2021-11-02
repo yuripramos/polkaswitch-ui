@@ -6,7 +6,9 @@ import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenIconImg from './../TokenIconImg';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+import SwapFn from '../../../utils/swapFn';
 import Nxtp from '../../../utils/nxtp';
+import { ApprovalState } from "../../../constants/Status";
 import { NxtpSdkEvents } from "@connext/nxtp-sdk";
 
 export default class CrossSwapProcessSlide extends Component {

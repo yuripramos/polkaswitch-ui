@@ -10,11 +10,13 @@ import {
 
 import SwapHome from './pages/SwapHome';
 import TokenClaimHome from './pages/TokenClaimHome';
-import MarketsHome from './pages/MarketsHome';
+import BridgeHome from './pages/BridgeHome';
 import StakeHome from './pages/StakeHome';
 import Footer from './partials/Footer';
 import classnames from 'classnames';
 import { keepTheme } from '../utils/theme';
+import Bridge from "./pages/BridgeHome";
+import BridgeButton from "./partials/BridgeButton";
 
 require('../../css/index.scss');
 
@@ -60,11 +62,11 @@ export default class App extends Component {
             <Route path="/swap">
               <SwapHome />
             </Route>
+            <Route path="/bridge">
+              <BridgeHome />
+            </Route>
             <Route path="/claim">
               <TokenClaimHome />
-            </Route>
-            <Route path="/markets">
-              <MarketsHome />
             </Route>
             <Route path="/stake">
               <StakeHome />
