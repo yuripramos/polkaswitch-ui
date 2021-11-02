@@ -10,7 +10,6 @@ import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
-import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
 import { ApprovalState } from "../../../constants/Status";
 
