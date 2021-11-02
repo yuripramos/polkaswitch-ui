@@ -21,7 +21,8 @@ export default class SwapOrderSlide extends Component {
     super(props);
     this.state = {
       calculatingSwap: false,
-      errored: false
+      errored: false,
+      errorMsg: false
     };
 
     this.calculatingSwapTimestamp = Date.now();
@@ -54,7 +55,8 @@ export default class SwapOrderSlide extends Component {
     } else if (attempt > window.MAX_RETRIES) {
       this.setState({
         calculatingSwap: false,
-        errored: true
+        errored: true,
+        errorMsg: false
       });
       console.error("Swap Failure: MAX RETRIES REACHED");
       return;
@@ -80,6 +82,7 @@ export default class SwapOrderSlide extends Component {
 
     this.setState({
       errored: false,
+      errorMsg: false,
       calculatingSwap: true
     }, function(_timeNow, _attempt, _cb) {
 
@@ -166,8 +169,12 @@ export default class SwapOrderSlide extends Component {
 
   fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
     if (!Wallet.isConnected()) {
-      // not supported in cross-chain mode
-      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      this.setState({
+        calculatingSwap: false,
+        errored: true,
+        errorMsg: "Connect wallet first"
+      });
+      console.error("SwapOrderSlide#fetchCrossChainEstimate: Wallet not connected");
       return false;
     }
 
@@ -400,7 +407,7 @@ export default class SwapOrderSlide extends Component {
 
                   {!isFrom && this.state.errored &&
                       (<div className="warning-funds">
-                        Estimate failed. Try again
+                        {this.state.errorMsg || "Estimate failed. Try again"}
                       </div>)}
                     </div>
                   </div>
