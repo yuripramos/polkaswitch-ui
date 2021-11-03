@@ -15,34 +15,135 @@ export default function WalletHome() {
             <TxHistoryModal />
 
             <div className="columns is-centered">
-                <div className="column is-two-thirds">
-                    <div className="column">
-                        <div className="card wallet-card">
-                            
-                            <div className="columns portfolio-balance">
-                                <div className="column">
-                                    <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
+                <div className="column main">
+                    <div className="card wallets-page-card">
+                        <div className="columns portfolio-balance">
+                            <div className="column">
+                                <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
+
+                                <div className="dropdown">
+                                    <div className="dropdown-trigger">
+                                        <img src="https://bulma.io/images/placeholders/128x128.png" />
+
+                                        <div className="dropdown-trigger__content">
+                                            <span className="sub">Network</span>
+                                            <span className="main">All Networks</span>
+                                        </div>
+
+                                        <div className="icon">
+                                            <i className="fa fa-chevron-down" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                    <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                        <div className="dropdown-content">
+                                            <a href="#" className="dropdown-item">
+                                                Dropdown item
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="columns total-balance">
+                            <div className="column">
+                                <h6 className="total-balance__sub-heading">Total Balance</h6>
+                                <h2 className="total-balance__main-heading">$456.156</h2>
+                            </div>
+                        </div>
+
+                        <div className="columns">
+                            <div className="column">
+                                <div className="portfolio-makeup__heading">Portfolio Makeup</div>
+                            </div>
+                        </div>
+
+                        <div className="columns portfolio-makeup">
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">Ethereum</span>
+                                    <span className="portfolio-makeup__asset_price">$48,125.83 (19%)</span>
                                 </div>
                             </div>
 
-                            <div className="columns total-balance">
-                                <div className="column">
-                                    <h6 className="total-balance__sub-heading">Total Balance</h6>
-                                    <h2 className="total-balance__main-heading">$456.156</h2>
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">BSC</span>
+                                    <span className="portfolio-makeup__asset_price">$48,125.83 (19%)</span>
+                                </div>
+                            </div>
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">Avalanche</span>
+                                    <span className="portfolio-makeup__asset_price">$48,125.83 (19%)</span>
+                                </div>
+                            </div>
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">Arbitrum</span>
+                                    <span className="portfolio-makeup__asset_price">$293.03 (1%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="columns is-centered">
+                <div className="column main">
+                    <div className="card wallets-page-card">
+                        <div className="columns portfolio-balance">
+                            <div className="column">
+                                <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
+                            </div>
+                        </div>
+
+                        <div className="columns total-balance">
+                            <div className="column">
+                                <h6 className="total-balance__sub-heading">Total Balance</h6>
+                                <h2 className="total-balance__main-heading">$456.156</h2>
+                            </div>
+                        </div>
+
+                        <div className="columns">
+                            <div className="column">
+                                <div className="portfolio-makeup__heading">Portfolio Makeup</div>
+                            </div>
+                        </div>
+
+                        <div className="columns portfolio-makeup">
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">Ethereum</span>
+                                    <span className="portfolio-makeup__asset_price">$48,125.83 (19%)</span>
                                 </div>
                             </div>
 
-                            <div className="columns">
-                                <div className="column">
-                                    <div className="portfolio-makeup__heading">Portfolio Makeup</div>
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">BSC</span>
+                                    <span className="portfolio-makeup__asset_price">$48,125.83 (19%)</span>
                                 </div>
                             </div>
-
-                            <div className="columns portfolio-makeup">
-                                <div className="column">1</div>
-                                <div className="column">2</div>
-                                <div className="column">3</div>
-                                <div className="column">4</div>
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">Avalanche</span>
+                                    <span className="portfolio-makeup__asset_price">$48,125.83 (19%)</span>
+                                </div>
+                            </div>
+                            <div className="column">
+                                <img className="is-rounded asset-icon" src="https://bulma.io/images/placeholders/128x128.png" />
+                                <div className="portfolio-makeup__asset_container">
+                                    <span className="portfolio-makeup__asset_heading">Arbitrum</span>
+                                    <span className="portfolio-makeup__asset_price">$293.03 (1%)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
