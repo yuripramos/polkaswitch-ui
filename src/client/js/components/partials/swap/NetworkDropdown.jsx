@@ -57,7 +57,7 @@ export default class NetworkDropdown extends Component {
             "disabled": !v.enabled
           })}
         >
-          <span className="level-left my-2">
+          <span className="level-left">
             <span className="level-item">
               <TokenIconImg
                 size={35}
@@ -98,7 +98,7 @@ export default class NetworkDropdown extends Component {
         </div>
         <DropdownSelectModal
           open={this.state.open}
-          title={"Choose network"}
+          title={"Choose Network"}
           handleClose={this.handleClose}
         >
           <>
