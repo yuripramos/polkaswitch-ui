@@ -253,7 +253,7 @@ export default class BridgeWidget extends Component {
         message: "Page: Search Token: " + target,
       });
 
-      Metrics.track("swap-search-view", { closing: this.state.showSearch });
+      Metrics.track("bridge-search-view", { closing: this.state.showSearch });
       this.setState({
         searchTarget: target,
         showSearch: !this.state.showSearch
@@ -266,10 +266,7 @@ export default class BridgeWidget extends Component {
       message: "Page: Settings",
     });
 
-    Metrics.track("swap-settings-view", { closing: this.state.showSettings });
-    this.setState({
-      showSettings: !this.state.showSettings
-    });
+    Metrics.track("bridge-settings-view", { closing: this.state.showSettings });
   }
 
   handleConfirm(e) {
@@ -283,7 +280,7 @@ export default class BridgeWidget extends Component {
       }
     });
 
-    Metrics.track("swap-review-step", { closing: this.state.showConfirm });
+    Metrics.track("bridge-review-step", { closing: this.state.showConfirm });
     this.setState({
       showConfirm: true
     });
@@ -357,7 +354,7 @@ export default class BridgeWidget extends Component {
     );
 
     return (
-      <div ref={this.box} className="box swap-widget">
+      <div ref={this.box} className="box bridge-widget">
         <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
           <div className="loader is-loading"></div>
         </div>

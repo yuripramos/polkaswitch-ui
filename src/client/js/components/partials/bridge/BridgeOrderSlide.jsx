@@ -129,7 +129,7 @@ export default class BridgeOrderSlide extends Component {
             _cb3();
           }
 
-          Metrics.track("swap-estimate-result", {
+          Metrics.track("bridge-estimate-result", {
             from: this.props.from,
             to: this.props.to,
             fromAmont: fromAmountBN.toString(),
@@ -174,7 +174,7 @@ export default class BridgeOrderSlide extends Component {
         // in the higher-order component SwapWidget.jsx
       }
 
-      Metrics.track("swap-token-value", {
+      Metrics.track("bridge-token-value", {
         value: targetAmount,
         from: this.props.from,
         to: this.props.to
@@ -275,64 +275,76 @@ export default class BridgeOrderSlide extends Component {
             compact={true}
           />
         </div>
-      <div className="level is-mobile is-narrow my-0 token-dropdown"
-        onClick={this.props.handleSearchToggle(target)}>
-        <TokenIconBalanceGroupView
-          network={isFrom ? this.props.fromChain : this.props.toChain}
-          token={token}
-          refresh={this.props.refresh}
-        />
-        <div className="level-item">
-          <span className="icon-down">
-            <ion-icon name="chevron-down"></ion-icon>
-          </span>
-        </div>
-      </div>
-      <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
-        <div className="field" style={{ width: "100%", maxWidth: "250px" }}>
-          <div
-            className={classnames("control", {
-              "is-loading": !isFrom && this.state.calculatingSwap
-            })}
-            style={{ width: "100%" }}
-          >
-            <input
-              onChange={this.handleTokenAmountChange}
-              value={
-                (!isFrom && this.state.errored) ?
-                  "" :
-                  (this.props[`${target}Amount`] || "")
-              }
-              type="number"
-              min="0"
-              lang="en"
-              step="0.000000000000000001"
-              className={classnames("input is-medium", {
-                "is-danger": isFrom && !this.hasSufficientBalance(),
-                "is-to": !isFrom,
-                "is-from": isFrom,
-                //"is-danger": !isFrom && this.state.errored
+
+        <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
+          <div className="field" style={{ width: "100%" }}>
+            <div
+              className={classnames("control", {
+                "is-loading": !isFrom && this.state.calculatingSwap
               })}
-              placeholder="0.0"
-              disabled={!isFrom}
-            />
+              style={{ width: "100%" }}
+            >
+              <input
+                onChange={this.handleTokenAmountChange}
+                value={
+                  (!isFrom && this.state.errored) ?
+                    "" :
+                    (this.props[`${target}Amount`] || "")
+                }
+                type="number"
+                min="0"
+                lang="en"
+                step="0.000000000000000001"
+                className={classnames("input is-medium", {
+                  "is-danger": isFrom && !this.hasSufficientBalance(),
+                  "is-to": !isFrom,
+                  "is-from": isFrom,
+                  //"is-danger": !isFrom && this.state.errored
+                })}
+                placeholder="0.0"
+                disabled={!isFrom}
+              />
+              <div className="input-wrapper">
+                {
+                  isFrom && (
+                      <div className="max-btn" onClick={this.handleMax}>Max</div>
+                  )
+                }
+                {
+                  isFrom && !this.hasSufficientBalance() && (
+                      <div className="warning-funds">
+                        Insufficient funds
+                      </div>
+                  )
+                }
 
-          {isFrom &&
-              (<div className="max-btn" onClick={this.handleMax}>Max</div>)}
-
-              {isFrom && !this.hasSufficientBalance() &&
-                  (<div className="warning-funds">
-                    Insufficient funds
-                  </div>)}
-
-                  {!isFrom && this.state.errored &&
-                      (<div className="warning-funds">
+                {
+                  !isFrom && this.state.errored && (
+                      <div className="warning-funds">
                         Estimate failed. Try again
-                      </div>)}
-                    </div>
+                      </div>
+                  )
+                }
+                <div
+                  className="level is-mobile is-narrow my-0 token-dropdown"
+                  onClick={this.props.handleSearchToggle(target)}
+                >
+                  <TokenIconBalanceGroupView
+                      network={isFrom ? this.props.fromChain : this.props.toChain}
+                      token={token}
+                      refresh={this.props.refresh}
+                  />
+                  <div className="level-item">
+                    <span className="icon-down">
+                      <ion-icon name="chevron-down"></ion-icon>
+                    </span>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -340,40 +352,38 @@ export default class BridgeOrderSlide extends Component {
     return (
       <div className="page page-view-order">
         <div className="page-inner">
-          <div className="level is-mobile">
-            <div className="level-left is-flex-grow-1">
+          <div className="level is-mobile" style={{marginBottom: 10}}>
+            <div className=" level-left">
+              <b className="widget-title">Bridge Assets</b>
             </div>
-
-            <div className="level-right">
-              <div className="level-item">
-                <span
-                  className="icon clickable settings-icon"
-                  onClick={this.props.handleSettingsToggle}>
-                  <ion-icon name="settings-outline"></ion-icon>
-                </span>
-              </div>
+            <div className="level-item level-right">
+              <span
+                className="icon clickable settings-icon"
+                onClick={this.props.handleSettingsToggle}>
+                <img src="/images/bridge_setting_white.svg" />
+              </span>
             </div>
           </div>
 
-          <div className="notification is-white my-0">
+          <div className="notification is-white border-top">
             <div className="text-gray-stylized">
               <span>Send</span>
             </div>
             {this.renderTokenInput("from", this.props.from)}
           </div>
 
-          <div className="swap-icon-wrapper">
-            <div className="swap-icon-v2 icon" onClick={this.handleTokenSwap}>
+          <div className="bridge-icon-wrapper">
+            <div className="bridge-icon-v2 icon" onClick={this.handleTokenSwap}>
               <ion-icon name="swap-vertical-outline"></ion-icon>
             </div>
 
-            <div className="swap-icon is-hidden" onClick={this.handleTokenSwap}>
+            <div className="bridge-icon is-hidden" onClick={this.handleTokenSwap}>
               <i className="fas fa-long-arrow-alt-up"></i>
               <i className="fas fa-long-arrow-alt-down"></i>
             </div>
           </div>
 
-          <div className="notification is-white bottom">
+          <div className="notification is-white border-top">
             <div className="text-gray-stylized">
               <span>Receive</span>
             </div>

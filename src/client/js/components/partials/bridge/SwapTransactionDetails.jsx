@@ -108,7 +108,7 @@ export default class SwapTransactionDetails extends Component {
 
   render() {
     return (
-      <div className="swap-trans-details">
+      <div className="bridge-trans-details">
         <div
           className="level is-mobile is-narrow detail hint--bottom hint--medium"
           aria-label="The calculated exchange rate for this transaction"

@@ -82,7 +82,7 @@ export default class CrossSwapProcessSlide extends Component {
       loading: true,
     }, function() {
       Nxtp.transferStepOne(this.props.crossChainTransactionId).then(function (transfer) {
-        Metrics.track("cross-swap-started", {
+        Metrics.track("bridge-started", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
           from: this.props.from,
@@ -109,7 +109,7 @@ export default class CrossSwapProcessSlide extends Component {
       loading: true,
     }, function() {
       Nxtp.transferStepTwo(this.props.crossChainTransactionId).then(function () {
-        Metrics.track("cross-swap-complete", {
+        Metrics.track("bridge-complete", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
           from: this.props.from,

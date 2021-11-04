@@ -3,11 +3,8 @@ import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
-
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
-import NetworkDropdown from './NetworkDropdown';
-
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
@@ -156,6 +153,68 @@ export default class SwapOrderSlide extends Component {
     }.bind(this, _timeNow2, _attempt2, _cb2));
   }
 
+  fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
+    if (!Wallet.isConnected()) {
+      // not supported in cross-chain mode
+      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      return false;
+    }
+
+    Nxtp.getTransferQuoteV2(
+      +this.props.fromChain.chainId,
+      this.props.from.address,
+      +this.props.toChain.chainId,
+      this.props.to.address,
+      fromAmountBN,
+      Wallet.currentAddress()
+    ).then(function(_timeNow3, _cb3, response) {
+      if (this.calculatingSwapTimestamp !== _timeNow3) {
+        return;
+      }
+
+      Wallet.getBalance(this.props.from).then((bal) => {
+        this.props.onSwapEstimateComplete(
+          origFromAmount,
+          window.ethers.utils.formatUnits(response?.returnAmount ?? constants.Zero, this.props.to.decimals),
+          false,
+          window.ethers.utils.formatUnits(bal, this.props.from.decimals),
+          status
+        )
+
+        this.props.onCrossChainEstimateComplete(response.id);
+
+        this.setState({
+          calculatingSwap: false
+        }, () => {
+          if (_cb3) {
+            _cb3();
+          }
+
+          Metrics.track("swap-estimate-result", {
+            from: this.props.from,
+            to: this.props.to,
+            fromAmont: fromAmountBN.toString(),
+            toAmount: this.props.toAmount,
+            swapDistribution: this.props.swapDistribution
+          });
+        });
+      }).catch((e) => {
+        console.error("Failed to get swap estimate: ", e);
+      });
+    }.bind(this, _timeNow2, _cb2))
+    .catch(function(_timeNow3, _attempt3, _cb3, e) {
+      console.error(e);
+      console.error("Failed to get swap estimate: ", e);
+
+      if (this.calculatingSwapTimestamp !== _timeNow3) {
+        return;
+      }
+
+      // try again
+      this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1, _cb3);
+    }.bind(this, _timeNow2, _attempt2, _cb2));
+  }
+
   handleTokenAmountChange(e) {
     if(!isNaN(+e.target.value)) {
       var targetAmount = e.target.value;
@@ -226,6 +285,18 @@ export default class SwapOrderSlide extends Component {
     if (!this.state.calculatingSwap) {
       this.props.onSwapTokens(e);
     }
+  }
+
+  handleNetworkDropdownChange(isFrom) {
+    return function (network) {
+      if (network.enabled) {
+        Sentry.addBreadcrumb({
+          message: "Action: Network Changed: " + network.name
+        });
+
+        this.props.handleCrossChainChange(isFrom, network);
+      }
+    }.bind(this);
   }
 
   handleMax() {
@@ -322,9 +393,6 @@ export default class SwapOrderSlide extends Component {
       <div className="page page-view-order">
         <div className="page-inner">
           <div className="level is-mobile">
-            <div className="level-left is-flex-grow-1">
-            </div>
-
             <div className="level-right">
               <div className="level-item">
                 <span

@@ -16,7 +16,7 @@ export default class Bridge extends Component {
         <NotificationSystem />
         <ConnectWalletModal />
         <div className="columns">
-          <div className="column swap-column" style={{ margin: "0 auto" }}>
+          <div className="column bridge-column" style={{ margin: "0 auto" }}>
             <BridgeWidget />
           </div>
         </div>

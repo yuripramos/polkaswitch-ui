@@ -9957,6 +9957,52 @@
       ]
     },
     {
+      "name": "swap-horizontal",
+      "tags": [
+        "horizontal",
+        "swap"
+      ]
+    },
+    {
+      "name": "swap-horizontal-outline",
+      "tags": [
+        "horizontal",
+        "outline",
+        "swap"
+      ]
+    },
+    {
+      "name": "swap-horizontal-sharp",
+      "tags": [
+        "horizontal",
+        "sharp",
+        "swap"
+      ]
+    },
+    {
+      "name": "swap-vertical",
+      "tags": [
+        "swap",
+        "vertical"
+      ]
+    },
+    {
+      "name": "swap-vertical-outline",
+      "tags": [
+        "outline",
+        "swap",
+        "vertical"
+      ]
+    },
+    {
+      "name": "swap-vertical-sharp",
+      "tags": [
+        "sharp",
+        "swap",
+        "vertical"
+      ]
+    },
+    {
       "name": "sync",
       "tags": [
         "sync"
