@@ -42,7 +42,7 @@
 .portfolio-balance .dropdown .dropdown-trigger {
     width: 100%;
     padding: 4px 3px;
-    background: #F2F7F9;
+    background: #f2f7f9;
     border-radius: 100px 35px 35px 100px;
     display: flex;
 }
@@ -61,7 +61,6 @@
 }
 
 .portfolio-balance .dropdown .dropdown-trigger__content .main {
-
     font-family: Gilroy;
     font-style: normal;
     font-weight: bold;
@@ -117,9 +116,13 @@
     margin-left: 2px;
 }
 
+.portfolio-makeup {
+    flex-wrap: wrap;
+}
+
 .portfolio-makeup .column {
     display: flex;
-    padding-bottom: 30px;
+    padding-bottom: 23px;
 }
 
 .portfolio-makeup__heading {
@@ -166,4 +169,104 @@
     color: #333333;
     mix-blend-mode: normal;
     opacity: 0.49;
+}
+
+.heading-container {
+    overflow: auto;
+}
+
+.heading-container__main {
+    float: left;
+    margin-top: 29px;
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 22px;
+    color: #333333;
+}
+
+.heading-container__sub {
+    float: right;
+    margin-top: 26px;
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: right;
+    color: #333333;
+    mix-blend-mode: normal;
+    opacity: 0.5;
+}
+
+.asset-table {
+    margin-top: 14px;
+    padding-bottom: 14px;
+}
+
+.asset-table__header {
+    background: #f2f7f9;
+    border-radius: 16px;
+    padding: 0px 16px 0px 18px;
+}
+
+.asset-table__header .column:nth-child(1) {
+    text-align: left;
+}
+
+.asset-table__header .column {
+    text-align: right;
+    padding: 8px 0 9px 0;
+    margin: 0;
+}
+
+.asset-table__header .column span {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    color: #333333;
+    mix-blend-mode: normal;
+    opacity: 0.5;
+}
+
+.asset-table__row {
+    height: 64px;
+    padding: 14px 15px 0px 16px;
+    border-radius: 16px;
+}
+
+.asset-table__row:nth-child(odd) {
+    background: #f2f7f9;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.asset-table__content {
+    display: inline-block;
+    margin-left: 6px;
+}
+
+.asset-table__title {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    color: #333333;
+}
+
+.asset-table__sub {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    color: #333333;
+    mix-blend-mode: normal;
+    opacity: 0.5;
 }
