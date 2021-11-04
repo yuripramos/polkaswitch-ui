@@ -501,7 +501,7 @@ html, body {
   margin: 2px 6px;
 }
 
-.connect-panel {
+.modal-dropdown-options {
   max-width: 420px;
   margin: 0 auto;
   border-radius: 20px;
@@ -511,8 +511,10 @@ html, body {
     border: 1px solid #ddd;
     padding: 14px 20px;
     border-radius: 10px;
-    margin-bottom: 10px;
     font-size: 16px;
+    text-decoration: none !important;
+    font-size: 18px;
+    margin-bottom: 10px;
 
     &:last-child {
       margin-bottom: 0px;

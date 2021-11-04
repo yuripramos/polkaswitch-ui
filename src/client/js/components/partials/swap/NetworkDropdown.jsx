@@ -3,27 +3,49 @@ import _ from "underscore";
 import classnames from 'classnames';
 import TokenListManager from '../../../utils/tokenList';
 import TokenIconImg from './../TokenIconImg';
+import DropdownSelectModal from './../DropdownSelectModal';
 
 export default class NetworkDropdown extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      open: false
+    };
     this.NETWORKS = window.NETWORK_CONFIGS;
     this.handleDropdownClick = this.handleDropdownClick.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  handleOpen() {
+    this.setState({
+      open: true
+    });
+  }
+
+  handleClose() {
+    this.setState({
+      open: false
+    });
   }
 
   handleDropdownClick(network) {
     return function handleClick(e) {
+      this.handleClose();
       this.props.handleDropdownClick(network);
     }.bind(this);
   }
 
   render() {
-    var selected = this.props.selected || TokenListManager.getCurrentNetworkConfig();
+    var selected = this.props.selected ||
+      TokenListManager.getCurrentNetworkConfig();
 
     var filteredNetworks = _.filter(this.NETWORKS, (v) => { return v.enabled });
 
     if (this.props.crossChain) {
-      filteredNetworks = _.filter(filteredNetworks, (v) => { return v.crossChainSupported });
+      filteredNetworks = _.filter(filteredNetworks, (v) => {
+        return v.crossChainSupported
+      });
     }
 
     var networkList = _.map(filteredNetworks, function(v, i) {
@@ -31,14 +53,14 @@ export default class NetworkDropdown extends Component {
         <a href="#"
           key={i}
           onClick={this.handleDropdownClick(v)}
-          className={classnames("dropdown-item level is-mobile", {
+          className={classnames("level is-mobile option", {
             "disabled": !v.enabled
           })}
         >
           <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
-                size={30}
+                size={35}
                 imgSrc={v.logoURI} />
             </span>
             <span className="level-item">{v.name} {!v.enabled && "(Coming Soon)"}</span>
@@ -48,11 +70,13 @@ export default class NetworkDropdown extends Component {
     }.bind(this));
 
     return (
-      <div className={classnames("network-dropdown dropdown is-left is-hoverable ", {
+      <div className={classnames("network-dropdown dropdown is-left is-active", {
           "compact": this.props.compact },
           this.props.className)}>
         <div className="dropdown-trigger">
-          <button className="button is-info is-light"
+          <button
+            onClick={this.handleOpen}
+            className="button is-info is-light"
             aria-haspopup="true"
             aria-controls="dropdown-menu">
             <span className="level">
@@ -72,14 +96,15 @@ export default class NetworkDropdown extends Component {
             </span>
           </button>
         </div>
-        <div
-          className="dropdown-menu"
-          id="dropdown-menu"
-          role="menu">
-          <div className="dropdown-content">
+        <DropdownSelectModal
+          open={this.state.open}
+          title={"Choose network"}
+          handleClose={this.handleClose}
+        >
+          <>
             {networkList}
-          </div>
-        </div>
+          </>
+        </DropdownSelectModal>
       </div>
     );
   }
