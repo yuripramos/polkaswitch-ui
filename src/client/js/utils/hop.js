@@ -7,6 +7,7 @@ import Storage from './storage';
 import BN from 'bignumber.js';
 import { BigNumber, constants, providers, Signer, utils } from "ethers";
 import swapFn from "./swapFn";
+import { ApprovalState } from "../constants/Status";
 
 import { Hop, Chain } from '@hop-protocol/sdk'
 
@@ -134,6 +135,7 @@ window.HopUtils = {
   },
 
   transferStepOne: async function(
+    transactionId,
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -166,6 +168,14 @@ window.HopUtils = {
       receivingChain.chainId,
       receivingChain.nodeProvider
     );
+
+    // apparently requires approved allowance first
+    var approvalStatus = await SwapFn.getApproveStatus(sendingAsset, amountBN);
+    if (approvalStatus == ApprovalState.NOT_APPROVED) {
+      console.log("Hop - approving allowance...");
+      await SwapFn.performApprove(sendingAsset, amountBN);
+    }
+
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);
 
     const tx = await hopBridge.send(
@@ -183,7 +193,9 @@ window.HopUtils = {
         console.log(receipt, chain)
       });
 
-    return true;
+    return {
+      transactionHash: tx.hash
+    };
   },
 
   getAllActiveTxs: function() {

@@ -15,13 +15,9 @@ export default {
   _signerAddress: '',
   _queue: {},
 
-  initialize: async function() {
-    this._queue = this.getQueue();
-  },
+  initialize: async function() {},
 
   getBridgeInterface: function(nonce) {
-    this._queue = this.getQueue();
-
     var tx = this.getTx(nonce);
     var bridgeOption = Storage.swapSettings.bridgeOption;
 
@@ -44,8 +40,6 @@ export default {
     amountBN,
     receivingAddress
   ) {
-    this._queue = this.getQueue();
-
     const transactionId = getRandomBytes32();
     const bridgeInterface = this.getBridgeInterface();
 
@@ -74,14 +68,32 @@ export default {
     transactionId
   ) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
-    return bridgeInterface.transferStepOne(transactionId);
+    var tx = this.getTx(transactionId);
+    return bridgeInterface.transferStepOne(
+      transactionId,
+      tx.sendingChainId,
+      tx.sendingAssetId,
+      tx.receivingChainId,
+      tx.receivingAssetId,
+      tx.amountBN,
+      tx.receivingAddress
+    );
   },
 
   transferStepTwo: function(
     transactionId
   ) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
-    return bridgeInterface.transferStepTwo(transactionId);
+    var tx = this.getTx(transactionId);
+    return bridgeInterface.transferStepTwo(
+      transactionId,
+      tx.sendingChainId,
+      tx.sendingAssetId,
+      tx.receivingChainId,
+      tx.receivingAssetId,
+      tx.amountBN,
+      tx.receivingAddress
+    );
   },
 
   twoStepTransferRequired: function(nonce) {
@@ -93,14 +105,8 @@ export default {
     return "connext" === tx.bridge
   },
 
-  getQueue: function() {
-    this._signerAddress = Wallet.currentAddress();
-    const queue = store.get(this._signerAddress) || {};
-    return queue;
-  },
-
   getTx: function(nonce) {
-    return this.getQueue()[nonce];
+    return this._queue[nonce];
   },
 };
 
