@@ -169,14 +169,14 @@ window.HopUtils = {
       receivingChain.nodeProvider
     );
 
-    // apparently requires approved allowance first
-    var approvalStatus = await SwapFn.getApproveStatus(sendingAsset, amountBN);
-    if (approvalStatus == ApprovalState.NOT_APPROVED) {
-      console.log("Hop - approving allowance...");
-      await SwapFn.performApprove(sendingAsset, amountBN);
-    }
-
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);
+
+    const approvalAddress = await hopBridge.getSendApprovalAddress(hopSendingChain, hopReceivingChain);
+    const token = hopBridge.getCanonicalToken(hopSendingChain);
+    const amountToApprove = constants.MaxUint256;
+    const approveTx = await token.approve(approvalAddress, amountToApprove);
+
+    console.log('Hop Approved TX: ', approveTx);
 
     const tx = await hopBridge.send(
       amountBN.toString(),
