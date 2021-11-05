@@ -43,9 +43,15 @@ export default class SwapAdvancedSettingsSlide extends Component {
     });
   }
 
-  handleBridge(v) {
-    SwapFn.updateSettings({
-      bridgeOption: v
+  handleBridge(e) {
+    var val = e.currentTarget.value;
+
+    this.setState({
+      bridgeOption: val
+    }, () => {
+      SwapFn.updateSettings({
+        bridgeOption: val
+      });
     });
   }
 

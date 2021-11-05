@@ -15,7 +15,7 @@ const DEFAULT_SWAP_SETTINGS = Object.freeze({
   customGasPrice: 0,
   isCustomGasPrice: false,
   slippage: 0.5,
-  bridgeOption: 'hop' // 'hop', 'connext'
+  bridgeOption: 'connext' // 'hop', 'connext'
 });
 
 window.Storage = {
@@ -62,7 +62,21 @@ window.Storage = {
     return this.selectedNetwork;
   },
 
-  clearSettings: function() {
+  resetNetworkSensitiveSettings: function() {
+    this.swapSettings = _.extend(
+      this.swapSettings,
+      _.pick(
+        DEFAULT_SWAP_SETTINGS,
+        'gasSpeedSetting',
+        'customGasPrice',
+        'isCustomGasPrice'
+      )
+    );
+    store.set('settings', this.swapSettings);
+    EventManager.emitEvent('swapSettingsUpdated', 1);
+  },
+
+  resetSettings: function(keys) {
     this.swapSettings = _.extend({}, DEFAULT_SWAP_SETTINGS);
     store.set('settings', this.swapSettings);
     EventManager.emitEvent('swapSettingsUpdated', 1);
