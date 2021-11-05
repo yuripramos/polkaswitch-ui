@@ -7,6 +7,8 @@ import TokenIconImg from './../TokenIconImg';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
+
+import TxBridgeManager from '../../../utils/txBridgeManager';
 import Nxtp from '../../../utils/nxtp';
 import { ApprovalState } from "../../../constants/Status";
 import { NxtpSdkEvents } from "@connext/nxtp-sdk";

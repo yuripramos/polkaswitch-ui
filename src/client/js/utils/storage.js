@@ -14,7 +14,8 @@ const DEFAULT_SWAP_SETTINGS = Object.freeze({
   gasSpeedSetting: 'safeLow',
   customGasPrice: 0,
   isCustomGasPrice: false,
-  slippage: 0.5
+  slippage: 0.5,
+  bridgeOption: 'hop' // 'hop', 'connext'
 });
 
 window.Storage = {

@@ -78,6 +78,7 @@ window.HopUtils = {
   },
 
   getEstimate: async function (
+    transactionId,
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -126,12 +127,13 @@ window.HopUtils = {
     console.log(amountOut, bonderFee);
 
     return {
+      id: transactionId,
       transactionFee: bonderFee,
       returnAmount: amountOut
     };
   },
 
-  transfer: async function(
+  transferStepOne: async function(
     sendingChainId,
     sendingAssetId,
     receivingChainId,
