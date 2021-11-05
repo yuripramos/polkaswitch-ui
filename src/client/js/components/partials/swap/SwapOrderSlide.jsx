@@ -13,8 +13,9 @@ import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
-import Nxtp from '../../../utils/nxtp';
 import TokenListManager from '../../../utils/tokenList';
+
+import TxBridgeManager from '../../../utils/txBridgeManager';
 
 export default class SwapOrderSlide extends Component {
   constructor(props) {
@@ -178,7 +179,7 @@ export default class SwapOrderSlide extends Component {
       return false;
     }
 
-    Nxtp.getTransferQuoteV2(
+    TxBridgeManager.getEstimate(
       +this.props.fromChain.chainId,
       this.props.from.address,
       +this.props.toChain.chainId,

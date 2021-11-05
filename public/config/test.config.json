@@ -1,5 +1,42 @@
 [
   {
+    "enabled": true,
+    "name": "Ethereum",
+    "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
+    "bridgeURI": "https://wallet.matic.network/",
+    "tokenList": "/tokens/eth.list.json",
+    "chainId": "1",
+    "nodeProvider": "https://api-eth.swing.xyz/3b520ae779047524795c39e0ea17ce5b5304057d/",
+    "explorerBaseUrl": "https://etherscan.io/tx/",
+    "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
+    "chain": {
+      "chainId": "0x1",
+      "chainName": "Ethereum Mainnet"
+    },
+    "defaultPair": {
+      "to": "ETH",
+      "from": "USDT"
+    },
+    "topTokens": [
+      "ETH",
+      "USDT",
+      "USDC",
+      "DAI"
+    ],
+    "tradeView": {
+      "platform": "ethereum",
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/ethereum",
+      "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
+    },
+    "crossChainSupported": true,
+    "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
+    ]
+  },
+  {
     "enabled": false,
     "name": "Arbitrum",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
@@ -188,7 +225,7 @@
     "bridgeURI": "https://bridge.xdaichain.com/",
     "tokenList": "/tokens/100.list.json",
     "chainId": "100",
-    "nodeProvider": "https://rpc.xdaichain.com/",
+    "nodeProvider": "https://api-xdai.swing.xyz/6e25f5fc6a6efc79fa8c97b2c699abe2d59f6817/",
     "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
     "gasApi": false,
     "desiredParts": 18,
@@ -234,7 +271,7 @@
     "bridgeURI": "https://multichain.xyz/",
     "tokenList": "/tokens/250.list.json",
     "chainId": "250",
-    "nodeProvider": "https://rpcapi.fantom.network",
+    "nodeProvider": "https://api-fantom.swing.xyz/efefa0dd29e1885643893565b6de2d551e77e09c/",
     "explorerBaseUrl": "https://ftmscan.com/tx/",
     "gasApi": false,
     "desiredParts": 18,

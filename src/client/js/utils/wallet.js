@@ -51,18 +51,25 @@ window.WalletJS = {
   initListeners: function(provider) {
     provider.on('accountsChanged', function (accounts) {
       // Time to reload your interface with accounts[0]!
-      console.log(accounts);
-      if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
+      console.log('event - accountsChanged:', accounts);
+      if (accounts.length === 0) {
+        this.disconnect();
+        EventManager.emitEvent('walletUpdated', 1);
+      }
+
+      else if (accounts[0] != this.currentAddress() && this._cachedWeb3Provider) {
         this._saveConnection(this._cachedWeb3Provider, this._cachedStrategy);
       }
     }.bind(this));
 
     provider.on('disconnect', function(providerRpcError) {
+      console.log('event - disconnect:', providerRpcError);
       this.disconnect();
       EventManager.emitEvent('walletUpdated', 1);
     }.bind(this));
 
     provider.on('chainChanged', function(chainId) {
+      console.log('event - chainChanged:', chainId);
       // if chain changes due to manual user change, not via connect change:
       // just wipe clean, too hard to manage otherwise
       this._cachedNetworkId = chainId;
@@ -264,13 +271,10 @@ window.WalletJS = {
   },
 
   _connectProviderMetamask: function() {
-    return new Promise(function (resolve, reject) {
+    return new Promise(async function (resolve, reject) {
       let network = TokenListManager.getCurrentNetworkConfig();
 
-      window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [network.chain]
-      }).then(function() {
+      const requestAccount = function() {
         _.delay(function() {
           window.ethereum.request({ method: 'eth_requestAccounts' })
             .then(function(accounts) {
@@ -287,7 +291,40 @@ window.WalletJS = {
               reject(e);
             });
         }.bind(this), 1000)
-      }.bind(this));
+      }.bind(this);
+
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: network.chain.chainId }],
+        })
+          .then(function() {
+            requestAccount();
+          }.bind(this))
+          .catch(function(e) {
+            console.error(e);
+            reject(e);
+          });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [network.chain]
+          }).then(function() {
+            requestAccount();
+          }.bind(this))
+          .catch(function(e) {
+            console.error(e);
+            reject(e);
+          });
+        }
+
+        else {
+          console.error(switchError);
+          reject(e);
+        }
+      }
     }.bind(this));
   }
 };
