@@ -7,7 +7,7 @@ export default function AssetTableRow({ iconUrl, name, symbol, price, balance })
                 <img className="asset-icon" src={iconUrl} />
                 <div className="asset-table__content">
                     <h4 className="asset-table__title">{name}</h4>
-                    <span className="asset-table__sub">{symbol}</span>
+                    <span className="asset-table__sub">{symbol} &middot; <span>USDC</span></span>
                 </div>
             </div>
             <div className="column is-hidden-mobile is-3 align-right">

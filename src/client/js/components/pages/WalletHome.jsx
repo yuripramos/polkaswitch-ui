@@ -8,6 +8,27 @@ import PortfolioNetwork from "../partials/wallet/NetworkPrice";
 import NetworkDropdown from "../partials/wallet/NetworkDropdown";
 import AssetsTable from "../partials/wallet/AssetsTable";
 
+const data = [
+    {
+        iconUrl: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/eth%402x.png",
+        name: "Ethereum",
+        symbol: "ETH",
+        price: 4516.24,
+        balance: 0.05,
+        isNative: true,
+        homeNetwork: undefined
+    },
+    {
+        iconUrl: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/btc%402x.png",
+        name: "Bitcoin",
+        symbol: "BTC",
+        price: 62109.9,
+        balance: 1.2,
+        isNative: true,
+        homeNetwork: "ETH"
+    },
+];
+
 export default function WalletHome() {
     return (
         <div className="container">
@@ -42,19 +63,19 @@ export default function WalletHome() {
                         </div>
 
                         <div className="columns is-hidden-mobile portfolio-makeup">
-                            <PortfolioNetwork
-                                image="https://bulma.io/images/placeholders/128x128.png"
-                                networkName="Ethereum"
-                                value={4230}
-                                change={1}
-                            />
-
-                            <PortfolioNetwork
-                                image="https://bulma.io/images/placeholders/128x128.png"
-                                networkName="Solana"
-                                value={4230}
-                                change={1}
-                            />
+                            {data
+                                .filter((t) => t.isNative)
+                                .map((t) => {
+                                    return (
+                                        <PortfolioNetwork
+                                            key={t.symbol}
+                                            iconUrl={t.iconUrl}
+                                            name={t.name}
+                                            value={t.price * t.balance}
+                                            change={0}
+                                        />
+                                    );
+                                })}
                         </div>
                     </div>
                 </div>
@@ -69,26 +90,7 @@ export default function WalletHome() {
                         </div>
 
                         <div>
-                            <AssetsTable
-                                tokenData={[
-                                    {
-                                        iconUrl:
-                                            "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/eth%402x.png",
-                                        name: "Ethereum",
-                                        symbol: "ETH",
-                                        price: 4516.24,
-                                        balance: 0.05,
-                                    },
-                                    {
-                                        iconUrl:
-                                            "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/btc%402x.png",
-                                        name: "Bitcoin",
-                                        symbol: "BTC",
-                                        price: 62109.90,
-                                        balance: 1.20,
-                                    },
-                                ]}
-                            />
+                            <AssetsTable tokenData={data} />
                         </div>
                     </div>
                 </div>
