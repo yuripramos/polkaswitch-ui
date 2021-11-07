@@ -1,7 +1,7 @@
 import React from "react";
 import AssetTableRow from "./AssetTableRow";
 
-export default function AssetsTable() {
+export default function AssetsTable({ tokenData }) {
     return (
         <div className="asset-table">
             <div className="columns asset-table__header is-mobile">
@@ -19,14 +19,19 @@ export default function AssetsTable() {
                 </div>
             </div>
 
-            <AssetTableRow
-                iconUrl="https://bulma.io/images/placeholders/128x128.png"
-                name="Ethereum"
-                symbol="ETH"
-                price={0}
-                balance={0}
-                value={0}
-            ></AssetTableRow>
+            {tokenData.map((t) => {
+                return (
+                    <AssetTableRow
+                        key={t.symbol}
+                        iconUrl={t.iconUrl}
+                        name={t.name}
+                        symbol={t.symbol}
+                        price={t.price}
+                        balance={t.balance}
+                        value={t.value}
+                    ></AssetTableRow>
+                );
+            })}
         </div>
     );
 }

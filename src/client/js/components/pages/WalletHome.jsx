@@ -55,7 +55,6 @@ export default function WalletHome() {
                                 value={4230}
                                 change={1}
                             />
-
                         </div>
                     </div>
                 </div>
@@ -70,7 +69,26 @@ export default function WalletHome() {
                         </div>
 
                         <div>
-                            <AssetsTable />
+                            <AssetsTable
+                                tokenData={[
+                                    {
+                                        iconUrl:
+                                            "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/eth%402x.png",
+                                        name: "Ethereum",
+                                        symbol: "ETH",
+                                        price: 4516.24,
+                                        balance: 0.05,
+                                    },
+                                    {
+                                        iconUrl:
+                                            "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/btc%402x.png",
+                                        name: "Bitcoin",
+                                        symbol: "BTC",
+                                        price: 62109.90,
+                                        balance: 1.20,
+                                    },
+                                ]}
+                            />
                         </div>
                     </div>
                 </div>
