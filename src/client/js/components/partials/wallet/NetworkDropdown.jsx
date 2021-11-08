@@ -20,7 +20,9 @@ export default function NetworkDropdown({}) {
                 </div>
 
                 <div className="icon">
-                    <i className="fa fa-chevron-down" aria-hidden="true"></i>
+                    <span className="icon is-small">
+                        <ion-icon name="chevron-down"></ion-icon>
+                    </span>
                 </div>
             </div>
             <div className="dropdown-menu" id="dropdown-menu" role="menu">
@@ -32,7 +34,7 @@ export default function NetworkDropdown({}) {
                     <hr className="dropdown-divider" />
 
                     <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted asset-icon" />
+                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted token-icon" />
                         <div className="dropdown-menu__asset_names">
                             <h4>All Network</h4>
                             <span>$4,873.23 (81%)</span>
@@ -42,7 +44,7 @@ export default function NetworkDropdown({}) {
                     <hr className="dropdown-divider" />
 
                     <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted asset-icon" />
+                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted token-icon" />
                         <div className="dropdown-menu__asset_names">
                             <h4>All Network</h4>
                             <span>$4,873.23 (81%)</span>
@@ -50,7 +52,7 @@ export default function NetworkDropdown({}) {
                     </a>
 
                     <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted asset-icon" />
+                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted token-icon" />
                         <div className="dropdown-menu__asset_names">
                             <h4>All Network</h4>
                             <span>$4,873.23 (81%)</span>

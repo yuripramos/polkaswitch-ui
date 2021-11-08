@@ -3,8 +3,8 @@ import AssetTableRow from "./AssetTableRow";
 
 export default function AssetsTable({ tokenData }) {
     return (
-        <div className="asset-table">
-            <div className="columns asset-table__header is-mobile">
+        <div className="wallets-page-tokens-table">
+            <div className="columns wallets-page-tokens-table__header is-mobile">
                 <div className="column is-3 is-half-mobile">
                     <span>Token</span>
                 </div>

@@ -16,7 +16,7 @@ const data = [
         price: 4516.24,
         balance: 0.05,
         isNative: true,
-        homeNetwork: undefined
+        homeNetwork: undefined,
     },
     {
         iconUrl: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/btc%402x.png",
@@ -25,7 +25,7 @@ const data = [
         price: 62109.9,
         balance: 1.2,
         isNative: true,
-        homeNetwork: "ETH"
+        homeNetwork: "ETH",
     },
 ];
 
@@ -39,7 +39,7 @@ export default function WalletHome() {
             <TxHistoryModal />
 
             <div className="columns is-centered">
-                <div className="column main">
+                <div className="column card-container">
                     <div className="card wallets-page-card">
                         <div className="columns portfolio-balance">
                             <div className="column">
@@ -82,16 +82,15 @@ export default function WalletHome() {
             </div>
 
             <div className="columns is-centered">
-                <div className="column main">
+                <div className="column card-container">
                     <div className="card wallets-page-card">
-                        <div className="heading-container">
-                            <span className="heading-container__main">Assets</span>
-                            <span className="heading-container__sub">Don't see your assets?</span>
+ 
+                        <div className="tokens-table-title-container">
+                            <span className="tokens-table-title-container__main">Assets</span>
+                            <span className="tokens-table-title-container__sub">Don't see your assets?</span>
                         </div>
 
-                        <div>
-                            <AssetsTable tokenData={data} />
-                        </div>
+                        <AssetsTable tokenData={data} />
                     </div>
                 </div>
             </div>

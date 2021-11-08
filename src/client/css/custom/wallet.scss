@@ -1,4 +1,4 @@
-.main {
+.card-container {
   max-width: 726px;
 }
 
@@ -20,6 +20,7 @@
 .portfolio-balance {
   border-bottom: 1px solid #eee;
 }
+
 .portfolio-balance__main-heading {
   display: inline-block;
   padding-top: 24px;
@@ -180,7 +181,7 @@
   margin-bottom: 14px;
 }
 
-.asset-icon {
+.card-container .token-icon {
   max-width: 32px;
   max-height: 32px;
   border-radius: 50%;
@@ -215,11 +216,11 @@
   opacity: 0.49;
 }
 
-.heading-container {
+.tokens-table-title-container {
   overflow: auto;
 }
 
-.heading-container__main {
+.tokens-table-title-container__main {
   float: left;
   margin-top: 29px;
   font-family: Gilroy;
@@ -230,7 +231,7 @@
   color: #333333;
 }
 
-.heading-container__sub {
+.tokens-table-title-container__sub {
   float: right;
   margin-top: 26px;
   font-family: Gilroy;
@@ -244,28 +245,28 @@
   opacity: 0.5;
 }
 
-.asset-table {
+.wallets-page-tokens-table {
   margin-top: 14px;
   padding-bottom: 14px;
 }
 
-.asset-table__header {
+.wallets-page-tokens-table__header {
   background: #f2f7f9;
   border-radius: 16px;
   padding: 0px 16px 0px 18px;
 }
 
-.asset-table__header .column:nth-child(1) {
+.wallets-page-tokens-table__header .column:nth-child(1) {
   text-align: left;
 }
 
-.asset-table__header .column {
+.wallets-page-tokens-table__header .column {
   text-align: right;
   padding: 8px 0 9px 0;
   margin: 0;
 }
 
-.asset-table__header .column span {
+.wallets-page-tokens-table__header .column span {
   font-family: Gilroy;
   font-style: normal;
   font-weight: normal;
@@ -276,13 +277,13 @@
   opacity: 0.5;
 }
 
-.asset-table__row {
+.wallets-page-tokens-table__row {
   height: 64px;
   padding: 14px 15px 0px 16px;
   border-radius: 16px;
 }
 
-.asset-table__row:nth-child(odd) {
+.wallets-page-tokens-table__row:nth-child(odd) {
   background: #f2f7f9;
 }
 
@@ -290,12 +291,12 @@
   text-align: right;
 }
 
-.asset-table__content {
+.wallets-page-tokens-table__content {
   display: inline-block;
   margin-left: 6px;
 }
 
-.asset-table__title {
+.wallets-page-tokens-table__title {
   font-family: Gilroy;
   font-style: normal;
   font-weight: bold;
@@ -304,7 +305,7 @@
   color: #333333;
 }
 
-.asset-table__sub {
+.wallets-page-tokens-table__sub {
   font-family: Gilroy;
   font-style: normal;
   font-weight: normal;
@@ -315,6 +316,6 @@
   opacity: 0.5;
 }
 
-.asset-table__sub span {
+.wallets-page-tokens-table__sub span {
   color: yellow;
 }
