@@ -10,9 +10,16 @@ import * as ethers from 'ethers';
 export default class SwapAdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
-    this.state = { refresh: Date.now() };
+
+    const bridgeOption = SwapFn.getSetting().bridgeOption;
+
+    this.state = {
+      refresh: Date.now(),
+      bridgeOption: bridgeOption
+    };
     this.handleSlippage = this.handleSlippage.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
+    this.handleBridge = this.handleBridge.bind(this);
 
     this.subscribers = [];
     this.subscribers.push(EventManager.listenFor('swapSettingsUpdated', this.handleSettingsChange));
@@ -33,6 +40,18 @@ export default class SwapAdvancedSettingsSlide extends Component {
   handleSlippage(v) {
     SwapFn.updateSettings({
       slippage: v
+    });
+  }
+
+  handleBridge(e) {
+    var val = e.currentTarget.value;
+
+    this.setState({
+      bridgeOption: val
+    }, () => {
+      SwapFn.updateSettings({
+        bridgeOption: val
+      });
     });
   }
 
@@ -90,7 +109,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
                 <span>
                   <b className="setting-input-title">Liquidity Sources</b>
                   <span
-                    className="hint-icon hint--bottom hint--medium"
+                    className="hint-icon hint--top hint--medium"
                     aria-label="Coming Soon! Customize which sources to route your swap through"
                   >?</span>
                 </span>
@@ -100,10 +119,37 @@ export default class SwapAdvancedSettingsSlide extends Component {
             <div className="level-right">
               <div className="level-item">
                 <div className="select">
-                  <select disabled className="setting-dropdown">
+                  <select disabled>
                     <option>10</option>
                     <option>2</option>
                     <option>1</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="level is-mobile option">
+            <div className="level-left">
+              <div className="level-item">
+                <span>
+                  <b className="setting-input-title">Bridge SDK</b>
+                  <span
+                    className="hint-icon hint--top hint--medium"
+                    aria-label="Change the underlying bridge SDK to use"
+                  >?</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="level-right">
+              <div className="level-item">
+                <div className="select">
+                  <select
+                    onChange={this.handleBridge}
+                    value={this.state.bridgeOption}>
+                    <option value="hop">Hop</option>
+                    <option value="connext">Connext</option>
                   </select>
                 </div>
               </div>
@@ -116,7 +162,7 @@ export default class SwapAdvancedSettingsSlide extends Component {
                 <span>
                   <b>Custom Tokens</b>
                   <span
-                    className="hint-icon hint--bottom"
+                    className="hint-icon hint--top"
                     aria-label="Coming Soon">?</span>
                 </span>
               </div>

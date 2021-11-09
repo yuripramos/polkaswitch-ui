@@ -56,7 +56,7 @@ window.TokenListManager = {
 
     this.updateTokenList().then(function() {
       // reset default settings because gas values are updated per network
-      Storage.clearSettings();
+      Storage.resetNetworkSensitiveSettings();
 
       EventManager.emitEvent('networkUpdated', 1);
       EventManager.emitEvent('walletUpdated', 1);

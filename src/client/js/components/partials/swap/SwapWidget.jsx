@@ -88,10 +88,15 @@ export default class SwapOrderWidget extends Component {
     var network = TokenListManager.getCurrentNetworkConfig();
     this.setState({
       loading: false,
+      crossChainEnabled: false,
       to: TokenListManager.findTokenById(network.defaultPair.to),
       from: TokenListManager.findTokenById(network.defaultPair.from),
       toChain: network,
       fromChain: network,
+      showSettings: false,
+      showConfirm: false,
+      showSearch: false,
+      showResults: false,
       availableBalance: undefined
     });
   }

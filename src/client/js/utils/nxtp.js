@@ -292,7 +292,8 @@ window.NxtpUtils = {
     });
   },
 
-  getTransferQuoteV2: async function (
+  getEstimate: async function (
+    transactionId,
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -354,9 +355,6 @@ window.NxtpUtils = {
       ]);
     }
 
-    // Create txid
-    const transactionId = getRandomBytes32();
-
     const quote = await this._sdk.getTransferQuote({
       callData,
       sendingAssetId,
@@ -377,47 +375,9 @@ window.NxtpUtils = {
 
     return {
       id: transactionId,
+      transactionFee: 0.0, // TODO
       returnAmount: expectedReturn ? expectedReturn.returnAmount : quote.bid.amountReceived
     };
-  },
-
-  // DEPCREATED
-  getTransferQuote: async function (
-    sendingChainId,
-    sendingAssetId,
-    receivingChainId,
-    receivingAssetId,
-    amount,
-    receivingAddress
-  ) {
-    if (!Wallet.isConnected()) {
-      console.error("Nxtp: Wallet not connected");
-      return false;
-    }
-
-    if (!this._sdk) {
-      this._sdk = await this.initalizeSdk();
-    }
-
-    // Create txid
-    const transactionId = getRandomBytes32();
-
-    const quote = await this._sdk.getTransferQuote({
-      sendingAssetId,
-      sendingChainId,
-      receivingChainId,
-      receivingAssetId,
-      receivingAddress,
-      amount,
-      transactionId,
-      expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
-    });
-
-    this._queue[transactionId] = {
-      quote: quote
-    }
-
-    return { quote: quote, id: transactionId };
   },
 
   transferStepOne: async function (transactionId) {
@@ -436,7 +396,7 @@ window.NxtpUtils = {
     console.log("transfer: ", transfer);
     // WAIT on Events at this point
 
-    return transfer;
+    return true;
   },
 
   transferStepTwo: async function(transactionId) {
@@ -467,6 +427,8 @@ window.NxtpUtils = {
     if (finish.metaTxResponse?.transactionHash || finish.metaTxResponse?.transactionHash === "") {
       this.removeActiveTx(receivingTxData.transactionId)
     }
+
+    return true;
   },
 
   getAllActiveTxs: function() {

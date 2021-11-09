@@ -2,12 +2,6 @@
   background: var(--dropdown-bg) !important;
 }
 
-.setting-dropdown{
-  background: var(--disabled-dropdown) !important;
-  color: var(--symbol-color) !important;
-  border-color: var(--input-border) !important;
-}
-
 .setting-input-title{
   color: var(--dropdown-text-color) !important;
 }
@@ -518,30 +512,61 @@ html, body {
   margin: 2px 6px;
 }
 
-.connect-panel {
+div.modal-basic-style {
   max-width: 420px;
   margin: 0 auto;
   border-radius: 20px;
+  padding: 0px;
+  overflow: hidden;
 
+  .level:not(:last-child) {
+    margin-bottom: 15px;
+  }
+
+  .modal-title-wrapper {
+    background: white;
+    padding: 25px;
+    margin-bottom: 0 !important;
+
+    .modal-title {
+      font-size: 19px;
+      color: black;
+    }
+  }
+
+  .modal-body {
+    background: $light-blue;
+    padding: 25px;
+  }
+}
+
+
+.modal-dropdown-options {
   .option {
+    background: white;
     cursor: pointer;
-    border: 1px solid #ddd;
-    padding: 14px 20px;
+    padding: 10px 15px;
     border-radius: 10px;
-    margin-bottom: 10px;
     font-size: 16px;
+    text-decoration: none !important;
+    font-size: 18px;
+    margin-bottom: 10px !important;
 
     &:last-child {
       margin-bottom: 0px;
     }
 
     &:hover {
-      border: 1px solid $link;
-      background: $link-light;
+      background: #dde8f3;
+    }
+
+    &.bare {
+      background: none;
+      text-align: center;
     }
 
     &.connected {
-      background: $success-light;
+      border: 1px solid $success;
       border-color: $success;
     }
 
@@ -567,7 +592,10 @@ html, body {
     }
 
     &.coming-soon {
-      opacity: 0.4;
+      & > * {
+        opacity: 0.4;
+      }
+
       cursor: not-allowed;
     }
   }

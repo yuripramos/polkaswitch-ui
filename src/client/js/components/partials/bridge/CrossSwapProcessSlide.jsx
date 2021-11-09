@@ -5,6 +5,7 @@ import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
 import TokenIconImg from './../TokenIconImg';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
+import TxBridgeManager from '../../../utils/txBridgeManager';
 import Nxtp from '../../../utils/nxtp';
 import { NxtpSdkEvents } from "@connext/nxtp-sdk";
 
@@ -42,6 +43,13 @@ export default class CrossSwapProcessSlide extends Component {
     }
   }
 
+  completeProcess(hash) {
+    this.setState({
+      complete: true
+    });
+    this.props.handleTransactionComplete(true, hash);
+  }
+
   handleBack(e) {
     if (!this.state.loading) {
       this.props.handleBackOnConfirm();
@@ -59,11 +67,7 @@ export default class CrossSwapProcessSlide extends Component {
     }
 
     if (this.state.finishable && Nxtp.isActiveTxFinished(this.props.crossChainTransactionId)) {
-      this.setState({
-        complete: true
-      });
-      this.props.handleTransactionComplete(
-        true,
+      this.completeProcess(
         Nxtp.getHistoricalTx(this.props.crossChainTransactionId).fulfilledTxHash
       );
     }
@@ -81,7 +85,7 @@ export default class CrossSwapProcessSlide extends Component {
     this.setState({
       loading: true,
     }, function() {
-      Nxtp.transferStepOne(this.props.crossChainTransactionId).then(function (transfer) {
+      TxBridgeManager.transferStepOne(this.props.crossChainTransactionId).then(function (data) {
         Metrics.track("bridge-started", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
@@ -90,7 +94,12 @@ export default class CrossSwapProcessSlide extends Component {
           fromAmont: this.props.fromAmount
         });
 
-        // Waiting for events to indicate ready for Step2
+        if (TxBridgeManager.twoStepTransferRequired(this.props.crossChainTransactionId)) {
+          // do nothing.
+          // Waiting for events to indicate ready for Step2
+        } else {
+          this.completeProcess(data.transactionHash);
+        }
       }.bind(this)).catch(function (e) {
         console.error('#### swap failed from catch ####', e);
 
@@ -108,7 +117,7 @@ export default class CrossSwapProcessSlide extends Component {
     this.setState({
       loading: true,
     }, function() {
-      Nxtp.transferStepTwo(this.props.crossChainTransactionId).then(function () {
+      TxBridgeManager.transferStepTwo(this.props.crossChainTransactionId).then(function () {
         Metrics.track("bridge-complete", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
@@ -233,13 +242,13 @@ export default class CrossSwapProcessSlide extends Component {
           <ion-icon name="hourglass-outline"></ion-icon>
         </div>
         <div className="title">
-          {this.state.finishable ? "Finalizing Transfer" : "Starting Withdrawal"}
+          {this.state.finishable ? "Finalizing Transfer" : "Starting Transfer"}
         </div>
         <div className="details">
           <div>
             {this.state.finishable ?
                 "We are depositing funds into the receiving chain." :
-                "We are withdrawing funds from the sending chain."
+                "We are moving funds from the sending chain."
             }<br/>
             This step normally takes 2-3 minutes.<br/>
             Please do not refresh browser.
