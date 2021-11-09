@@ -65,6 +65,19 @@
       color: var(--primary-text-color) !important;
     }
   }
+  .network-wrapper {
+    min-width: 100px;
+    text-align: left;
+
+    .platform {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .name{
+      font-size: 10px;
+    }
+  }
 }
 
 .bridge-trans-details {
@@ -115,74 +128,97 @@
   }
 }
 
-.token-dist-hint-text {
-  font-size: 16px;
-  color: #333;
-  padding-bottom: 6px;
-  display: flex;
-
-  span {
-    line-height: 15px;
-  }
-
-  .hint-icon {
-    width: 11px;
-    height: 11px;
-    display: flex;
-    margin: 2px 4px;
-    background: #9db0be;
-  }
-}
-
-.token-dist-expand-wrapper {
-  max-height: 0;
-  transition: max-height 300ms;
-  cursor: pointer;
-  opacity: 0;
-
-  &.expand {
-    max-height: 83px;
-    opacity: 1;
-  }
-}
-
-.token-dist-wrapper {
-  display: flex;
-  padding-bottom: 1.5rem;
-
-  .token-dist-pool-wrapper {
-    display: block;
-    overflow: hidden;
-    transition: width 200ms;
-  }
-
-  .token-dist-pool {
-    background: $light-blue;
-    margin: 0 2px;
-    padding: 5px;
-    border-radius: $radius;
-    text-align: center;
-    font-size: 12px;
-    color: #666;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-  }
-
-  .token-icon-img-wrapper {
-    margin-right: 5px;
-  }
-}
-
 $bridge-widget-anim-timing: 300ms;
+
+.token-network-route-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 64px;
+  height: 42px;
+  border: 1px solid var(--box-border);
+  border-radius: 8px;
+
+  .token-wrapper {
+    display: flex;
+    padding: 2px 4px;
+    align-items: center;
+
+    .symbol {
+      font-size: 10px;
+      font-weight: bold;
+      line-height: 10px;
+    }
+
+    .amount {
+      font-size: 8px;
+      line-height: 9px;
+    }
+  }
+
+  .network-wrapper {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    height: 16px;
+
+    .text {
+      font-size: 8px;
+      color: white;
+    }
+  }
+}
+
+.swap-bridge-route-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 64px;
+  height: 42px;
+  border-radius: 8px;
+  background-color: var(--primary-background);
+
+  .title-wrapper {
+    display: flex;
+    padding: 6px 6px;
+    align-items: center;
+
+    img {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px
+    }
+
+    .title {
+      font-size: 10px;
+      font-weight: bold;
+      line-height: 12px;
+    }
+  }
+
+  .fee-wrapper {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top: solid 1px var(--box-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 16px;
+
+    .text {
+      font-size: 8px;
+    }
+  }
+}
 
 .bridge-widget {
   background: var(--secondary-background) !important;
   padding: 0px;
   overflow: hidden;
   position: relative;
-  max-height: 800px;
   border-radius: 16px;
   transition: height $bridge-widget-anim-timing;
 
@@ -196,7 +232,6 @@ $bridge-widget-anim-timing: 300ms;
     z-index: 10;
     top: 0;
     width: 100%;
-    max-height: 600px;
     opacity: 1;
   }
 
@@ -317,9 +352,72 @@ $bridge-widget-anim-timing: 300ms;
     $bridge-icon-width: 42px;
 
     .network-dropdown {
-      .button {
-        height: 55px;
-        padding: 0 10px;
+      margin-right: 10px;
+      margin-bottom: 0;
+
+      .dropdown-content{
+        background-color: var(--dropdown-bg) !important;
+      }
+      &.dropdown {
+        display: block !important;
+
+        &.compact {
+          .button {
+            padding: 5px 10px;
+          }
+        }
+
+        .button {
+          width: 100%;
+          justify-content: flex-start;
+          height: 55px;
+          padding: 0 10px;
+          background-color: var(--dropdown-color) !important;
+          color: var(--primary-text-color) !important;
+
+          &:hover {
+            background-color: var(--dropdown-hover-color) !important;
+          }
+        }
+
+        .level {
+          width: 100%;
+          margin-bottom: 0;
+        }
+
+        .dropdown-item {
+          color: var(--dropdown-text-color) !important;
+          padding: 0.375rem 1rem;
+          &:hover{
+            background: var(--dropdown-hover-color) !important;
+          }
+        }
+
+        .disabled {
+          opacity: 0.4;
+        }
+
+        .icon {
+          color: var(--primary-text-color) !important;
+        }
+      }
+      .network-wrapper {
+        min-width: 100px;
+        text-align: left;
+
+        .platform {
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        .name{
+          font-size: 10px;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        margin-right: 0;
+        margin-bottom: 10px;
       }
     }
 
@@ -438,13 +536,17 @@ $bridge-widget-anim-timing: 300ms;
           &:hover {
             background: var(--secondary-background);
           }
+
+          @media screen and (max-width: 768px) {
+            display: none;
+          }
         }
       }
     }
 
     .notification {
       background: var(--secondary-background) !important;
-      padding: 20px 5px;
+      padding: 20px 0;
       border-radius: 0;
 
       .token-symbol-wrapper {
@@ -731,5 +833,243 @@ $bridge-widget-anim-timing: 300ms;
     }
   }
 
+  .token-dist-wrapper {
+    display: flex;
+    padding: 16px;
+    min-height: 100px;
+    border-radius: 8px;
+    flex-direction: column;
+    background-color: var(--primary-background);
 
+    .token-dist-pool-wrapper {
+      display: block;
+      overflow: hidden;
+      transition: width 200ms;
+    }
+
+    .token-dist-pool {
+      background: $light-blue;
+      margin: 0 2px;
+      padding: 5px;
+      border-radius: $radius;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+    }
+
+    .token-icon-img-wrapper {
+      margin-right: 5px;
+    }
+  }
+
+  .token-dist-hint-text {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    padding: 0;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+
+    span {
+      line-height: 15px;
+    }
+
+    .hint-icon {
+      width: 11px;
+      height: 11px;
+      display: flex;
+      margin: 2px 4px;
+      background: #9db0be;
+    }
+  }
+
+  .token-dist-expand-wrapper {
+    transition: max-height 300ms;
+    cursor: pointer;
+    opacity: 0;
+    padding: 0;
+    margin-bottom: 20px;
+
+    &.expand {
+      opacity: 1;
+    }
+  }
+
+  .bridge-order-btn-wrapper{
+    display: flex;
+    justify-content: flex-end;
+
+    .bridge-order-btn {
+      width: auto;
+    }
+
+    @media screen and (max-width: 768px) {
+      .bridge-order-btn {
+        width: 100%;
+      }
+    }
+  }
+
+  .bridge-route-item-wrapper {
+    height: 66px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 12px;
+    padding: 12px 16px;
+    background-color: var(--secondary-background);
+    &:not(:last-child) {
+      margin-bottom: 12px;
+    }
+
+    input {
+      width: 40px;
+    }
+
+    .bridge-route-item {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      -webkit-box-align: center;
+      align-items: center;
+      grid-template-columns: 20px 3.5fr repeat(3, 1fr);
+
+      .additional-info {
+        padding-left: 12px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-left: 2px solid var(--box-border);
+        min-width: 130px;
+        margin-left: auto;
+
+        .fee-wrapper {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .duration-wrapper {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .title {
+          font-weight: bold;
+          font-size: 10px;
+          line-height: 14px;
+          margin: 0;
+        }
+
+        .value {
+          font-size: 10px;
+          line-height: 14px;
+        }
+      }
+
+      .dashed-divider {
+        width: 8px;
+        border: none;
+        border-top: 2px dashed var(--box-border);
+        height: 1px;
+        margin: 2px;
+      }
+    }
+
+    .bridge-route-item-mobile {
+      width: 100%;
+      display: none;
+      flex-direction: row;
+      -webkit-box-align: center;
+      align-items: center;
+      grid-template-columns: 20px 3.5fr repeat(3, 1fr);
+
+      .divider {
+        display: flex;
+        margin: 0 8px;
+        justify-content: center;
+        height: 100%;
+        align-items: center;
+
+        .vertical-line {
+          border-left: 2px solid var(--box-border);
+          height: 100%;
+        }
+
+        .triangle-wrapper {
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: var(--secondary-background);
+          padding: 8px;
+
+          .triangle-right {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-left: 8px solid #58B57E;
+            border-bottom: 4px solid transparent;
+          }
+        }
+      }
+
+      .additional-info {
+        padding-left: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-left: 2px solid var(--box-border);
+        min-width: 80px;
+        margin-left: auto;
+
+        .fee-wrapper {
+          display: block;
+        }
+
+        .duration-wrapper {
+          display: block;
+        }
+
+        .title {
+          display: block;
+          width: 100%;
+          font-weight: bold;
+          font-size: 10px;
+          line-height: 14px;
+          margin: 0;
+        }
+
+        .value {
+          display: block;
+          width: 100%;
+          font-size: 10px;
+          line-height: 14px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      padding: 6px 16px;
+
+      .bridge-route-item {
+        display: none !important;
+      }
+
+      .bridge-route-item-mobile {
+        display: flex;
+      }
+    }
+
+    @media screen and (min-width: 768px) {
+      .bridge-route-item-mobile {
+        display: none;
+      }
+
+      .bridge-route-item {
+        display: flex;
+      }
+    }
+  }
 }

@@ -19,7 +19,6 @@ export default class NetworkDropdown extends Component {
 
   render() {
     var selected = this.props.selected || TokenListManager.getCurrentNetworkConfig();
-
     var filteredNetworks = _.filter(this.NETWORKS, (v) => { return v.enabled });
 
     if (this.props.crossChain) {
@@ -48,23 +47,23 @@ export default class NetworkDropdown extends Component {
     }.bind(this));
 
     return (
-      <div className={classnames("network-dropdown dropdown is-left is-hoverable ", {
-          "compact": this.props.compact },
+      <div className={classnames("network-dropdown dropdown is-left is-hoverable ",
           this.props.className)}>
         <div className="dropdown-trigger">
           <button className="button is-info is-light"
             aria-haspopup="true"
             aria-controls="dropdown-menu">
             <span className="level">
-              <span className="level-left my-2">
+              <span className="level-left is-flex">
                 <span className="level-item">
                   <TokenIconImg
                     size={30}
                     imgSrc={selected.logoURI} />
                 </span>
-                {!this.props.compact && (
-                  <span className="level-item">{selected.name}</span>
-                )}
+                <div className="network-wrapper item-level">
+                  <div className="platform">{selected.name}</div>
+                  <div className="name">Blockchain</div>
+                </div>
               </span>
             </span>
             <span className="icon is-small">
@@ -74,6 +73,7 @@ export default class NetworkDropdown extends Component {
         </div>
         <div
           className="dropdown-menu"
+          style={{width: '100%'}}
           id="dropdown-menu"
           role="menu">
           <div className="dropdown-content">

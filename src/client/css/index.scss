@@ -41,6 +41,7 @@ $family-sans-serif: "Gilroy", BlinkMacSystemFont, -apple-system, "Segoe UI", "Ro
   --disabled-dropdown:#f5f5f5;
   --back-arrow-icon:#aaa;
   --bridge-btn-border:#FFFFFF;
+  --box-border: #ECECEC;
 }
 
 .theme-dark {
@@ -68,6 +69,7 @@ $family-sans-serif: "Gilroy", BlinkMacSystemFont, -apple-system, "Segoe UI", "Ro
   --disabled-dropdown:#1e1721;
   --back-arrow-icon:#ffffff;
   --bridge-btn-border:#00000000;
+  --token-network-box-border: #0C151C;
 }
 
 @import "~bulma/bulma";

@@ -115,66 +115,6 @@
   }
 }
 
-.token-dist-hint-text {
-  font-size: 16px;
-  color: #333;
-  padding-bottom: 6px;
-  display: flex;
-
-  span {
-    line-height: 15px;
-  }
-
-  .hint-icon {
-    width: 11px;
-    height: 11px;
-    display: flex;
-    margin: 2px 4px;
-    background: #9db0be;
-  }
-}
-
-.token-dist-expand-wrapper {
-  max-height: 0;
-  transition: max-height 300ms;
-  cursor: pointer;
-  opacity: 0;
-
-  &.expand {
-    max-height: 83px;
-    opacity: 1;
-  }
-}
-
-.token-dist-wrapper {
-  display: flex;
-  padding-bottom: 1.5rem;
-
-  .token-dist-pool-wrapper {
-    display: block;
-    overflow: hidden;
-    transition: width 200ms;
-  }
-
-  .token-dist-pool {
-    background: $light-blue;
-    margin: 0 2px;
-    padding: 5px;
-    border-radius: $radius;
-    text-align: center;
-    font-size: 12px;
-    color: #666;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-  }
-
-  .token-icon-img-wrapper {
-    margin-right: 5px;
-  }
-}
-
 $swap-widget-anim-timing: 300ms;
 
 .swap-widget {
@@ -732,5 +672,62 @@ $swap-widget-anim-timing: 300ms;
     }
   }
 
+  .token-dist-expand-wrapper {
+    max-height: 0;
+    transition: max-height 300ms;
+    opacity: 0;
 
+    &.expand {
+      max-height: 83px;
+      opacity: 1;
+    }
+  }
+
+  .token-dist-wrapper {
+    display: flex;
+    padding-bottom: 1.5rem;
+
+    .token-dist-pool-wrapper {
+      display: block;
+      overflow: hidden;
+      transition: width 200ms;
+    }
+
+    .token-dist-pool {
+      background: $light-blue;
+      margin: 0 2px;
+      padding: 5px;
+      border-radius: $radius;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+    }
+
+    .token-icon-img-wrapper {
+      margin-right: 5px;
+    }
+  }
+
+  .token-dist-hint-text {
+    font-size: 16px;
+    color: #333;
+    padding-bottom: 6px;
+    display: flex;
+
+    span {
+      line-height: 15px;
+    }
+
+    .hint-icon {
+      width: 11px;
+      height: 11px;
+      display: flex;
+      margin: 2px 4px;
+      background: #9db0be;
+    }
+  }
 }

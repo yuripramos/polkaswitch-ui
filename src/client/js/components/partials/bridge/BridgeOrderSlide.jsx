@@ -3,15 +3,14 @@ import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
-
 import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
-import TokenSwapDistribution from './TokenSwapDistribution';
 import NetworkDropdown from './NetworkDropdown';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
 import Nxtp from '../../../utils/nxtp';
+import AvailableRoutes from "./AvailableRoutes";
 
 export default class BridgeOrderSlide extends Component {
   constructor(props) {
@@ -265,8 +264,8 @@ export default class BridgeOrderSlide extends Component {
     var isFrom = (target === "from");
 
     return (
-      <div className="level is-mobile">
-        <div className="level is-mobile is-narrow my-0 mr-2">
+      <div className="level">
+        <div className="level is-narrow">
           <NetworkDropdown
             crossChain={true}
             selected={isFrom ? this.props.fromChain : this.props.toChain}
@@ -391,24 +390,25 @@ export default class BridgeOrderSlide extends Component {
           </div>
 
           <div
-            className={classnames("hint--large", "token-dist-expand-wrapper", {
-              "hint--top": this.props.swapDistribution,
-              "expand": this.props.swapDistribution
+            className={classnames("hint--large", "token-dist-expand-wrapper expand", {
+              //"hint--top": this.props.swapDistribution,
+              //"expand": this.props.swapDistribution
             })}
-            aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
           >
-            <div className="token-dist-hint-text">
-              <span>Routing Distribution</span>
+            <div
+              className="token-dist-hint-text"
+              aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap.">
+              <span>Available Routes</span>
               <span className="hint-icon">?</span>
             </div>
-            <TokenSwapDistribution
-              parts={this.props.swapDistribution}/>
+            <AvailableRoutes
+              routes={this.props.swapDistribution}/>
           </div>
 
-          <div>
+          <div className="bridge-order-btn-wrapper">
             <button
               disabled={Wallet.isConnected() && !this.validateOrderForm()}
-              className="button is-primary is-fullwidth is-medium"
+              className="button is-primary bridge-order-btn"
               onClick={this.handleSubmit}
             >
               {Wallet.isConnected() ? "Review Bridge Order" : "Connect Wallet"}
