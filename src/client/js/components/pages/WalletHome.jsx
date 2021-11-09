@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../partials/navbar/Navbar";
 import ConnectWalletModal from "../partials/ConnectWalletModal";
 import TxHistoryModal from "../partials/TxHistoryModal";
@@ -30,6 +30,8 @@ const data = [
 ];
 
 export default function WalletHome() {
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+
     return (
         <div className="container">
             <Navbar />
@@ -45,7 +47,7 @@ export default function WalletHome() {
                             <div className="column">
                                 <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
 
-                                <NetworkDropdown />
+                                <NetworkDropdown isActive={dropdownVisible} networkList={[]} />
                             </div>
                         </div>
 

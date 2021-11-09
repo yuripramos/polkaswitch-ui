@@ -1,8 +1,24 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 
-export default function NetworkDropdown({}) {
-    const [isActive, setIsActive] = useState(false);
+export default function NetworkDropdown({ networkList, selectedNetwork, isActive }) {
+    
+    const renderList = () => {
+        return networkList.map((network) => {
+            return (
+                <a href="#" className="dropdown-item">
+                    <img src={network.iconUrl} alt="" className="is-rounted token-icon" />
+                    <div className="dropdown-menu__asset_names">
+                        <h4>{network.name}</h4>
+                        <span>
+                            {network.price.toLocaleString("en-US", { style: "currency", currency: "USD" })} (
+                            {network.priceChange ? network.priceChange : ""})
+                        </span>
+                    </div>
+                </a>
+            );
+        });
+    };
 
     return (
         <div
@@ -34,30 +50,15 @@ export default function NetworkDropdown({}) {
                     <hr className="dropdown-divider" />
 
                     <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted token-icon" />
+                        <img src="https://bulma.io/images/placeholders/128x128.png" /* All network icon*/ alt="" className="is-rounted token-icon" />
                         <div className="dropdown-menu__asset_names">
-                            <h4>All Network</h4>
-                            <span>$4,873.23 (81%)</span>
+                            <h4>{ selectedNetwork ? selectedNetwork.name : "All Networks" }</h4>
                         </div>
                     </a>
 
                     <hr className="dropdown-divider" />
 
-                    <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted token-icon" />
-                        <div className="dropdown-menu__asset_names">
-                            <h4>All Network</h4>
-                            <span>$4,873.23 (81%)</span>
-                        </div>
-                    </a>
-
-                    <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="" className="is-rounted token-icon" />
-                        <div className="dropdown-menu__asset_names">
-                            <h4>All Network</h4>
-                            <span>$4,873.23 (81%)</span>
-                        </div>
-                    </a>
+                    {renderList()}
                 </div>
             </div>
         </div>
