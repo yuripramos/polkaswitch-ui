@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 const networks = require("./networks.js");
-export const enabledNetworks = Object.keys(networks).filter((netId) => {
-    return networks[netId].enabled;
-});
+export const enabledNetworks = Object.keys(networks)
+    .filter((netId) => {
+        return networks[netId].enabled;
+    })
+    .map((netIdStr) => +netIdStr);
+
 export const enabledNetworksList = Object.keys(networks)
     .map((netId) => {
         networks[netId].price = 0;
@@ -45,6 +48,7 @@ export const Web3ContextProvider = ({ children }) => {
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
 
                 const networkId = (await provider.getNetwork()).chainId;
+
                 if (!enabledNetworks.includes(networkId)) {
                     setErrorMessage(`Unsupported network, please switch to a supported network.`);
                     throw new Error(`Unsupported network, please switch to a supported network.`);

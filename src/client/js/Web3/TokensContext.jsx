@@ -16,6 +16,7 @@ export const TokensContextProvider = ({ children }) => {
 
     useEffect(() => {
         let axPromises = [];
+
         enabledNetworks.forEach((net) => {
             axPromises.push(axios.get(`/tokens/${net}.list.json`));
         });
@@ -48,6 +49,8 @@ export const TokensContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (provider) {
+            // let toFetchPrices = new Set();
+
             enabledNetworks.forEach((net) => {
                 let tokenSymbols = Object.keys(tokensState[net]);
                 let netProvider = new ethers.providers.StaticJsonRpcProvider(networks[net].chain.rpcUrls[0]);
@@ -69,6 +72,10 @@ export const TokensContextProvider = ({ children }) => {
                                         balance: +balance,
                                     },
                                 });
+
+                                // if (+balance > 0) {
+                                //     toFetchPrices.add(tokensState[net][tkn].symbol);
+                                // }
                             })
                             .catch((err) => {
                                 console.log(`${net} ${tokensState[net][tkn].symbol}`);
@@ -76,6 +83,9 @@ export const TokensContextProvider = ({ children }) => {
                     }
                 });
             });
+            setTimeout(() => {
+                console.log(toFetchPrices);
+            }, 150000);
         }
     }, [provider]);
 
@@ -90,7 +100,7 @@ export const TokensContextProvider = ({ children }) => {
     );
 };
 
-export const useTokens = (chainId) => {
+export const getTokensByNetwork = (chainId) => {
     const { tokenState } = React.useContext(tokensContext);
 
     let tkns = tokenState[chainId];
@@ -101,4 +111,19 @@ export const useTokens = (chainId) => {
     } else {
         return [];
     }
+};
+
+export const getTokensWithBalance = () => {
+    const { tokenState } = React.useContext(tokensContext);
+    let withBalance = [];
+
+    Object.keys(tokenState).forEach((net) => {
+        Object.keys(tokenState[net]).forEach((tkn) => {
+            if (tkn.balance > 0) {
+                withBalance.push({ ...tkn });
+            }
+        });
+    });
+
+    return withBalance;
 };
