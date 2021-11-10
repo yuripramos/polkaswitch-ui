@@ -1,13 +1,27 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 
-export default function NetworkDropdown({ networkList, selectedNetwork, isActive }) {
-    
+export default function NetworkDropdown({ networkList, onChangeSelection, selectedNetwork }) {
+    const [isActive, setIsActive] = useState(false);
+
+    const handleSelectionChange = (selection) => {
+        onChangeSelection(selection);
+        setIsActive(false);
+    };
+
     const renderList = () => {
         return networkList.map((network) => {
             return (
-                <a href="#" className="dropdown-item">
-                    <img src={network.iconUrl} alt="" className="is-rounted token-icon" />
+                <a
+                    href="#"
+                    id={network.chainId}
+                    className="dropdown-item"
+                    onClick={(evt) => {
+                        evt.preventDefault();
+                        handleSelectionChange(network);
+                    }}
+                >
+                    <img src={network.logoURI} alt="" className="is-rounted token-icon" />
                     <div className="dropdown-menu__asset_names">
                         <h4>{network.name}</h4>
                         <span>
@@ -22,17 +36,21 @@ export default function NetworkDropdown({ networkList, selectedNetwork, isActive
 
     return (
         <div
+            onMouseOver={(evt) => {
+                evt.preventDefault();
+                setIsActive(true);
+            }}
             className={classNames({
                 dropdown: true,
                 "is-active": isActive,
             })}
         >
             <div className="dropdown-trigger">
-                <img src="https://bulma.io/images/placeholders/128x128.png" />
+                <img src={selectedNetwork ? selectedNetwork.logoURI : "https://bulma.io/images/placeholders/128x128.png"} />
 
                 <div className="dropdown-trigger__content">
                     <span className="sub">Network</span>
-                    <span className="main">All Networks</span>
+                    <span className="main">{selectedNetwork ? selectedNetwork.name : "All networks"}</span>
                 </div>
 
                 <div className="icon">
@@ -41,7 +59,15 @@ export default function NetworkDropdown({ networkList, selectedNetwork, isActive
                     </span>
                 </div>
             </div>
-            <div className="dropdown-menu" id="dropdown-menu" role="menu">
+            <div
+                onMouseLeave={(evt) => {
+                    evt.preventDefault();
+                    setIsActive(false);
+                }}
+                className="dropdown-menu"
+                id="dropdown-menu"
+                role="menu"
+            >
                 <div className="dropdown-content">
                     <div className="dropdown-item">
                         <h4>Networks</h4>
@@ -49,10 +75,21 @@ export default function NetworkDropdown({ networkList, selectedNetwork, isActive
 
                     <hr className="dropdown-divider" />
 
-                    <a href="#" className="dropdown-item">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" /* All network icon*/ alt="" className="is-rounted token-icon" />
+                    <a
+                        onClick={(evt) => {
+                            evt.preventDefault();
+                            handleSelectionChange(undefined);
+                        }}
+                        href="#"
+                        className="dropdown-item"
+                    >
+                        <img
+                            src="https://bulma.io/images/placeholders/128x128.png"
+                            /* All network icon*/ alt=""
+                            className="is-rounted token-icon"
+                        />
                         <div className="dropdown-menu__asset_names">
-                            <h4>{ selectedNetwork ? selectedNetwork.name : "All Networks" }</h4>
+                            <h4>All Networks</h4>
                         </div>
                     </a>
 

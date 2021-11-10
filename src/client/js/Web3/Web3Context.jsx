@@ -1,9 +1,18 @@
 import React from "react";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 const networks = require("./networks.js");
-export const enabledNetworks = Object.keys(networks).filter((netId) => { return networks[netId].enabled });
+export const enabledNetworks = Object.keys(networks).filter((netId) => {
+    return networks[netId].enabled;
+});
+export const enabledNetworksList = Object.keys(networks)
+    .map((netId) => {
+        networks[netId].price = 0;
+        networks[netId].priceChange = 0;
+        return networks[netId];
+    })
+    .filter((net) => net.enabled);
 const networksIds = Object.keys(networks);
 
 const web3Context = React.createContext({
@@ -14,8 +23,7 @@ const web3Context = React.createContext({
     isConnected: false,
     connectWallet: undefined,
     web3Account: undefined,
-
-})
+});
 
 export const Web3ContextProvider = ({ children }) => {
     const [web3Provider, setweb3Provider] = useState(undefined);
@@ -27,34 +35,32 @@ export const Web3ContextProvider = ({ children }) => {
     const [web3Balance, setEthBalace] = useState(undefined);
 
     const connectWallet = async (wallet) => {
-        switch(wallet) {
+        switch (wallet) {
             case "metamask":
-                if (!(window).ethereum || !(window).ethereum.isMetaMask)
+                if (!window.ethereum || !window.ethereum.isMetaMask) {
                     setErrorMessage(`Metamask is not installed, please install metamask and try again!`);
+                    throw new Error(`Metamask is not installed, please install metamask and try again!`);
+                }
 
-                const provider = new ethers.providers.Web3Provider(
-                    (window).ethereum
-                );
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
 
                 const networkId = (await provider.getNetwork()).chainId;
                 if (!enabledNetworks.includes(networkId)) {
                     setErrorMessage(`Unsupported network, please switch to a supported network.`);
+                    throw new Error(`Unsupported network, please switch to a supported network.`);
                 }
 
-                const web3Accounts = await (window).ethereum.request({
+                const web3Accounts = await window.ethereum.request({
                     method: "eth_requestAccounts",
                 });
 
                 const signer = provider.getSigner();
 
-                (window).ethereum.on(
-                    "accountsChanged",
-                    (accounts) => {
-                        setweb3Account(accounts[0]);
-                    }
-                );
+                window.ethereum.on("accountsChanged", (accounts) => {
+                    setweb3Account(accounts[0]);
+                });
 
-                (window).ethereum.on("chainChanged", connectWallet);
+                window.ethereum.on("chainChanged", connectWallet);
 
                 setweb3Account(web3Accounts[0]);
                 setweb3Provider(provider);
@@ -65,9 +71,9 @@ export const Web3ContextProvider = ({ children }) => {
             case "walletconnect":
                 let chainId = 137;
 
-                let rpc = { [chainId]: networks[chainId].chain.rpcUrls[0] }
+                let rpc = { [chainId]: networks[chainId].chain.rpcUrls[0] };
                 const _provider = new WalletConnectProvider({
-                    rpc
+                    rpc,
                 });
 
                 await _provider.enable();
@@ -83,22 +89,26 @@ export const Web3ContextProvider = ({ children }) => {
             default:
                 return;
         }
-    }
+    };
 
     return (
-        <web3Context.Provider value={{
-            provider: web3Provider,
-            signer: web3Signer,
-            networkId,
-            isConnected,
-            errorMessage,
-            web3Account,
-            connectWallet,
-            web3Balance
-        }}>{children}</web3Context.Provider>
-    )
-}
+        <web3Context.Provider
+            value={{
+                provider: web3Provider,
+                signer: web3Signer,
+                networkId,
+                isConnected,
+                errorMessage,
+                web3Account,
+                connectWallet,
+                web3Balance,
+            }}
+        >
+            {children}
+        </web3Context.Provider>
+    );
+};
 
 export const useWeb3Context = () => {
     return React.useContext(web3Context);
-} 
+};

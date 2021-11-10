@@ -7,7 +7,7 @@ import MobileMenu from "../partials/navbar/MobileMenu";
 import PortfolioNetwork from "../partials/wallet/NetworkPrice";
 import NetworkDropdown from "../partials/wallet/NetworkDropdown";
 import AssetsTable from "../partials/wallet/AssetsTable";
-import { useWeb3Context, Web3ContextProvider } from "../../Web3/Web3Context";
+import { enabledNetworksList, useWeb3Context, Web3ContextProvider } from "../../Web3/Web3Context";
 import { TokensContextProvider } from "../../Web3/TokensContext";
 
 const data = [
@@ -32,8 +32,9 @@ const data = [
 ];
 
 export default function WalletHome() {
+    const [currentNetwork, setCurrentNetwork] = useState(undefined);
+
     const { connectWallet } = useWeb3Context();
-    const [dropdownVisible, setDropdownVisible] = useState(false);
 
     return (
         <div className="container">
@@ -50,7 +51,11 @@ export default function WalletHome() {
                             <div className="column">
                                 <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
 
-                                <NetworkDropdown isActive={dropdownVisible} networkList={[]} />
+                                <NetworkDropdown
+                                    selectedNetwork={currentNetwork}
+                                    onChangeSelection={setCurrentNetwork}
+                                    networkList={enabledNetworksList}
+                                />
                             </div>
                         </div>
 
