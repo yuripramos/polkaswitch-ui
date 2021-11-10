@@ -15,79 +15,57 @@ export const TokensContextProvider = ({ children }) => {
     const [tokensState, dispatchTokensState] = useReducer(TokensReducer, {});
 
     useEffect(() => {
-        let axPromises = [];
+        if (provider && web3Account) {
+            enabledNetworks.forEach((net) => {
+                let netProvider = new ethers.providers.StaticJsonRpcProvider(networks[net].chain.rpcUrls[0]);
 
-        enabledNetworks.forEach((net) => {
-            axPromises.push(axios.get(`/tokens/${net}.list.json`));
-        });
+                axios.get(`/tokens/${net}.list.json`).then((tokenListRes) => {
+                    const { data } = tokenListRes;
 
-        Promise.all(axPromises).then((axResponseList) => {
-            axResponseList.forEach((_listResponse) => {
-                const { data } = _listResponse;
+                    data.forEach((token) => {
+                        if (token.native) {
+                            netProvider.getBalance(web3Account).then((balance) => {
+                                let converted = +balance / 1e18;
 
-                data.forEach((token) => {
-                    // {
-                    //     "symbol": "BNB",
-                    //     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-                    //     "decimals": 18,
-                    //     "native": true,
-                    //     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
-                    //     "chainId": 56
-                    // }
-                    dispatchTokensState({
-                        type: "ADD_TOKEN",
-                        payload: {
-                            network: token.chainId,
-                            symbol: token.symbol,
-                            metadata: token,
-                        },
+                                if (converted > 0) {
+                                    dispatchTokensState({
+                                        type: "ADD_TOKEN",
+                                        payload: {
+                                            network: token.chainId,
+                                            symbol: token.symbol,
+                                            metadata: { ...token, balance: converted },
+                                        },
+                                    });
+                                }
+                            });
+                        } else {
+                            let erc20 = new ethers.Contract(token.address, window.erc20Abi, netProvider);
+
+                            erc20
+                                .balanceOf(web3Account)
+                                .then((balance) => {
+                                    let cBal = +balance;
+
+                                    if (cBal > 0) {
+                                        dispatchTokensState({
+                                            type: "ADD_TOKEN",
+                                            payload: {
+                                                network: token.chainId,
+                                                symbol: token.symbol,
+                                                metadata: { ...token, balance: cBal },
+                                            },
+                                        });
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.error(`${net} ${token.symbol} ${err.message}`);
+                                });
+                        }
                     });
                 });
             });
-        });
-    }, []);
-
-    useEffect(() => {
-        if (provider) {
-            // let toFetchPrices = new Set();
-
-            enabledNetworks.forEach((net) => {
-                let tokenSymbols = Object.keys(tokensState[net]);
-                let netProvider = new ethers.providers.StaticJsonRpcProvider(networks[net].chain.rpcUrls[0]);
-
-                tokenSymbols.forEach((tkn) => {
-                    if (tokensState[net][tkn].native && !tokensState[net][tkn].address) {
-                    } else {
-                        let erc20 = new ethers.Contract(tokensState[net][tkn].address, window.erc20Abi, netProvider);
-
-                        erc20
-                            .balanceOf(web3Account)
-                            .then((balance) => {
-                                console.log(`Fetched Balance of ${networks[net].name} ${tokensState[net][tkn].symbol}`);
-                                dispatchTokensState({
-                                    type: "UPDATE_BALANCE",
-                                    payload: {
-                                        network: net,
-                                        symbol: tokensState[net][tkn].symbol,
-                                        balance: +balance,
-                                    },
-                                });
-
-                                // if (+balance > 0) {
-                                //     toFetchPrices.add(tokensState[net][tkn].symbol);
-                                // }
-                            })
-                            .catch((err) => {
-                                console.log(`${net} ${tokensState[net][tkn].symbol}`);
-                            });
-                    }
-                });
-            });
-            setTimeout(() => {
-                console.log(toFetchPrices);
-            }, 150000);
         }
-    }, [provider]);
+    }, [provider, web3Account]);
 
     return (
         <tokensContext.Provider
