@@ -7,6 +7,8 @@ import MobileMenu from "../partials/navbar/MobileMenu";
 import PortfolioNetwork from "../partials/wallet/NetworkPrice";
 import NetworkDropdown from "../partials/wallet/NetworkDropdown";
 import AssetsTable from "../partials/wallet/AssetsTable";
+import { useWeb3Context, Web3ContextProvider } from "../../Web3/Web3Context";
+import { TokensContextProvider } from "../../Web3/TokensContext";
 
 const data = [
     {
@@ -30,6 +32,7 @@ const data = [
 ];
 
 export default function WalletHome() {
+    const { connectWallet } = useWeb3Context();
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     return (
@@ -142,7 +145,14 @@ export default function WalletHome() {
                                     Connect your wallet to display up to date price and balances.
                                 </h3>
 
-                                <button style={{ marginTop: "30px", marginBottom: "70px" }} class="button is-success">
+                                <button
+                                    onClick={(evt) => {
+                                        evt.preventDefault();
+                                        connectWallet("metamask");
+                                    }}
+                                    style={{ marginTop: "30px", marginBottom: "70px" }}
+                                    class="button is-success"
+                                >
                                     Connect Wallet
                                 </button>
                             </div>
@@ -196,7 +206,7 @@ export default function WalletHome() {
                                 </h3>
 
                                 <button style={{ marginTop: "30px", marginBottom: "70px" }} class="button is-success">
-                                   Start Trading
+                                    Start Trading
                                 </button>
                             </div>
                         </div>
