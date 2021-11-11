@@ -23,7 +23,7 @@ export default function AssetsTable({ tokenData }) {
                 return (
                     <AssetTableRow
                         key={t.symbol}
-                        iconUrl={t.iconUrl}
+                        logoURI={t.logoURI}
                         name={t.name}
                         symbol={t.symbol}
                         price={t.price}

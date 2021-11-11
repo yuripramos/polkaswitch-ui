@@ -1,10 +1,10 @@
 import React from "react";
 
-export default function AssetTableRow({ iconUrl, name, symbol, price, balance }) {
+export default function AssetTableRow({ logoURI, name, symbol, price, balance }) {
     return (
         <div className="columns wallets-page-tokens-table__row">
             <div className="column is-3">
-                <img className="token-icon" src={iconUrl} />
+                <img className="token-icon" src={logoURI} />
                 <div className="wallets-page-tokens-table__content">
                     <h4 className="wallets-page-tokens-table__title">{name}</h4>
                     <span className="wallets-page-tokens-table__sub">{symbol} &middot; <span>USDC</span></span>

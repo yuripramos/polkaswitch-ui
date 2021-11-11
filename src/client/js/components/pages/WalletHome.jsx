@@ -7,34 +7,101 @@ import MobileMenu from "../partials/navbar/MobileMenu";
 import PortfolioNetwork from "../partials/wallet/NetworkPrice";
 import NetworkDropdown from "../partials/wallet/NetworkDropdown";
 import AssetsTable from "../partials/wallet/AssetsTable";
-import { enabledNetworksList, useWeb3Context, Web3ContextProvider } from "../../Web3/Web3Context";
-import { TokensContextProvider } from "../../Web3/TokensContext";
-
-const data = [
-    {
-        iconUrl: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/eth%402x.png",
-        name: "Ethereum",
-        symbol: "ETH",
-        price: 4516.24,
-        balance: 0.05,
-        isNative: true,
-        homeNetwork: undefined,
-    },
-    {
-        iconUrl: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/32%402x/color/btc%402x.png",
-        name: "Bitcoin",
-        symbol: "BTC",
-        price: 62109.9,
-        balance: 1.2,
-        isNative: true,
-        homeNetwork: "ETH",
-    },
-];
+import { enabledNetworksList, useWeb3Context } from "../../Web3/Web3Context";
+import { useTokensByNetwork, useTokensWithBalance } from "../../Web3/TokensContext";
+import DisconnectedWallet from "../partials/wallet/DisconnectedWallet";
+import networks from "../../Web3/networks";
+import EmptyBalances from "../partials/wallet/EmptyBalances";
 
 export default function WalletHome() {
     const [currentNetwork, setCurrentNetwork] = useState(undefined);
+    const { isConnected } = useWeb3Context();
 
-    const { connectWallet } = useWeb3Context();
+    let tokens = currentNetwork ? useTokensByNetwork(+currentNetwork.chainId) : useTokensWithBalance();
+
+    const renderBalancesAccrossNetworks = () => {
+        const bMap = tokens.reduce((_map, cv) => {
+            let balance = 0;
+            if (_map[cv.chainId]) {
+                balance += _map[cv.chainId];
+            }
+            balance += cv.balance * cv.price;
+            return { ..._map, [cv.chainId]: balance };
+        }, {});
+
+        return Object.keys(bMap).map((netId) => {
+            return (
+                <PortfolioNetwork
+                    key={netId}
+                    logoURI={networks[netId].logoURI}
+                    name={networks[netId].name}
+                    value={bMap[netId]}
+                    change={0}
+                />
+            );
+        });
+    };
+
+    const renderPortfolioMakeUp = () => {
+        if (isConnected && tokens.length) {
+            return (
+                <>
+                    <div className="columns is-hidden-mobile">
+                        <div className="column">
+                            <div className="portfolio-makeup__heading">Portfolio Makeup</div>
+                        </div>
+                    </div>
+
+                    <div className="columns is-hidden-mobile portfolio-makeup">{renderBalancesAccrossNetworks()}</div>
+                </>
+            );
+        }
+        return null;
+    };
+
+    const renderPortfolioOverview = () => {
+        if (isConnected) {
+            if (!tokens.length) {
+                return <EmptyBalances />
+            } else {
+                return (
+                    <div className="columns is-centered">
+                        <div className="column card-container">
+                            <div className="card wallets-page-card">
+                                <div className="columns portfolio-balance">
+                                    <div className="column">
+                                        <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
+
+                                        <NetworkDropdown
+                                            selectedNetwork={currentNetwork}
+                                            onChangeSelection={setCurrentNetwork}
+                                            networkList={enabledNetworksList}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="columns total-balance">
+                                    <div className="column">
+                                        <h6 className="total-balance__sub-heading">Total Balance</h6>
+                                        <h2 className="total-balance__main-heading">
+                                            {tokens
+                                                .reduce((p, t) => {
+                                                    return (p += t.price * t.balance);
+                                                }, 0)
+                                                .toLocaleString("en-US", { style: "currency", currency: "USD" })}
+                                        </h2>
+                                    </div>
+                                </div>
+
+                                {renderPortfolioMakeUp()}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        }
+        return <DisconnectedWallet />;
+    };
 
     return (
         <div className="container">
@@ -44,180 +111,22 @@ export default function WalletHome() {
             <ConnectWalletModal />
             <TxHistoryModal />
 
-            <div className="columns is-centered">
-                <div className="column card-container">
-                    <div className="card wallets-page-card">
-                        <div className="columns portfolio-balance">
-                            <div className="column">
-                                <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
-
-                                <NetworkDropdown
-                                    selectedNetwork={currentNetwork}
-                                    onChangeSelection={setCurrentNetwork}
-                                    networkList={enabledNetworksList}
-                                />
+            {renderPortfolioOverview()}
+            {isConnected && (
+                <div className="columns is-centered">
+                    <div className="column card-container">
+                        <div className="card wallets-page-card">
+                            <div className="tokens-table-title-container">
+                                <span className="tokens-table-title-container__main">Assets</span>
+                                <span className="tokens-table-title-container__sub">Don't see your assets?</span>
                             </div>
-                        </div>
 
-                        <div className="columns total-balance">
-                            <div className="column">
-                                <h6 className="total-balance__sub-heading">Total Balance</h6>
-                                <h2 className="total-balance__main-heading">$456.156</h2>
-                            </div>
-                        </div>
-
-                        <div className="columns is-hidden-mobile">
-                            <div className="column">
-                                <div className="portfolio-makeup__heading">Portfolio Makeup</div>
-                            </div>
-                        </div>
-
-                        <div className="columns is-hidden-mobile portfolio-makeup">
-                            {data
-                                .filter((t) => t.isNative)
-                                .map((t) => {
-                                    return (
-                                        <PortfolioNetwork
-                                            key={t.symbol}
-                                            iconUrl={t.iconUrl}
-                                            name={t.name}
-                                            value={t.price * t.balance}
-                                            change={0}
-                                        />
-                                    );
-                                })}
+                            <AssetsTable tokenData={tokens} />
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
 
-            <div className="columns is-centered">
-                <div className="column card-container">
-                    <div className="card wallets-page-card">
-                        <div className="tokens-table-title-container">
-                            <span className="tokens-table-title-container__main">Assets</span>
-                            <span className="tokens-table-title-container__sub">Don't see your assets?</span>
-                        </div>
-
-                        <AssetsTable tokenData={data} />
-                    </div>
-                </div>
-            </div>
-
-            <div className="columns is-centered">
-                <div className="column card-container">
-                    <div className="card wallets-page-card">
-                        <div className="columns portfolio-balance">
-                            <div className="column">
-                                <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
-                            </div>
-                        </div>
-
-                        <div className="columns">
-                            <div
-                                className="column"
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    flexDirection: "column",
-                                }}
-                            >
-                                <img style={{ marginTop: "49px", width: "62px" }} src="/images/group.svg" alt="Connect Wallet" />
-                                <h2
-                                    style={{
-                                        fontFamily: "Gilroy",
-                                        fontStyle: "normal",
-                                        fontWeight: "bold",
-                                        fontSize: "18px",
-                                        lineHeight: " 22px",
-                                        color: "#333333",
-                                    }}
-                                >
-                                    Your crypto balance will show up here.
-                                </h2>
-                                <h3
-                                    style={{
-                                        marginTop: "9px",
-                                        fontFamily: "Gilroy",
-                                        fontStyle: "normal",
-                                        fontWeight: "normal",
-                                        fontSize: "14px",
-                                        lineHeight: "16px",
-                                        textAlign: "center",
-                                        color: "#A3A5A6",
-                                    }}
-                                >
-                                    Connect your wallet to display up to date price and balances.
-                                </h3>
-
-                                <button
-                                    onClick={(evt) => {
-                                        evt.preventDefault();
-                                        connectWallet("metamask");
-                                    }}
-                                    style={{ marginTop: "30px", marginBottom: "70px" }}
-                                    class="button is-success"
-                                >
-                                    Connect Wallet
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="columns is-centered">
-                <div className="column card-container">
-                    <div className="card wallets-page-card">
-                        <div className="tokens-table-title-container">
-                            <span className="tokens-table-title-container__main">Assets</span>
-                        </div>
-
-                        <div className="columns">
-                            <div
-                                className="column"
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    flexDirection: "column",
-                                }}
-                            >
-                                <img style={{ marginTop: "49px", width: "62px" }} src="/images/group.svg" alt="Connect Wallet" />
-                                <h2
-                                    style={{
-                                        fontFamily: "Gilroy",
-                                        fontStyle: "normal",
-                                        fontWeight: "bold",
-                                        fontSize: "18px",
-                                        lineHeight: " 22px",
-                                        color: "#333333",
-                                    }}
-                                >
-                                    Your crypto assets will show up here.
-                                </h2>
-                                <h3
-                                    style={{
-                                        marginTop: "9px",
-                                        fontFamily: "Gilroy",
-                                        fontStyle: "normal",
-                                        fontWeight: "normal",
-                                        fontSize: "14px",
-                                        lineHeight: "16px",
-                                        textAlign: "center",
-                                        color: "#A3A5A6",
-                                    }}
-                                >
-                                    Add assets to your wallet to display up to date prices and balances..
-                                </h3>
-
-                                <button style={{ marginTop: "30px", marginBottom: "70px" }} class="button is-success">
-                                    Start Trading
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }

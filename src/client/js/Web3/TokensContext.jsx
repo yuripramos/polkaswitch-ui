@@ -4,10 +4,11 @@ import { enabledNetworks, useWeb3Context } from "./Web3Context.jsx";
 import TokensReducer from "./reducers/TokensReducer";
 import { ethers } from "@connext/nxtp-utils/node_modules/ethers";
 import networks from "./networks.js";
+import BigNumber from "bignumber.js";
 
 const axios = require("axios");
 const tokensContext = React.createContext({
-    tokensState: [],
+    tokensState: {},
 });
 
 export const TokensContextProvider = ({ children }) => {
@@ -25,15 +26,14 @@ export const TokensContextProvider = ({ children }) => {
                     data.forEach((token) => {
                         if (token.native) {
                             netProvider.getBalance(web3Account).then((balance) => {
-                                let converted = +balance / 1e18;
-
+                                let converted = (+balance) / (Math.pow(10, token.decimals));
                                 if (converted > 0) {
                                     dispatchTokensState({
                                         type: "ADD_TOKEN",
                                         payload: {
                                             network: token.chainId,
                                             symbol: token.symbol,
-                                            metadata: { ...token, balance: converted },
+                                            metadata: { ...token, balance: converted, price: 2 },
                                         },
                                     });
                                 }
@@ -44,15 +44,15 @@ export const TokensContextProvider = ({ children }) => {
                             erc20
                                 .balanceOf(web3Account)
                                 .then((balance) => {
-                                    let cBal = +balance;
+                                    let converted = (+balance) / (Math.pow(10, token.decimals));
 
-                                    if (cBal > 0) {
+                                    if (converted > 0) {
                                         dispatchTokensState({
                                             type: "ADD_TOKEN",
                                             payload: {
                                                 network: token.chainId,
                                                 symbol: token.symbol,
-                                                metadata: { ...token, balance: cBal },
+                                                metadata: { ...token, balance: converted, price: 1 },
                                             },
                                         });
                                     }
@@ -78,10 +78,10 @@ export const TokensContextProvider = ({ children }) => {
     );
 };
 
-export const getTokensByNetwork = (chainId) => {
-    const { tokenState } = React.useContext(tokensContext);
+export const useTokensByNetwork = (chainId) => {
+    const { tokensState } = React.useContext(tokensContext);
 
-    let tkns = tokenState[chainId];
+    let tkns = tokensState[chainId];
     if (tkns) {
         return Object.keys(tkns).map((symbl) => {
             return tkns[symbl];
@@ -91,14 +91,14 @@ export const getTokensByNetwork = (chainId) => {
     }
 };
 
-export const getTokensWithBalance = () => {
-    const { tokenState } = React.useContext(tokensContext);
+export const useTokensWithBalance = () => {
+    const { tokensState } = React.useContext(tokensContext);
     let withBalance = [];
 
-    Object.keys(tokenState).forEach((net) => {
-        Object.keys(tokenState[net]).forEach((tkn) => {
-            if (tkn.balance > 0) {
-                withBalance.push({ ...tkn });
+    Object.keys(tokensState).forEach((net) => {
+        Object.keys(tokensState[net]).forEach((tkn) => {
+            if (tokensState[net][tkn].balance > 0) {
+                withBalance.push({ ... tokensState[net][tkn] });
             }
         });
     });
