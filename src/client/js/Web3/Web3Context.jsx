@@ -95,6 +95,12 @@ export const Web3ContextProvider = ({ children }) => {
         }
     };
 
+    useEffect(() => {
+        if (window.ethereum) {
+            connectWallet("metamask");
+        }
+    }, [])
+
     return (
         <web3Context.Provider
             value={{

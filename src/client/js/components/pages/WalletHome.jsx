@@ -59,44 +59,58 @@ export default function WalletHome() {
         return null;
     };
 
-    const renderPortfolioOverview = () => {
+    const renderWalletHome = () => {
         if (isConnected) {
-            if (!tokens.length) {
-                return <EmptyBalances />
+            if (!tokens.length && currentNetwork === undefined) {
+                return <EmptyBalances />;
             } else {
                 return (
-                    <div className="columns is-centered">
-                        <div className="column card-container">
-                            <div className="card wallets-page-card">
-                                <div className="columns portfolio-balance">
-                                    <div className="column">
-                                        <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
+                    <>
+                        <div className="columns is-centered">
+                            <div className="column card-container">
+                                <div className="card wallets-page-card">
+                                    <div className="columns portfolio-balance">
+                                        <div className="column">
+                                            <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
 
-                                        <NetworkDropdown
-                                            selectedNetwork={currentNetwork}
-                                            onChangeSelection={setCurrentNetwork}
-                                            networkList={enabledNetworksList}
-                                        />
+                                            <NetworkDropdown
+                                                selectedNetwork={currentNetwork}
+                                                onChangeSelection={setCurrentNetwork}
+                                                networkList={enabledNetworksList}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="columns total-balance">
-                                    <div className="column">
-                                        <h6 className="total-balance__sub-heading">Total Balance</h6>
-                                        <h2 className="total-balance__main-heading">
-                                            {tokens
-                                                .reduce((p, t) => {
-                                                    return (p += t.price * t.balance);
-                                                }, 0)
-                                                .toLocaleString("en-US", { style: "currency", currency: "USD" })}
-                                        </h2>
+                                    <div className="columns total-balance">
+                                        <div className="column">
+                                            <h6 className="total-balance__sub-heading">Total Balance</h6>
+                                            <h2 className="total-balance__main-heading">
+                                                {tokens
+                                                    .reduce((p, t) => {
+                                                        return (p += t.price * t.balance);
+                                                    }, 0)
+                                                    .toLocaleString("en-US", { style: "currency", currency: "USD" })}
+                                            </h2>
+                                        </div>
                                     </div>
-                                </div>
 
-                                {renderPortfolioMakeUp()}
+                                    {renderPortfolioMakeUp()}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div className="columns is-centered">
+                            <div className="column card-container">
+                                <div className="card wallets-page-card">
+                                    <div className="tokens-table-title-container">
+                                        <span className="tokens-table-title-container__main">Assets</span>
+                                        <span className="tokens-table-title-container__sub">Don't see your assets?</span>
+                                    </div>
+
+                                    <AssetsTable tokenData={tokens} />
+                                </div>
+                            </div>
+                        </div>
+                    </>
                 );
             }
         }
@@ -111,22 +125,7 @@ export default function WalletHome() {
             <ConnectWalletModal />
             <TxHistoryModal />
 
-            {renderPortfolioOverview()}
-            {isConnected && (
-                <div className="columns is-centered">
-                    <div className="column card-container">
-                        <div className="card wallets-page-card">
-                            <div className="tokens-table-title-container">
-                                <span className="tokens-table-title-container__main">Assets</span>
-                                <span className="tokens-table-title-container__sub">Don't see your assets?</span>
-                            </div>
-
-                            <AssetsTable tokenData={tokens} />
-                        </div>
-                    </div>
-                </div>
-            )}
-
+            {renderWalletHome()}
         </div>
     );
 }

@@ -29,6 +29,7 @@ export default function AssetsTable({ tokenData }) {
                         price={t.price}
                         balance={t.balance}
                         value={t.value}
+                        networkId={t.chainId}
                     ></AssetTableRow>
                 );
             })}

@@ -1,13 +1,14 @@
 import React from "react";
+import networks from "../../../Web3/networks";
 
-export default function AssetTableRow({ logoURI, name, symbol, price, balance }) {
+export default function AssetTableRow({ logoURI, name, symbol, price, balance, networkId }) {
     return (
         <div className="columns wallets-page-tokens-table__row">
             <div className="column is-3">
                 <img className="token-icon" src={logoURI} />
                 <div className="wallets-page-tokens-table__content">
                     <h4 className="wallets-page-tokens-table__title">{name}</h4>
-                    <span className="wallets-page-tokens-table__sub">{symbol} &middot; <span>USDC</span></span>
+                    <span className="wallets-page-tokens-table__sub">{symbol} &middot; <span>{networks[networkId].name}</span></span>
                 </div>
             </div>
             <div className="column is-hidden-mobile is-3 align-right">

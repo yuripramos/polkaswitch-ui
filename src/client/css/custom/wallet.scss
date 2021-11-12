@@ -323,3 +323,39 @@
     font-weight: normal;
     font-size: 12px;
 }
+
+.wallets-page-card .data-na-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.wallets-page-card .data-na-container img {
+    margin-top: 49px;
+    width: 62px;
+}
+
+.wallets-page-card .data-na-container h2 {
+    font-family: "Gilroy";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    color: #333;
+}
+
+.wallets-page-card .data-na-container h3 {
+    margin-top: 9px;
+    font-family: "Gilroy";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+    color: "#A3A5A6";
+}
+
+.wallets-page-card .data-na-container button {
+    margin-top: 30px;
+    margin-bottom: 70px;
+}
