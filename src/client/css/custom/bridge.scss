@@ -27,6 +27,8 @@
 
 .network-dropdown {
   .dropdown-content{
+    max-height: 15em;
+    overflow: auto;
     background-color: var(--dropdown-bg) !important;
   }
   &.dropdown {
