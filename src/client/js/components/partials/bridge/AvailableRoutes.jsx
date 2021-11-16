@@ -125,7 +125,8 @@ export default function AvailableRoutes(props) {
           return (
             <RouteItemWrapper
               key={i}
-              data={item}>
+              data={item}
+              index={i}>
             </RouteItemWrapper>
           );
         })

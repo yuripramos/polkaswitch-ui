@@ -10,6 +10,8 @@
     "nodeProvider": "https://api-eth.swing.xyz/3b520ae779047524795c39e0ea17ce5b5304057d/",
     "explorerBaseUrl": "https://etherscan.io/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
+    "color": "#5C69B5",
+    "desiredParts": 3,
     "chain": {
       "chainId": "0x1",
       "chainName": "Ethereum Mainnet"
@@ -48,6 +50,7 @@
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "desiredParts": 3,
+    "color": "#4E99E3",
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -89,6 +92,7 @@
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
     "desiredParts": 3,
+    "color": "#725BDF",
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
@@ -136,6 +140,7 @@
     "explorerBaseUrl": "https://bscscan.com/tx/",
     "gasApi": false,
     "desiredParts": 3,
+    "color": "#FCC413",
     "chain": {
       "chainId": "0x38",
       "rpcUrls": ["https://bsc-dataseed.binance.org/"],
@@ -183,6 +188,7 @@
     "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
     "gasApi": false,
     "desiredParts": 3,
+    "color": "#CF4D47",
     "chain": {
       "chainId": "0xA86A",
       "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],
@@ -229,6 +235,7 @@
     "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
     "gasApi": false,
     "desiredParts": 18,
+    "color": "#67C19D",
     "chain": {
       "chainId": "0x64",
       "rpcUrls": ["https://rpc.xdaichain.com/"],
@@ -275,6 +282,7 @@
     "explorerBaseUrl": "https://ftmscan.com/tx/",
     "gasApi": false,
     "desiredParts": 18,
+    "color": "#3164EE",
     "chain": {
       "chainId": "0xFA",
       "rpcUrls": ["https://rpcapi.fantom.network"],
