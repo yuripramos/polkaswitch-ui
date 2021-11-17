@@ -206,7 +206,7 @@ export default class CustomTokenModal extends Component {
       <div className={classnames("modal", { "is-active": open })}>
         <div onClick={this.handleClose} className="modal-background"></div>
         <div className="modal-content">
-          <div className="connect-panel box">
+          <div className="modal-dropdown-options box">
             <div className="level is-mobile">
               <div className="level-left">
                 <div className="level-item">

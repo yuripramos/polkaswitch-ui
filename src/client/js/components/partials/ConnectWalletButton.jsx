@@ -37,6 +37,11 @@ export default class ConnectWalletButton extends Component {
 
   getTruncWalletAddress() {
     var address = Wallet.currentAddress();
+
+    if (!address) {
+      return 'n/a';
+    }
+
     var first = address.substring(0, 7);
     var last = address.substring(address.length - 5, address.length);
     return `${first}...${last}`;

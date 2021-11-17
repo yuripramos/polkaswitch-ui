@@ -13,15 +13,17 @@ import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
-import Nxtp from '../../../utils/nxtp';
 import TokenListManager from '../../../utils/tokenList';
+
+import TxBridgeManager from '../../../utils/txBridgeManager';
 
 export default class SwapOrderSlide extends Component {
   constructor(props) {
     super(props);
     this.state = {
       calculatingSwap: false,
-      errored: false
+      errored: false,
+      errorMsg: false
     };
 
     this.calculatingSwapTimestamp = Date.now();
@@ -54,7 +56,8 @@ export default class SwapOrderSlide extends Component {
     } else if (attempt > window.MAX_RETRIES) {
       this.setState({
         calculatingSwap: false,
-        errored: true
+        errored: true,
+        errorMsg: false
       });
       console.error("Swap Failure: MAX RETRIES REACHED");
       return;
@@ -80,6 +83,7 @@ export default class SwapOrderSlide extends Component {
 
     this.setState({
       errored: false,
+      errorMsg: false,
       calculatingSwap: true
     }, function(_timeNow, _attempt, _cb) {
 
@@ -166,12 +170,16 @@ export default class SwapOrderSlide extends Component {
 
   fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
     if (!Wallet.isConnected()) {
-      // not supported in cross-chain mode
-      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      this.setState({
+        calculatingSwap: false,
+        errored: true,
+        errorMsg: "Connect wallet first"
+      });
+      console.error("SwapOrderSlide#fetchCrossChainEstimate: Wallet not connected");
       return false;
     }
 
-    Nxtp.getTransferQuoteV2(
+    TxBridgeManager.getEstimate(
       +this.props.fromChain.chainId,
       this.props.from.address,
       +this.props.toChain.chainId,
@@ -400,7 +408,7 @@ export default class SwapOrderSlide extends Component {
 
                   {!isFrom && this.state.errored &&
                       (<div className="warning-funds">
-                        Estimate failed. Try again
+                        {this.state.errorMsg || "Estimate failed. Try again"}
                       </div>)}
                     </div>
                   </div>

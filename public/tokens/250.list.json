@@ -17,14 +17,6 @@
   },
   {
     "chainId": 250,
-    "address": "0x1b27a9de6a775f98aaa5b90b62a4e2a0b84dbdd9",
-    "symbol": "USDT",
-    "decimals": 6,
-    "name": "TetherUSD",
-    "logoURI": "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png"
-  },
-  {
-    "chainId": 250,
     "address": "0x602a3ad311e66b6f5e567a13016b712aba0625c6",
     "symbol": "DUCK",
     "decimals": 18,
@@ -359,14 +351,6 @@
     "decimals": 18,
     "name": "Ethereum",
     "logoURI": "https://assets.coingecko.com/coins/images/279/large/ethereum.png"
-  },
-  {
-    "chainId": 250,
-    "address": "0x1ffbd1e3584f139ca42d77ef99ef99550ecf46a8",
-    "symbol": "USDT",
-    "decimals": 6,
-    "name": "TetherUSD",
-    "logoURI": "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png"
   },
   {
     "chainId": 250,
