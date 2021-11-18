@@ -80,13 +80,14 @@ export default class CustomTokenModal extends Component {
       customTokenAddr: e.target.value,
       fetchingTokenInfo: true,
     });
+    const network = TokenListManager.getCurrentNetworkConfig();
     let _query = e.target.value.toLowerCase().trim();
     let filteredTokens = [];
 
     if (_query.length > 0) {
       // Check vaildation of address
       if (Utils.isAddress(_query)) {
-        filteredTokens = _.first(_.filter(window.TOKEN_LIST, function (t) {
+        filteredTokens = _.first(_.filter(TokenListManager.getTokenListForNetwork(network), function (t) {
           return (t.address && t.address.toLowerCase().includes(_query));
         }), 1);
 
