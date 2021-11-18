@@ -25,7 +25,7 @@ export default function DisconnectedWallet() {
                                     evt.preventDefault();
                                     connectWallet("metamask");
                                 }}
-                                class="button is-success"
+                                className="button is-success"
                             >
                                 Connect Wallet
                             </button>
