@@ -1,6 +1,5 @@
 import React, { useReducer, useState } from "react";
 import { useEffect } from "react";
-import { enabledNetworks, useWeb3Context } from "./Web3Context.jsx";
 import TokensReducer from "./reducers/TokensReducer";
 import { ethers } from "@connext/nxtp-utils/node_modules/ethers";
 import networks from "./networks.js";
@@ -11,7 +10,6 @@ const tokensContext = React.createContext({
 });
 
 export const TokensContextProvider = ({ children }) => {
-  const { provider, web3Account } = useWeb3Context();
   const [tokensState, dispatchTokensState] = useReducer(TokensReducer, {});
 
   useEffect(() => {

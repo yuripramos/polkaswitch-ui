@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletJS from '../../utils/wallet';
 
 const networks = require("./networks.js");
 export const enabledNetworks = Object.keys(networks)
@@ -40,31 +41,8 @@ export const Web3ContextProvider = ({ children }) => {
     const connectWallet = async (wallet) => {
         switch (wallet) {
             case "metamask":
-                if (!window.ethereum || !window.ethereum.isMetaMask) {
-                    setErrorMessage(`Metamask is not installed, please install metamask and try again!`);
-                    throw new Error(`Metamask is not installed, please install metamask and try again!`);
-                }
 
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-                const networkId = (await provider.getNetwork()).chainId;
-
-                if (!enabledNetworks.includes(networkId)) {
-                    setErrorMessage(`Unsupported network, please switch to a supported network.`);
-                    throw new Error(`Unsupported network, please switch to a supported network.`);
-                }
-
-                const web3Accounts = await window.ethereum.request({
-                    method: "eth_requestAccounts",
-                });
-
-                const signer = provider.getSigner();
-
-                window.ethereum.on("accountsChanged", (accounts) => {
-                    setweb3Account(accounts[0]);
-                });
-
-                window.ethereum.on("chainChanged", connectWallet);
 
                 setweb3Account(web3Accounts[0]);
                 setweb3Provider(provider);
@@ -73,23 +51,8 @@ export const Web3ContextProvider = ({ children }) => {
                 setIsConnected(true);
                 break;
             case "walletconnect":
-                let chainId = 137;
-
-                let rpc = { [chainId]: networks[chainId].chain.rpcUrls[0] };
-                const _provider = new WalletConnectProvider({
-                    rpc,
-                });
-
-                await _provider.enable();
-                const _ethersProvider = new ethers.providers.Web3Provider(_provider);
-                const _signer = web3Provider.getSigner();
-                const _address = signer.getAddress();
-
-                setweb3Account(_address);
-                setweb3Provider(_ethersProvider);
-                setweb3Signer(_signer);
-                setNetworkId(chainId);
-                setIsConnected(true);
+            // TODO
+                break;
             default:
                 return;
         }
