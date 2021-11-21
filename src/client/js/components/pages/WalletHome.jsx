@@ -11,10 +11,14 @@ import DisconnectedWallet from "../partials/wallet/DisconnectedWallet";
 import networks from "../../Web3/networks";
 import EmptyBalances from "../partials/wallet/EmptyBalances";
 
+import { ethers } from "@connext/nxtp-utils/node_modules/ethers";
+import BigNumber from "bignumber.js";
+
 import _ from "underscore";
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
+import TokenListManager from '../../utils/tokenList';
 import EventManager from '../../utils/events';
 
 export default class WalletHome extends Component {
@@ -22,24 +26,26 @@ export default class WalletHome extends Component {
     super(props);
     this.state = {
       refresh: Date.now(),
-      currentNetwork: TokenListManager.getCurrentNetworkConfig()
+      currentNetwork: TokenListManager.getCurrentNetworkConfig(),
+      balances: []
     };
 
     this.NETWORKS = _.filter(window.NETWORK_CONFIGS, (v) => { return v.enabled });
 
+    this.loadBalances = this.loadBalances.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleConnect = this.handleConnect.bind(this);
     this.renderBalancesAccrossNetworks = this.renderBalancesAccrossNetworks.bind(this);
     this.renderPortfolioMakeUp = this.renderPortfolioMakeUp.bind(this);
     this.renderWalletHome = this.renderWalletHome.bind(this);
-
-    let tokens = currentNetwork ? useTokensByNetwork(+currentNetwork.chainId) : useTokensWithBalance();
   }
 
   componentDidMount() {
     this.subWalletChange = EventManager.listenFor(
       'walletUpdated', this.handleWalletChange
     );
+
+    this.loadBalances();
   }
 
   componentWillUnmount() {
@@ -47,11 +53,56 @@ export default class WalletHome extends Component {
   }
 
   handleWalletChange() {
-    this.setState({ refresh: Date.now() });
+    this.setState({
+      refresh: Date.now(),
+      balances: []
+    });
+
+    this.loadBalances();
+  }
+
+  handleConnect() {
+    EventManager.emitEvent('promptWalletConnect', 1);
+  }
+
+  handleNetworkChange() {
+    this.setState({
+      balances: [],
+      currentNetwork: network
+    });
+
+    this.loadBalances();
+  }
+
+  loadBalances() {
+    var currentNetwork = this.state.currentNetwork;
+
+    let balances = [];
+
+    this.NETWORKS.forEach((network) => {
+      let tokenList = TokenListManager.getTokenListForNetwork(network);
+
+      tokenList.forEach((token) => {
+        let balance = Wallet.getBalance(token, network);
+
+        if (!balance.isZero()) {
+          balances.push({
+            ...token,
+            balance: (+balance.toString()) / (Math.pow(10, token.decimals)),
+            balanceBN: balance,
+            price: 1
+          });
+        }
+      });
+    });
+
+    this.setState({
+      balances: balances
+    });
   }
 
   renderBalancesAccrossNetworks() {
-    const bMap = tokens.reduce((_map, cv) => {
+    const bMap = this.state.balances.reduce((_map, cv) => {
       let balance = 0;
       if (_map[cv.chainId]) {
         balance += _map[cv.chainId];
@@ -74,7 +125,7 @@ export default class WalletHome extends Component {
   }
 
   renderPortfolioMakeUp() {
-    if (Wallet.isConnected() && tokens.length) {
+    if (Wallet.isConnected() && this.state.balances.length) {
       return (
         <>
         <div className="columns is-hidden-mobile">
@@ -90,19 +141,9 @@ export default class WalletHome extends Component {
     return null;
   }
 
-  handleConnect() {
-    EventManager.emitEvent('promptWalletConnect', 1);
-  }
-
-  handleNetworkChange() {
-    this.setState({
-      currentNetwork: network
-    });
-  }
-
   renderWalletHome() {
     if (Wallet.isConnected()) {
-      if (!tokens.length && currentNetwork === undefined) {
+      if (!this.state.balances.length && this.state.currentNetwork === undefined) {
         return <EmptyBalances />;
       } else {
         return (
@@ -125,7 +166,7 @@ export default class WalletHome extends Component {
                   <div className="column">
                     <h6 className="total-balance__sub-heading">Total Balance</h6>
                     <h2 className="total-balance__main-heading">
-                      {tokens
+                      {this.state.balances
                           .reduce((p, t) => {
                             return (p += t.price * t.balance);
                           }, 0)
@@ -146,7 +187,7 @@ export default class WalletHome extends Component {
                   <span className="tokens-table-title-container__sub">Don't see your assets?</span>
                 </div>
 
-                <AssetsTable tokenData={tokens} />
+                <AssetsTable tokenData={this.state.balances} />
               </div>
             </div>
           </div>
