@@ -190,9 +190,7 @@ export default class TokenSearchBar extends Component {
     const _query = event.target.value.toLowerCase().trim();
     if (_query.length > 0) {
       var network = this.props.network || TokenListManager.getCurrentNetworkConfig();
-      var startingTokenIdList = this.props.tokenList ||
-        TokenListManager.getTokenListForNetwork(network);
-
+      var startingTokenIdList = this.props.tokenList || TokenListManager.getTokenListForNetwork(network);
       let filteredTokens = _.first(_.filter(startingTokenIdList, function (t) {
         return (t.symbol) && (
             (t.symbol && t.symbol.toLowerCase().includes(_query)) ||

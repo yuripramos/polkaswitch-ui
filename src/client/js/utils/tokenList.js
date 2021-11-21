@@ -32,7 +32,9 @@ window.TokenListManager = {
       });
 
       this._tokenLists[+network.chainId] = tokenList;
+      this.updateTokenListwithCustom(network)
     };
+
   },
 
   getCurrentNetworkConfig: function() {
@@ -102,13 +104,11 @@ window.TokenListManager = {
     });
 
     window.TOKEN_LIST = tokenList;
-    this.updateTokenListwithCustom(network);
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
     // update swap token configuration
 
     // TODO need to refactor this
     if (this.isCrossChainEnabled()) {
-      console.log('## is enabled ###')
       const crossChainNetwork = _.filter(window.NETWORK_CONFIGS, (v) => {
         return v.crossChainSupported
       });
@@ -177,7 +177,9 @@ window.TokenListManager = {
     if (customTokenAddresses) {
       const addresses = customTokenAddresses[network.chainId] || [];
       if (addresses.length > 0) {
-        window.TOKEN_LIST = window.TOKEN_LIST.concat(customTokenAddresses[network.chainId]);
+        if (this._tokenLists[network.chainId]) {
+          this._tokenLists[network.chainId] = this._tokenLists[network.chainId].concat(customTokenAddresses[network.chainId]);
+        }
       }
     }
   },
