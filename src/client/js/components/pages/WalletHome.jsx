@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import Navbar from "../partials/navbar/Navbar";
 import ConnectWalletModal from "../partials/ConnectWalletModal";
 import TxHistoryModal from "../partials/TxHistoryModal";
@@ -8,7 +8,6 @@ import NetworkPrice from "../partials/wallet/NetworkPrice";
 import NetworkDropdown from "../partials/swap/NetworkDropdown";
 import AssetsTable from "../partials/wallet/AssetsTable";
 import DisconnectedWallet from "../partials/wallet/DisconnectedWallet";
-import networks from "../../Web3/networks";
 import EmptyBalances from "../partials/wallet/EmptyBalances";
 
 import { ethers } from "@connext/nxtp-utils/node_modules/ethers";
@@ -74,16 +73,22 @@ export default class WalletHome extends Component {
     this.loadBalances();
   }
 
-  loadBalances() {
+  async loadBalances() {
     var currentNetwork = this.state.currentNetwork;
 
     let balances = [];
 
-    this.NETWORKS.forEach((network) => {
+    let networks = [
+      TokenListManager.getNetworkById(137)
+    ];
+
+    for (var i = 0; i < networks.length; i++) {
+      var network = networks[i];
       let tokenList = TokenListManager.getTokenListForNetwork(network);
 
-      tokenList.forEach((token) => {
-        let balance = Wallet.getBalance(token, network);
+      for (var j = 0; j < tokenList.length; j++) {
+        var token = tokenList[j];
+        let balance = await Wallet.getBalance(token, network);
 
         if (!balance.isZero()) {
           balances.push({
@@ -93,8 +98,8 @@ export default class WalletHome extends Component {
             price: 1
           });
         }
-      });
-    });
+      };
+    };
 
     this.setState({
       balances: balances
@@ -112,11 +117,12 @@ export default class WalletHome extends Component {
     }, {});
 
     return Object.keys(bMap).map((netId) => {
+      var network = TokenListManager.getNetworkById(netId);
       return (
         <NetworkPrice
           key={netId}
-          logoURI={networks[netId].logoURI}
-          name={networks[netId].name}
+          logoURI={network.logoURI}
+          name={network.name}
           value={bMap[netId]}
           change={0}
         />

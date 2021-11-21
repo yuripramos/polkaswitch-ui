@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function DisconnectedWallet(onClick) {
+export default function DisconnectedWallet(props) {
   return (
     <div className="columns is-centered">
       <div className="column card-container">
@@ -18,7 +18,7 @@ export default function DisconnectedWallet(onClick) {
               <h3>Connect your wallet to display up to date price and balances.</h3>
 
               <button
-                onClick={onClick}
+                onClick={props.onClick}
                 className="button is-success"
               >
                 Connect Wallet

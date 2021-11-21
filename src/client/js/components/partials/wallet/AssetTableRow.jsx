@@ -1,5 +1,5 @@
 import React from "react";
-import TokenListManager from '../../utils/tokenList';
+import TokenListManager from '../../../utils/tokenList';
 
 export default function AssetTableRow({ logoURI, name, symbol, price, balance, networkId }) {
   let network = TokenListManager.getNetworkById(networkId);
