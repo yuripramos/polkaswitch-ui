@@ -71,6 +71,7 @@ export default class BridgeWidget extends Component {
     this.handleBackOnConfirm = this.handleBackOnConfirm.bind(this);
     this.handleBackOnResults = this.handleBackOnResults.bind(this);
     this.triggerHeightResize = this.triggerHeightResize.bind(this);
+    this.updateBoxHeight = _.debounce(this.updateBoxHeight.bind(this), 20);
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleNetworkPreUpdate = this.handleNetworkPreUpdate.bind(this);
@@ -87,6 +88,7 @@ export default class BridgeWidget extends Component {
     this.subscribers.push(EventManager.listenFor('networkPendingUpdate', this.handleNetworkPreUpdate));
     this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
     window.addEventListener('resize', this.updateBoxHeight);
+    this.updateBoxHeight();
   }
 
   componentWillUnmount() {
@@ -129,6 +131,13 @@ export default class BridgeWidget extends Component {
     });
   }
 
+  updateBoxHeight() {
+    this.box.current.style.height = "";
+    _.defer(function() {
+      this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+    }.bind(this))
+  }
+
   triggerHeightResize(node, isAppearing) {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
@@ -156,6 +165,7 @@ export default class BridgeWidget extends Component {
     }, function() {
       _.delay(function() {
         // put back height after dist expand anim
+        this.updateBoxHeight();
       }.bind(this), 301)
     }.bind(this));
   }
