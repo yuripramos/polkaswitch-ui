@@ -10,8 +10,9 @@ import AssetsTable from "../partials/wallet/AssetsTable";
 import DisconnectedWallet from "../partials/wallet/DisconnectedWallet";
 import EmptyBalances from "../partials/wallet/EmptyBalances";
 
-import { ethers } from "@connext/nxtp-utils/node_modules/ethers";
-import BigNumber from "bignumber.js";
+import * as ethers from 'ethers';
+import BN from 'bignumber.js';
+import { BigNumber, constants, providers, Signer, utils } from "ethers";
 
 import _ from "underscore";
 import classnames from 'classnames';
@@ -26,7 +27,8 @@ export default class WalletHome extends Component {
     this.state = {
       refresh: Date.now(),
       currentNetwork: TokenListManager.getCurrentNetworkConfig(),
-      balances: []
+      balances: [],
+      loading: true
     };
 
     this.NETWORKS = _.filter(window.NETWORK_CONFIGS, (v) => { return v.enabled });
@@ -54,7 +56,8 @@ export default class WalletHome extends Component {
   handleWalletChange() {
     this.setState({
       refresh: Date.now(),
-      balances: []
+      balances: [],
+      loading: true
     });
 
     this.loadBalances();
@@ -66,44 +69,70 @@ export default class WalletHome extends Component {
 
   handleNetworkChange() {
     this.setState({
+      refresh: Date.now(),
       balances: [],
-      currentNetwork: network
+      currentNetwork: network,
+      loading: true
     });
 
     this.loadBalances();
   }
 
-  async loadBalances() {
-    var currentNetwork = this.state.currentNetwork;
+  loadBalances() {
+    _.defer(async function() {
+      var currentNetwork = this.state.currentNetwork;
 
-    let balances = [];
+      let balances = [];
+      let promises = [];
+      let localRefresh = this.state.refresh;
 
-    let networks = [
-      TokenListManager.getNetworkById(137)
-    ];
+      let networks = this.NETWORKS;
 
-    for (var i = 0; i < networks.length; i++) {
-      var network = networks[i];
-      let tokenList = TokenListManager.getTokenListForNetwork(network);
+      for (var i = 0; i < networks.length; i++) {
+        var network = networks[i];
+        let tokenList = TokenListManager.getTokenListForNetwork(network);
 
-      for (var j = 0; j < tokenList.length; j++) {
-        var token = tokenList[j];
-        let balance = await Wallet.getBalance(token, network);
+        try {
+          var nativeBalance = await Wallet.getDefaultBalance(network);
+        } catch(e) {
+          console.error("Failed to fetch balances from network: ", network.name);
+          console.error(e);
+          continue; // go next network, if the provider is not working
+        }
 
-        if (!balance.isZero()) {
-          balances.push({
-            ...token,
-            balance: (+balance.toString()) / (Math.pow(10, token.decimals)),
-            balanceBN: balance,
-            price: 1
+        for (var j = 0; j < tokenList.length; j++) {
+          var token = tokenList[j];
+
+          let p = Wallet.getBalance(token, network).then(function(tk, net, balance) {
+            if (!balance.isZero()) {
+              this.setState({
+                balances: [
+                  ...this.state.balances,
+                  {
+                    ...tk,
+                    balance: (+balance.toString()) / (Math.pow(10, tk.decimals)),
+                    balanceBN: balance,
+                    price: 1
+                  }
+                ]
+              });
+            }
+          }.bind(this, token, network));
+
+          promises.push(p);
+        };
+      };
+
+      // bleeding browser-support
+      Promise.allSettled(promises).then(() => {
+        console.log("Completed fetching balances from all networks");
+        if (this.state.refresh === localRefresh) {
+          this.setState({
+            loading: false
           });
         }
-      };
-    };
-
-    this.setState({
-      balances: balances
-    });
+      });
+    }.bind(this));
   }
 
   renderBalancesAccrossNetworks() {
@@ -157,10 +186,11 @@ export default class WalletHome extends Component {
           <div className="columns is-centered">
             <div className="column card-container">
               <div className="card wallets-page-card">
-                <div className="columns portfolio-balance">
-                  <div className="column">
-                    <h6 className="portfolio-balance__main-heading">Portfolio Balance</h6>
-
+                <div className="portfolio-balance level is-mobile">
+                  <div className="level-left">
+                    <h6 className="portfolio-balance__main-heading">Portfolio Overview</h6>
+                  </div>
+                  <div className="level-right">
                     <NetworkDropdown
                       handleDropdownClick={this.handleNetworkChange}
                       selected={this.state.currentNetwork}
@@ -168,29 +198,31 @@ export default class WalletHome extends Component {
                   </div>
                 </div>
 
-                <div className="columns total-balance">
+                <div className="is-hidden columns total-balance">
                   <div className="column">
                     <h6 className="total-balance__sub-heading">Total Balance</h6>
                     <h2 className="total-balance__main-heading">
-                      {this.state.balances
-                          .reduce((p, t) => {
-                            return (p += t.price * t.balance);
-                          }, 0)
-                          .toLocaleString("en-US", { style: "currency", currency: "USD" })}
-                        </h2>
-                      </div>
-                    </div>
-
-                    {this.renderPortfolioMakeUp()}
+                      {
+                        this.state.balances.reduce((p, t) => {
+                          return (p += t.price * t.balance);
+                        }, 0).toLocaleString("en-US", { style: "currency", currency: "USD" })
+                      }
+                    </h2>
                   </div>
                 </div>
+
+                <div className="is-hidden">
+                  {this.renderPortfolioMakeUp()}
+                </div>
               </div>
+            </div>
+          </div>
           <div className="columns is-centered">
             <div className="column card-container">
               <div className="card wallets-page-card">
                 <div className="tokens-table-title-container">
                   <span className="tokens-table-title-container__main">Assets</span>
-                  <span className="tokens-table-title-container__sub">Don't see your assets?</span>
+                  <span className="is-hidden tokens-table-title-container__sub">Don't see your assets?</span>
                 </div>
 
                 <AssetsTable tokenData={this.state.balances} />

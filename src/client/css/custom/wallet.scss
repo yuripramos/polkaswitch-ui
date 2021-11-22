@@ -1,361 +1,381 @@
 .card-container {
-    max-width: 726px;
+  max-width: 726px;
 }
 
 .wallets-page-card {
-    padding: 0px 25px 0px 21px;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 0px 25px 0px 21px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .wallets-page-card .columns {
-    margin: 0;
+  margin: 0;
 }
 
 .wallets-page-card .column {
-    padding: 0;
+  padding: 0;
 }
 
 .portfolio-balance {
-    border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .portfolio-balance__main-heading {
-    display: inline-block;
-    padding-top: 24px;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: 800;
-    font-size: 18px;
-    line-height: 22px;
-    color: #333333;
-    margin-bottom: 14px;
-    margin-left: 2px;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 22px;
+  color: #333333;
+  margin-left: 2px;
 }
 
 .portfolio-balance .dropdown {
-    margin-top: 14px;
-    float: right;
-    min-width: 158px;
+  float: right;
+  min-width: 158px;
+  margin: 10px 0;
 }
 
 .portfolio-balance .dropdown .dropdown-menu {
-    top: 0;
-    padding-top: 0;
-    width: 233px;
-    left: -75px;
+  top: 0;
+  padding-top: 0;
+  width: 233px;
+  left: -75px;
 }
 .portfolio-balance .dropdown .dropdown-menu h4 {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 19px;
-    color: #333333;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
 }
 .portfolio-balance .dropdown .dropdown-menu .dropdown-menu__asset_names {
-    line-height: 14px;
-    margin-left: 16px;
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 3px;
+  line-height: 14px;
+  margin-left: 16px;
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 3px;
 }
 
 .portfolio-balance .dropdown .dropdown-menu .dropdown-menu__asset_names h4 {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 15px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 15px;
 
-    color: #333333;
+  color: #333333;
 }
 
 .portfolio-balance .dropdown .dropdown-menu .dropdown-menu__asset_names span {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
 
-    color: #333333;
+  color: #333333;
 
-    mix-blend-mode: normal;
-    opacity: 0.49;
+  mix-blend-mode: normal;
+  opacity: 0.49;
 }
 
 .portfolio-balance .dropdown .dropdown-trigger {
-    width: 100%;
-    padding: 4px 3px;
-    background: #f2f7f9;
-    border-radius: 100px 35px 35px 100px;
-    display: flex;
+  width: 100%;
+  padding: 4px 3px;
+  border-radius: 100px 35px 35px 100px;
+  display: flex;
 }
 
 .portfolio-balance .dropdown .dropdown-trigger img {
-    max-width: 28px;
-    max-height: 28px;
-    border-radius: 50%;
+  max-width: 28px;
+  max-height: 28px;
+  border-radius: 50%;
 }
 
 .portfolio-balance .dropdown .dropdown-trigger__content {
-    margin-left: 7px;
-    display: flex;
-    flex-grow: 2;
-    flex-direction: column;
+  margin-left: 7px;
+  display: flex;
+  flex-grow: 2;
+  flex-direction: column;
 }
 
 .portfolio-balance .dropdown .dropdown-trigger__content .main {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 15px;
-    color: #333333;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 15px;
+  color: #333333;
 }
 
 .portfolio-balance .dropdown .dropdown-trigger__content .sub {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.5;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  mix-blend-mode: normal;
+  opacity: 0.5;
 }
 
 .portfolio-balance .dropdown .dropdown-trigger .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
 }
 
 .total-balance {
-    margin-right: 0;
-    margin-left: 0;
-    border-bottom: 1px solid #eee;
+  margin-right: 0;
+  margin-left: 0;
+  border-bottom: 1px solid #eee;
 }
 
 .total-balance__sub-heading {
-    margin-bottom: 4px;
-    margin-top: 24px;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 19px;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.49;
+  margin-bottom: 4px;
+  margin-top: 24px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
+  mix-blend-mode: normal;
+  opacity: 0.49;
 }
 
 .total-balance__main-heading {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 36px;
-    line-height: 44px;
-    margin-bottom: 14px;
-    margin-left: 2px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 44px;
+  margin-bottom: 14px;
+  margin-left: 2px;
 }
 
 .portfolio-makeup {
-    flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 .portfolio-makeup .column {
-    display: flex;
-    padding-bottom: 23px;
+  display: flex;
+  padding-bottom: 23px;
 }
 
 .portfolio-makeup__heading {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 17px;
-    color: #333333;
-    margin-top: 14px;
-    margin-bottom: 14px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  color: #333333;
+  margin-top: 14px;
+  margin-bottom: 14px;
 }
 
 .card-container .token-icon {
-    max-width: 32px;
-    max-height: 32px;
-    border-radius: 50%;
+  max-width: 32px;
+  max-height: 32px;
+  border-radius: 50%;
 }
 
 .portfolio-makeup__asset_container {
-    display: inline-block;
-    margin-left: 6px;
+  display: inline-block;
+  margin-left: 6px;
 }
 
 .portfolio-makeup__asset_heading {
-    margin-top: 4px;
-    display: block;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    color: #333333;
-    mix-blend-mode: normal;
+  margin-top: 4px;
+  display: block;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  mix-blend-mode: normal;
 }
 
 .portfolio-makeup__asset_price {
-    display: block;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.49;
+  display: block;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  mix-blend-mode: normal;
+  opacity: 0.49;
 }
 
 .tokens-table-title-container {
-    overflow: auto;
+  overflow: auto;
 }
 
 .tokens-table-title-container__main {
-    float: left;
-    margin-top: 29px;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: 800;
-    font-size: 18px;
-    line-height: 22px;
-    color: #333333;
+  float: left;
+  margin-top: 29px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 22px;
+  color: #333333;
 }
 
 .tokens-table-title-container__sub {
-    float: right;
-    margin-top: 26px;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    text-align: right;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.5;
+  display: none;
+  float: right;
+  margin-top: 26px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: right;
+  color: #333333;
+  mix-blend-mode: normal;
+  opacity: 0.5;
 }
 
 .wallets-page-tokens-table {
-    margin-top: 14px;
-    padding-bottom: 14px;
+  margin-top: 14px;
+  padding-bottom: 14px;
+
+  .wallets-page-loader {
+    text-align: center;
+    padding: 15px 0;
+
+    .loader-text {
+      font-size: 14px;
+      padding: 5px;
+      color: #ccc;
+    }
+
+    .loader {
+      margin: 0 auto;
+    }
+  }
 }
 
 .wallets-page-tokens-table__header {
-    background: #f2f7f9;
-    border-radius: 16px;
-    padding: 0px 16px 0px 18px;
+  background: #f2f7f9;
+  border-radius: 16px;
+  padding: 0px 16px 0px 18px;
 }
 
 .wallets-page-tokens-table__header .column:nth-child(1) {
-    text-align: left;
+  text-align: left;
 }
 
 .wallets-page-tokens-table__header .column {
-    text-align: right;
-    padding: 8px 0 9px 0;
-    margin: 0;
+  text-align: right;
+  padding: 8px 0 9px 0;
+  margin: 0;
 }
 
 .wallets-page-tokens-table__header .column span {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.5;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  mix-blend-mode: normal;
+  opacity: 0.5;
 }
 
 .wallets-page-tokens-table__row {
-    height: 64px;
-    padding: 14px 15px 0px 16px;
-    border-radius: 16px;
+  padding: 14px 15px 14px 16px;
+  border-radius: 16px;
+
+  .token-icon-img-wrapper {
+    display: inline-block;
+  }
 }
 
 .wallets-page-tokens-table__row:nth-child(odd) {
-    background: #f2f7f9;
+  background: #f2f7f9;
 }
 
 .align-right {
-    text-align: right;
+  text-align: right;
 }
 
 .wallets-page-tokens-table__content {
-    display: inline-block;
-    margin-left: 6px;
+  display: inline-block;
+  margin-left: 10px;
 }
 
 .wallets-page-tokens-table__title {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 19px;
-    color: #333333;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  color: #333333;
 }
 
 .wallets-page-tokens-table__sub {
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 14px;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.5;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #333333;
+  mix-blend-mode: normal;
+  opacity: 0.5;
 }
 
 .wallets-page-tokens-table__sub span {
-    color: #f3ba2f;
-    font-family: Gilroy;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
+  color: #f3ba2f;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
 }
 
 .wallets-page-card .data-na-container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .wallets-page-card .data-na-container img {
-    margin-top: 49px;
-    width: 62px;
+  margin-top: 49px;
+  width: 62px;
 }
 
 .wallets-page-card .data-na-container h2 {
-    font-family: "Gilroy";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 22px;
-    color: #333;
+  font-family: "Gilroy";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 22px;
+  color: #333;
 }
 
 .wallets-page-card .data-na-container h3 {
-    margin-top: 9px;
-    font-family: "Gilroy";
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 16px;
-    text-align: center;
-    color: "#A3A5A6";
+  margin-top: 9px;
+  font-family: "Gilroy";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  color: "#A3A5A6";
 }
 
 .wallets-page-card .data-na-container button {
-    margin-top: 30px;
-    margin-bottom: 70px;
+  margin-top: 30px;
+  margin-bottom: 70px;
 }
