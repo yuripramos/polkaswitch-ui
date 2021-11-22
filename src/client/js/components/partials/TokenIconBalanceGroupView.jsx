@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TokenSymbolBalance from './TokenSymbolBalance';
-import TokenIconImg from './../TokenIconImg';
+import TokenIconImg from './TokenIconImg';
 
 export default class TokenIconBalanceGroupView extends Component {
   render() {

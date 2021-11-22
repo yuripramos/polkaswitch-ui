@@ -6,7 +6,7 @@ import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
 import CrossChainToggle from './CrossChainToggle';
-import NetworkDropdown from './NetworkDropdown';
+import NetworkDropdown from '../NetworkDropdown';
 
 export default class SwapNetworkToggle extends Component {
   constructor(props) {

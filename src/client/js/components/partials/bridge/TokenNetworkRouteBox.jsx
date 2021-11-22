@@ -19,7 +19,7 @@ export default function TokenNetworkRouteBox(props) {
               <div className="amount">{info.token.amount}</div>
             </div>
           </div>
-          <div className="network-wrapper">
+          <div className="network-name">
             <div className="text">{info.network.name}</div>
           </div>
         </div>

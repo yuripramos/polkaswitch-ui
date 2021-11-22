@@ -4,9 +4,9 @@ import _ from "underscore";
 import classnames from 'classnames';
 import * as Sentry from "@sentry/react";
 import SwapOrderSlide from './SwapOrderSlide';
-import SwapTokenSearchSlide from './SwapTokenSearchSlide';
+import TokenSearchSlide from '../TokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
-import SwapAdvancedSettingsSlide from './SwapAdvancedSettingsSlide';
+import AdvancedSettingsSlide from '../AdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
@@ -315,7 +315,7 @@ export default class SwapOrderWidget extends Component {
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          <SwapTokenSearchSlide
+          <TokenSearchSlide
             isFrom={this.state.searchTarget === "from"}
             network={this.state.searchTarget === "to" ? this.state.toChain : this.state.fromChain}
             showSearch={this.state.showSearch}
@@ -328,7 +328,7 @@ export default class SwapOrderWidget extends Component {
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          <SwapAdvancedSettingsSlide
+          <AdvancedSettingsSlide
             handleBackOnSettings={this.handleSettingsToggle}
           />
         </CSSTransition>

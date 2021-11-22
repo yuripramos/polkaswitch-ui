@@ -3,8 +3,8 @@ import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
-import NetworkDropdown from './NetworkDropdown';
+import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
+import NetworkDropdown from '../NetworkDropdown';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
@@ -373,12 +373,12 @@ export default class BridgeOrderSlide extends Component {
 
           <div className="bridge-icon-wrapper">
             <div className="bridge-icon-v2 icon" onClick={this.handleTokenSwap}>
-              <ion-icon name="swap-vertical-outline"></ion-icon>
+              <ion-icon name="swap-vertical-outline"/>
             </div>
 
             <div className="bridge-icon is-hidden" onClick={this.handleTokenSwap}>
-              <i className="fas fa-long-arrow-alt-up"></i>
-              <i className="fas fa-long-arrow-alt-down"></i>
+              <i className="fas fa-long-arrow-alt-up"/>
+              <i className="fas fa-long-arrow-alt-down"/>
             </div>
           </div>
 

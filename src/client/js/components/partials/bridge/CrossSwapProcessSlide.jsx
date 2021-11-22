@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import BN from 'bignumber.js';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
+import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
 import TokenIconImg from './../TokenIconImg';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';

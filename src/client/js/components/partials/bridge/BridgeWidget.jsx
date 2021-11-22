@@ -5,9 +5,9 @@ import classnames from 'classnames';
 import * as Sentry from "@sentry/react";
 
 import BridgeOrderSlide from './BridgeOrderSlide';
-import BridgeTokenSearchSlide from './BridgeTokenSearchSlide';
+import TokenSearchSlide from '../TokenSearchSlide';
 import CrossSwapProcessSlide from './CrossSwapProcessSlide';
-import BridgeAdvancedSettingsSlide from './BridgeAdvancedSettingsSlide';
+import AdvancedSettingsSlide from '../AdvancedSettingsSlide';
 import BridgeFinalResultSlide from './BridgeFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
@@ -257,6 +257,9 @@ export default class BridgeWidget extends Component {
     });
 
     Metrics.track("bridge-settings-view", { closing: this.state.showSettings });
+    this.setState({
+      showSettings: !this.state.showSettings
+    });
   }
 
   handleConfirm(e) {
@@ -346,7 +349,7 @@ export default class BridgeWidget extends Component {
     return (
       <div ref={this.box} className="box bridge-widget">
         <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
-          <div className="loader is-loading"></div>
+          <div className="loader is-loading"/>
         </div>
         <CSSTransition
           in={isStack}
@@ -379,7 +382,7 @@ export default class BridgeWidget extends Component {
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          <BridgeTokenSearchSlide
+          <TokenSearchSlide
             isFrom={this.state.searchTarget === "from"}
             network={this.state.searchTarget === "to" ? this.state.toChain : this.state.fromChain}
             showSearch={this.state.showSearch}
@@ -392,7 +395,7 @@ export default class BridgeWidget extends Component {
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
           classNames="slidein">
-          <BridgeAdvancedSettingsSlide
+          <AdvancedSettingsSlide
             handleBackOnSettings={this.handleSettingsToggle}
           />
         </CSSTransition>

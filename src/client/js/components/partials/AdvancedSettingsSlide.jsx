@@ -2,12 +2,12 @@ import _ from "underscore";
 import React, { Component } from 'react';
 import SwapSlippageControl from './SwapSlippageControl';
 import GasPriceControl from './GasPriceControl';
-import SwapFn from '../../../utils/swapFn';
-import EventManager from '../../../utils/events';
+import SwapFn from '../../utils/swapFn';
+import EventManager from '../../utils/events';
 
 import * as ethers from 'ethers';
 
-export default class SwapAdvancedSettingsSlide extends Component {
+export default class AdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
 

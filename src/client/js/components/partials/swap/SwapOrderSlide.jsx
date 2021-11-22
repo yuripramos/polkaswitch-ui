@@ -3,7 +3,7 @@ import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
+import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';

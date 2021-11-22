@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import SwapFn from "../../../utils/swapFn";
-import _ from "underscore";
+import SwapFn from "../../utils/swapFn";
 
 export default class GasPriceControl extends Component {
   constructor(props) {
@@ -14,7 +13,7 @@ export default class GasPriceControl extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.refresh != this.props.refresh) {
+    if (prevProps.refresh !== this.props.refresh) {
       this.setState(this.getStateFromStorage());
     }
   }
