@@ -9,8 +9,6 @@ import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
-import Nxtp from '../../../utils/nxtp';
-import TokenListManager from '../../../utils/tokenList';
 
 import TxBridgeManager from '../../../utils/txBridgeManager';
 
@@ -28,7 +26,7 @@ export default class SwapOrderSlide extends Component {
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
-    this.debounced_fetchSwapEstimate = _.debounce(this.fetchSwapEstimate, 600, true);
+    this.fetchSingleChainSwapEstimate = this.fetchSingleChainSwapEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
@@ -149,73 +147,6 @@ export default class SwapOrderSlide extends Component {
     }.bind(this, _timeNow2, _cb2))
     .catch(function(_timeNow3, _attempt3, _cb3, e) {
       console.error("Failed to get swap estimate: ", e);
-
-      if (this.calculatingSwapTimestamp !== _timeNow3) {
-        return;
-      }
-
-      // try again
-      this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1, _cb3);
-    }.bind(this, _timeNow2, _attempt2, _cb2));
-  }
-
-  fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
-    if (!Wallet.isConnected()) {
-      this.setState({
-        calculatingSwap: false,
-        errored: true,
-        errorMsg: "Connect wallet first"
-      });
-      console.error("SwapOrderSlide#fetchCrossChainEstimate: Wallet not connected");
-      return false;
-    }
-
-    TxBridgeManager.getEstimate(
-      +this.props.fromChain.chainId,
-      this.props.from.address,
-      +this.props.toChain.chainId,
-      this.props.to.address,
-      fromAmountBN,
-      Wallet.currentAddress()
-    ).then(function(_timeNow3, _cb3, response) {
-      if (this.calculatingSwapTimestamp !== _timeNow3) {
-        return;
-      }
-
-      Wallet.getBalance(this.props.from).then((bal) => {
-        this.props.onSwapEstimateComplete(
-          origFromAmount,
-          window.ethers.utils.formatUnits(response?.returnAmount ?? constants.Zero, this.props.to.decimals),
-          false,
-          window.ethers.utils.formatUnits(bal, this.props.from.decimals),
-          status
-        )
-
-        this.props.onCrossChainEstimateComplete(response.id);
-
-        this.setState({
-          calculatingSwap: false
-        }, () => {
-          if (_cb3) {
-            _cb3();
-          }
-
-          Metrics.track("swap-estimate-result", {
-            from: this.props.from,
-            to: this.props.to,
-            fromAmont: fromAmountBN.toString(),
-            toAmount: this.props.toAmount,
-            swapDistribution: this.props.swapDistribution
-          });
-        });
-      }).catch((e) => {
-        console.error("Failed to get swap estimate: ", e);
-      });
-    }.bind(this, _timeNow2, _cb2))
-    .catch(function(_timeNow3, _attempt3, _cb3, e) {
-      console.error(e);
-      console.error("Failed to get swap estimate: ", e);
-
       if (this.calculatingSwapTimestamp !== _timeNow3) {
         return;
       }

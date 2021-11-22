@@ -23,6 +23,7 @@ export default class BridgeOrderSlide extends Component {
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
+    this.fetchCrossChainEstimate = this.fetchCrossChainEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
