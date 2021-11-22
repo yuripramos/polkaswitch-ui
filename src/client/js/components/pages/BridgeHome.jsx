@@ -5,6 +5,7 @@ import ConnectWalletModal from '../partials/ConnectWalletModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from "../partials/navbar/MobileMenu";
 import BridgeWidget from "../partials/bridge/BridgeWidget";
+import TxHistoryModal from "../partials/TxHistoryModal";
 
 export default class Bridge extends Component {
   render() {
@@ -14,6 +15,7 @@ export default class Bridge extends Component {
         <MobileMenu />
         <NotificationSystem />
         <ConnectWalletModal />
+        <TxHistoryModal />
         <div className="columns">
           <div className="column bridge-column" style={{ margin: "0 auto" }}>
             <BridgeWidget />
