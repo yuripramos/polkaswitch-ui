@@ -225,7 +225,7 @@ export default class WalletHome extends Component {
                   <span className="is-hidden tokens-table-title-container__sub">Don't see your assets?</span>
                 </div>
 
-                <AssetsTable tokenData={this.state.balances} />
+                <AssetsTable tokenData={this.state.balances} loading={this.state.loading} />
               </div>
             </div>
           </div>

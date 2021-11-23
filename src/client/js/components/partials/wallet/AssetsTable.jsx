@@ -2,7 +2,7 @@ import React from "react";
 import AssetTableRow from "./AssetTableRow";
 import classnames from 'classnames';
 
-export default function AssetsTable({ tokenData }) {
+export default function AssetsTable({ tokenData, loading }) {
   return (
     <div className="wallets-page-tokens-table">
       <div className="columns wallets-page-tokens-table__header is-mobile">
@@ -29,7 +29,7 @@ export default function AssetsTable({ tokenData }) {
         );
       })}
 
-      <div className="wallets-page-loader">
+      <div className={classnames("wallets-page-loader", { "is-hidden": !loading })} >
         <div className="loader-text">Loading balances</div>
         <div className="loader is-loading"></div>
       </div>
