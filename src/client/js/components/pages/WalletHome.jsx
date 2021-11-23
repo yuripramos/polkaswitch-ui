@@ -88,49 +88,55 @@ export default class WalletHome extends Component {
 
       let networks = this.NETWORKS;
 
-      for (var i = 0; i < networks.length; i++) {
-        var network = networks[i];
-        let tokenList = TokenListManager.getTokenListForNetwork(network);
+      Promise.all(
+        networks.map((network) => {
+          return new Promise(async (resolve, reject) => {
+            let tokenList = TokenListManager.getTokenListForNetwork(network);
 
-        try {
-          var nativeBalance = await Wallet.getDefaultBalance(network);
-        } catch(e) {
-          console.error("Failed to fetch balances from network: ", network.name);
-          console.error(e);
-          continue; // go next network, if the provider is not working
-        }
-
-        for (var j = 0; j < tokenList.length; j++) {
-          var token = tokenList[j];
-
-          let p = Wallet.getBalance(token, network).then(function(tk, net, balance) {
-            if (!balance.isZero()) {
-              this.setState({
-                balances: [
-                  ...this.state.balances,
-                  {
-                    ...tk,
-                    balance: (+balance.toString()) / (Math.pow(10, tk.decimals)),
-                    balanceBN: balance,
-                    price: 1
-                  }
-                ]
-              });
+            try {
+              var nativeBalance = await Wallet.getDefaultBalance(network);
+            } catch(e) {
+              console.error("Failed to fetch balances from network: ", network.name);
+              console.error(e);
+              resolve(true);
+              return; // go next network, if the provider is not working
             }
-          }.bind(this, token, network));
 
-          promises.push(p);
-        };
-      };
+            for (var j = 0; j < tokenList.length; j++) {
+              var token = tokenList[j];
 
-      // bleeding browser-support
-      Promise.allSettled(promises).then(() => {
-        console.log("Completed fetching balances from all networks");
-        if (this.state.refresh === localRefresh) {
-          this.setState({
-            loading: false
+              let p = Wallet.getBalance(token, network).then(function(tk, net, balance) {
+                if (!balance.isZero()) {
+                  this.setState({
+                    balances: [
+                      ...this.state.balances,
+                      {
+                        ...tk,
+                        balance: (+balance.toString()) / (Math.pow(10, tk.decimals)),
+                        balanceBN: balance,
+                        price: 1
+                      }
+                    ]
+                  });
+                }
+              }.bind(this, token, network));
+
+              promises.push(p);
+            };
+
+            resolve(true);
           });
-        }
+        })
+      ).then(() => {
+        // bleeding browser-support
+        Promise.allSettled(promises).then(() => {
+          console.log("Completed fetching balances from all networks");
+          if (this.state.refresh === localRefresh) {
+            this.setState({
+              loading: false
+            });
+          }
+        });
       });
     }.bind(this));
   }
