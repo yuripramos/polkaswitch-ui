@@ -3071,6 +3071,15 @@
         "url": "https://github.com/chalk/ansi-styles?sponsor=1"
       }
     },
+    "node_modules/@connext/nxtp-txservice/node_modules/axios": {
+      "version": "0.21.4",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+      "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+      "dev": true,
+      "dependencies": {
+        "follow-redirects": "^1.14.0"
+      }
+    },
     "node_modules/@connext/nxtp-txservice/node_modules/chalk": {
       "version": "4.1.2",
       "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
@@ -4139,6 +4148,15 @@
       },
       "funding": {
         "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+      }
+    },
+    "node_modules/@connext/nxtp-utils/node_modules/axios": {
+      "version": "0.21.4",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+      "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+      "dev": true,
+      "dependencies": {
+        "follow-redirects": "^1.14.0"
       }
     },
     "node_modules/@connext/nxtp-utils/node_modules/chalk": {
@@ -8205,6 +8223,15 @@
         "xtend": "~4.0.0"
       }
     },
+    "node_modules/@maticnetwork/maticjs/node_modules/axios": {
+      "version": "0.21.4",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+      "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+      "dev": true,
+      "dependencies": {
+        "follow-redirects": "^1.14.0"
+      }
+    },
     "node_modules/@maticnetwork/maticjs/node_modules/bn.js": {
       "version": "5.0.0",
       "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.0.0.tgz",
@@ -10386,15 +10413,6 @@
       "dev": true,
       "engines": {
         "node": ">=4"
-      }
-    },
-    "node_modules/axios": {
-      "version": "0.21.4",
-      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
-      "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
-      "dev": true,
-      "dependencies": {
-        "follow-redirects": "^1.14.0"
       }
     },
     "node_modules/axobject-query": {
@@ -17035,9 +17053,9 @@
       }
     },
     "node_modules/follow-redirects": {
-      "version": "1.14.3",
-      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.3.tgz",
-      "integrity": "sha512-3MkHxknWMUtb23apkgz/83fDoe+y+qr0TdgacGIA7bew+QLBo3vdgEN2xEsuXNivpFy4CyDhBBZnNZOtalmenw==",
+      "version": "1.14.5",
+      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.5.tgz",
+      "integrity": "sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==",
       "dev": true,
       "funding": [
         {
@@ -17704,6 +17722,15 @@
       },
       "funding": {
         "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+      }
+    },
+    "node_modules/hardhat-deploy/node_modules/axios": {
+      "version": "0.21.4",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+      "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+      "dev": true,
+      "dependencies": {
+        "follow-redirects": "^1.14.0"
       }
     },
     "node_modules/hardhat-deploy/node_modules/chalk": {
@@ -32564,6 +32591,15 @@
             "color-convert": "^2.0.1"
           }
         },
+        "axios": {
+          "version": "0.21.4",
+          "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+          "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+          "dev": true,
+          "requires": {
+            "follow-redirects": "^1.14.0"
+          }
+        },
         "chalk": {
           "version": "4.1.2",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
@@ -33241,6 +33277,15 @@
           "dev": true,
           "requires": {
             "color-convert": "^2.0.1"
+          }
+        },
+        "axios": {
+          "version": "0.21.4",
+          "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+          "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+          "dev": true,
+          "requires": {
+            "follow-redirects": "^1.14.0"
           }
         },
         "chalk": {
@@ -35895,6 +35940,15 @@
             "xtend": "~4.0.0"
           }
         },
+        "axios": {
+          "version": "0.21.4",
+          "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+          "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+          "dev": true,
+          "requires": {
+            "follow-redirects": "^1.14.0"
+          }
+        },
         "bn.js": {
           "version": "5.0.0",
           "resolved": "https://registry.npmjs.org/bn.js/-/bn.js-5.0.0.tgz",
@@ -37732,15 +37786,6 @@
       "resolved": "https://registry.npmjs.org/axe-core/-/axe-core-4.3.3.tgz",
       "integrity": "sha512-/lqqLAmuIPi79WYfRpy2i8z+x+vxU3zX2uAm0gs1q52qTuKwolOj1P8XbufpXcsydrpKx2yGn2wzAnxCMV86QA==",
       "dev": true
-    },
-    "axios": {
-      "version": "0.21.4",
-      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
-      "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
-      "dev": true,
-      "requires": {
-        "follow-redirects": "^1.14.0"
-      }
     },
     "axobject-query": {
       "version": "2.2.0",
@@ -43152,9 +43197,9 @@
       }
     },
     "follow-redirects": {
-      "version": "1.14.3",
-      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.3.tgz",
-      "integrity": "sha512-3MkHxknWMUtb23apkgz/83fDoe+y+qr0TdgacGIA7bew+QLBo3vdgEN2xEsuXNivpFy4CyDhBBZnNZOtalmenw==",
+      "version": "1.14.5",
+      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.5.tgz",
+      "integrity": "sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==",
       "dev": true
     },
     "for-in": {
@@ -43915,6 +43960,15 @@
           "dev": true,
           "requires": {
             "color-convert": "^2.0.1"
+          }
+        },
+        "axios": {
+          "version": "0.21.4",
+          "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz",
+          "integrity": "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==",
+          "dev": true,
+          "requires": {
+            "follow-redirects": "^1.14.0"
           }
         },
         "chalk": {

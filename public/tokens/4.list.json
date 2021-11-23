@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Rinkeby ETH",
+        "symbol": "RiETH",
+        "decimals": 18,
+        "native": true,
+        "chainId": 4,
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png"
+    }
+]

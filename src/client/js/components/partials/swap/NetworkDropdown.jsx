@@ -79,7 +79,7 @@ export default class NetworkDropdown extends Component {
             className="button is-info is-light"
             aria-haspopup="true"
             aria-controls="dropdown-menu">
-            <span className="level">
+            <span className="level is-mobile">
               <span className="level-left my-2">
                 <span className="level-item">
                   <TokenIconImg

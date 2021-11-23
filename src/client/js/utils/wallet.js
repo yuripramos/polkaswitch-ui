@@ -99,29 +99,42 @@ window.WalletJS = {
     }
   },
 
-  getBalance: function(token) {
+  getBalance: function(token, optionalNetwork) {
     if (this.isConnected()) {
       if (token.native) {
-        return this.getDefaultBalance();
+        return this.getDefaultBalance(optionalNetwork);
       }
 
       else if (token.address) {
-        return this.getERC20Balance(token.address);
+        return this.getERC20Balance(token.address, optionalNetwork);
       }
     } else {
       return Promise.resolve(BigNumber.from(0));
     }
   },
 
-  getDefaultBalance: function() {
-    return this.getProvider().getBalance(this.currentAddress());
+  getDefaultBalance: function(optionalNetwork) {
+    if (optionalNetwork) {
+      let provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProvider);
+      return provider.getBalance(this.currentAddress());
+    } else {
+      return this.getProvider().getBalance(this.currentAddress());
+    }
   },
 
-  getERC20Balance: async function(tokenContractAddress) {
+  getERC20Balance: async function(tokenContractAddress, optionalNetwork) {
+    let provider;
+
+    if (optionalNetwork) {
+      provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProvider);
+    } else {
+      provider = this.getProvider();
+    }
+
     const contract = new Contract(
       tokenContractAddress,
       window.erc20Abi,
-      this.getProvider()
+      provider
     );
     return await contract.balanceOf(this.currentAddress());
   },
