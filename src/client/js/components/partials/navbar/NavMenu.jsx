@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import TokenListManager from "../../../utils/tokenList";
 import _ from "underscore";
 import Wallet from "../../../utils/wallet";
@@ -13,7 +13,7 @@ export default function NavMenu(props) {
   const handleClick = async (isSwap) => {
     const currNetwork = TokenListManager.getCurrentNetworkConfig();
     const changeNetwork = !isSwap && !currNetwork.crossChainSupported;
-    var nextNetwork = !changeNetwork ?
+    const nextNetwork = !changeNetwork ?
         currNetwork :
         _.first(CROSS_CHAIN_NETWORKS);
 
@@ -31,6 +31,7 @@ export default function NavMenu(props) {
     <div className="nav-menu">
       <NavLink exact className="nav-link" activeClassName="active" to="/swap" onClick={(e) => handleClick(true)}>Trade</NavLink>
       <NavLink className="nav-link" activeClassName="active" to="/bridge" onClick={(e) =>handleClick(false)}>Bridge</NavLink>
+      <NavLink exact className="nav-link" activeClassName="active" to="/wallet">Wallet</NavLink>
     </div>
   );
 }

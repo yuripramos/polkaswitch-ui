@@ -1,24 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
 import SwapHome from './pages/SwapHome';
 import TokenClaimHome from './pages/TokenClaimHome';
 import BridgeHome from './pages/BridgeHome';
+import WalletHome from "./pages/WalletHome";
 import StakeHome from './pages/StakeHome';
 import Footer from './partials/Footer';
 import classnames from 'classnames';
 import { keepTheme } from '../utils/theme';
-import Bridge from "./pages/BridgeHome";
-import BridgeButton from "./partials/BridgeButton";
 
-require('../../css/index.scss');
+require("../../css/index.scss");
 
 export default class App extends Component {
   constructor(props) {
@@ -27,27 +20,27 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-  keepTheme();
-  this.handleFullScreenOn = this.handleFullScreenOn.bind(this);
+    keepTheme();
+    this.handleFullScreenOn = this.handleFullScreenOn.bind(this);
     this.handleFullScreenOff = this.handleFullScreenOff.bind(this);
-    window.document.addEventListener('fullScreenOn', this.handleFullScreenOn);
-    window.document.addEventListener('fullScreenOff', this.handleFullScreenOff);
+    window.document.addEventListener("fullScreenOn", this.handleFullScreenOn);
+    window.document.addEventListener("fullScreenOff", this.handleFullScreenOff);
   }
 
   componentWillUnmount() {
-    window.document.removeEventListener('fullScreenOn', this.handleFullScreenOn);
-    window.document.removeEventListener('fullScreenOff', this.handleFullScreenOff);
+    window.document.removeEventListener("fullScreenOn", this.handleFullScreenOn);
+    window.document.removeEventListener("fullScreenOff", this.handleFullScreenOff);
   }
 
   handleFullScreenOn() {
     this.setState({
-      fullscreen: true
+      fullscreen: true,
     });
   }
 
   handleFullScreenOff() {
     this.setState({
-      fullscreen: false
+      fullscreen: false,
     });
   }
 
@@ -71,6 +64,9 @@ export default class App extends Component {
             <Route path="/stake">
               <StakeHome />
             </Route>
+            <Route path="/wallet">
+              <WalletHome />
+            </Route>
             <Route>
               <Redirect to="/swap" />
             </Route>
@@ -81,4 +77,3 @@ export default class App extends Component {
     );
   }
 }
-

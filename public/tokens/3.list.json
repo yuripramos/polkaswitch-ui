@@ -1,0 +1,19 @@
+[
+    {
+        "name": "FTKN",
+        "address": "0x20f584297666f714be0b1fcc488e4919b38b7d51",
+        "symbol": "WETH",
+        "decimals": 18,
+        "native": false,
+        "chainId": 3,
+        "logoURI": "https://raw.githubusercontent.com/ava-labs/bridge-tokens/main/avalanche-tokens/0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15/logo.png"
+    },
+    {
+        "name": "Ropsten ETH",
+        "symbol": "RETH",
+        "decimals": 18,
+        "native": true,
+        "chainId": 3,
+        "logoURI": "https://raw.githubusercontent.com/ava-labs/bridge-tokens/main/avalanche-tokens/0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15/logo.png"
+    }
+]
