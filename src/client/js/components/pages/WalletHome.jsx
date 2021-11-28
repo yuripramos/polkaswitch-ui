@@ -106,7 +106,7 @@ export default class WalletHome extends Component {
               var token = tokenList[j];
 
               let p = Wallet.getBalance(token, network).then(function(tk, net, balance) {
-                if (this.state.refresh === localRefresh && balance.isZero()) {
+                if (this.state.refresh === localRefresh && !balance.isZero()) {
                   this.setState({
                     balances: [
                       ...this.state.balances,
