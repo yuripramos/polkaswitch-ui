@@ -67,7 +67,7 @@ export default class WalletHome extends Component {
     EventManager.emitEvent('promptWalletConnect', 1);
   }
 
-  handleNetworkChange() {
+  handleNetworkChange(network) {
     this.setState({
       refresh: Date.now(),
       balances: [],
