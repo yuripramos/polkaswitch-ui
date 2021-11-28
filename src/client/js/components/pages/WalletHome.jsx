@@ -196,7 +196,7 @@ export default class WalletHome extends Component {
                   <div className="level-left">
                     <h6 className="portfolio-balance__main-heading">Portfolio Overview</h6>
                   </div>
-                  <div className="level-right">
+                  <div className="is-hidden level-right">
                     <NetworkDropdown
                       handleDropdownClick={this.handleNetworkChange}
                       selected={this.state.currentNetwork}
