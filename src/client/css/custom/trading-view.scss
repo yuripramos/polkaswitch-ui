@@ -28,6 +28,13 @@ $chart-height: 250px;
       color: var(--dialogue-text-color);
     }
   }
+
+  .dropdown-content {
+    .dropdown-item {
+      padding: 1rem 1rem !important;
+    }
+  }
+
   .trading-view-header {
     display: flex;
     justify-content: space-between;
@@ -100,13 +107,15 @@ $chart-height: 250px;
       flex-direction: column;
 
       .empty-primary-text {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 700;
+        color: var(--primary-text-color);
       }
 
       .empty-sub-text {
         margin-top: 10px;
         font-size: 14px;
+        color: var(--primary-text-color);
       }
     }
 

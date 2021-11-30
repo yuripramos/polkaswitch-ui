@@ -552,10 +552,10 @@ export default function TradingViewChart(){
             <div>
               <img width={110} height={110} src="/images/no_data.svg"/>
             </div>
-            <div className="empty-primary-text has-text-info">
+            <div className="empty-primary-text">
               No Data
             </div>
-            <div className="empty-sub-text has-text-info">
+            <div className="empty-sub-text">
               There's no historical data to display for this token.
             </div>
           </div>
