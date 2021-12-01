@@ -313,11 +313,7 @@ window.WalletJS = {
         })
           .then(function() {
             requestAccount();
-          }.bind(this))
-          .catch(function(e) {
-            console.error(e);
-            reject(e);
-          });
+          }.bind(this));
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask.
         if (switchError.code === 4902) {
