@@ -7,6 +7,7 @@ import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import {win} from "../../../../public/vendor/ionicons/cjs/index-d64a26b7";
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
@@ -300,11 +301,7 @@ window.WalletJS = {
         })
           .then(function() {
             requestAccount();
-          }.bind(this))
-          .catch(function(e) {
-            console.error(e);
-            reject(e);
-          });
+          }.bind(this));
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask.
         if (switchError.code === 4902) {
