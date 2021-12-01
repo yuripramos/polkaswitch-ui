@@ -10,7 +10,7 @@ import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
 
-import TxBridgeManager from '../../../utils/txBridgeManager';
+
 
 export default class SwapOrderSlide extends Component {
   constructor(props) {
