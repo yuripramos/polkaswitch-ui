@@ -7,7 +7,6 @@ import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import {win} from "../../../../public/vendor/ionicons/cjs/index-d64a26b7";
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
