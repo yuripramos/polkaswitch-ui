@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
+import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
 import TokenIconImg from './../TokenIconImg';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
-import SwapFn from '../../../utils/swapFn';
-
 import TxBridgeManager from '../../../utils/txBridgeManager';
 import Nxtp from '../../../utils/nxtp';
-import { ApprovalState } from "../../../constants/Status";
 import { NxtpSdkEvents } from "@connext/nxtp-sdk";
 
 export default class CrossSwapProcessSlide extends Component {
@@ -37,7 +33,7 @@ export default class CrossSwapProcessSlide extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.crossChainTransactionId != this.props.crossChainTransactionId) {
+    if (prevProps.crossChainTransactionId !== this.props.crossChainTransactionId) {
       this.setState({
         loading: false,
         errored: false,
@@ -90,7 +86,7 @@ export default class CrossSwapProcessSlide extends Component {
       loading: true,
     }, function() {
       TxBridgeManager.transferStepOne(this.props.crossChainTransactionId).then(function (data) {
-        Metrics.track("cross-swap-started", {
+        Metrics.track("bridge-started", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
           from: this.props.from,
@@ -122,7 +118,7 @@ export default class CrossSwapProcessSlide extends Component {
       loading: true,
     }, function() {
       TxBridgeManager.transferStepTwo(this.props.crossChainTransactionId).then(function () {
-        Metrics.track("cross-swap-complete", {
+        Metrics.track("bridge-complete", {
           toChain: this.props.toChain,
           fromChain: this.props.fromChain,
           from: this.props.from,

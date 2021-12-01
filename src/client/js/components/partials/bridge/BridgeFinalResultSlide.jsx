@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import _ from "underscore";
 import classnames from 'classnames';
 import TxExplorerLink from './../TxExplorerLink';
 
-export default class SwapFinalResultSlide extends Component {
+export default class BridgeFinalResultSlide extends Component {
   constructor(props) {
     super(props);
   }

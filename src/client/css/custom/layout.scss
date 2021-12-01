@@ -458,8 +458,25 @@ html, body {
   width: 500px;
 }
 
+.bridge-column {
+  flex: none;
+  width: 726px;
+}
+
+@media screen and (max-width: 768px) {
+  .bridge-column {
+    flex: none;
+    width: 100%;
+  }
+}
+
 @media screen and (max-width: 450px) {
   .swap-column {
+    flex: none;
+    width: 100%;
+  }
+
+  .bridge-column {
     flex: none;
     width: 100%;
   }

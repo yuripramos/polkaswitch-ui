@@ -5,7 +5,7 @@ import TxHistoryModal from "../partials/TxHistoryModal";
 import NotificationSystem from "../partials/NotificationSystem";
 import MobileMenu from "../partials/navbar/MobileMenu";
 import NetworkPrice from "../partials/wallet/NetworkPrice";
-import NetworkDropdown from "../partials/swap/NetworkDropdown";
+import NetworkDropdown from "../partials/NetworkDropdown";
 import AssetsTable from "../partials/wallet/AssetsTable";
 import DisconnectedWallet from "../partials/wallet/DisconnectedWallet";
 import EmptyBalances from "../partials/wallet/EmptyBalances";

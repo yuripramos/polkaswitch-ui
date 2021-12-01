@@ -2,14 +2,14 @@ import React, { Component } from "react";
 
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
-import SwapHome from "./pages/SwapHome";
-import TokenClaimHome from "./pages/TokenClaimHome";
-import MarketsHome from "./pages/MarketsHome";
-import StakeHome from "./pages/StakeHome";
+import SwapHome from './pages/SwapHome';
+import TokenClaimHome from './pages/TokenClaimHome';
+import BridgeHome from './pages/BridgeHome';
 import WalletHome from "./pages/WalletHome";
-import Footer from "./partials/Footer";
-import classnames from "classnames";
-import { keepTheme } from "../utils/theme";
+import StakeHome from './pages/StakeHome';
+import Footer from './partials/Footer';
+import classnames from 'classnames';
+import { keepTheme } from '../utils/theme';
 
 require("../../css/index.scss");
 
@@ -55,11 +55,11 @@ export default class App extends Component {
             <Route path="/swap">
               <SwapHome />
             </Route>
+            <Route path="/bridge">
+              <BridgeHome />
+            </Route>
             <Route path="/claim">
               <TokenClaimHome />
-            </Route>
-            <Route path="/markets">
-              <MarketsHome />
             </Route>
             <Route path="/stake">
               <StakeHome />

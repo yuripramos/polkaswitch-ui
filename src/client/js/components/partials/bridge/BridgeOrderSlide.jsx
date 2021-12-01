@@ -4,29 +4,27 @@ import classnames from 'classnames';
 import BN from 'bignumber.js';
 import * as Sentry from "@sentry/react";
 import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
-import TokenSwapDistribution from './TokenSwapDistribution';
+import NetworkDropdown from '../NetworkDropdown';
 import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
+import AvailableRoutes from "./AvailableRoutes";
 
+import TxBridgeManager from '../../../utils/txBridgeManager';
 
-
-export default class SwapOrderSlide extends Component {
+export default class BridgeOrderSlide extends Component {
   constructor(props) {
     super(props);
     this.state = {
       calculatingSwap: false,
-      errored: false,
-      errorMsg: false
+      errored: false
     };
-
     this.calculatingSwapTimestamp = Date.now();
-
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
-    this.fetchSingleChainSwapEstimate = this.fetchSingleChainSwapEstimate.bind(this);
+    this.fetchCrossChainEstimate = this.fetchCrossChainEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
@@ -51,8 +49,7 @@ export default class SwapOrderSlide extends Component {
     } else if (attempt > window.MAX_RETRIES) {
       this.setState({
         calculatingSwap: false,
-        errored: true,
-        errorMsg: false
+        errored: true
       });
       console.error("Swap Failure: MAX RETRIES REACHED");
       return;
@@ -78,7 +75,6 @@ export default class SwapOrderSlide extends Component {
 
     this.setState({
       errored: false,
-      errorMsg: false,
       calculatingSwap: true
     }, function(_timeNow, _attempt, _cb) {
 
@@ -92,53 +88,54 @@ export default class SwapOrderSlide extends Component {
         if (this.calculatingSwapTimestamp !== _timeNow2) {
           return;
         }
-        this.fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
+        this.fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2)
       }.bind(this), 500, _timeNow, _attempt, _cb);
     }.bind(this, timeNow, attempt, cb));
   }
 
-  fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
-    return SwapFn.getExpectedReturn(
-      this.props.from,
-      this.props.to,
-      fromAmountBN
-    ).then(function(_timeNow3, _cb3, result) {
+  fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
+    if (!Wallet.isConnected()) {
+      // not supported in cross-chain mode
+      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      return false;
+    }
+
+    TxBridgeManager.getEstimate(
+      +this.props.fromChain.chainId,
+      this.props.from.address,
+      +this.props.toChain.chainId,
+      this.props.to.address,
+      fromAmountBN,
+      Wallet.currentAddress()
+    ).then(function(_timeNow3, _cb3, response) {
       if (this.calculatingSwapTimestamp !== _timeNow3) {
         return;
       }
 
-      var dist = _.map(result.distribution, function(e) {
-        return e.toNumber();
-      });
-
       Wallet.getBalance(this.props.from).then((bal) => {
-        return SwapFn.getApproveStatus(
-          this.props.from,
-          fromAmountBN
-        ).then((status) => {
-          console.log('Approval Status', status)
-          this.props.onSwapEstimateComplete(
-            origFromAmount,
-            window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
-            dist,
-            window.ethers.utils.formatUnits(bal, this.props.from.decimals),
-            status
-          )
+        this.props.onSwapEstimateComplete(
+          origFromAmount,
+          window.ethers.utils.formatUnits(response?.returnAmount ?? constants.Zero, this.props.to.decimals),
+          false,
+          window.ethers.utils.formatUnits(bal, this.props.from.decimals),
+          status
+        )
 
-          this.setState({
-            calculatingSwap: false
-          }, () => {
-            if (_cb3) {
-              _cb3();
-            }
+        this.props.onCrossChainEstimateComplete(response.id);
 
-            Metrics.track("swap-estimate-result", {
-              from: this.props.from,
-              to: this.props.to,
-              fromAmont: fromAmountBN.toString(),
-              toAmount: this.props.toAmount,
-              swapDistribution: this.props.swapDistribution
-            });
+        this.setState({
+          calculatingSwap: false
+        }, () => {
+          if (_cb3) {
+            _cb3();
+          }
+
+          Metrics.track("bridge-estimate-result", {
+            from: this.props.from,
+            to: this.props.to,
+            fromAmont: fromAmountBN.toString(),
+            toAmount: this.props.toAmount,
+            swapDistribution: this.props.swapDistribution
           });
         });
       }).catch((e) => {
@@ -146,7 +143,9 @@ export default class SwapOrderSlide extends Component {
       });
     }.bind(this, _timeNow2, _cb2))
     .catch(function(_timeNow3, _attempt3, _cb3, e) {
+      console.error(e);
       console.error("Failed to get swap estimate: ", e);
+
       if (this.calculatingSwapTimestamp !== _timeNow3) {
         return;
       }
@@ -176,7 +175,7 @@ export default class SwapOrderSlide extends Component {
         // in the higher-order component SwapWidget.jsx
       }
 
-      Metrics.track("swap-token-value", {
+      Metrics.track("bridge-token-value", {
         value: targetAmount,
         from: this.props.from,
         to: this.props.to
@@ -267,65 +266,86 @@ export default class SwapOrderSlide extends Component {
     var isFrom = (target === "from");
 
     return (
-      <div className="level is-mobile">
-        <div className="level is-mobile is-narrow my-0 token-dropdown"
-          onClick={this.props.handleSearchToggle(target)}>
-          <TokenIconBalanceGroupView
-            network={isFrom ? this.props.fromChain : this.props.toChain}
-            token={token}
-            refresh={this.props.refresh}
+      <div className="level">
+        <div className="level is-narrow">
+          <NetworkDropdown
+            crossChain={true}
+            selected={isFrom ? this.props.fromChain : this.props.toChain}
+            className={classnames({ "is-up": !isFrom })}
+            handleDropdownClick={this.handleNetworkDropdownChange(isFrom).bind(this)}
+            compact={true}
           />
-          <div className="level-item">
-            <span className="icon-down">
-              <ion-icon name="chevron-down"></ion-icon>
-            </span>
-          </div>
         </div>
-      <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
-        <div className="field" style={{ width: "100%", maxWidth: "250px" }}>
-          <div
-            className={classnames("control", {
-              "is-loading": !isFrom && this.state.calculatingSwap
-            })}
-            style={{ width: "100%" }}
-          >
-            <input
-              onChange={this.handleTokenAmountChange}
-              value={
-                (!isFrom && this.state.errored) ?
-                  "" :
-                  (this.props[`${target}Amount`] || "")
-              }
-              type="number"
-              min="0"
-              lang="en"
-              step="0.000000000000000001"
-              className={classnames("input is-medium", {
-                //"is-danger": isFrom && !this.hasSufficientBalance(),
-                "is-to": !isFrom,
-                "is-from": isFrom,
-                "is-danger": !isFrom && this.state.errored
+
+        <div className="level-item is-flex-grow-1 is-flex-shrink-1 is-flex-direction-column is-align-items-flex-end">
+          <div className="field" style={{ width: "100%" }}>
+            <div
+              className={classnames("control", {
+                "is-loading": !isFrom && this.state.calculatingSwap
               })}
-              placeholder="0.0"
-              disabled={!isFrom}
-            />
+              style={{ width: "100%" }}
+            >
+              <input
+                onChange={this.handleTokenAmountChange}
+                value={
+                  (!isFrom && this.state.errored) ?
+                    "" :
+                    (this.props[`${target}Amount`] || "")
+                }
+                type="number"
+                min="0"
+                lang="en"
+                step="0.000000000000000001"
+                className={classnames("input is-medium", {
+                  "is-danger": isFrom && !this.hasSufficientBalance(),
+                  "is-to": !isFrom,
+                  "is-from": isFrom,
+                  //"is-danger": !isFrom && this.state.errored
+                })}
+                placeholder="0.0"
+                disabled={!isFrom}
+              />
+              <div className="input-wrapper">
+                {
+                  isFrom && (
+                      <div className="max-btn" onClick={this.handleMax}>Max</div>
+                  )
+                }
+                {
+                  isFrom && !this.hasSufficientBalance() && (
+                      <div className="warning-funds">
+                        Insufficient funds
+                      </div>
+                  )
+                }
 
-          {isFrom &&
-              (<div className="max-btn" onClick={this.handleMax}>Max</div>)}
-
-              {isFrom && !this.hasSufficientBalance() &&
-                  (<div className="warning-funds">
-                    Insufficient funds
-                  </div>)}
-
-                  {!isFrom && this.state.errored &&
-                      (<div className="warning-funds">
-                        {this.state.errorMsg || "Estimate failed. Try again"}
-                      </div>)}
-                    </div>
+                {
+                  !isFrom && this.state.errored && (
+                      <div className="warning-funds">
+                        Estimate failed. Try again
+                      </div>
+                  )
+                }
+                <div
+                  className="level is-mobile is-narrow my-0 token-dropdown"
+                  onClick={this.props.handleSearchToggle(target)}
+                >
+                  <TokenIconBalanceGroupView
+                      network={isFrom ? this.props.fromChain : this.props.toChain}
+                      token={token}
+                      refresh={this.props.refresh}
+                  />
+                  <div className="level-item">
+                    <span className="icon-down">
+                      <ion-icon name="chevron-down"></ion-icon>
+                    </span>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -333,65 +353,67 @@ export default class SwapOrderSlide extends Component {
     return (
       <div className="page page-view-order">
         <div className="page-inner">
-          <div className="level is-mobile">
-            <div className="level-right">
-              <div className="level-item">
-                <span
-                  className="icon clickable settings-icon"
-                  onClick={this.props.handleSettingsToggle}>
-                  <ion-icon name="settings-outline"></ion-icon>
-                </span>
-              </div>
+          <div className="level is-mobile" style={{marginBottom: 10}}>
+            <div className=" level-left">
+              <b className="widget-title">Bridge Assets</b>
+            </div>
+            <div className="level-item level-right">
+              <span
+                className="icon clickable settings-icon"
+                onClick={this.props.handleSettingsToggle}>
+                <img src="/images/bridge_setting_white.svg" />
+              </span>
             </div>
           </div>
 
-          <div className="notification is-white my-0">
+          <div className="notification is-white border-top">
             <div className="text-gray-stylized">
-              <span>You Pay</span>
+              <span>Send</span>
             </div>
             {this.renderTokenInput("from", this.props.from)}
           </div>
 
-          <div className="swap-icon-wrapper">
-            <div className="swap-icon-v2 icon" onClick={this.handleTokenSwap}>
-              <ion-icon name="swap-vertical-outline"></ion-icon>
+          <div className="bridge-icon-wrapper">
+            <div className="bridge-icon-v2 icon" onClick={this.handleTokenSwap}>
+              <ion-icon name="swap-vertical-outline"/>
             </div>
 
-            <div className="swap-icon is-hidden" onClick={this.handleTokenSwap}>
-              <i className="fas fa-long-arrow-alt-up"></i>
-              <i className="fas fa-long-arrow-alt-down"></i>
+            <div className="bridge-icon is-hidden" onClick={this.handleTokenSwap}>
+              <i className="fas fa-long-arrow-alt-up"/>
+              <i className="fas fa-long-arrow-alt-down"/>
             </div>
           </div>
 
-          <div className="notification is-white bottom">
+          <div className="notification is-white border-top">
             <div className="text-gray-stylized">
-              <span>You Receive</span>
+              <span>Receive</span>
             </div>
             {this.renderTokenInput("to", this.props.to)}
           </div>
 
           <div
-            className={classnames("hint--large", "token-dist-expand-wrapper", {
-              "hint--top": this.props.swapDistribution,
-              "expand": this.props.swapDistribution
+            className={classnames("hint--large is-hidden", "token-dist-expand-wrapper expand", {
+              //"hint--top": this.props.swapDistribution,
+              //"expand": this.props.swapDistribution
             })}
-            aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
           >
-            <div className="token-dist-hint-text">
-              <span>Routing Distribution</span>
+            <div
+              className="token-dist-hint-text"
+              aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap.">
+              <span>Available Routes</span>
               <span className="hint-icon">?</span>
             </div>
-            <TokenSwapDistribution
-              parts={this.props.swapDistribution}/>
+            <AvailableRoutes
+              routes={this.props.swapDistribution}/>
           </div>
 
-          <div>
+          <div className="bridge-order-btn-wrapper">
             <button
               disabled={Wallet.isConnected() && !this.validateOrderForm()}
-              className="button is-primary is-fullwidth is-medium"
+              className="button is-primary bridge-order-btn"
               onClick={this.handleSubmit}
             >
-              {Wallet.isConnected() ? "Review Order" : "Connect Wallet"}
+              {Wallet.isConnected() ? "Review Bridge Order" : "Connect Wallet"}
             </button>
           </div>
         </div>

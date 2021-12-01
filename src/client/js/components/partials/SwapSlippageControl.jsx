@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import SwapFn from "../../../utils/swapFn";
+import SwapFn from "../../utils/swapFn";
 
 const tolerances = [0.1, 0.5, 1.0];
 const defaultCurrentValue = 0.5;

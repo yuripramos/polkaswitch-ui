@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import TokenListManager from '../../../utils/tokenList';
-import TokenIconImg from './../TokenIconImg';
-import DropdownSelectModal from './../DropdownSelectModal';
+import TokenListManager from '../../utils/tokenList';
+import TokenIconImg from './TokenIconImg';
+import DropdownSelectModal from './DropdownSelectModal';
 
 export default class NetworkDropdown extends Component {
   constructor(props) {
@@ -53,14 +53,14 @@ export default class NetworkDropdown extends Component {
         <a href="#"
           key={i}
           onClick={this.handleDropdownClick(v)}
-          className={classnames("level is-mobile option", {
+          className={classnames("dropdown-item level is-mobile option", {
             "disabled": !v.enabled
           })}
         >
-          <span className="level-left">
+          <span className="level-left my-2">
             <span className="level-item">
               <TokenIconImg
-                size={35}
+                size={30}
                 imgSrc={v.logoURI} />
             </span>
             <span className="level-item">{v.name} {!v.enabled && "(Coming Soon)"}</span>
@@ -79,16 +79,17 @@ export default class NetworkDropdown extends Component {
             className="button is-info is-light"
             aria-haspopup="true"
             aria-controls="dropdown-menu">
-            <span className="level is-mobile">
-              <span className="level-left my-2">
+            <span className="level">
+              <span className="level-left is-flex">
                 <span className="level-item">
                   <TokenIconImg
                     size={30}
                     imgSrc={selected.logoURI} />
                 </span>
-                {!this.props.compact && (
-                  <span className="level-item">{selected.name}</span>
-                )}
+		            <div className="network-wrapper item-level">
+                  <div className="platform">{selected.name}</div>
+                  <div className="name">Blockchain</div>
+                </div>
               </span>
             </span>
             <span className="icon is-small">

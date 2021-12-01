@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
 import _ from "underscore";
-import classnames from 'classnames';
+import TokenSearchBar from './TokenSearchBar';
 
-import TokenSearchBar from './../TokenSearchBar';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
-import TokenSwapDistribution from './TokenSwapDistribution';
-import MarketLimitToggle from './MarketLimitToggle';
-
-import Wallet from '../../../utils/wallet';
-import Metrics from '../../../utils/metrics';
-import EventManager from '../../../utils/events';
-
-export default class SwapTokenSearchSlide extends Component {
+export default class TokenSearchSlide extends Component {
   constructor(props) {
     super(props);
   }

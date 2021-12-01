@@ -6,7 +6,7 @@ import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
 import CrossChainToggle from './CrossChainToggle';
-import NetworkDropdown from './NetworkDropdown';
+import NetworkDropdown from '../NetworkDropdown';
 
 export default class SwapNetworkToggle extends Component {
   constructor(props) {
@@ -87,14 +87,14 @@ export default class SwapNetworkToggle extends Component {
   render() {
     return (
       <div className="swap-network-toggle box notification">
-        <div className="level is-mobile option">
-          <div className="level-left">
-            <div className="level-item">
-              <CrossChainToggle
-                checked={this.state.singleChain}
-                handleChange={this.handleCrossChainChange} />
-            </div>
-          </div>
+        <div className="level is-mobile option is-justify-content-flex-end">
+          {/*<div className="level-left">*/}
+          {/*  <div className="level-item">*/}
+          {/*    <CrossChainToggle*/}
+          {/*      checked={this.state.singleChain}*/}
+          {/*      handleChange={this.handleCrossChainChange} />*/}
+          {/*  </div>*/}
+          {/*</div>*/}
 
           <div className="level-right">
             <div className="level-item">

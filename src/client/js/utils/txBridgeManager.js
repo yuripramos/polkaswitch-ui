@@ -11,6 +11,30 @@ import Storage from "./storage";
 
 import { getRandomBytes32 } from "@connext/nxtp-utils";
 
+// hard-code for now. I could not find this easily as a function in HopSDK
+const HOP_SUPPORTED_BRIDGE_TOKENS = [
+  "USDC", "USDT", "DAI"
+  // TODO This is list is longer and is dynamically available per network pair.
+  // Let's keep it simple for now
+  // ... "MATIC", "ETH", "WBTC"
+];
+
+// hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
+const HOP_SUPPORTED_CHAINS = [
+  1, 137, 100, 10, 42161
+];
+
+const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
+  "USDC", "USDT", "DAI"
+  // TODO This is list is longer and is dynamically available per network pair.
+  // Let's keep it simple for now
+  // ... "MATIC", "ETH", "WBTC", "BNB"
+];
+
+const CONNEXT_SUPPORTED_CHAINS = [
+  1, 56, 137, 100, 250, 42161, 43114
+];
+
 export default {
   _signerAddress: '',
   _queue: {},
@@ -30,6 +54,9 @@ export default {
     } else {
       return Nxtp;
     }
+  },
+
+  supportedBridges: function(to, toChain, from, fromChain) {
   },
 
   getEstimate: function(

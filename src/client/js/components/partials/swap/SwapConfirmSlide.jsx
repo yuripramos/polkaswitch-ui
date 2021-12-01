@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
 import BN from 'bignumber.js';
-import TokenIconBalanceGroupView from './TokenIconBalanceGroupView';
+import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
 import TokenSwapDistribution from './TokenSwapDistribution';
 import SwapTransactionDetails from './SwapTransactionDetails';
 import Metrics from '../../../utils/metrics';
