@@ -57,6 +57,7 @@ export default {
   },
 
   supportedBridges: function(to, toChain, from, fromChain) {
+
   },
 
   getEstimate: function(
