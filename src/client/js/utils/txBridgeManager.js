@@ -57,6 +57,11 @@ export default {
   },
 
   supportedBridges: function(to, toChain, from, fromChain) {
+    var bridges = [];
+    var targetChainIds = [+toChain.chainId, +fromChain.chainId];
+
+    if (_.includes(CONNEXT_SUPPORTED_CHAINS, targetChainIds)) {
+    }
   },
 
   getEstimate: function(

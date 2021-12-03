@@ -46,6 +46,10 @@ export default class NetworkDropdown extends Component {
       filteredNetworks = _.filter(filteredNetworks, (v) => {
         return v.crossChainSupported
       });
+    } else {
+      filteredNetworks = _.filter(filteredNetworks, (v) => {
+        return v.singleChainSupported
+      });
     }
 
     var networkList = _.map(filteredNetworks, function(v, i) {
@@ -86,7 +90,7 @@ export default class NetworkDropdown extends Component {
                     size={30}
                     imgSrc={selected.logoURI} />
                 </span>
-		            <div className="network-wrapper item-level">
+                <div className="network-wrapper item-level">
                   <div className="platform">{selected.name}</div>
                   <div className="name">Blockchain</div>
                 </div>

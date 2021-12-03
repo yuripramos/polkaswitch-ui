@@ -21,11 +21,6 @@ export default class SwapNetworkToggle extends Component {
       hoverable: true,
     };
 
-    this.NETWORKS = window.NETWORK_CONFIGS;
-    this.CROSS_CHAIN_NETWORKS = _.filter(this.NETWORKS, (v) => {
-      return v.crossChainSupported
-    });
-
     this.subscribers = [];
     this.handleNetworkHoverable = this.handleNetworkHoverable.bind(this);
   }
@@ -38,28 +33,6 @@ export default class SwapNetworkToggle extends Component {
     this.subscribers.forEach(function(v) {
       EventManager.unsubscribe(v);
     });
-  }
-
-  handleCrossChainChange = async(checked) => {
-    var currNetwork = TokenListManager.getCurrentNetworkConfig();
-    var changeNetwork = !checked && !currNetwork.crossChainSupported;
-    var nextNetwork = !changeNetwork ?
-      currNetwork :
-      _.first(this.CROSS_CHAIN_NETWORKS);
-
-    this.setState({
-      singleChain: checked,
-      selected: nextNetwork
-    });
-
-    if (changeNetwork) {
-      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-        Wallet.getConnectionStrategy();
-      TokenListManager.updateNetwork(nextNetwork, connectStrategy);
-    }
-
-    TokenListManager.toggleCrossChain(!checked);
-    await TokenListManager.updateTokenList();
   }
 
   handleNetworkHoverable(event) {
@@ -88,14 +61,6 @@ export default class SwapNetworkToggle extends Component {
     return (
       <div className="swap-network-toggle box notification">
         <div className="level is-mobile option is-justify-content-flex-end">
-          {/*<div className="level-left">*/}
-          {/*  <div className="level-item">*/}
-          {/*    <CrossChainToggle*/}
-          {/*      checked={this.state.singleChain}*/}
-          {/*      handleChange={this.handleCrossChainChange} />*/}
-          {/*  </div>*/}
-          {/*</div>*/}
-
           <div className="level-right">
             <div className="level-item">
               <NetworkDropdown
