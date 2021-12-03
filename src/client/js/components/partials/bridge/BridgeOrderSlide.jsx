@@ -392,7 +392,7 @@ export default class BridgeOrderSlide extends Component {
           </div>
 
           <div
-            className={classnames("hint--large is-hidden", "token-dist-expand-wrapper expand", {
+            className={classnames("hint--large", "token-dist-expand-wrapper expand", {
               //"hint--top": this.props.swapDistribution,
               //"expand": this.props.swapDistribution
             })}
