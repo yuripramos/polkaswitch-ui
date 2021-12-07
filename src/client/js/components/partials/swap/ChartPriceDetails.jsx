@@ -16,7 +16,7 @@ export default function ChartPriceDetails(props) {
   const renderPercent = (percent) => {
     if (percent > 0) {
       return (
-        <div className="percent" style={{color: '#58B57E'}}>{percent}%</div>
+        <div className="percent" style={{color: '#58B57E'}}>+{percent}%</div>
       );
     } else if (percent < 0) {
       return (

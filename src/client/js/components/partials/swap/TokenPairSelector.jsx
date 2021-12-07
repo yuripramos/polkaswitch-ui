@@ -11,9 +11,9 @@ export default function TokenPairSelector(props){
             <a href="#"
                key={i}
                onClick={() => handleTokenPairChange(v)}
-               className="dropdown-item level is-mobile"
+               className="dropdown-item"
             >
-              <span className="level-left level-item">{v.name}</span>
+              <span>{v.name}</span>
             </a>
         );
       })
@@ -42,7 +42,7 @@ export default function TokenPairSelector(props){
                     size={54}
                     mr={10}
                     imgSrc={props.selectedPair.toTokenLogo}/>
-                  <span className="level-item">{props.selectedPair.name}</span>
+                  <span className="text">{props.selectedPair.name}</span>
                 </span>
               }
               {
@@ -52,7 +52,7 @@ export default function TokenPairSelector(props){
                     size={54}
                     mr={10}
                     imgSrc={props.selectedPair.fromTokenLogo}/>
-                  <span className="level-item">{props.selectedPair.name}</span>
+                  <span>{props.selectedPair.name}</span>
                 </span>
               }
             </button>

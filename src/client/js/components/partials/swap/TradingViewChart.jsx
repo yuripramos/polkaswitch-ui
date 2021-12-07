@@ -1,5 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {createChart, CrosshairMode} from "lightweight-charts";
+import React, { useEffect, useRef, useState } from 'react';
+import { createChart, CrosshairMode } from "lightweight-charts";
+import { ResponsiveContainer, AreaChart, Area, Tooltip } from "recharts";
 import TokenPairSelector from "./TokenPairSelector";
 import ChartPriceDetails from "./ChartPriceDetails";
 import ChartViewOption from "./ChartViewOption";
@@ -7,6 +8,7 @@ import ChartRangeSelector from "./ChartRangeSelector";
 import EventManager from "../../../utils/events";
 import BN from 'bignumber.js';
 import TokenListManager from "../../../utils/tokenList";
+import moment from "moment";
 
 export default function TradingViewChart(){
   const timeRangeList = {
@@ -24,18 +26,15 @@ export default function TradingViewChart(){
       {name: "1Y", from: 'Past year'}
     ]
   };
-
   const wrapTokens = {
     "BNB": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
     "AVAX": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     "xDai": "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
     "FTM": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83"
   }
-
   const viewModes = ["candlestick", "line"];
-  const chartContainerRef = useRef();
+  const candleChartContainerRef = useRef();
   const chart = useRef();
-
   const getLogoURL = (network, address) => {
     if (network === 'Polygon') {
       network = 'smartchain'
@@ -43,7 +42,6 @@ export default function TradingViewChart(){
     const chainPart = network.toLowerCase().replace(/\s+/g, '');
     return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainPart}/assets/${address}/logo.png`
   }
-
   const createTokenPairList = () => {
     const swapConfig = TokenListManager.getSwapConfig();
     const network = TokenListManager.getCurrentNetworkConfig();
@@ -94,8 +92,6 @@ export default function TradingViewChart(){
     return list;
   }
   let candleSeries = useRef(null);
-  let lineSeries = useRef(null);
-
   // init states
   const initTokenPair = createTokenPairList();
   const [isLoading, setIsLoading] = useState(false);
@@ -114,28 +110,32 @@ export default function TradingViewChart(){
 
     return () => {
       subSwapConfigChange.unsubscribe();
-      chart.current.remove();
+      if (chart.current) {
+        chart.current.remove();
+      }
     }
   }, []);
 
   // Resize chart on container resizes.
   useEffect(() => {
-    const handleResize = (width, height) => {
-      chart.current.resize(width, height);
-      setTimeout(() => {
-        chart.current.timeScale().fitContent();
-      }, 0);
-    }
+    if (selectedViewMode === 'candlestick' && candleChartContainerRef.current) {
+      const handleResize = (width, height) => {
+        chart.current.resize(width, height);
+        setTimeout(() => {
+          chart.current.timeScale().fitContent();
+        }, 0);
+      }
 
-    if (chartContainerRef.current) {
-      window.addEventListener('resize', ()=> {
-        handleResize(chartContainerRef.current.clientWidth, chartContainerRef.current.clientHeight)
-      })
+      if (candleChartContainerRef.current) {
+        window.addEventListener('resize', () => {
+          handleResize(candleChartContainerRef.current.clientWidth, candleChartContainerRef.current.clientHeight)
+        })
+      }
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      }
     }
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    }
-  }, []);
+  }, [candleChartContainerRef.current]);
 
   // Fetch Data
   useEffect(() =>{
@@ -143,81 +143,78 @@ export default function TradingViewChart(){
   }, [selectedPair, selectedTimeRange, selectedViewMode])
 
   useEffect(() => {
-    if (chartContainerRef.current) {
-      if (!chart.current) {
-        chart.current = createChart(chartContainerRef.current, {
-          width: chartContainerRef.current.clientWidth,
-          height: chartContainerRef.current.clientHeight,
-          rightPriceScale:{
+    if (selectedViewMode === 'candlestick' &&
+        candleChartContainerRef.current &&
+        isValidCandleStickDataType)
+    {
+      initCandleStickChart();
+      chart.current = createChart(candleChartContainerRef.current, {
+        width: candleChartContainerRef.current.clientWidth,
+        height: candleChartContainerRef.current.clientHeight,
+        rightPriceScale: {
+          visible: false,
+        },
+        leftPriceScale: {
+          visible: true,
+        },
+        layout: {
+          backgroundColor: '#FFFFFF',
+          textColor: '#333',
+        },
+        grid: {
+          vertLines: {
             visible: false,
           },
-          leftPriceScale: {
-            visible: true,
+          horzLines: {
+            visible: false,
           },
-          layout: {
-            backgroundColor: '#FFFFFF',
-            textColor: '#333',
-          },
-          grid: {
-            vertLines: {
-              visible: false,
-            },
-            horzLines: {
-              visible: false,
-            },
-          },
-          crosshair: {
-            mode: CrosshairMode.Normal,
-          },
-          priceScale: {
-            borderColor: '#485c7b',
-          },
-          timeScale: {
-            borderColor: '#485c7b',
-            timeVisible: true,
-            secondsVisible: true,
-          },
-        });
-      }
+        },
+        crosshair: {
+          mode: CrosshairMode.Normal,
+        },
+        priceScale: {
+          borderColor: '#485c7b',
+        },
+        timeScale: {
+          borderColor: '#485c7b',
+          timeVisible: true,
+          secondsVisible: true,
+        },
+      });
 
-      if (chart && chart.current && tokenPriceData.length > 0) {
-        chartContainerRef.current.style.display="flex";
-      }
+      candleSeries.current = chart.current.addCandlestickSeries({
+        upColor: '#89c984',
+        downColor: '#ff4976',
+        borderDownColor: '#ff4976',
+        borderUpColor: '#89c984',
+        wickDownColor: '#838ca1',
+        wickUpColor: '#838ca1',
+      });
 
-      if (candleSeries.current) {
-        chart.current.removeSeries(candleSeries.current);
-        candleSeries.current = null;
-      }
-      if (lineSeries.current) {
-        chart.current.removeSeries(lineSeries.current);
-        lineSeries.current = null;
-      }
-
-      if (selectedViewMode === viewModes[0]) {
-        candleSeries.current = chart.current.addCandlestickSeries({
-          upColor: '#89c984',
-          downColor: '#ff4976',
-          borderDownColor: '#ff4976',
-          borderUpColor: '#89c984',
-          wickDownColor: '#838ca1',
-          wickUpColor: '#838ca1',
-        });
-
-        candleSeries.current.setData(tokenPriceData);
-        chart.current.timeScale().fitContent();
-      } else {
-        lineSeries.current = chart.current.addAreaSeries({
-          topColor: "rgba(137,201,132, 0.56)",
-          bottomColor: "rgba(137,201,132, 0.04)",
-          lineColor: "rgba(137,201,132, 1)",
-          lineWidth: 2
-        });
-
-        lineSeries.current.setData(tokenPriceData);
-        chart.current.timeScale().fitContent();
-      }
+      candleSeries.current.setData(tokenPriceData);
+      chart.current.timeScale().fitContent();
     }
   }, [tokenPriceData]);
+
+  const initCandleStickChart = () => {
+    if (chart.current) {
+      if (candleSeries.current) {
+        chart.current.removeSeries(candleSeries.current)
+        candleSeries.current = null;
+      }
+      chart.current = null;
+    }
+  }
+
+  const isValidCandleStickDataType = (tokenPriceData) => {
+    if (tokenPriceData.length > 0) {
+      const firstItem = tokenPriceData[0];
+      if(firstItem.hasOwnProperty('open')) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const fetchData = async (selectedPair, timeRange, viewMode) => {
     const network = TokenListManager.getCurrentNetworkConfig();
@@ -226,12 +223,12 @@ export default function TradingViewChart(){
     let tokenPrices;
 
     setIsLoading(true);
-
     if (TokenListManager.isCrossChainEnabled() && !network.crossChainSupported) {
       tokenPrices = [];
     } else {
       const fromChain = TokenListManager.getNetworkByName(selectedPair.fromChain);
       const toChain = TokenListManager.getNetworkByName(selectedPair.toChain);
+
       if (viewMode === 'line') {
         const {fromTimestamp, toTimestamp} = getTimestamps(timeRange);
         const urlFromChain = fromChain.tradeView.lineUrl;
@@ -272,20 +269,21 @@ export default function TradingViewChart(){
           if (coinId) {
             fromTokenPrices = await fetchCandleStickPrices(urlFromChain, coinId.id, 'usd', timeRange.value);
           }
-
           tokenPrices = mergeCandleStickPrices(fromTokenPrices, null);
         }
       }
     }
 
-    setIsLoading(false);
-    setTokenPriceData(tokenPrices);
-    if (tokenPrices.length >  0) {
-      const { price, percent } = getPriceDetails(tokenPrices, selectedViewMode)
-      setPriceDetails({ price, percent, from: selectedTimeRange.from })
-    } else {
-      setPriceDetails({ price: 0, percent: 0, from: selectedTimeRange.from })
-    }
+    setTimeout(function() {
+      setIsLoading(false);
+      setTokenPriceData(tokenPrices);
+      if (tokenPrices.length >  0) {
+        const { price, percent } = getPriceDetails(tokenPrices, selectedViewMode)
+        setPriceDetails({ price, percent, from: selectedTimeRange.from })
+      } else {
+        setPriceDetails({ price: 0, percent: 0, from: selectedTimeRange.from })
+      }
+    }, 500);
   };
 
   const getPriceDetails = (prices, viewMode) => {
@@ -328,11 +326,11 @@ export default function TradingViewChart(){
     try {
       const response = await fetch(`${baseUrl}/contract/${contract.toLowerCase()}/market_chart/range?vs_currency=${currency}&from=${fromTimestamp}&to=${toTimestamp}`)
       if (!response.ok) {
-        throw new Error()
+        throw new Error();
       }
       const data = await response.json();
       if (data) {
-        result = data.prices
+        result = data.prices;
       }
       return result;
     } catch (err) {
@@ -350,13 +348,12 @@ export default function TradingViewChart(){
     }
     try {
       const response = await fetch(`${baseUrl}/${coinId}/ohlc?vs_currency=${currency}&days=${days}`);
-
       if (!response.ok) {
-        throw new Error()
+        throw new Error();
       }
       const data = await response.json();
       if (data) {
-        result = data
+        result = data;
       }
 
       return result;
@@ -398,7 +395,7 @@ export default function TradingViewChart(){
             prices.push(tempObj[property])
           }
         }
-     }
+      }
     } else if ((fromTokenPrices && fromTokenPrices.length > 0) && (toTokenPrices === null)) {
       for (let i = 0; i < fromTokenPrices.length; i++) {
         prices.push({time: getFilteredTimestamp(fromTokenPrices[i][0]), value: BN(fromTokenPrices[i][1]).toNumber()})
@@ -480,6 +477,8 @@ export default function TradingViewChart(){
     return {fromTimestamp, toTimestamp}
   }
 
+  const dateFormatter = (item) => moment(item).format("h:mm A MMM. Do z");
+
   const handleSwapConfigChange = () => {
     const updatedTokenPairList = createTokenPairList();
     setTokenPairs(updatedTokenPairList);
@@ -505,42 +504,96 @@ export default function TradingViewChart(){
     setSelectedTimeRange(timeRange);
   }
 
+  const handleMove = ({ isTooltipActive, activePayload, activeTooltipIndex, activeLabel}, e) => {
+    if (isTooltipActive && activePayload.length > 0) {
+      setPriceDetails({...priceDetails, price: activePayload[0].payload && activePayload[0].payload.value || 0});
+    }
+  };
+
+  const handleLeave = (chartState, e) => {
+    if (tokenPriceData.length > 0) {
+      const length = tokenPriceData.length
+      const lastItem = tokenPriceData[length - 1]
+      setPriceDetails({...priceDetails, price: lastItem.value || 0});
+    }
+  };
+
+  function CustomTooltip({ payload, label, active }) {
+    if (active && payload.length > 0) {
+      return (
+          <div className="custom-tooltip">
+            <p className="text">{dateFormatter(payload[0].payload.time)}</p>
+          </div>
+      );
+    }
+
+    return null;
+  }
+
   const renderTradingChatView = (isLoading, viewMode, priceData) => {
     if (isLoading) {
-      if (chart.current) {
-        chartContainerRef.current.style.display="none";
-      }
       if (viewMode === 'line') {
         return (
-          <div className="chart">
+          <span id="trading-chart-loading-bar">
             <img src="/images/chart_line_animate.svg"/>
-          </div>
+          </span>
         )
       } else {
         return (
-          <div className="chart">
+          <span id="trading-chart-loading-bar">
             <img src="/images/chart_cundle_animate.svg"/>
-          </div>
+          </span>
         )
       }
     } else {
       if (priceData.length === 0) {
-        if (chart.current) {
-          chartContainerRef.current.style.display="none";
-        }
         return (
           <div className="chart">
             <div>
               <img width={110} height={110} src="/images/no_data.svg"/>
             </div>
-            <div className="empty-primary-text has-text-info">
+            <div className="empty-primary-text">
               No Data
             </div>
-            <div className="empty-sub-text has-text-info">
+            <div className="empty-sub-text">
               There's no historical data to display for this token.
             </div>
           </div>
         )
+      } else {
+        if (viewMode === 'line') {
+          return (
+            <ResponsiveContainer width="100%" height={250}>
+              <AreaChart
+                data={priceData}
+                onMouseMove={handleMove}
+                onMouseLeave={handleLeave}
+              >
+                <defs>
+                  <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="10%" stopColor="#45C581" stopOpacity="0.1"/>
+                    <stop offset="95%" stopColor="#FFFFFF" stopOpacity="0.1"/>
+                  </linearGradient>
+                </defs>
+                <Tooltip
+                  position={{ y: 0 }}
+                  content={<CustomTooltip />}/>
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#89c984"
+                  strokeWidth={1.5}
+                  fillOpacity={1}
+                  fill="url(#colorUv)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )
+        } else {
+          return (
+              <div className="chart" ref={candleChartContainerRef}/>
+          )
+        }
       }
     }
   }
@@ -560,15 +613,14 @@ export default function TradingViewChart(){
             selectedViewMode={selectedViewMode}
             handleViewModeChange={handleViewModeChange}
           />
-          <div className="chart" ref={chartContainerRef}/>
           {renderTradingChatView(isLoading, selectedViewMode, tokenPriceData)}
           <ChartRangeSelector
             timeRangeList={timeRangeList}
             selectedTimeRange={selectedTimeRange}
             selectedViewMode={selectedViewMode}
-            handleTimeRangeChange={handleRangeChange}/>
+            handleTimeRangeChange={handleRangeChange}
+          />
         </div>
       </div>
-    );
+  );
 }
-

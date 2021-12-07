@@ -73,7 +73,7 @@
     ],
     "tradeView": {
       "platform": "ethereum",
-      "lineUrl": "https://api.coingecko.com/api/v3/coins/ethereum",
+      "lineUrl": "https://api.coingecko.com/api/v3/coins/arbitrum-one",
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
     "singleChainSupported": false,
