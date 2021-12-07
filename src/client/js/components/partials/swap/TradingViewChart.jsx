@@ -534,13 +534,13 @@ export default function TradingViewChart(){
     if (isLoading) {
       if (viewMode === 'line') {
         return (
-          <span id="loading-bar">
+          <span id="trading-chart-loading-bar">
             <img src="/images/chart_line_animate.svg"/>
           </span>
         )
       } else {
         return (
-          <span id="loading-bar">
+          <span id="trading-chart-loading-bar">
             <img src="/images/chart_cundle_animate.svg"/>
           </span>
         )
