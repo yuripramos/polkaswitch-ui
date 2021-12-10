@@ -189,7 +189,7 @@
     ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "xDai",
     "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/xdai/info/logo.png",
@@ -234,7 +234,7 @@
     ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Fantom",
     "aggregatorAddress": "0xF09ecB66eF88973eBE7B0B5B5d700050F200c85D",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
