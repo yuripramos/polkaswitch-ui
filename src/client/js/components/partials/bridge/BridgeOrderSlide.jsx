@@ -18,7 +18,8 @@ export default class BridgeOrderSlide extends Component {
     super(props);
     this.state = {
       calculatingSwap: false,
-      errored: false
+      errored: false,
+      availableRoutes: []
     };
     this.calculatingSwapTimestamp = Date.now();
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
@@ -100,6 +101,8 @@ export default class BridgeOrderSlide extends Component {
       return false;
     }
 
+    var bridgeRoutes = TxBridgeManager.supportedBridges();
+
     TxBridgeManager.getEstimate(
       +this.props.fromChain.chainId,
       this.props.from.address,
@@ -124,6 +127,7 @@ export default class BridgeOrderSlide extends Component {
         this.props.onCrossChainEstimateComplete(response.id);
 
         this.setState({
+          availableRoutes: bridgeRoutes,
           calculatingSwap: false
         }, () => {
           if (_cb3) {
@@ -404,7 +408,13 @@ export default class BridgeOrderSlide extends Component {
               <span className="hint-icon">?</span>
             </div>
             <AvailableRoutes
-              routes={this.props.swapDistribution}/>
+              toChain={this.props.toChain}
+              fromChain={this.props.fromChain}
+              to={this.props.to}
+              from={this.props.from}
+              fromAmount={this.props.fromAmount}
+              toAmount={this.props.toAmount}
+              routes={this.state.availableRoutes}/>
           </div>
 
           <div className="bridge-order-btn-wrapper">

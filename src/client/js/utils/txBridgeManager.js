@@ -59,9 +59,24 @@ export default {
   supportedBridges: function(to, toChain, from, fromChain) {
     var bridges = [];
     var targetChainIds = [+toChain.chainId, +fromChain.chainId];
+    var targetTokenIds = [to.symbol, from.symbol];
 
-    if (_.includes(CONNEXT_SUPPORTED_CHAINS, targetChainIds)) {
+
+    if (targetChainIds.every(e => CONNEXT_SUPPORTED_CHAINS.includes(e))) {
+      // Connext always supported regardless of token due to the extra swap steps
+      bridges.push("connext");
     }
+
+    if (targetChainIds.every(e => HOP_SUPPORTED_CHAINS.includes(e))) {
+      if (to.symbol === from.symbol && targetTokenIds.every(e => HOP_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
+        bridges.push("hop");
+      }
+    }
+
+    return bridges;
+  },
+
+  isSwapRequiredForBridge: function(to, toChain, from, fromChain) {
   },
 
   getEstimate: function(
