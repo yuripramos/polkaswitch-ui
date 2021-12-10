@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import _ from "underscore";
 import classnames from 'classnames';
-import Coingecko from "../../utils/coingecko";
+import CoingeckoManager from "../../utils/coingecko";
 
 export default function TokenIconImg(props) {
   let imgURL = props.imgSrc || (props.token && props.token.logoURI);
@@ -37,7 +37,7 @@ export default function TokenIconImg(props) {
   const getLogoURL = async() => {
     var network = props.network || TokenListManager.getCurrentNetworkConfig();
     const assetPlatform = network.coingecko && network.coingecko.platform || '';
-    return await Coingecko.getLogoURL(assetPlatform, props.token.address);
+    return await CoingeckoManager.getLogoURL(assetPlatform, props.token.address);
   }
 
   return (

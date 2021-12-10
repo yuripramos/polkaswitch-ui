@@ -8,7 +8,7 @@ import ChartRangeSelector from "./ChartRangeSelector";
 import EventManager from "../../../utils/events";
 import BN from 'bignumber.js';
 import TokenListManager from "../../../utils/tokenList";
-import Coingecko from "../../../utils/coingecko";
+import CoingeckoManager from "../../../utils/coingecko";
 import moment from "moment";
 
 export default function TradingViewChart(){
@@ -314,7 +314,7 @@ export default function TradingViewChart(){
     }
     try {
       const url = `${platform}/contract/${contract.toLowerCase()}/market_chart/range?vs_currency=${currency}&from=${fromTimestamp}&to=${toTimestamp}`
-      result = await Coingecko.fetchLinePrices(url)
+      result = await CoingeckoManager.fetchLinePrices(url)
       return result;
 
     } catch (err) {
@@ -332,7 +332,7 @@ export default function TradingViewChart(){
     }
     try {
       const url = `${coinId}/ohlc?vs_currency=${currency}&days=${days}`
-      result = await Coingecko.fetchCandleStickPrices(url)
+      result = await CoingeckoManager.fetchCandleStickPrices(url)
       return result;
     } catch (err) {
       console.error("Failed to fetch price data", err);
