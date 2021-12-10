@@ -331,7 +331,7 @@ window.WalletJS = {
 
         else {
           console.error(switchError);
-          reject(e);
+          reject(switchError);
         }
       }
     }.bind(this));
