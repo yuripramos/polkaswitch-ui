@@ -477,7 +477,7 @@ export default function TradingViewChart(){
     return {fromTimestamp, toTimestamp}
   }
 
-  const dateFormatter = (item) => moment(item).format("h:mm A MMM. Do z");
+  const dateFormatter = (item) => moment(item * 1000).format("h:mm A MMM. Do z");
 
   const handleSwapConfigChange = () => {
     const updatedTokenPairList = createTokenPairList();
