@@ -11,6 +11,7 @@ import TokenListManager from "../../../utils/tokenList";
 import moment from "moment";
 
 export default function TradingViewChart(){
+  const DECIMAL_PLACES = 4;
   const timeRangeList = {
     candlestick: [
       {name: "1D", value: 1, from: 'Past 1 day'},
@@ -370,7 +371,7 @@ export default function TradingViewChart(){
         for (let i = 0; i < fromTokenPrices.length; i++) {
           prices.push({
             time: getFilteredTimestamp(fromTokenPrices[i][0]),
-            value: BN(fromTokenPrices[i][1]).div(toTokenPrices[i][1]).toNumber()
+            value: BN(fromTokenPrices[i][1]).div(toTokenPrices[i][1]).toFixed(DECIMAL_PLACES)
           })
         }
       } else {
@@ -385,7 +386,7 @@ export default function TradingViewChart(){
             const fromTokenItem = tempObj[timeStampOfTotoken];
             tempObj[timeStampOfTotoken] = {
               time: timeStampOfTotoken,
-              value: BN(fromTokenItem[1]).div(toTokenPrices[j][1]).toNumber()
+              value: BN(fromTokenItem[1]).div(toTokenPrices[j][1]).toFixed(DECIMAL_PLACES)
             }
           }
         }
@@ -398,7 +399,7 @@ export default function TradingViewChart(){
       }
     } else if ((fromTokenPrices && fromTokenPrices.length > 0) && (toTokenPrices === null)) {
       for (let i = 0; i < fromTokenPrices.length; i++) {
-        prices.push({time: getFilteredTimestamp(fromTokenPrices[i][0]), value: BN(fromTokenPrices[i][1]).toNumber()})
+        prices.push({time: getFilteredTimestamp(fromTokenPrices[i][0]), value: BN(fromTokenPrices[i][1]).toFixed(DECIMAL_PLACES)})
       }
     }
     return prices;
@@ -418,10 +419,10 @@ export default function TradingViewChart(){
           const fromTokenItem = tempObj[timeStampOfTotoken];
           tempObj[timeStampOfTotoken] = {
             time: timeStampOfTotoken,
-            open: BN(fromTokenItem[1]).div(toTokenPrices[j][1]).toNumber(),
-            high: BN(fromTokenItem[2]).div(toTokenPrices[j][2]).toNumber(),
-            low: BN(fromTokenItem[3]).div(toTokenPrices[j][3]).toNumber(),
-            close: BN(fromTokenItem[4]).div(toTokenPrices[j][4]).toNumber(),
+            open: BN(fromTokenItem[1]).div(toTokenPrices[j][1]).toFixed(DECIMAL_PLACES),
+            high: BN(fromTokenItem[2]).div(toTokenPrices[j][2]).toFixed(DECIMAL_PLACES),
+            low: BN(fromTokenItem[3]).div(toTokenPrices[j][3]).toFixed(DECIMAL_PLACES),
+            close: BN(fromTokenItem[4]).div(toTokenPrices[j][4]).toFixed(DECIMAL_PLACES),
           }
         }
       }
@@ -436,10 +437,10 @@ export default function TradingViewChart(){
       for (let i = 0; i < fromTokenPrices.length; i++) {
         prices.push({
           time: getFilteredTimestamp(fromTokenPrices[i][0]),
-          open: BN(fromTokenPrices[i][1]).toNumber(),
-          high: BN(fromTokenPrices[i][2]).toNumber(),
-          low: BN(fromTokenPrices[i][3]).toNumber(),
-          close: BN(fromTokenPrices[i][4]).toNumber(),
+          open: BN(fromTokenPrices[i][1]).toFixed(DECIMAL_PLACES),
+          high: BN(fromTokenPrices[i][2]).toFixed(DECIMAL_PLACES),
+          low: BN(fromTokenPrices[i][3]).toFixed(DECIMAL_PLACES),
+          close: BN(fromTokenPrices[i][4]).toFixed(DECIMAL_PLACES),
         })
       }
     }
