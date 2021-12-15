@@ -18,7 +18,8 @@ export default class BridgeOrderSlide extends Component {
     super(props);
     this.state = {
       calculatingSwap: false,
-      errored: false
+      errored: false,
+      errorMsg: false
     };
     this.calculatingSwapTimestamp = Date.now();
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
@@ -49,7 +50,8 @@ export default class BridgeOrderSlide extends Component {
     } else if (attempt > window.MAX_RETRIES) {
       this.setState({
         calculatingSwap: false,
-        errored: true
+        errored: true,
+        errorMsg: false
       });
       console.error("Swap Failure: MAX RETRIES REACHED");
       return;
@@ -96,7 +98,24 @@ export default class BridgeOrderSlide extends Component {
   fetchCrossChainEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
     if (!Wallet.isConnected()) {
       // not supported in cross-chain mode
-      console.log("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      console.error("SwapOrderSlide: Wallet not connected, skipping crossChainEstimate");
+      return false;
+    }
+
+    var bridgeSupported = TxBridgeManager.isSupported(
+      this.props.to,
+      this.props.toChain,
+      this.props.from,
+      this.props.fromChain
+    );
+
+    if (!bridgeSupported[0]) {
+      this.setState({
+        calculatingSwap: false,
+        errored: true,
+        errorMsg: bridgeSupported[1]
+      });
+
       return false;
     }
 
@@ -321,9 +340,9 @@ export default class BridgeOrderSlide extends Component {
 
                 {
                   !isFrom && this.state.errored && (
-                      <div className="warning-funds">
-                        Estimate failed. Try again
-                      </div>
+                    <div className="warning-funds">
+                      {this.state.errorMsg || "Estimate failed. Try again"}
+                    </div>
                   )
                 }
                 <div
