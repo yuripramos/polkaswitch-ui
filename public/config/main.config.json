@@ -229,7 +229,7 @@
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
     "singleChainSupported": true,
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
     ]
   },
@@ -274,7 +274,7 @@
       "candleStickUrl": "https://api.coingecko.com/api/v3/coins"
     },
     "singleChainSupported": true,
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
     ]
   }
