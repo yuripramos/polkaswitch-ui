@@ -51,7 +51,7 @@ export default class TxCrossChainHistoricalStatusView extends Component {
     }
 
     return (
-      <div className={classnames("level is-mobile tx-item", clazz)}>
+      <div className={classnames("level is-mobile tx-item tx-history", clazz)}>
         <div className="level-item tx-icon">
           <div className="icon">
             {icon}

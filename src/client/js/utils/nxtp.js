@@ -27,6 +27,9 @@ BN.config({ EXPONENTIAL_AT: 1e+9 });
 let store = require('store');
 
 const REACT_APP_CHAIN_CONFIG = {
+  "1": {
+    "providers": ["https://api-eth.swing.xyz/3b520ae779047524795c39e0ea17ce5b5304057d/"]
+  },
   "56":{
     "providers": ["https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"]
   },
