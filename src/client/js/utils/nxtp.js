@@ -33,8 +33,14 @@ const REACT_APP_CHAIN_CONFIG = {
   "56":{
     "providers": ["https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"]
   },
+  "100": {
+    "providers": ["https://api-xdai.swing.xyz/6e25f5fc6a6efc79fa8c97b2c699abe2d59f6817/"]
+  },
   "137":{
     "providers":["https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"]
+  },
+  "250": {
+    "providers": ["https://api-fantom.swing.xyz/efefa0dd29e1885643893565b6de2d551e77e09c/"]
   },
   "43114":{
     "providers":["https://api.avax.network/ext/bc/C/rpc"],

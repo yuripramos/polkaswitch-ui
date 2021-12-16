@@ -162,12 +162,13 @@ export default class BridgeOrderSlide extends Component {
       });
     }.bind(this, _timeNow2, _cb2))
     .catch(function(_timeNow3, _attempt3, _cb3, e) {
-      console.error(e);
       console.error("Failed to get swap estimate: ", e);
 
       if (this.calculatingSwapTimestamp !== _timeNow3) {
         return;
       }
+
+
 
       // try again
       this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1, _cb3);
