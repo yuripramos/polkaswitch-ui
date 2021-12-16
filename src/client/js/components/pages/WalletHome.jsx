@@ -1,148 +1,70 @@
-import React, { Component } from "react";
-import Navbar from "../partials/navbar/Navbar";
-import ConnectWalletModal from "../partials/ConnectWalletModal";
-import TxHistoryModal from "../partials/TxHistoryModal";
-import NotificationSystem from "../partials/NotificationSystem";
-import MobileMenu from "../partials/navbar/MobileMenu";
-import NetworkPrice from "../partials/wallet/NetworkPrice";
-import NetworkDropdown from "../partials/NetworkDropdown";
-import AssetsTable from "../partials/wallet/AssetsTable";
-import DisconnectedWallet from "../partials/wallet/DisconnectedWallet";
-import EmptyBalances from "../partials/wallet/EmptyBalances";
+import React, { useEffect, useContext } from 'react';
+import Navbar from '../partials/navbar/Navbar';
+import ConnectWalletModal from '../partials/ConnectWalletModal';
+import TxHistoryModal from '../partials/TxHistoryModal';
+import NotificationSystem from '../partials/NotificationSystem';
+import MobileMenu from '../partials/navbar/MobileMenu';
+import NetworkPrice from '../partials/wallet/NetworkPrice';
+import NetworkDropdown from '../partials/NetworkDropdown';
+import AssetsTable from '../partials/wallet/AssetsTable';
+import DisconnectedWallet from '../partials/wallet/DisconnectedWallet';
+import EmptyBalances from '../partials/wallet/EmptyBalances';
+import { balanceContext } from '../../context/balance';
 
 import * as ethers from 'ethers';
-import BN from 'bignumber.js';
-import { BigNumber, constants, providers, Signer, utils } from "ethers";
 
-import _ from "underscore";
-import classnames from 'classnames';
+import _ from 'underscore';
 
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 import EventManager from '../../utils/events';
 
-export default class WalletHome extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      refresh: Date.now(),
-      currentNetwork: TokenListManager.getCurrentNetworkConfig(),
-      balances: [],
-      loading: true
-    };
+const WalletHome = () => {
+  const { refresh, currentNetwork, balances, loading, setMyApplicationState } =
+    useContext(balanceContext);
 
-    this.NETWORKS = _.filter(window.NETWORK_CONFIGS, (v) => { return v.enabled });
+  let subWalletChange;
 
-    this.loadBalances = this.loadBalances.bind(this);
-    this.handleWalletChange = this.handleWalletChange.bind(this);
-    this.handleConnect = this.handleConnect.bind(this);
-    this.renderBalancesAccrossNetworks = this.renderBalancesAccrossNetworks.bind(this);
-    this.renderPortfolioMakeUp = this.renderPortfolioMakeUp.bind(this);
-    this.renderWalletHome = this.renderWalletHome.bind(this);
-  }
-
-  componentDidMount() {
-    this.subWalletChange = EventManager.listenFor(
-      'walletUpdated', this.handleWalletChange
+  useEffect(() => {
+    subWalletChange = EventManager.listenFor(
+      'walletUpdated',
+      handleWalletChange
     );
+  }, []);
 
-    this.loadBalances();
-  }
+  useEffect(() => {
+    return () => subWalletChange.unsubscribe();
+  }, []);
 
-  componentWillUnmount() {
-    this.subWalletChange.unsubscribe();
-  }
-
-  handleWalletChange() {
-    this.setState({
-      refresh: Date.now(),
-      balances: [],
-      loading: true
+  const handleWalletChange = () => {
+    setMyApplicationState((prevState) => {
+      return {
+        ...prevState,
+        refresh: Date.now(),
+        balances: [],
+        loading: true,
+      };
     });
+  };
 
-    this.loadBalances();
-  }
-
-  handleConnect() {
+  const handleConnect = () => {
     EventManager.emitEvent('promptWalletConnect', 1);
-  }
+  };
 
-  handleNetworkChange(network) {
-    this.setState({
-      refresh: Date.now(),
-      balances: [],
-      currentNetwork: network,
-      loading: true
+  const handleNetworkChange = (network) => {
+    setMyApplicationState((prevState) => {
+      return {
+        ...prevState,
+        refresh: Date.now(),
+        balances: [],
+        currentNetwork: network,
+        loading: true,
+      };
     });
+  };
 
-    this.loadBalances();
-  }
-
-  loadBalances() {
-    _.defer(async function() {
-      var currentNetwork = this.state.currentNetwork;
-
-      let balances = [];
-      let promises = [];
-      let localRefresh = this.state.refresh;
-
-      let networks = this.NETWORKS;
-
-      Promise.all(
-        networks.map((network) => {
-          return new Promise(async (resolve, reject) => {
-            let tokenList = TokenListManager.getTokenListForNetwork(network);
-
-            try {
-              var nativeBalance = await Wallet.getDefaultBalance(network);
-            } catch(e) {
-              console.error("Failed to fetch balances from network: ", network.name);
-              console.error(e);
-              resolve(true);
-              return; // go next network, if the provider is not working
-            }
-
-            for (var j = 0; j < tokenList.length; j++) {
-              var token = tokenList[j];
-
-              let p = Wallet.getBalance(token, network).then(function(tk, net, balance) {
-                if (this.state.refresh === localRefresh && !balance.isZero()) {
-                  this.setState({
-                    balances: [
-                      ...this.state.balances,
-                      {
-                        ...tk,
-                        balance: (+balance.toString()) / (Math.pow(10, tk.decimals)),
-                        balanceBN: balance,
-                        price: 1
-                      }
-                    ]
-                  });
-                }
-              }.bind(this, token, network));
-
-              promises.push(p);
-            };
-
-            resolve(true);
-          });
-        })
-      ).then(() => {
-        // bleeding browser-support
-        Promise.allSettled(promises).then(() => {
-          console.log("Completed fetching balances from all networks");
-          if (this.state.refresh === localRefresh) {
-            this.setState({
-              loading: false
-            });
-          }
-        });
-      });
-    }.bind(this));
-  }
-
-  renderBalancesAccrossNetworks() {
-    const bMap = this.state.balances.reduce((_map, cv) => {
+  const renderBalancesAccrossNetworks = () => {
+    const bMap = balances.reduce((_map, cv) => {
       let balance = 0;
       if (_map[cv.chainId]) {
         balance += _map[cv.chainId];
@@ -163,96 +85,107 @@ export default class WalletHome extends Component {
         />
       );
     });
-  }
+  };
 
-  renderPortfolioMakeUp() {
-    if (Wallet.isConnected() && this.state.balances.length) {
+  const renderPortfolioMakeUp = () => {
+    if (Wallet.isConnected() && balances.length) {
       return (
         <>
-        <div className="columns is-hidden-mobile">
-          <div className="column">
-            <div className="portfolio-makeup__heading">Portfolio Makeup</div>
+          <div className="columns is-hidden-mobile">
+            <div className="column">
+              <div className="portfolio-makeup__heading">Portfolio Makeup</div>
+            </div>
           </div>
-        </div>
 
-        <div className="columns is-hidden-mobile portfolio-makeup">{this.renderBalancesAccrossNetworks()}</div>
+          <div className="columns is-hidden-mobile portfolio-makeup">
+            {renderBalancesAccrossNetworks()}
+          </div>
         </>
       );
     }
     return null;
-  }
+  };
 
-  renderWalletHome() {
+  const renderWalletHome = () => {
     if (Wallet.isConnected()) {
-      if (!this.state.balances.length && this.state.currentNetwork === undefined) {
+      if (!balances.length && currentNetwork === undefined) {
         return <EmptyBalances />;
       } else {
         return (
           <>
-          <div className="columns is-centered">
-            <div className="column card-container">
-              <div className="card wallets-page-card">
-                <div className="portfolio-balance level is-mobile">
-                  <div className="level-left">
-                    <h6 className="portfolio-balance__main-heading">Portfolio Overview</h6>
+            <div className="columns is-centered">
+              <div className="column card-container">
+                <div className="card wallets-page-card">
+                  <div className="portfolio-balance level is-mobile">
+                    <div className="level-left">
+                      <h6 className="portfolio-balance__main-heading">
+                        Portfolio Overview
+                      </h6>
+                    </div>
+                    <div className="is-hidden level-right">
+                      <NetworkDropdown
+                        handleDropdownClick={handleNetworkChange}
+                        selected={currentNetwork}
+                      />
+                    </div>
                   </div>
-                  <div className="is-hidden level-right">
-                    <NetworkDropdown
-                      handleDropdownClick={this.handleNetworkChange}
-                      selected={this.state.currentNetwork}
-                    />
-                  </div>
-                </div>
 
-                <div className="is-hidden columns total-balance">
-                  <div className="column">
-                    <h6 className="total-balance__sub-heading">Total Balance</h6>
-                    <h2 className="total-balance__main-heading">
-                      {
-                        this.state.balances.reduce((p, t) => {
-                          return (p += t.price * t.balance);
-                        }, 0).toLocaleString("en-US", { style: "currency", currency: "USD" })
-                      }
-                    </h2>
+                  <div className="is-hidden columns total-balance">
+                    <div className="column">
+                      <h6 className="total-balance__sub-heading">
+                        Total Balance
+                      </h6>
+                      <h2 className="total-balance__main-heading">
+                        {balances
+                          .reduce((p, t) => {
+                            return (p += t.price * t.balance);
+                          }, 0)
+                          .toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                          })}
+                      </h2>
+                    </div>
                   </div>
-                </div>
 
-                <div className="is-hidden">
-                  {this.renderPortfolioMakeUp()}
+                  <div className="is-hidden">{renderPortfolioMakeUp()}</div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="columns is-centered">
-            <div className="column card-container">
-              <div className="card wallets-page-card">
-                <div className="tokens-table-title-container">
-                  <span className="tokens-table-title-container__main">Assets</span>
-                  <span className="is-hidden tokens-table-title-container__sub">Don't see your assets?</span>
-                </div>
+            <div className="columns is-centered">
+              <div className="column card-container">
+                <div className="card wallets-page-card">
+                  <div className="tokens-table-title-container">
+                    <span className="tokens-table-title-container__main">
+                      Assets
+                    </span>
+                    <span className="is-hidden tokens-table-title-container__sub">
+                      Don't see your assets?
+                    </span>
+                  </div>
 
-                <AssetsTable tokenData={this.state.balances} loading={this.state.loading} />
+                  <AssetsTable tokenData={balances} loading={loading} />
+                </div>
               </div>
             </div>
-          </div>
           </>
         );
       }
     }
-    return <DisconnectedWallet onClick={this.handleConnect} />;
-  }
+    return <DisconnectedWallet onClick={handleConnect} />;
+  };
 
-  render() {
-    return (
-      <div className="container">
-        <Navbar />
-        <MobileMenu />
-        <NotificationSystem />
-        <ConnectWalletModal />
-        <TxHistoryModal />
+  return (
+    <div className="container">
+      <Navbar />
+      <MobileMenu />
+      <NotificationSystem />
+      <ConnectWalletModal />
+      <TxHistoryModal />
 
-        {this.renderWalletHome()}
-      </div>
-    );
-  }
-}
+      {renderWalletHome()}
+    </div>
+  );
+};
+
+export default WalletHome;
