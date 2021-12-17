@@ -23,7 +23,6 @@ export default function NavMenu(props) {
       TokenListManager.updateNetwork(nextNetwork, connectStrategy);
     }
 
-    TokenListManager.toggleCrossChain(!isSwap);
     await TokenListManager.updateTokenList();
   }
 

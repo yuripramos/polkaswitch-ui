@@ -47,7 +47,8 @@ export default function TradingViewChart(){
     const swapConfig = TokenListManager.getSwapConfig();
     const network = TokenListManager.getCurrentNetworkConfig();
     const list = []
-    if (TokenListManager.isCrossChainEnabled() && !network.crossChainSupported) {
+    if (!network.crossChainSupported) {
+      // TODO not supported at the moment
       return list;
     } else {
       const fromSymbol = swapConfig.from.symbol;
@@ -224,7 +225,8 @@ export default function TradingViewChart(){
     let tokenPrices;
 
     setIsLoading(true);
-    if (TokenListManager.isCrossChainEnabled() && !network.crossChainSupported) {
+    if (!network.crossChainSupported) {
+      // TODO not supported at the moment
       tokenPrices = [];
     } else {
       const fromChain = TokenListManager.getNetworkByName(selectedPair.fromChain);
