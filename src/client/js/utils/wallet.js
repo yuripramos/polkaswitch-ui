@@ -100,7 +100,9 @@ window.WalletJS = {
   },
 
   getBalance: function(token, optionalNetwork) {
-    if (this.isConnected()) {
+    // if network specified, as long as we connected to any network is fine,
+    // if it's not provided, we need to be on the right network to get the right balance
+    if ((!!optionalNetwork && this.isConnectedToAnyNetwork()) || this.isConnected()) {
       if (token.native) {
         return this.getDefaultBalance(optionalNetwork);
       }
