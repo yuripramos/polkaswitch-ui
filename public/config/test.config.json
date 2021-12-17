@@ -7,7 +7,7 @@
     "bridgeURI": "https://wallet.matic.network/",
     "tokenList": "/tokens/eth.list.json",
     "chainId": "1",
-    "nodeProvider": "https://api-eth.swing.xyz/3b520ae779047524795c39e0ea17ce5b5304057d/",
+    "nodeProvider": "https://eth-mainnet.alchemyapi.io/v2/hrkUnlgn_VD_KbxEjpo7D2mVwTfAVUJW",
     "explorerBaseUrl": "https://etherscan.io/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "color": "#5C69B5",
