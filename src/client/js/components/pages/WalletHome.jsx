@@ -88,7 +88,7 @@ const WalletHome = () => {
   };
 
   const renderPortfolioMakeUp = () => {
-    if (Wallet.isConnected() && balances.length) {
+    if (Wallet.isConnectedToAnyNetwork() && balances.length) {
       return (
         <>
           <div className="columns is-hidden-mobile">
@@ -107,7 +107,7 @@ const WalletHome = () => {
   };
 
   const renderWalletHome = () => {
-    if (Wallet.isConnected()) {
+    if (Wallet.isConnectedToAnyNetwork()) {
       if (!balances.length && currentNetwork === undefined) {
         return <EmptyBalances />;
       } else {
