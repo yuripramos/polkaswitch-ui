@@ -36,9 +36,12 @@ export default class TxCrossChainHistoricalStatusView extends Component {
     );
 
     var input = numeral(Utils.formatUnits(txData.sending.amount, sendingAsset.decimals)).format('0.0000a');
-    var output = numeral(Utils.formatUnits(txData.receiving.amount, receivingAsset.decimals)).format('0.0000a');
 
-    var icon, lang, clazz;
+    var output, icon, lang, clazz;
+
+    if (txData.receiving?.amount) {
+      output = numeral(Utils.formatUnits(txData.receiving.amount, receivingAsset.decimals)).format('0.0000a');
+    }
 
     if (this.props.data.status === "FULFILLED") {
       icon = (<ion-icon name="checkmark-circle"></ion-icon>);
