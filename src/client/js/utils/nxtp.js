@@ -39,9 +39,9 @@ const REACT_APP_CHAIN_CONFIG = {
   "137":{
     "providers":["https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"]
   },
-  "250": {
-    "providers": ["https://api-fantom.swing.xyz/efefa0dd29e1885643893565b6de2d551e77e09c/"]
-  },
+  //"250": {
+  //  "providers": ["https://api-fantom.swing.xyz/efefa0dd29e1885643893565b6de2d551e77e09c/"]
+  //},
   "43114":{
     "providers":["https://api.avax.network/ext/bc/C/rpc"],
     "subgraph":"https://api.thegraph.com/subgraphs/name/connext/nxtp-avalanche",

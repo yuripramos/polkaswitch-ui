@@ -274,7 +274,7 @@
     ]
   },
   {
-    "enabled": true,
+    "enabled": false,
     "name": "Fantom",
     "aggregatorAddress": "0xF09ecB66eF88973eBE7B0B5B5d700050F200c85D",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
