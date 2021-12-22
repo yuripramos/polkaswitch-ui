@@ -85,7 +85,7 @@ window.WalletJS = {
     var network = chainId ?
       TokenListManager.getNetworkById(chainId) :
       TokenListManager.getCurrentNetworkConfig();
-    const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+    const provider = new ethers.providers.JsonRpcProvider(network.nodeProviders[0]);
     return provider;
   },
 
@@ -117,7 +117,7 @@ window.WalletJS = {
 
   getDefaultBalance: function(optionalNetwork) {
     if (optionalNetwork) {
-      let provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProvider);
+      let provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProviders[0]);
       return provider.getBalance(this.currentAddress());
     } else {
       return this.getProvider().getBalance(this.currentAddress());
@@ -128,7 +128,7 @@ window.WalletJS = {
     let provider;
 
     if (optionalNetwork) {
-      provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProvider);
+      provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProviders[0]);
     } else {
       provider = this.getProvider();
     }
