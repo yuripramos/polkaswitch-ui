@@ -24,7 +24,7 @@ export default function TokenIconImg(props) {
     } else {
       setImgSrc(imgURL);
     }
-  }, [imgURL]);
+  }, [imgURL, props.token?.symbol, props.token?.address]);
 
   const onError = (e) => {
     setErrored(true);
