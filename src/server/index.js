@@ -91,6 +91,16 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/health", function(req, res) {
+  const data = {
+    uptime: process.uptime(),
+    message: 'Ok',
+    date: new Date()
+  }
+
+  res.status(200).send(data);
+});
+
 if (process.env.HTTP_PASSWORD) {
   app.use(passport.initialize());
   app.use(passport.session());
