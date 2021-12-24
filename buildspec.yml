@@ -10,10 +10,12 @@ phases:
 
 artifacts:
   files:
-    - "**/*"
+    - src/**/*
+    - dist/**/*
+    - Procfile
+    - public/**/*
   discard-paths: no
   base-directory: /
-  exclude-paths: node_modules
 
 cache:
     paths:
