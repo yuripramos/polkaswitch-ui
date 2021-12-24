@@ -13,6 +13,8 @@ artifacts:
     - dist/**/*
     - src/**/*
     - public/**/*
+    - Procfile
+    - package.json
   discard-paths: no
   base-directory: "./"
 
