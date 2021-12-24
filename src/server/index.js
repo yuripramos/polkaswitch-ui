@@ -161,8 +161,8 @@ app.listen(process.env.PORT || 5000, () => {
 });
 
 process.on('SIGTERM', () => {
-  debug('SIGTERM signal received: closing HTTP server')
+  console.debug('SIGTERM signal received: closing HTTP server')
   server.close(() => {
-    debug('HTTP server closed')
+    console.debug('HTTP server closed')
   })
 })
