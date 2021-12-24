@@ -74,15 +74,17 @@ app.use(compression());
 app.enable('trust proxy');
 
 // force HTTPS
-app.use(function(request, response, next) {
-  if (isProduction && !request.secure) {
-    return response.redirect(
-      "https://" + request.headers.host + request.url
-    );
-  }
+if (process.env.FORCE_HTTPS) {
+  app.use(function(request, response, next) {
+    if (isProduction && !request.secure) {
+      return response.redirect(
+        "https://" + request.headers.host + request.url
+      );
+    }
 
-  next();
-});
+    next();
+  });
+}
 
 app.set('views', __dirname + "/views");
 app.set('view engine', 'ejs');
