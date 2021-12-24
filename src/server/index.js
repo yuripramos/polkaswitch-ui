@@ -156,13 +156,14 @@ app.use(function onError(err, req, res, next) {
   res.status(500).send({ error: 'crash - (X_X)' })
 });
 
-app.listen(process.env.PORT || 5000, () => {
+var server = app.listen(process.env.PORT || 5000, () => {
   console.log(`Listening on port ${process.env.PORT || 5000}!`);
 });
 
 process.on('SIGTERM', () => {
   console.debug('SIGTERM signal received: closing HTTP server')
-  server.close(() => {
-    console.debug('HTTP server closed')
+  server.close((err) => {
+    console.debug('HTTP server closed');
+    process.exit(err ? 1 : 0);
   })
 })
