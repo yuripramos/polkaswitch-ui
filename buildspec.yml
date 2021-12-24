@@ -10,12 +10,9 @@ phases:
 
 artifacts:
   files:
-    - src/**/*
-    - dist/**/*
-    - Procfile
-    - public/**/*
+    - '**/*'
   discard-paths: no
-  base-directory: /
+  base-directory: /dist
 
 cache:
     paths:
