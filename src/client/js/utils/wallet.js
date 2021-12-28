@@ -89,11 +89,11 @@ window.WalletJS = {
     );
   },
 
-  getReadOnlyProvider: function (chainId) {
-    var network = chainId
-      ? TokenListManager.getNetworkById(chainId)
-      : TokenListManager.getCurrentNetworkConfig();
-    const provider = new ethers.providers.JsonRpcProvider(network.nodeProvider);
+  getReadOnlyProvider: function(chainId) {
+    var network = chainId ?
+      TokenListManager.getNetworkById(chainId) :
+      TokenListManager.getCurrentNetworkConfig();
+    const provider = new ethers.providers.JsonRpcProvider(network.nodeProviders[0]);
     return provider;
   },
 
@@ -109,8 +109,10 @@ window.WalletJS = {
     }
   },
 
-  getBalance: function (token, optionalNetwork) {
-    if (this.isConnected()) {
+  getBalance: function(token, optionalNetwork) {
+    // if network specified, as long as we connected to any network is fine,
+    // if it's not provided, we need to be on the right network to get the right balance
+    if ((!!optionalNetwork && this.isConnectedToAnyNetwork()) || this.isConnected()) {
       if (token.native) {
         return this.getDefaultBalance(optionalNetwork);
       } else if (token.address) {
@@ -123,9 +125,7 @@ window.WalletJS = {
 
   getDefaultBalance: function (optionalNetwork) {
     if (optionalNetwork) {
-      let provider = new ethers.providers.StaticJsonRpcProvider(
-        optionalNetwork.nodeProvider,
-      );
+      let provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProviders[0]);
       return provider.getBalance(this.currentAddress());
     } else {
       return this.getProvider().getBalance(this.currentAddress());
@@ -136,9 +136,7 @@ window.WalletJS = {
     let provider;
 
     if (optionalNetwork) {
-      provider = new ethers.providers.StaticJsonRpcProvider(
-        optionalNetwork.nodeProvider,
-      );
+      provider = new ethers.providers.StaticJsonRpcProvider(optionalNetwork.nodeProviders[0]);
     } else {
       provider = this.getProvider();
     }

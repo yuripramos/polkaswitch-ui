@@ -83,18 +83,10 @@ window.TokenListManager = {
     if (network.gasApi) {
       gasStats = await (await fetch(network.gasApi)).json();
     } else {
-      const provider = new ethers.providers.JsonRpcProvider(
-        network.nodeProvider,
-      );
-      let defaultGasPrice = Math.ceil(
-        Utils.formatUnits(await provider.getGasPrice(), 'gwei'),
-      );
+      const provider = new ethers.providers.JsonRpcProvider(network.nodeProviders[0]);
+      let defaultGasPrice = Math.ceil(Utils.formatUnits((await provider.getGasPrice()), "gwei"));
 
-      gasStats = {
-        safeLow: defaultGasPrice,
-        fast: defaultGasPrice,
-        fastest: defaultGasPrice,
-      };
+      gasStats = { safeLow: defaultGasPrice, fast: defaultGasPrice, fastest: defaultGasPrice };
     }
 
     // Binance Smart Chain GasAPI has different fields

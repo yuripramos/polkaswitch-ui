@@ -34,9 +34,7 @@ window.Storage = {
     }
 
     // initialize the Network
-    var defaultNetwork = _.findWhere(window.NETWORK_CONFIGS, {
-      enabled: true,
-    }).name;
+    var defaultNetwork = _.findWhere(window.NETWORK_CONFIGS, { enabled: true, singleChainSupported: true }).name;
     var storedNetwork = _.findWhere(window.NETWORK_CONFIGS, {
       name: store.get('selectedNetwork'),
       enabled: true,

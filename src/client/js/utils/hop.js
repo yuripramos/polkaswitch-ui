@@ -125,12 +125,12 @@ window.HopUtils = {
     const hopSendingChain = new Chain(
       sendingChain.name,
       sendingChain.chainId,
-      sendingChain.nodeProvider,
+      sendingChain.nodeProviders[0]
     );
     const hopReceivingChain = new Chain(
       receivingChain.name,
       receivingChain.chainId,
-      receivingChain.nodeProvider,
+      receivingChain.nodeProviders[0]
     );
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);
 
@@ -187,12 +187,12 @@ window.HopUtils = {
     const hopSendingChain = new Chain(
       sendingChain.name,
       sendingChain.chainId,
-      sendingChain.nodeProvider,
+      sendingChain.nodeProviders[0]
     );
     const hopReceivingChain = new Chain(
       receivingChain.name,
       receivingChain.chainId,
-      receivingChain.nodeProvider,
+      receivingChain.nodeProviders[0]
     );
 
     const hopBridge = this._sdk.bridge(sendingAsset.symbol);

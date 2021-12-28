@@ -181,7 +181,7 @@ export default class WalletHome extends Component {
   }
 
   renderPortfolioMakeUp() {
-    if (Wallet.isConnected() && this.state.balances.length) {
+    if (Wallet.isConnectedToAnyNetwork() && this.state.balances.length) {
       return (
         <>
           <div className="columns is-hidden-mobile">
@@ -200,11 +200,8 @@ export default class WalletHome extends Component {
   }
 
   renderWalletHome() {
-    if (Wallet.isConnected()) {
-      if (
-        !this.state.balances.length &&
-        this.state.currentNetwork === undefined
-      ) {
+    if (Wallet.isConnectedToAnyNetwork()) {
+      if (!this.state.balances.length && this.state.currentNetwork === undefined) {
         return <EmptyBalances />;
       } else {
         return (

@@ -61,25 +61,12 @@ export default class TokenSymbolBalance extends Component {
       return;
     }
 
-    if (
-      this.props.network &&
-      !Wallet.isMatchingConnectedNetwork(this.props.network)
-    ) {
-      this.log('Wrong network');
-      this.setState({
-        errored: true,
-        loading: false,
-      });
-      return;
-    }
-
-    if (Wallet.isConnected()) {
-      Wallet.getBalance(this.props.token)
-        .then(
-          function (_ts, bal) {
-            if (this.state.timestamp != _ts) {
-              return;
-            }
+    if (Wallet.isConnectedToAnyNetwork()) {
+      Wallet.getBalance(this.props.token, this.props.network)
+        .then(function(_ts, bal) {
+          if (this.state.timestamp != _ts) {
+            return;
+          }
 
             // balance is in WEI and is a BigNumber
             this.setState({
