@@ -13,7 +13,8 @@
     "watch": "webpack --watch --mode development --env development",
     "start": "node src/server/index.js",
     "server": "nodemon -r dotenv/config src/server/index.js",
-    "format": "prettier --write \"src/**/*.js*\""
+    "format": "prettier --write \"src/**/*.js*\"",
+    "lint": "eslint \"src/**/*.js*\" --fix"
   },
   "author": "polkaswitch",
   "dependencies": {
