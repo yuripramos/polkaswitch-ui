@@ -8,8 +8,10 @@ export default {
 
     try {
       const endpoint = new URL(`${this._baseUrl}/${url}`);
-      Object.keys(params).forEach(key => endpoint.searchParams.append(key, params[key]));
-      console.log('URL=', endpoint)
+      Object.keys(params).forEach((key) =>
+        endpoint.searchParams.append(key, params[key]),
+      );
+      console.log('URL=', endpoint);
       const response = await fetch(endpoint);
 
       if (response.ok) {
@@ -32,10 +34,10 @@ export default {
       const response = await fetch(`${this._baseUrl}/${url}`, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(params)
+        body: JSON.stringify(params),
       });
 
       if (response.ok) {
@@ -52,14 +54,25 @@ export default {
   },
 
   getQuote: async function (chainId, srcToken, destToken, srcAmount) {
-    const priceData = await this.sendGet('quote', { chainId, srcToken, destToken, srcAmount });
-    
+    const priceData = await this.sendGet('quote', {
+      chainId,
+      srcToken,
+      destToken,
+      srcAmount,
+    });
+
     return priceData;
   },
 
   getApprove: async function (route, chainId, tokenAddress, amount) {
     const userAddress = Wallet.currentAddress();
-    const tx = await this.sendGet('approve', { route, chainId, tokenAddress, amount, userAddress });
+    const tx = await this.sendGet('approve', {
+      route,
+      chainId,
+      tokenAddress,
+      amount,
+      userAddress,
+    });
     const txHash = await this.sendTransaction(tx);
 
     return txHash;
@@ -67,7 +80,14 @@ export default {
 
   getSwap: async function (route, chainId, srcToken, destToken, srcAmount) {
     const userAddress = Wallet.currentAddress();
-    const tx = await this.sendPost('swap', { chainId, route, srcToken, destToken, srcAmount, userAddress });
+    const tx = await this.sendPost('swap', {
+      chainId,
+      route,
+      srcToken,
+      destToken,
+      srcAmount,
+      userAddress,
+    });
     const txHash = await this.sendTransaction(tx);
 
     return txHash;
@@ -77,7 +97,7 @@ export default {
     try {
       const txHash = window.ethereum.request({
         method: 'eth_sendTransaction',
-        params: [txObject]
+        params: [txObject],
       });
       return txHash;
     } catch (e) {
@@ -85,7 +105,7 @@ export default {
     }
   },
 
-  waitTransaction: async function(txHash) {
+  waitTransaction: async function (txHash) {
     try {
       let txResult = null;
       while (!txResult) {
@@ -125,5 +145,5 @@ export default {
       console.log(e);
     }
     return null;
-  }
-}
+  },
+};
