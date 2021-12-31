@@ -15,20 +15,21 @@ var Tracing = require('@sentry/tracing');
 var passport = require('./middleware/auth');
 // var redis = require('./middleware/redis');
 
-const isProduction = (process.env.NODE_ENV === 'production');
+const isProduction = process.env.NODE_ENV === 'production';
 const app = express();
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
-  environment: process.env.IS_MAIN_NETWORK === "true" ?
-    'production' : 'development',
+  environment:
+    process.env.IS_MAIN_NETWORK === 'true' ? 'production' : 'development',
   integrations: [
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
     // enable Express.js middleware tracing
     new Tracing.Integrations.Express({ app }),
   ],
-  release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
+  release:
+    process.env.HEROKU_APP_NAME + '-' + process.env.HEROKU_RELEASE_VERSION,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
@@ -56,18 +57,20 @@ if (isProduction) {
 } else {
   defaultCsp = _.omit(
     helmet.contentSecurityPolicy.getDefaultDirectives(),
-    'upgrade-insecure-requests'
+    'upgrade-insecure-requests',
   );
 }
 
-app.use(cookieSession({
-  name: 'session',
-  keys: ['key1', 'key2'],
-  cookie: {
-    secure: true,
-    httpOnly: true
-  }
-}));
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2'],
+    cookie: {
+      secure: true,
+      httpOnly: true,
+    },
+  }),
+);
 
 app.use(flash());
 app.use(compression());
@@ -86,7 +89,7 @@ if (process.env.FORCE_HTTPS) {
   });
 }
 
-app.set('views', __dirname + "/views");
+app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 // Bodyparser middleware, extended false does not allow nested payloads
@@ -107,21 +110,24 @@ if (process.env.HTTP_PASSWORD) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.get("/debug", function(req, res) {
-      throw new Error("Test Error");
+  app.get('/debug', function (req, res) {
+    throw new Error('Test Error');
   });
 
-  app.get('/login', function(req, res, next) {
+  app.get('/login', function (req, res, next) {
     res.render('pages/login', { messages: req.flash('error') });
   });
 
-  app.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: 'Invalid access credentials'
-  }));
+  app.post(
+    '/login',
+    passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/login',
+      failureFlash: 'Invalid access credentials',
+    }),
+  );
 
-  app.get('*', function(req, res, next) {
+  app.get('*', function (req, res, next) {
     if (req.user) {
       next();
     } else {
@@ -129,11 +135,11 @@ if (process.env.HTTP_PASSWORD) {
     }
   });
 
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     if (req.user) {
       next();
     } else {
-      res.status(401).send({ error: "not authenticated" });
+      res.status(401).send({ error: 'not authenticated' });
     }
   });
 }
@@ -141,13 +147,13 @@ if (process.env.HTTP_PASSWORD) {
 app.use(express.static('dist'));
 app.use(express.static('public'));
 
-app.use('*', function(req, res) {
+app.use('*', function (req, res) {
   res.sendFile(path.join(__dirname, '../../', '/dist/index.html'));
 });
 
 app.use(function onNotFound(req, res, next) {
-  res.status(404).send({ error: "not found" });
-})
+  res.status(404).send({ error: 'not found' });
+});
 
 // The error handler must be before any other error
 // middleware and after all controllers
@@ -155,7 +161,7 @@ app.use(Sentry.Handlers.errorHandler());
 
 app.use(function onError(err, req, res, next) {
   console.error(err);
-  res.status(500).send({ error: 'crash - (X_X)' })
+  res.status(500).send({ error: 'crash - (X_X)' });
 });
 
 var server = app.listen(process.env.PORT || 5000, () => {
@@ -163,9 +169,9 @@ var server = app.listen(process.env.PORT || 5000, () => {
 });
 
 process.on('SIGTERM', () => {
-  console.debug('SIGTERM signal received: closing HTTP server')
+  console.debug('SIGTERM signal received: closing HTTP server');
   server.close((err) => {
     console.debug('HTTP server closed');
     process.exit(err ? 1 : 0);
-  })
-})
+  });
+});

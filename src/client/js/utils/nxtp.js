@@ -1,15 +1,20 @@
-import _ from "underscore";
+import _ from 'underscore';
 import EventManager from './events';
-import Wallet from "./wallet";
+import Wallet from './wallet';
 import TxQueue from './txQueue';
 import * as ethers from 'ethers';
 import TokenListManager from './tokenList';
 import Storage from './storage';
 import BN from 'bignumber.js';
-import { ApprovalState } from "../constants/Status";
+import { ApprovalState } from '../constants/Status';
 
-import { BigNumber, constants, Signer, utils } from "ethers";
-import { ActiveTransaction, NxtpSdk, NxtpSdkEvents, HistoricalTransaction } from "@connext/nxtp-sdk";
+import { BigNumber, constants, Signer, utils } from 'ethers';
+import {
+  ActiveTransaction,
+  NxtpSdk,
+  NxtpSdkEvents,
+  HistoricalTransaction,
+} from '@connext/nxtp-sdk';
 import {
   AuctionResponse,
   ChainData,
@@ -22,7 +27,7 @@ import {
 import swapFn from "./swapFn";
 
 // never exponent
-BN.config({ EXPONENTIAL_AT: 1e+9 });
+BN.config({ EXPONENTIAL_AT: 1e9 });
 
 let store = require('store');
 
@@ -70,22 +75,22 @@ window.NxtpUtils = {
     return !!this._sdk;
   },
 
-  initalizeSdk: async function() {
+  initalizeSdk: async function () {
     const signer = Wallet.getProvider().getSigner();
 
-    var sdk = this._sdk = new NxtpSdk({
+    var sdk = (this._sdk = new NxtpSdk({
       chainConfig: this._sdkConfig,
       signer: signer,
-      logger: new Logger({ name: "NxtpSdk", level: "info" }),
-      network: process.env.REACT_APP_NETWORK || "mainnet"
-    });
+      logger: new Logger({ name: 'NxtpSdk', level: 'info' }),
+      network: process.env.REACT_APP_NETWORK || 'mainnet',
+    }));
 
     this.attachNxtpSdkListeners(sdk);
     return sdk;
   },
 
-  resetSdk: function() {
-    console.log("Nxtp SDK reset");
+  resetSdk: function () {
+    console.log('Nxtp SDK reset');
 
     if (this._sdk) {
       //detach all listeners
@@ -99,32 +104,33 @@ window.NxtpUtils = {
     this._historicalTxs = [];
   },
 
-  fetchActiveTxs: async function() {
+  fetchActiveTxs: async function () {
     if (!this._sdk) {
       return;
     }
     this._activeTxs = await this._sdk.getActiveTransactions();
-    console.log("activeTxs: ", this._activeTxs);
+    console.log('activeTxs: ', this._activeTxs);
   },
 
-  fetchHistoricalTxs: async function() {
+  fetchHistoricalTxs: async function () {
     if (!this._sdk) {
       return;
     }
     this._historicalTxs = await this._sdk.getHistoricalTransactions();
-    console.log("historicalTxs: ", this._historicalTxs);
+    console.log('historicalTxs: ', this._historicalTxs);
   },
 
-  attachNxtpSdkListeners: function(_sdk) {
+  attachNxtpSdkListeners: function (_sdk) {
     if (!_sdk) {
       return;
     }
     _sdk.attach(NxtpSdkEvents.SenderTransactionPrepared, (data) => {
-      console.log("SenderTransactionPrepared:", data);
+      console.log('SenderTransactionPrepared:', data);
       const { amount, expiry, preparedBlockNumber, ...invariant } = data.txData;
 
       const index = this._activeTxs.findIndex(
-        (col) => col.crosschainTx.invariant.transactionId === invariant.transactionId,
+        (col) =>
+          col.crosschainTx.invariant.transactionId === invariant.transactionId,
       );
 
       if (index === -1) {
@@ -155,27 +161,37 @@ window.NxtpUtils = {
         };
       }
 
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionPrepared);
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.SenderTransactionPrepared,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTransactionFulfilled, async (data) => {
-      console.log("SenderTransactionFulfilled:", data);
-      this.removeActiveTx(data.txData.transactionId)
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionFulfilled);
+      console.log('SenderTransactionFulfilled:', data);
+      this.removeActiveTx(data.txData.transactionId);
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.SenderTransactionFulfilled,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTransactionCancelled, async (data) => {
-      console.log("SenderTransactionCancelled:", data);
-      this.removeActiveTx(data.txData.transactionId)
+      console.log('SenderTransactionCancelled:', data);
+      this.removeActiveTx(data.txData.transactionId);
       await this.fetchHistoricalTxs();
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.SenderTransactionCancelled);
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.SenderTransactionCancelled,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionPrepared, (data) => {
-      console.log("ReceiverTransactionPrepared:", data);
+      console.log('ReceiverTransactionPrepared:', data);
       const { amount, expiry, preparedBlockNumber, ...invariant } = data.txData;
       const index = this._activeTxs.findIndex(
-        (col) => col.crosschainTx.invariant.transactionId === invariant.transactionId,
+        (col) =>
+          col.crosschainTx.invariant.transactionId === invariant.transactionId,
       );
 
       if (index === -1) {
@@ -203,45 +219,72 @@ window.NxtpUtils = {
         };
       }
 
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionPrepared);
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.ReceiverTransactionPrepared,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverPrepareSigned, async (data) => {
-      console.log("ReceiverPrepareSigned:", data);
-      this.updateActiveTx(data.transactionId, NxtpSdkEvents.ReceiverPrepareSigned)
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverPrepareSigned);
+      console.log('ReceiverPrepareSigned:', data);
+      this.updateActiveTx(
+        data.transactionId,
+        NxtpSdkEvents.ReceiverPrepareSigned,
+      );
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.ReceiverPrepareSigned,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionFulfilled, async (data) => {
-      console.log("ReceiverTransactionFulfilled:", data);
-      this.updateActiveTx(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionFulfilled, data, { invariant: data.txData, receiving: data.txData })
-      this.removeActiveTx(data.txData.transactionId)
+      console.log('ReceiverTransactionFulfilled:', data);
+      this.updateActiveTx(
+        data.txData.transactionId,
+        NxtpSdkEvents.ReceiverTransactionFulfilled,
+        data,
+        { invariant: data.txData, receiving: data.txData },
+      );
+      this.removeActiveTx(data.txData.transactionId);
       await this.fetchHistoricalTxs();
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionFulfilled);
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.ReceiverTransactionFulfilled,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.ReceiverTransactionCancelled, async (data) => {
-      console.log("ReceiverTransactionCancelled:", data);
-      this.updateActiveTx(data.txData.transactionId, NxtpSdkEvents.ReceiverTransactionCancelled, data, { invariant: data.txData, receiving: data.txData })
+      console.log('ReceiverTransactionCancelled:', data);
+      this.updateActiveTx(
+        data.txData.transactionId,
+        NxtpSdkEvents.ReceiverTransactionCancelled,
+        data,
+        { invariant: data.txData, receiving: data.txData },
+      );
       this.removeActiveTx(data.txData.transactionId);
       await this.fetchHistoricalTxs();
-      EventManager.emitEvent('nxtpEventUpdated', NxtpSdkEvents.ReceiverTransactionCancelled);
+      EventManager.emitEvent(
+        'nxtpEventUpdated',
+        NxtpSdkEvents.ReceiverTransactionCancelled,
+      );
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTokenApprovalMined, (data) => {
-      console.log("SenderTokenApprovalMined:", data);
+      console.log('SenderTokenApprovalMined:', data);
     });
 
     _sdk.attach(NxtpSdkEvents.SenderTransactionPrepareSubmitted, (data) => {
-      console.log("SenderTransactionPrepareSubmitted:", data);
+      console.log('SenderTransactionPrepareSubmitted:', data);
     });
   },
 
-  getHistoricalTx: function(transactionId) {
-    return this._historicalTxs.find((t) => t.crosschainTx.invariant.transactionId === transactionId);
+  getHistoricalTx: function (transactionId) {
+    return this._historicalTxs.find(
+      (t) => t.crosschainTx.invariant.transactionId === transactionId,
+    );
   },
 
-  isActiveTxFinishable: function(transactionId) {
+  isActiveTxFinishable: function (transactionId) {
     var tx = this.getActiveTx(transactionId);
 
     if (!tx) {
@@ -251,40 +294,46 @@ window.NxtpUtils = {
     }
   },
 
-  isActiveTxFinished: function(transactionId) {
+  isActiveTxFinished: function (transactionId) {
     var tx = this.getHistoricalTx(transactionId);
-    console.log("isActiveTxFinished: ", tx);
+    console.log('isActiveTxFinished: ', tx);
     return !!tx;
   },
 
-  getActiveTx: function(transactionId) {
-    return this._activeTxs.find((t) => t.crosschainTx.invariant.transactionId === transactionId);
+  getActiveTx: function (transactionId) {
+    return this._activeTxs.find(
+      (t) => t.crosschainTx.invariant.transactionId === transactionId,
+    );
   },
 
-  updateActiveTx: function(transactionId, status, event, crosschainTx) {
+  updateActiveTx: function (transactionId, status, event, crosschainTx) {
     let updated = false;
-    this._activeTxs = this._activeTxs.map(item => {
+    this._activeTxs = this._activeTxs.map((item) => {
       if (item.crosschainTx.invariant.transactionId === transactionId) {
         if (crosschainTx) {
-          item.crosschainTx = Object.assign({}, item.crosschainTx, crosschainTx)
+          item.crosschainTx = Object.assign(
+            {},
+            item.crosschainTx,
+            crosschainTx,
+          );
         }
-        item.status = status
+        item.status = status;
         if (event) {
-          item.event = event
+          item.event = event;
         }
-        updated = true
+        updated = true;
       }
       return item;
-    })
+    });
 
     if (!updated && crosschainTx) {
       this._activeTxs.push({ crosschainTx: crosschainTx, status, event });
     }
   },
 
-  removeActiveTx: function(transactionId) {
+  removeActiveTx: function (transactionId) {
     this._activeTxs = this._activeTxs.filter((t) => {
-      return t.crosschainTx.invariant.transactionId !== transactionId
+      return t.crosschainTx.invariant.transactionId !== transactionId;
     });
   },
 
@@ -295,10 +344,10 @@ window.NxtpUtils = {
     receivingChainId,
     receivingAssetId,
     amountBN,
-    receivingAddress
+    receivingAddress,
   ) {
     if (!Wallet.isConnected()) {
-      console.error("Nxtp: Wallet not connected");
+      console.error('Nxtp: Wallet not connected');
       return false;
     }
 
@@ -308,9 +357,15 @@ window.NxtpUtils = {
 
     const sendingChain = TokenListManager.getNetworkById(sendingChain);
     const receivingChain = TokenListManager.getNetworkById(receivingChainId);
-    const receivingAsset = TokenListManager.findTokenById(receivingAssetId, receivingChain);
+    const receivingAsset = TokenListManager.findTokenById(
+      receivingAssetId,
+      receivingChain,
+    );
     const sendingAsset = TokenListManager.findTokenById(sendingAssetId);
-    const bridgeAsset = TokenListManager.findTokenById(sendingAsset.symbol, receivingChain);
+    const bridgeAsset = TokenListManager.findTokenById(
+      sendingAsset.symbol,
+      receivingChain,
+    );
 
     let callToAddr, callData, expectedReturn;
 
@@ -325,29 +380,32 @@ window.NxtpUtils = {
       let o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
         .times(0.9995)
         .times(10 ** bridgeAsset.decimals)
-        .toString()
-      let estimatedOutputBN = utils.parseUnits(swapFn.validateEthValue(bridgeAsset, o1), 0);
+        .toString();
+      let estimatedOutputBN = utils.parseUnits(
+        swapFn.validateEthValue(bridgeAsset, o1),
+        0,
+      );
 
       expectedReturn = await swapFn.getExpectedReturn(
         bridgeAsset,
         receivingAsset,
         estimatedOutputBN,
-        receivingChainId
+        receivingChainId,
       );
 
-      let distBN = _.map(expectedReturn.distribution, function(e) {
-        return window.ethers.utils.parseUnits("" + e, "wei");
+      let distBN = _.map(expectedReturn.distribution, function (e) {
+        return window.ethers.utils.parseUnits('' + e, 'wei');
       });
 
       // TODO missing the options i.e { gasprice, value }
-      callData = aggregator.encodeFunctionData("swap", [
+      callData = aggregator.encodeFunctionData('swap', [
         bridgeAsset.address,
         receivingAssetId,
         estimatedOutputBN,
         BigNumber.from(0), //TODO: Add MinReturn/Slippage
         receivingAddress,
         distBN,
-        0
+        0,
       ]);
     }
 
@@ -361,18 +419,20 @@ window.NxtpUtils = {
       amount: amountBN.toString(),
       transactionId,
       expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3, // 3 days
-      callTo: callToAddr
+      callTo: callToAddr,
     });
 
     this._queue[transactionId] = {
       quote: quote,
-      expectedReturn: expectedReturn
-    }
+      expectedReturn: expectedReturn,
+    };
 
     return {
       id: transactionId,
       transactionFee: 0.0, // TODO
-      returnAmount: expectedReturn ? expectedReturn.returnAmount : quote.bid.amountReceived
+      returnAmount: expectedReturn
+        ? expectedReturn.returnAmount
+        : quote.bid.amountReceived,
     };
   },
 
@@ -380,7 +440,7 @@ window.NxtpUtils = {
     const transferQuote = this._queue[transactionId]?.quote;
 
     if (!transferQuote) {
-      throw new Error("Please request quote first");
+      throw new Error('Please request quote first');
     }
 
     if (!Wallet.isConnected()) {
@@ -389,13 +449,13 @@ window.NxtpUtils = {
     }
 
     const transfer = await this._sdk.prepareTransfer(transferQuote, true);
-    console.log("transfer: ", transfer);
+    console.log('transfer: ', transfer);
     // WAIT on Events at this point
 
     return true;
   },
 
-  transferStepTwo: async function(transactionId) {
+  transferStepTwo: async function (transactionId) {
     const tx = this.getActiveTx(transactionId);
 
     const { bidSignature, encodedBid, encryptedCallData } = tx;
@@ -407,33 +467,39 @@ window.NxtpUtils = {
     };
 
     const receivingTxData =
-      typeof receiving === "object"
-      ? {
-        ...invariant,
-        ...receiving,
-      }
-      : undefined;
+      typeof receiving === 'object'
+        ? {
+            ...invariant,
+            ...receiving,
+          }
+        : undefined;
 
     const finish = await this._sdk.fulfillTransfer({
-      bidSignature, encodedBid, encryptedCallData, txData: receivingTxData
+      bidSignature,
+      encodedBid,
+      encryptedCallData,
+      txData: receivingTxData,
     });
 
-    console.log("finish: ", finish);
+    console.log('finish: ', finish);
 
-    if (finish.metaTxResponse?.transactionHash || finish.metaTxResponse?.transactionHash === "") {
-      this.removeActiveTx(receivingTxData.transactionId)
+    if (
+      finish.metaTxResponse?.transactionHash ||
+      finish.metaTxResponse?.transactionHash === ''
+    ) {
+      this.removeActiveTx(receivingTxData.transactionId);
     }
 
     return true;
   },
 
-  getAllActiveTxs: function() {
+  getAllActiveTxs: function () {
     return this._activeTxs.map((x) => x);
   },
 
-  getAllHistoricalTxs: function() {
+  getAllHistoricalTxs: function () {
     return this._historicalTxs.map((x) => x);
-  }
+  },
 };
 
 export default window.NxtpUtils;

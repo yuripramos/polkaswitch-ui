@@ -5,26 +5,25 @@ import _ from "underscore";
 import Wallet from "../../../utils/wallet";
 
 export default function NavMenu(props) {
-
   const CROSS_CHAIN_NETWORKS = _.filter(window.NETWORK_CONFIGS, (v) => {
-    return v.crossChainSupported
+    return v.crossChainSupported;
   });
 
   const handleClick = async (isSwap) => {
     const currNetwork = TokenListManager.getCurrentNetworkConfig();
     const changeNetwork = !isSwap && !currNetwork.crossChainSupported;
-    const nextNetwork = !changeNetwork ?
-        currNetwork :
-        _.first(CROSS_CHAIN_NETWORKS);
+    const nextNetwork = !changeNetwork
+      ? currNetwork
+      : _.first(CROSS_CHAIN_NETWORKS);
 
     if (changeNetwork) {
-      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-          Wallet.getConnectionStrategy();
+      let connectStrategy =
+        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(nextNetwork, connectStrategy);
     }
 
     await TokenListManager.updateTokenList();
-  }
+  };
 
   return (
     <div className="nav-menu">
@@ -36,4 +35,3 @@ export default function NavMenu(props) {
     </div>
   );
 }
-
