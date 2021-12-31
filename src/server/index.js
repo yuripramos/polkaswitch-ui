@@ -77,13 +77,17 @@ app.use(compression());
 app.enable('trust proxy');
 
 // force HTTPS
-app.use(function (request, response, next) {
-  if (isProduction && !request.secure) {
-    return response.redirect('https://' + request.headers.host + request.url);
-  }
+if (process.env.FORCE_HTTPS) {
+  app.use(function(request, response, next) {
+    if (isProduction && !request.secure) {
+      return response.redirect(
+        "https://" + request.headers.host + request.url
+      );
+    }
 
-  next();
-});
+    next();
+  });
+}
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -91,6 +95,16 @@ app.set('view engine', 'ejs');
 // Bodyparser middleware, extended false does not allow nested payloads
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.get("/health", function(req, res) {
+  const data = {
+    uptime: process.uptime(),
+    message: 'Ok',
+    date: new Date()
+  }
+
+  res.status(200).send(data);
+});
 
 if (process.env.HTTP_PASSWORD) {
   app.use(passport.initialize());
@@ -150,13 +164,14 @@ app.use(function onError(err, req, res, next) {
   res.status(500).send({ error: 'crash - (X_X)' });
 });
 
-app.listen(process.env.PORT || 5000, () => {
+var server = app.listen(process.env.PORT || 5000, () => {
   console.log(`Listening on port ${process.env.PORT || 5000}!`);
 });
 
 process.on('SIGTERM', () => {
-  debug('SIGTERM signal received: closing HTTP server');
-  server.close(() => {
-    debug('HTTP server closed');
+  console.debug('SIGTERM signal received: closing HTTP server');
+  server.close((err) => {
+    console.debug('HTTP server closed');
+    process.exit(err ? 1 : 0);
   });
 });

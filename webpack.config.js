@@ -11,6 +11,9 @@ const outputDirectory = 'dist';
 
 module.exports = (env) => {
   console.log(env);
+  console.log(process.env.SENTRY_AUTH_TOKEN);
+  console.log(process.env.HEROKU_APP_NAME);
+
   const isProduction = !!env.production;
   const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
 
